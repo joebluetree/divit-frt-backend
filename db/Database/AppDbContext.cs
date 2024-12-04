@@ -12,6 +12,8 @@ using Database.fluent_config.Tnt;
 
 namespace Database
 {
+
+    // visual studio commands
     //update-database 0 // Remove database migration
     //remove-migration // Remove migration from code
 
@@ -19,6 +21,19 @@ namespace Database
     //update-database // Apply Changes to database
 
     //drop-database // Remove database
+
+    // dotnet migration commands
+    //dotnet ef migrations add MigrationName
+    //dotnet ef database update
+    //dotnet ef migrations remove
+    //dotnet ef migrations script
+
+    //install efcore cli
+    //dotnet tool install --global dotnet-ef
+    //dotnet tool update --global dotnet-ef
+    //dotnet tool list --global
+
+
 
     public class AppDbContext : DbContext
     {
