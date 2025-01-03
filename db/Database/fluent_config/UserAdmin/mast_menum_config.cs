@@ -360,6 +360,34 @@ namespace Database.fluent_config.UserAdmin
                 rec_company_id = 1,
                 rec_created_date = DbLib.GetDateTime(),
                 rec_created_by = "ADMIN"
+            },
+            new mast_menum
+            {
+                menu_id = 811,
+                menu_module_id = 21,
+                menu_order = 12,
+                menu_code = "SALESMAN",
+                menu_name = "Salesman",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'SALESMAN'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum
+            {
+                menu_id = 812,
+                menu_module_id = 21,
+                menu_order = 13,
+                menu_code = "SEA-PORT",
+                menu_name = "Sea port",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'SEA-PORT'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
             }
             );
         }
