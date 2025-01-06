@@ -4,7 +4,7 @@ using Common.DTO.Marketing;
 
 namespace Marketing.Interfaces
 {
-    public interface IQtnmRepository
+    public interface IQtnmLclRepository
     {
         Task<Dictionary<string, object>> GetListAsync(Dictionary<string, object> data);
         Task<mark_qtnm_dto?> GetRecordAsync(int id);

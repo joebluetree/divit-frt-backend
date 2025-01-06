@@ -11,10 +11,10 @@ namespace Marketing.Controllers
 {
     [Authorize]
     [Route("api/Marketing/qtnm")]
-    public class QtnmController : Controller
+    public class QtnmLclController : Controller
     {
-        private readonly IQtnmRepository mRepository;
-        public QtnmController (IQtnmRepository Repository)
+        private readonly IQtnmLclRepository mRepository;
+        public QtnmLclController (IQtnmLclRepository Repository)
         {
             this.mRepository = Repository;
         }

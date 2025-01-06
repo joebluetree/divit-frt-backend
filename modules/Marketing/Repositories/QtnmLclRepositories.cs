@@ -12,11 +12,11 @@ using Common.DTO.Marketing;
 
 namespace Marketing.Repositories
 {
-    public class QtnmRepository : IQtnmRepository
+    public class QtnmLclRepository : IQtnmLclRepository
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
-        public QtnmRepository (AppDbContext _context, IAuditLog _auditLog)
+        public QtnmLclRepository (AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
             this.auditLog = _auditLog;
@@ -208,6 +208,7 @@ namespace Marketing.Repositories
                             qtnd_acc_name = e.acctm!.acc_name,
                             qtnd_amt = e.qtnd_amt,
                             qtnd_per = e.qtnd_per,
+                            qtnd_order = e.qtnd_order,
 
                             rec_created_by = e.rec_created_by,
                             rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
@@ -407,7 +408,7 @@ namespace Marketing.Repositories
                 //Add or Edit Records 
                 foreach (var rec in records_dto)
                 {
-                    // if cont_id is zero it is a new record
+                    int nextorder = 1;
                     if (rec.qtnd_pkid == 0)
                     {
                         record = new mark_qtnd_lcl();
@@ -429,6 +430,7 @@ namespace Marketing.Repositories
                     record.qtnd_acc_name = rec.qtnd_acc_name;
                     record.qtnd_amt = rec.qtnd_amt ?? 0;
                     record.qtnd_per = rec.qtnd_per;
+                    record.qtnd_order = nextorder++;
 
                     if (rec.qtnd_pkid == 0)
                         await context.mark_qtnd_lcl.AddAsync(record);

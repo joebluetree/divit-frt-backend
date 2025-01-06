@@ -67,7 +67,7 @@ builder.Services.AddScoped<IParamRepository, ParamRepository>();
 builder.Services.AddScoped<ICustomermRepository, CustomermRepository>();
 
 //Marketing
-builder.Services.AddScoped<IQtnmRepository, QtnmRepository>();
+builder.Services.AddScoped<IQtnmLclRepository, QtnmLclRepository>();
 
 //Accounts
 builder.Services.AddScoped<IAccGroupRepository, AccGroupRepository>();

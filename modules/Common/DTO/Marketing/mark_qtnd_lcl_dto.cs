@@ -13,6 +13,7 @@ namespace Common.DTO.Marketing
         public string? qtnd_acc_name { get; set; } = "";
         public decimal? qtnd_amt { get; set; } = 0;
         public string? qtnd_per { get; set; } = "";
+        public int? qtnd_order { get; set; } = 0;
                         
     }
 }
