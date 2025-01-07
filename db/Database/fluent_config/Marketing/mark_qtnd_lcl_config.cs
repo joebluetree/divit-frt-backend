@@ -27,7 +27,7 @@ namespace Database.fluent_config.Marketing
             //columns
             modelBuilder.Property(u => u.qtnd_acc_name)
                 .HasMaxLength(50)
-                .IsRequired();
+                .IsRequired(false);
             modelBuilder.Property(u => u.qtnd_amt)
                 .HasColumnType("decimal(15,3)")
                 .IsRequired(false);
@@ -47,16 +47,14 @@ namespace Database.fluent_config.Marketing
             modelBuilder.Property(u => u.rec_edited_date)
                 .IsRequired(false);
             // unique //lklklk
-            // modelBuilder.HasIndex(e => new { e.rec_company_id,e.acc_row_type, e.acc_code })
-            //     .HasDatabaseName("uq_acc_acctm_acc_code")            
-            //     .IsUnique();
+            
             // Foreign Key
             modelBuilder
                 .HasOne(e => e.qtnm)
                 .WithMany()
                 .HasForeignKey(e => e.qtnd_qtnm_pkid)
                 .HasPrincipalKey(e => e.qtnm_pkid)
-                .HasConstraintName("fk_mark_qtnd_lcl_qtnm_pkid")
+                .HasConstraintName("fk_mark_qtnd_lcl_qtnd_qtnm_pkid")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             modelBuilder
