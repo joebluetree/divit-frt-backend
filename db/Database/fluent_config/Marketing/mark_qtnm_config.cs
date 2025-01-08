@@ -13,10 +13,10 @@ namespace Database.fluent_config.Marketing
         {
             //table and primary key
             modelBuilder.ToTable("mark_qtnm");
-            modelBuilder.HasKey(u => u.qtnm_pkid)
+            modelBuilder.HasKey(u => u.qtnm_id)
                 .HasName("pk_mark_qtnm_qtnm_pkid");
             //Sequence
-            modelBuilder.Property(u => u.qtnm_pkid)
+            modelBuilder.Property(u => u.qtnm_id)
                 //.HasDefaultValueSql("next value for MasterSequence")
                 .HasDefaultValueSql("nextval('\"master_sequence\"')")
                 .ValueGeneratedOnAdd();
@@ -194,10 +194,10 @@ namespace Database.fluent_config.Marketing
             modelBuilder.HasData(
             new mark_qtnm
             {
-                qtnm_pkid = 1,
+                qtnm_id = 1,
                 qtnm_cfno = 1,
                 qtnm_type = "LCL",
-                qtnm_no = "QL1",
+                qtnm_no = "QL-1",
                 qtnm_to_id = 100,
                 qtnm_to_name = "ABC LTD KOCHI",
                 qtnm_to_addr1 = "KOCHI",
