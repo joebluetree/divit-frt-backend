@@ -34,17 +34,20 @@ namespace Marketing.Repositories
                 if (action == null)
                     action = "search";
                 
-                var qtnm_to_id = 0;
+                // var qtnm_date = "";
+                var qtnm_to_name = "";
                 var qtnm_no = "";
-                var qtnm_cfno = 0;
                 var company_id = 0;
+                var qtnm_pld_name = "";
                 
-                if (data.ContainsKey("qtnm_to_id"))
-                    qtnm_to_id = int.Parse(data["qtnm_to_id"].ToString()!);
+                // if (data.ContainsKey("qtnm_date"))
+                //     qtnm_date = data["qtnm_date"].ToString();
+                if (data.ContainsKey("qtnm_to_name"))
+                    qtnm_to_name = data["qtnm_to_name"].ToString();
                 if (data.ContainsKey("qtnm_no"))
                     qtnm_no = data["qtnm_no"].ToString();
-                if (data.ContainsKey("qtnm_cfno"))
-                    qtnm_cfno = int.Parse(data["qtnm_cfno"].ToString()!);
+                if (data.ContainsKey("qtnm_pld_name"))
+                    qtnm_pld_name = data["qtnm_pld_name"].ToString();
                 if (data.ContainsKey("rec_company_id"))
                     company_id = int.Parse(data["rec_company_id"].ToString()!);
                 if (company_id == 0)
@@ -60,12 +63,15 @@ namespace Marketing.Repositories
 
                 query = query.Where(w => w.rec_company_id == company_id);
 
-                if (!Lib.IsZero(qtnm_to_id))
-                    query = query.Where(w => w.qtnm_to_id == qtnm_to_id);
+                // if (!Lib.Is(qtnm_date))
+                //     query = query.Where(w => w.qtnm_date!.Contains(qtnm_date!));
+                if (!Lib.IsBlank(qtnm_to_name))
+                    query = query.Where(w => w.qtnm_to_name!.Contains(qtnm_to_name!));
                 if (!Lib.IsBlank(qtnm_no))
                     query = query.Where(w => w.qtnm_no!.Contains(qtnm_no!));
-                if (!Lib.IsZero(qtnm_cfno))
-                    query = query.Where(w => w.qtnm_cfno == qtnm_cfno);
+                if (!Lib.IsBlank(qtnm_pld_name))
+                    query = query.Where(w => w.qtnm_pld_name!.Contains(qtnm_pld_name!));
+                
 
                 if (action == "SEARCH")
                 {
@@ -91,7 +97,7 @@ namespace Marketing.Repositories
                     qtnm_cfno = e.qtnm_cfno,
                     qtnm_type = e.qtnm_type,
                     qtnm_no = e.qtnm_no,
-                    qtnm_to_id = e.qtnm_to_id,
+                    qtnm_to_id = e.customer!.cust_id,
                     qtnm_to_code = e.customer!.cust_code,
                     qtnm_to_name = e.qtnm_to_name,
                     qtnm_to_addr1 = e.qtnm_to_addr1,
@@ -111,10 +117,13 @@ namespace Marketing.Repositories
                     qtnm_cbm = e.qtnm_cbm,
                     qtnm_cft = e.qtnm_cft,
                     qtnm_por_id = e.qtnm_por_id,
+                    qtnm_por_code = e.por!.param_code,
                     qtnm_por_name = e.qtnm_por_name,
                     qtnm_pol_id = e.qtnm_pol_id,
+                    qtnm_pol_code = e.pol!.param_code,
                     qtnm_pol_name = e.qtnm_pol_name,
                     qtnm_pod_id = e.qtnm_pod_id,
+                    qtnm_pod_code = e.pod!.param_code,
                     qtnm_pod_name = e.qtnm_pod_name,
                     qtnm_pld_name = e.qtnm_pld_name,
                     qtnm_plfd_name = e.qtnm_plfd_name,
@@ -174,10 +183,13 @@ namespace Marketing.Repositories
                     qtnm_cbm = e.qtnm_cbm,
                     qtnm_cft = e.qtnm_cft,
                     qtnm_por_id = e.qtnm_por_id,
+                    qtnm_por_code = e.por!.param_code,
                     qtnm_por_name = e.qtnm_por_name,
                     qtnm_pol_id = e.qtnm_pol_id,
+                    qtnm_pol_code = e.pol!.param_code,
                     qtnm_pol_name = e.qtnm_pol_name,
                     qtnm_pod_id = e.qtnm_pod_id,
+                    qtnm_pod_code = e.pod!.param_code,
                     qtnm_pod_name = e.qtnm_pod_name,
                     qtnm_pld_name = e.qtnm_pld_name,
                     qtnm_plfd_name = e.qtnm_plfd_name,
@@ -273,6 +285,12 @@ namespace Marketing.Repositories
                 str += "Quote To Cannot Be Blank!";
             if (Lib.IsZero(record_dto.qtnm_salesman_id))
                 str += "Sales Rep. Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.qtnm_date))
+                str += "Quote Date Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.qtnm_quot_by))
+                str += "Quote By Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.qtnm_move_type))
+                str += "Move Type Cannot Be Blank!";
 
             foreach (mark_qtnd_lcl_dto rec in record_dto.qtnm_qtnd_lcl!)
             {
@@ -328,7 +346,7 @@ namespace Marketing.Repositories
                     Record.qtnm_cfno = iNextNo;
                     Record.qtnm_no = sqtn_no;
                     Record.qtnm_type = stype;
-                    // Record.qtnm_date = DateTime.Now;
+                    Record.qtnm_date = DbLib.GetDateTime();
 
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_branch_id = record_dto.rec_branch_id;
@@ -338,7 +356,7 @@ namespace Marketing.Repositories
                 else
                 {
                     Record = await context.mark_qtnm
-                        .Where(f => f.qtnm_pkid == id)
+                        .Where(f => f.qtnm_pkid == record_dto.qtnm_pkid)
                         .FirstOrDefaultAsync();
 
                     if (Record == null)
@@ -355,7 +373,7 @@ namespace Marketing.Repositories
                 Record.qtnm_to_addr2 = record_dto.qtnm_to_addr2;
                 Record.qtnm_to_addr3 = record_dto.qtnm_to_addr3;
                 Record.qtnm_to_addr4 = record_dto.qtnm_to_addr4;
-                Record.qtnm_date = Lib.ParseDate(record_dto.qtnm_date!);
+                // Record.qtnm_date = Lib.ParseDate(record_dto.qtnm_date!);
                 Record.qtnm_quot_by = record_dto.qtnm_quot_by;
                 Record.qtnm_valid_date = Lib.ParseDate(record_dto.qtnm_valid_date!);
                 Record.qtnm_salesman_id = record_dto.qtnm_salesman_id;
@@ -366,12 +384,24 @@ namespace Marketing.Repositories
                 Record.qtnm_lbs = record_dto.qtnm_lbs;
                 Record.qtnm_cbm = record_dto.qtnm_cbm;
                 Record.qtnm_cft = record_dto.qtnm_cft;
-                Record.qtnm_por_id = record_dto.qtnm_por_id;
+                // Record.qtnm_por_id = record_dto.qtnm_por_id;
                 Record.qtnm_por_name = record_dto.qtnm_por_name;
-                Record.qtnm_pol_id = record_dto.qtnm_pol_id;
+                // Record.qtnm_pol_id = record_dto.qtnm_pol_id;
                 Record.qtnm_pol_name = record_dto.qtnm_pol_name;
-                Record.qtnm_pod_id = record_dto.qtnm_pod_id;
-                Record.qtnm_pod_name = record_dto.qtnm_pod_name;    
+                // Record.qtnm_pod_id = record_dto.qtnm_pod_id;
+                Record.qtnm_pod_name = record_dto.qtnm_pod_name;  
+                if (Lib.IsZero(record_dto.qtnm_por_id))
+                    Record.qtnm_por_id = null;
+                else
+                    Record.qtnm_por_id = record_dto.qtnm_por_id;
+                if (Lib.IsZero(record_dto.qtnm_pol_id))
+                    Record.qtnm_pol_id = null;
+                else
+                    Record.qtnm_pol_id = record_dto.qtnm_pol_id;
+                if (Lib.IsZero(record_dto.qtnm_pod_id))
+                    Record.qtnm_pod_id = null;
+                else
+                    Record.qtnm_pod_id = record_dto.qtnm_pod_id;  
                 Record.qtnm_pld_name = record_dto.qtnm_pld_name;
                 Record.qtnm_plfd_name = record_dto.qtnm_plfd_name;
                 Record.qtnm_trans_time = record_dto.qtnm_trans_time;
@@ -382,11 +412,12 @@ namespace Marketing.Repositories
                     await context.mark_qtnm.AddAsync(Record);
 
 
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 record_dto.qtnm_pkid = Record.qtnm_pkid;
                 // record_dto.qtnm_cfno = Record.qtnm_cfno;
                 record_dto.qtnm_no = Record.qtnm_no;
-                // record_dto.qtnm_date = Record.qtnm_date;
+                record_dto.qtnm_amt = Record.qtnm_amt;
+                // record_dto.qtnm_date = Record.qtnm_date?.ToString();
                 // record_dto.qtnm_type = Record.qtnm_type;
 
                 record_dto.rec_version = Record.rec_version;
@@ -449,7 +480,7 @@ namespace Marketing.Repositories
                     }
                     record.qtnd_qtnm_pkid = id;
                     record.qtnd_acc_id = rec.qtnd_acc_id;
-                    // record.qtnd_acc_name = rec.qtnd_acc_name;
+                    record.qtnd_acc_name = rec.qtnd_acc_name;
                     record.qtnd_amt = rec.qtnd_amt ?? 0;
                     record.qtnd_per = rec.qtnd_per;
                     record.qtnd_order = nextorder++;
@@ -500,10 +531,22 @@ namespace Marketing.Repositories
                 {
                    var _Quote = context.mark_qtnd_lcl
                     .Where(c => c.qtnd_qtnm_pkid == id);
-
-                    if (_Quote.Any())
+                     if (_Quote.Any())
                     {
                         context.mark_qtnd_lcl.RemoveRange(_Quote);
+                        await context.SaveChangesAsync();
+
+                        var remainingDetails = await context.mark_qtnd_lcl
+                            .Where(d => d.qtnd_qtnm_pkid == id)
+                            .ToListAsync();
+
+                        _Record.qtnm_amt = remainingDetails.Sum(d => d.qtnd_amt)?? 0;
+
+                        context.mark_qtnm.Update(_Record);
+                    }
+                    else
+                    {
+                        context.mark_qtnm.Remove(_Record);
                     }
                     context.Remove(_Record);
                     context.SaveChanges();
