@@ -16,4 +16,8 @@
     <ProjectReference Include="..\..\db\database\database.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTO\Marketing\" />
+  </ItemGroup>
+
 </Project>

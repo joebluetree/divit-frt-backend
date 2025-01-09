@@ -242,6 +242,9 @@ namespace Database.Lib.Repositories
                             rec.cust_id,
                             rec.cust_code,
                             rec.cust_name,
+                            rec.cust_address1,
+                            rec.cust_address2,
+                            rec.cust_address3,
                             rec.cust_is_parent,
                             rec.rec_company_id
                         };

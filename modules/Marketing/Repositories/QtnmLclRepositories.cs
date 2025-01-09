@@ -25,7 +25,7 @@ namespace Marketing.Repositories
         public async Task<Dictionary<string, object>> GetListAsync(Dictionary<string, object> data)
         {
             try
-            {
+           {
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
 
                 Page _page = new Page();
@@ -63,7 +63,7 @@ namespace Marketing.Repositories
 
                 query = query.Where(w => w.rec_company_id == company_id);
 
-                // if (!Lib.Is(qtnm_date))
+                // if (!Lib.IsBlank(qtnm_date))
                 //     query = query.Where(w => w.qtnm_date!.Contains(qtnm_date!));
                 if (!Lib.IsBlank(qtnm_to_name))
                     query = query.Where(w => w.qtnm_to_name!.Contains(qtnm_to_name!));
@@ -93,7 +93,7 @@ namespace Marketing.Repositories
 
                 var Records = await query.Select(e => new mark_qtnm_dto
                 {
-                    qtnm_pkid = e.qtnm_pkid,
+                    qtnm_id = e.qtnm_id,
                     qtnm_cfno = e.qtnm_cfno,
                     qtnm_type = e.qtnm_type,
                     qtnm_no = e.qtnm_no,
@@ -155,11 +155,11 @@ namespace Marketing.Repositories
                 IQueryable<mark_qtnm> query = context.mark_qtnm;
                     // .Include(e => e.customer);
 
-                query = query.Where(f => f.qtnm_pkid == id);
+                query = query.Where(f => f.qtnm_id == id);
 
                 var Record = await query.Select(e => new mark_qtnm_dto
                 {
-                    qtnm_pkid = e.qtnm_pkid,
+                    qtnm_id = e.qtnm_id,
                     qtnm_cfno = e.qtnm_cfno,
                     qtnm_type = e.qtnm_type,
                     qtnm_no = e.qtnm_no,
@@ -208,7 +208,7 @@ namespace Marketing.Repositories
                 if (Record == null)
                     throw new Exception("No Qtn Found");
 
-                Record.qtnm_qtnd_lcl = await GetLclDetailsAsync(Record.qtnm_pkid);
+                Record.qtnd_lcl = await GetDetailsAsync(Record.qtnm_id);
 
                 return Record;
             }
@@ -218,15 +218,15 @@ namespace Marketing.Repositories
             }
         }
 
-        public async Task<List<mark_qtnd_lcl_dto>> GetLclDetailsAsync(int id)
+        public async Task<List<mark_qtnd_lcl_dto>> GetDetailsAsync(int id)
         {
             var query = from e in context.mark_qtnd_lcl
-                        .Where(e => e.qtnd_qtnm_pkid == id)
+                        .Where(e => e.qtnd_qtnm_id == id)
                         .OrderBy(o => o.qtnd_order)
                         select (new mark_qtnd_lcl_dto
                         {
-                            qtnd_pkid = e.qtnd_pkid,
-                            qtnd_qtnm_pkid = e.qtnd_qtnm_pkid,
+                            qtnd_id = e.qtnd_id,
+                            qtnd_qtnm_id = e.qtnd_qtnm_id,
                             qtnd_acc_id = e.qtnd_acc_id,
                             qtnd_acc_code = e.acctm!.acc_code,
                             qtnd_acc_name = e.qtnd_acc_name,
@@ -253,8 +253,8 @@ namespace Marketing.Repositories
             {
                 context.Database.BeginTransaction();
                 mark_qtnm_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record = await SaveLclDetailsAsync(_Record.qtnm_pkid, _Record);
-                _Record.qtnm_qtnd_lcl = await GetLclDetailsAsync(_Record.qtnm_pkid);
+                _Record = await SaveDetailsAsync(_Record.qtnm_id, _Record);
+                _Record.qtnd_lcl = await GetDetailsAsync(_Record.qtnm_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -292,7 +292,7 @@ namespace Marketing.Repositories
             if (Lib.IsBlank(record_dto.qtnm_move_type))
                 str += "Move Type Cannot Be Blank!";
 
-            foreach (mark_qtnd_lcl_dto rec in record_dto.qtnm_qtnd_lcl!)
+            foreach (mark_qtnd_lcl_dto rec in record_dto.qtnd_lcl!)
             {
                 if (Lib.IsBlank(rec.qtnd_acc_code))
                     code = "Code Cannot Be Blank!";
@@ -310,7 +310,7 @@ namespace Marketing.Repositories
                 bRet = false;
             }
 
-            if (record_dto.qtnm_qtnd_lcl.Count == 0)
+            if (record_dto.qtnd_lcl.Count == 0)
             {
                 throw new Exception("No Quotation Detail to Save");
             }
@@ -356,7 +356,7 @@ namespace Marketing.Repositories
                 else
                 {
                     Record = await context.mark_qtnm
-                        .Where(f => f.qtnm_pkid == record_dto.qtnm_pkid)
+                        .Where(f => f.qtnm_id == id)
                         .FirstOrDefaultAsync();
 
                     if (Record == null)
@@ -384,24 +384,21 @@ namespace Marketing.Repositories
                 Record.qtnm_lbs = record_dto.qtnm_lbs;
                 Record.qtnm_cbm = record_dto.qtnm_cbm;
                 Record.qtnm_cft = record_dto.qtnm_cft;
-                // Record.qtnm_por_id = record_dto.qtnm_por_id;
-                Record.qtnm_por_name = record_dto.qtnm_por_name;
-                // Record.qtnm_pol_id = record_dto.qtnm_pol_id;
-                Record.qtnm_pol_name = record_dto.qtnm_pol_name;
-                // Record.qtnm_pod_id = record_dto.qtnm_pod_id;
-                Record.qtnm_pod_name = record_dto.qtnm_pod_name;  
                 if (Lib.IsZero(record_dto.qtnm_por_id))
                     Record.qtnm_por_id = null;
                 else
                     Record.qtnm_por_id = record_dto.qtnm_por_id;
+                Record.qtnm_por_name = record_dto.qtnm_por_name;
                 if (Lib.IsZero(record_dto.qtnm_pol_id))
                     Record.qtnm_pol_id = null;
                 else
                     Record.qtnm_pol_id = record_dto.qtnm_pol_id;
+                Record.qtnm_pol_name = record_dto.qtnm_pol_name;
                 if (Lib.IsZero(record_dto.qtnm_pod_id))
                     Record.qtnm_pod_id = null;
                 else
                     Record.qtnm_pod_id = record_dto.qtnm_pod_id;  
+                Record.qtnm_pod_name = record_dto.qtnm_pod_name;
                 Record.qtnm_pld_name = record_dto.qtnm_pld_name;
                 Record.qtnm_plfd_name = record_dto.qtnm_plfd_name;
                 Record.qtnm_trans_time = record_dto.qtnm_trans_time;
@@ -413,12 +410,9 @@ namespace Marketing.Repositories
 
 
                 context.SaveChanges();
-                record_dto.qtnm_pkid = Record.qtnm_pkid;
-                // record_dto.qtnm_cfno = Record.qtnm_cfno;
+                record_dto.qtnm_id = Record.qtnm_id;
                 record_dto.qtnm_no = Record.qtnm_no;
                 record_dto.qtnm_amt = Record.qtnm_amt;
-                // record_dto.qtnm_date = Record.qtnm_date?.ToString();
-                // record_dto.qtnm_type = Record.qtnm_type;
 
                 record_dto.rec_version = Record.rec_version;
                 Lib.AssignDates2DTO(id, mode, Record, record_dto);
@@ -431,28 +425,25 @@ namespace Marketing.Repositories
 
         }
 
-        public async Task<mark_qtnm_dto> SaveLclDetailsAsync(int id, mark_qtnm_dto record_dto)
+        public async Task<mark_qtnm_dto> SaveDetailsAsync(int id, mark_qtnm_dto record_dto)
         {
             mark_qtnd_lcl? record;
             List<mark_qtnd_lcl_dto> records_dto;
             List<mark_qtnd_lcl> records;
             try
             {
-                // if (record_dto == null)
-                //     throw new Exception("No Data Found");
 
-                // get contacts from the front end
-                records_dto = record_dto.qtnm_qtnd_lcl!;
-                // read the contact details from database
+                records_dto = record_dto.qtnd_lcl!;
+            
                 records = await context.mark_qtnd_lcl
-                    .Where(w => w.qtnd_qtnm_pkid == id)
+                    .Where(w => w.qtnd_qtnm_id == id)
                     .ToListAsync();
 
                 int nextorder = 1;
                 
                 foreach (var existing_record in records)
                 {
-                    var rec = records_dto.Find(f => f.qtnd_pkid == existing_record.qtnd_pkid);
+                    var rec = records_dto.Find(f => f.qtnd_id == existing_record.qtnd_id);
                     if (rec == null)
                         context.mark_qtnd_lcl.Remove(existing_record);
                 }
@@ -461,7 +452,7 @@ namespace Marketing.Repositories
                 foreach (var rec in records_dto)
                 {
                     
-                    if (rec.qtnd_pkid == 0)
+                    if (rec.qtnd_id == 0)
                     {
                         record = new mark_qtnd_lcl();
                         record.rec_company_id = record_dto.rec_company_id;
@@ -472,20 +463,20 @@ namespace Marketing.Repositories
                     }
                     else
                     {
-                        record = records.Find(f => f.qtnd_pkid == rec.qtnd_pkid);
+                        record = records.Find(f => f.qtnd_id == rec.qtnd_id);
                         if (record == null)
-                            throw new Exception("Detail Record Not Found " + rec.qtnd_pkid.ToString());
+                            throw new Exception("Detail Record Not Found " + rec.qtnd_id.ToString());
                         record.rec_edited_by = record_dto.rec_created_by;
                         record.rec_edited_date = DbLib.GetDateTime();
                     }
-                    record.qtnd_qtnm_pkid = id;
+                    record.qtnd_qtnm_id = id;
                     record.qtnd_acc_id = rec.qtnd_acc_id;
                     record.qtnd_acc_name = rec.qtnd_acc_name;
                     record.qtnd_amt = rec.qtnd_amt ?? 0;
                     record.qtnd_per = rec.qtnd_per;
                     record.qtnd_order = nextorder++;
 
-                    if (rec.qtnd_pkid == 0)
+                    if (rec.qtnd_id == 0)
                         await context.mark_qtnd_lcl.AddAsync(record);
                 }
                 context.SaveChanges();
@@ -519,7 +510,7 @@ namespace Marketing.Repositories
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
                 RetData.Add("id", id);
                 var _Record = await context.mark_qtnm
-                    .Where(f => f.qtnm_pkid == id)
+                    .Where(f => f.qtnm_id == id)
                     .FirstOrDefaultAsync();
 
                 if (_Record == null)
@@ -530,23 +521,11 @@ namespace Marketing.Repositories
                 else
                 {
                    var _Quote = context.mark_qtnd_lcl
-                    .Where(c => c.qtnd_qtnm_pkid == id);
+                    .Where(c => c.qtnd_qtnm_id == id);
                      if (_Quote.Any())
                     {
                         context.mark_qtnd_lcl.RemoveRange(_Quote);
-                        await context.SaveChangesAsync();
 
-                        var remainingDetails = await context.mark_qtnd_lcl
-                            .Where(d => d.qtnd_qtnm_pkid == id)
-                            .ToListAsync();
-
-                        _Record.qtnm_amt = remainingDetails.Sum(d => d.qtnd_amt)?? 0;
-
-                        context.mark_qtnm.Update(_Record);
-                    }
-                    else
-                    {
-                        context.mark_qtnm.Remove(_Record);
                     }
                     context.Remove(_Record);
                     context.SaveChanges();

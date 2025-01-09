@@ -5,7 +5,7 @@ namespace Database.Models.Marketing
 {
     public class mark_qtnm : baseTable
     {
-        public int qtnm_pkid { get; set; }
+        public int qtnm_id { get; set; }
         public int qtnm_cfno { get; set; }
         public string? qtnm_type { get; set; }
         public string? qtnm_no { get; set; }
@@ -44,7 +44,7 @@ namespace Database.Models.Marketing
         public mast_param? por { get; set; }
         public mast_param? pol { get; set; }
         public mast_param? pod { get; set; }
-        public List <mark_qtnd_lcl>? qtnm_qtnd_lcl { get; set; } 
+        public List <mark_qtnd_lcl>? qtnd_lcl { get; set; } 
         
     }
 }

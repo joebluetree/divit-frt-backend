@@ -13,10 +13,10 @@ namespace Database.fluent_config.Marketing
         {
             //table and primary key
             modelBuilder.ToTable("mark_qtnd_lcl");
-            modelBuilder.HasKey(u => u.qtnd_pkid)
+            modelBuilder.HasKey(u => u.qtnd_id)
                 .HasName("pk_mark_qtnd_lcl_qtnd_pkid");
             //Sequence
-            modelBuilder.Property(u => u.qtnd_pkid)
+            modelBuilder.Property(u => u.qtnd_id)
                 //.HasDefaultValueSql("next value for MasterSequence")
                 .HasDefaultValueSql("nextval('\"master_sequence\"')")
                 .ValueGeneratedOnAdd();
@@ -46,15 +46,14 @@ namespace Database.fluent_config.Marketing
                 .IsRequired(false);
             modelBuilder.Property(u => u.rec_edited_date)
                 .IsRequired(false);
-            // unique //lklklk
-            
+            // unique 
             // Foreign Key
             modelBuilder
                 .HasOne(e => e.qtnm)
                 .WithMany()
-                .HasForeignKey(e => e.qtnd_qtnm_pkid)
-                .HasPrincipalKey(e => e.qtnm_pkid)
-                .HasConstraintName("fk_mark_qtnd_lcl_qtnd_qtnm_pkid")
+                .HasForeignKey(e => e.qtnd_qtnm_id)
+                .HasPrincipalKey(e => e.qtnm_id)
+                .HasConstraintName("fk_mark_qtnd_lcl_qtnm_pkid")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             modelBuilder
@@ -90,8 +89,8 @@ namespace Database.fluent_config.Marketing
             modelBuilder.HasData(
             new mark_qtnd_lcl
             {
-                qtnd_pkid = 1,
-                qtnd_qtnm_pkid = 1,
+                qtnd_id = 1,
+                qtnd_qtnm_id = 1,
                 qtnd_acc_id = 1,
                 qtnd_acc_name = "OCEAN IMPORT",
                 qtnd_amt = 100,
@@ -105,6 +104,5 @@ namespace Database.fluent_config.Marketing
             });
         }
     }
-
 }
 

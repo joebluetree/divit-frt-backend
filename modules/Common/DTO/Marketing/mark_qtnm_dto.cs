@@ -8,7 +8,7 @@ namespace Common.DTO.Marketing
 {
     public class mark_qtnm_dto : basetable_dto
     {
-        public int qtnm_pkid { get; set; } = 0;
+        public int qtnm_id { get; set; } = 0;
         public int qtnm_cfno { get; set; } = 0;
         public string? qtnm_type { get; set; } = "";
         public string? qtnm_no { get; set; } = "";
@@ -47,7 +47,7 @@ namespace Common.DTO.Marketing
         public string? qtnm_trans_time { get; set; } = "";
         public string? qtnm_routing { get; set; } = "";
         public decimal? qtnm_amt { get; set; } = 0;   
-        public List<mark_qtnd_lcl_dto>? qtnm_qtnd_lcl {get; set;} 
+        public List<mark_qtnd_lcl_dto>? qtnd_lcl {get; set;} 
                         
     }
 }
