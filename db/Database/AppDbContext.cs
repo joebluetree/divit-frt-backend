@@ -10,6 +10,7 @@ using Database.fluent_config.Accounts;
 using Database.fluent_config.UserAdmin;
 using Database.fluent_config.Tnt;
 using Database.fluent_config.Marketing;
+using database.fluent_config.Marketing;
 
 
 namespace Database
@@ -65,6 +66,7 @@ namespace Database
         //Marketing
         public DbSet<mark_qtnm> mark_qtnm { get; set; } = null!;
         public DbSet<mark_qtnd_lcl> mark_qtnd_lcl { get; set; } = null!;
+        public DbSet<mark_qtnd_fcl> mark_qtnd_fcl { get; set; } = null!;
 
         //Accounts
         public DbSet<acc_groupm> acc_groupm { get; set; } = null!;
@@ -444,6 +446,7 @@ namespace Database
         {
             modelBuilder.ApplyConfiguration(new mark_qtnm_config());
             modelBuilder.ApplyConfiguration(new mark_qtnd_lcl_config());
+            modelBuilder.ApplyConfiguration(new mark_qtnd_fcl_config());
         }
         private void CreateAcctmTables(ModelBuilder modelBuilder)
         {
@@ -459,5 +462,5 @@ namespace Database
 
     }
 
-
+    
 }

@@ -38,13 +38,13 @@ namespace Database.Models.Marketing
         public string? qtnm_trans_time { get; set; }
         public string? qtnm_routing { get; set; }
         public decimal qtnm_amt { get; set; }        
-
         public mast_customerm? customer { get; set; } 
         public mast_param? salesman { get; set; }
         public mast_param? por { get; set; }
         public mast_param? pol { get; set; }
         public mast_param? pod { get; set; }
         public List <mark_qtnd_lcl>? qtnd_lcl { get; set; } 
+        public List <mark_qtnd_fcl>? qtnd_fcl { get; set; } 
         
     }
 }
