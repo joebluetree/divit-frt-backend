@@ -7,6 +7,8 @@ namespace Database.Lib
     {
         public static string outputDateTimeFormat = "yyyy-MM-ddTHHmmss";
         public static string outputDateFormat = "yyyy-MM-dd";
+
+        public static string BACK_END_DATE_FORMAT = "yyyy-MM-dd";
         public static int getTotalPages(int Rows, int PageSize)
         {
             int Pages = Rows / PageSize;
@@ -132,5 +134,23 @@ namespace Database.Lib
             return date.HasValue ? date.Value.ToString(format) : null;
         }
 
+         public static string StringToDate(Object Data)
+        {
+            string sData = "";
+            DateTime Dt;
+            if (Data == null || Data.ToString() == "")
+                sData = "";
+            else
+            {
+                Dt = DateTime.Parse(Data.ToString());
+                sData = Dt.ToString(Lib.BACK_END_DATE_FORMAT);
+            }
+            return sData;
+        }
+
+
     }
 }
+
+
+

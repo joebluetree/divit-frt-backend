@@ -20,6 +20,8 @@ namespace Common.DTO.Marketing
         public string? qtnm_to_addr3 { get; set; } = "";
         public string? qtnm_to_addr4 { get; set; } = "";
         public string? qtnm_date { get; set; } = "";
+        public string? qtnm_from_date { get; set; } = "";
+        public string? qtnm_to_date { get; set; } = "";
         public string? qtnm_quot_by { get; set; } = "";
         public string? qtnm_valid_date { get; set; } = "";
         public int qtnm_salesman_id { get; set; } = 0;
