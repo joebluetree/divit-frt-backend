@@ -27,7 +27,7 @@ namespace Database.fluent_config.Marketing
             //columns
             modelBuilder.Property(u => u.qtnd_acc_name)
                 .HasMaxLength(50)
-                .IsRequired();
+                .IsRequired(false);
             modelBuilder.Property(u => u.qtnd_amt)
                 .HasColumnType("decimal(15,3)")
                 .IsRequired(false);

@@ -21,6 +21,8 @@ using Accounts.Repositories;
 
 using TnT.Interfaces;
 using TnT.Repositories;
+using Marketing.Interfaces;
+using Marketing.Repositories;
 
 
 //Program.cs version 6.0
@@ -65,7 +67,7 @@ builder.Services.AddScoped<IParamRepository, ParamRepository>();
 builder.Services.AddScoped<ICustomermRepository, CustomermRepository>();
 
 //Marketing
-
+builder.Services.AddScoped<IQtnmLclRepository, QtnmLclRepository>();
 //Accounts
 builder.Services.AddScoped<IAccGroupRepository, AccGroupRepository>();
 builder.Services.AddScoped<IAcctmRepository, AcctmRepository>();

@@ -3,6 +3,7 @@ using System;
 using Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Database.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250107103858_qtnd-fk")]
+    partial class qtndfk
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,7 +130,7 @@ namespace Database.Migrations
                             acc_type = "NA",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 992, DateTimeKind.Utc).AddTicks(5427),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 474, DateTimeKind.Utc).AddTicks(2687),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -142,7 +145,7 @@ namespace Database.Migrations
                             acc_type = "NA",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 992, DateTimeKind.Utc).AddTicks(5432),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 474, DateTimeKind.Utc).AddTicks(2693),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -157,7 +160,7 @@ namespace Database.Migrations
                             acc_type = "AR",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 992, DateTimeKind.Utc).AddTicks(5435),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 474, DateTimeKind.Utc).AddTicks(2695),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -172,7 +175,7 @@ namespace Database.Migrations
                             acc_type = "AP",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 992, DateTimeKind.Utc).AddTicks(5437),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 474, DateTimeKind.Utc).AddTicks(2698),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -188,7 +191,7 @@ namespace Database.Migrations
                             acc_type = "NA",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 992, DateTimeKind.Utc).AddTicks(5440),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 474, DateTimeKind.Utc).AddTicks(2700),
                             rec_locked = "N",
                             rec_version = 0
                         });
@@ -263,7 +266,7 @@ namespace Database.Migrations
                             grp_order = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 986, DateTimeKind.Utc).AddTicks(7434),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 446, DateTimeKind.Utc).AddTicks(7925),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -275,7 +278,7 @@ namespace Database.Migrations
                             grp_order = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 986, DateTimeKind.Utc).AddTicks(7437),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 446, DateTimeKind.Utc).AddTicks(7933),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -287,7 +290,7 @@ namespace Database.Migrations
                             grp_order = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 986, DateTimeKind.Utc).AddTicks(7439),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 446, DateTimeKind.Utc).AddTicks(7935),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -299,7 +302,7 @@ namespace Database.Migrations
                             grp_order = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 986, DateTimeKind.Utc).AddTicks(7441),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 446, DateTimeKind.Utc).AddTicks(7936),
                             rec_locked = "N",
                             rec_version = 0
                         });
@@ -307,12 +310,12 @@ namespace Database.Migrations
 
             modelBuilder.Entity("Database.Models.Marketing.mark_qtnd_lcl", b =>
                 {
-                    b.Property<int>("qtnd_id")
+                    b.Property<int>("qtnd_pkid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasDefaultValueSql("nextval('\"master_sequence\"')");
 
-                    b.Property<int?>("mark_qtnmqtnm_id")
+                    b.Property<int?>("mark_qtnmqtnm_pkid")
                         .HasColumnType("integer");
 
                     b.Property<int>("qtnd_acc_id")
@@ -325,14 +328,15 @@ namespace Database.Migrations
                     b.Property<decimal?>("qtnd_amt")
                         .HasColumnType("decimal(15,3)");
 
-                    b.Property<int>("qtnd_order")
+                    b.Property<int?>("qtnd_order")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<string>("qtnd_per")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<int>("qtnd_qtnm_id")
+                    b.Property<int>("qtnd_qtnm_pkid")
                         .HasColumnType("integer");
 
                     b.Property<int?>("rec_branch_id")
@@ -366,14 +370,14 @@ namespace Database.Migrations
                         .HasColumnType("integer")
                         .HasDefaultValue(1);
 
-                    b.HasKey("qtnd_id")
+                    b.HasKey("qtnd_pkid")
                         .HasName("pk_mark_qtnd_lcl_qtnd_pkid");
 
-                    b.HasIndex("mark_qtnmqtnm_id");
+                    b.HasIndex("mark_qtnmqtnm_pkid");
 
                     b.HasIndex("qtnd_acc_id");
 
-                    b.HasIndex("qtnd_qtnm_id");
+                    b.HasIndex("qtnd_qtnm_pkid");
 
                     b.HasIndex("rec_branch_id");
 
@@ -384,24 +388,24 @@ namespace Database.Migrations
                     b.HasData(
                         new
                         {
-                            qtnd_id = 1,
+                            qtnd_pkid = 1,
                             qtnd_acc_id = 1,
                             qtnd_acc_name = "OCEAN IMPORT",
                             qtnd_amt = 100m,
                             qtnd_order = 1,
                             qtnd_per = "koc-mum",
-                            qtnd_qtnm_id = 1,
+                            qtnd_qtnm_pkid = 1,
                             rec_branch_id = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 6, 14, DateTimeKind.Utc).AddTicks(4706),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 500, DateTimeKind.Utc).AddTicks(4413),
                             rec_version = 0
                         });
                 });
 
             modelBuilder.Entity("Database.Models.Marketing.mark_qtnm", b =>
                 {
-                    b.Property<int>("qtnm_id")
+                    b.Property<int>("qtnm_pkid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasDefaultValueSql("nextval('\"master_sequence\"')");
@@ -555,7 +559,7 @@ namespace Database.Migrations
                         .HasColumnType("integer")
                         .HasDefaultValue(1);
 
-                    b.HasKey("qtnm_id")
+                    b.HasKey("qtnm_pkid")
                         .HasName("pk_mark_qtnm_qtnm_pkid");
 
                     b.HasIndex("qtnm_pod_id");
@@ -577,12 +581,12 @@ namespace Database.Migrations
                     b.HasData(
                         new
                         {
-                            qtnm_id = 1,
+                            qtnm_pkid = 1,
                             qtnm_amt = 5000m,
                             qtnm_cfno = 1,
-                            qtnm_date = new DateTime(2025, 1, 9, 12, 14, 6, 9, DateTimeKind.Local).AddTicks(3681),
+                            qtnm_date = new DateTime(2025, 1, 7, 16, 8, 57, 494, DateTimeKind.Local).AddTicks(7838),
                             qtnm_move_type = "TRUCKING",
-                            qtnm_no = "QL-1",
+                            qtnm_no = "QL1",
                             qtnm_quot_by = "ADMIN",
                             qtnm_salesman_id = 1,
                             qtnm_to_addr1 = "KOCHI",
@@ -593,7 +597,7 @@ namespace Database.Migrations
                             rec_branch_id = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 6, 9, DateTimeKind.Utc).AddTicks(4134),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 494, DateTimeKind.Utc).AddTicks(7909),
                             rec_version = 0
                         });
                 });
@@ -704,7 +708,7 @@ namespace Database.Migrations
                             cont_title = "MR",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 985, DateTimeKind.Utc).AddTicks(3171),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 444, DateTimeKind.Utc).AddTicks(5910),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -721,7 +725,7 @@ namespace Database.Migrations
                             cont_title = "MR",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 985, DateTimeKind.Utc).AddTicks(3176),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 444, DateTimeKind.Utc).AddTicks(5928),
                             rec_locked = "N",
                             rec_version = 0
                         });
@@ -857,7 +861,7 @@ namespace Database.Migrations
                             cust_type = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 981, DateTimeKind.Utc).AddTicks(9980),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 439, DateTimeKind.Utc).AddTicks(8135),
                             rec_locked = "N",
                             rec_version = 0
                         });
@@ -972,7 +976,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9009),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6356),
                             rec_version = 0
                         },
                         new
@@ -989,7 +993,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9014),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6362),
                             rec_version = 0
                         },
                         new
@@ -1006,7 +1010,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9043),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6404),
                             rec_version = 0
                         },
                         new
@@ -1023,7 +1027,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9050),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6411),
                             rec_version = 0
                         },
                         new
@@ -1040,7 +1044,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9052),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6414),
                             rec_version = 0
                         },
                         new
@@ -1057,7 +1061,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9055),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6416),
                             rec_version = 0
                         },
                         new
@@ -1074,7 +1078,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9057),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6418),
                             rec_version = 0
                         },
                         new
@@ -1091,7 +1095,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9059),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6421),
                             rec_version = 0
                         },
                         new
@@ -1108,7 +1112,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9062),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6423),
                             rec_version = 0
                         },
                         new
@@ -1125,7 +1129,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9064),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6426),
                             rec_version = 0
                         },
                         new
@@ -1142,7 +1146,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9067),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6428),
                             rec_version = 0
                         },
                         new
@@ -1159,7 +1163,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9069),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6430),
                             rec_version = 0
                         },
                         new
@@ -1176,7 +1180,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9072),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6432),
                             rec_version = 0
                         },
                         new
@@ -1193,7 +1197,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9074),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6435),
                             rec_version = 0
                         },
                         new
@@ -1210,7 +1214,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9076),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6437),
                             rec_version = 0
                         },
                         new
@@ -1227,7 +1231,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9079),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6440),
                             rec_version = 0
                         },
                         new
@@ -1244,7 +1248,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9081),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6442),
                             rec_version = 0
                         },
                         new
@@ -1261,7 +1265,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9083),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6444),
                             rec_version = 0
                         },
                         new
@@ -1278,7 +1282,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9086),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6447),
                             rec_version = 0
                         },
                         new
@@ -1295,7 +1299,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9088),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6449),
                             rec_version = 0
                         },
                         new
@@ -1312,7 +1316,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9090),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6452),
                             rec_version = 0
                         },
                         new
@@ -1329,7 +1333,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9093),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6454),
                             rec_version = 0
                         },
                         new
@@ -1346,7 +1350,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9095),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6456),
                             rec_version = 0
                         },
                         new
@@ -1363,7 +1367,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9098),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6459),
                             rec_version = 0
                         },
                         new
@@ -1380,7 +1384,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 977, DateTimeKind.Utc).AddTicks(9100),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 433, DateTimeKind.Utc).AddTicks(6461),
                             rec_version = 0
                         });
                 });
@@ -1677,7 +1681,7 @@ namespace Database.Migrations
                             track_id = 100,
                             rec_company_id = 1,
                             rec_created_by = "admin",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 995, DateTimeKind.Utc).AddTicks(3409),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 478, DateTimeKind.Utc).AddTicks(3047),
                             rec_version = 0,
                             track_api_type = "API",
                             track_book_no = "",
@@ -1703,7 +1707,7 @@ namespace Database.Migrations
                             track_id = 102,
                             rec_company_id = 1,
                             rec_created_by = "admin",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 995, DateTimeKind.Utc).AddTicks(3414),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 478, DateTimeKind.Utc).AddTicks(3053),
                             rec_version = 0,
                             track_api_type = "API",
                             track_book_no = "",
@@ -1716,7 +1720,7 @@ namespace Database.Migrations
                             track_id = 103,
                             rec_company_id = 1,
                             rec_created_by = "admin",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 995, DateTimeKind.Utc).AddTicks(3416),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 478, DateTimeKind.Utc).AddTicks(3055),
                             rec_version = 0,
                             track_api_type = "API-1",
                             track_book_no = "",
@@ -1729,7 +1733,7 @@ namespace Database.Migrations
                             track_id = 104,
                             rec_company_id = 1,
                             rec_created_by = "admin",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 995, DateTimeKind.Utc).AddTicks(3419),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 478, DateTimeKind.Utc).AddTicks(3058),
                             rec_version = 0,
                             track_api_type = "SHIPSGO",
                             track_book_no = "",
@@ -1743,7 +1747,7 @@ namespace Database.Migrations
                             track_id = 105,
                             rec_company_id = 1,
                             rec_created_by = "admin",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 995, DateTimeKind.Utc).AddTicks(3421),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 478, DateTimeKind.Utc).AddTicks(3060),
                             rec_version = 0,
                             track_api_type = "SHIPSGO",
                             track_book_no = "",
@@ -1900,7 +1904,7 @@ namespace Database.Migrations
                             branch_name = "BRANCH1",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 951, DateTimeKind.Utc).AddTicks(4346),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 188, DateTimeKind.Utc).AddTicks(1072),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -1914,7 +1918,7 @@ namespace Database.Migrations
                             branch_name = "BRANCH2",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 951, DateTimeKind.Utc).AddTicks(4397),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 188, DateTimeKind.Utc).AddTicks(1078),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -1928,7 +1932,7 @@ namespace Database.Migrations
                             branch_name = "BRANCH3",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 951, DateTimeKind.Utc).AddTicks(4399),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 188, DateTimeKind.Utc).AddTicks(1080),
                             rec_locked = "N",
                             rec_version = 0
                         });
@@ -2017,7 +2021,7 @@ namespace Database.Migrations
                             comp_code = "COMPANY1",
                             comp_name = "COMPANY1",
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 945, DateTimeKind.Utc).AddTicks(4950),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 178, DateTimeKind.Utc).AddTicks(6192),
                             rec_version = 0
                         },
                         new
@@ -2029,7 +2033,7 @@ namespace Database.Migrations
                             comp_code = "COMPANY2",
                             comp_name = "COMPANY2",
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 945, DateTimeKind.Utc).AddTicks(4956),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 178, DateTimeKind.Utc).AddTicks(6197),
                             rec_version = 0
                         });
                 });
@@ -2133,7 +2137,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5055),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2410),
                             rec_version = 0
                         },
                         new
@@ -2148,7 +2152,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5060),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2414),
                             rec_version = 0
                         },
                         new
@@ -2163,7 +2167,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5062),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2416),
                             rec_version = 0
                         },
                         new
@@ -2178,7 +2182,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5092),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2446),
                             rec_version = 0
                         },
                         new
@@ -2193,7 +2197,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5094),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2448),
                             rec_version = 0
                         },
                         new
@@ -2208,7 +2212,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5097),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2450),
                             rec_version = 0
                         },
                         new
@@ -2223,7 +2227,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5099),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2452),
                             rec_version = 0
                         },
                         new
@@ -2238,7 +2242,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5101),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2454),
                             rec_version = 0
                         },
                         new
@@ -2253,7 +2257,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5103),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2456),
                             rec_version = 0
                         },
                         new
@@ -2268,7 +2272,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5105),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2458),
                             rec_version = 0
                         },
                         new
@@ -2283,7 +2287,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5108),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2460),
                             rec_version = 0
                         },
                         new
@@ -2298,7 +2302,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5110),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2463),
                             rec_version = 0
                         },
                         new
@@ -2313,7 +2317,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5112),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2465),
                             rec_version = 0
                         },
                         new
@@ -2328,7 +2332,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5115),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2467),
                             rec_version = 0
                         },
                         new
@@ -2343,7 +2347,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5117),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2469),
                             rec_version = 0
                         },
                         new
@@ -2358,7 +2362,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5119),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2471),
                             rec_version = 0
                         },
                         new
@@ -2373,7 +2377,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5122),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2473),
                             rec_version = 0
                         },
                         new
@@ -2388,7 +2392,7 @@ namespace Database.Migrations
                             menu_visible = "N",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5124),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2475),
                             rec_version = 0
                         },
                         new
@@ -2403,7 +2407,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5126),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2477),
                             rec_version = 0
                         },
                         new
@@ -2418,7 +2422,7 @@ namespace Database.Migrations
                             menu_visible = "Y",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 958, DateTimeKind.Utc).AddTicks(5128),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 196, DateTimeKind.Utc).AddTicks(2479),
                             rec_version = 0
                         });
                 });
@@ -2494,7 +2498,7 @@ namespace Database.Migrations
                             module_order = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 953, DateTimeKind.Utc).AddTicks(4213),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 190, DateTimeKind.Utc).AddTicks(4114),
                             rec_version = 0
                         },
                         new
@@ -2505,7 +2509,7 @@ namespace Database.Migrations
                             module_order = 3,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 953, DateTimeKind.Utc).AddTicks(4218),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 190, DateTimeKind.Utc).AddTicks(4119),
                             rec_version = 0
                         },
                         new
@@ -2516,7 +2520,7 @@ namespace Database.Migrations
                             module_order = 4,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 953, DateTimeKind.Utc).AddTicks(4220),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 190, DateTimeKind.Utc).AddTicks(4120),
                             rec_version = 0
                         });
                 });
@@ -2806,7 +2810,7 @@ namespace Database.Migrations
                             rec_branch_id = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 964, DateTimeKind.Utc).AddTicks(6122),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 394, DateTimeKind.Utc).AddTicks(4660),
                             rec_version = 0,
                             ub_user_id = 2
                         },
@@ -2816,7 +2820,7 @@ namespace Database.Migrations
                             rec_branch_id = 2,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 964, DateTimeKind.Utc).AddTicks(6125),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 394, DateTimeKind.Utc).AddTicks(4668),
                             rec_version = 0,
                             ub_user_id = 2
                         });
@@ -2908,7 +2912,7 @@ namespace Database.Migrations
                             rec_branch_id = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 961, DateTimeKind.Utc).AddTicks(4346),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 199, DateTimeKind.Utc).AddTicks(6166),
                             rec_version = 0,
                             user_code = "ADMIN",
                             user_email = "admin@gmail.com",
@@ -2922,7 +2926,7 @@ namespace Database.Migrations
                             rec_branch_id = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 961, DateTimeKind.Utc).AddTicks(4357),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 199, DateTimeKind.Utc).AddTicks(6173),
                             rec_version = 0,
                             user_code = "USER1",
                             user_email = "user1@gmail.com",
@@ -2936,7 +2940,7 @@ namespace Database.Migrations
                             rec_branch_id = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 9, 6, 44, 5, 961, DateTimeKind.Utc).AddTicks(4360),
+                            rec_created_date = new DateTime(2025, 1, 7, 10, 38, 57, 199, DateTimeKind.Utc).AddTicks(6176),
                             rec_version = 0,
                             user_code = "USER2",
                             user_email = "user2@gmail.com",
@@ -2990,8 +2994,8 @@ namespace Database.Migrations
             modelBuilder.Entity("Database.Models.Marketing.mark_qtnd_lcl", b =>
                 {
                     b.HasOne("Database.Models.Marketing.mark_qtnm", null)
-                        .WithMany("qtnd_lcl")
-                        .HasForeignKey("mark_qtnmqtnm_id");
+                        .WithMany("qtnm_qtnd_lcl")
+                        .HasForeignKey("mark_qtnmqtnm_pkid");
 
                     b.HasOne("Database.Models.Accounts.acc_acctm", "acctm")
                         .WithMany()
@@ -3002,10 +3006,10 @@ namespace Database.Migrations
 
                     b.HasOne("Database.Models.Marketing.mark_qtnm", "qtnm")
                         .WithMany()
-                        .HasForeignKey("qtnd_qtnm_id")
+                        .HasForeignKey("qtnd_qtnm_pkid")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
-                        .HasConstraintName("fk_mark_qtnd_lcl_qtnm_pkid");
+                        .HasConstraintName("fk_mark_qtnd_lcl_qtnd_qtnm_pkid");
 
                     b.HasOne("Database.Models.UserAdmin.mast_branchm", "branch")
                         .WithMany()
@@ -3417,7 +3421,7 @@ namespace Database.Migrations
 
             modelBuilder.Entity("Database.Models.Marketing.mark_qtnm", b =>
                 {
-                    b.Navigation("qtnd_lcl");
+                    b.Navigation("qtnm_qtnd_lcl");
                 });
 
             modelBuilder.Entity("Database.Models.Masters.mast_customerm", b =>
