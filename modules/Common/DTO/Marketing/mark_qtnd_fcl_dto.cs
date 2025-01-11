@@ -26,6 +26,6 @@ public class mark_qtnd_fcl_dto : basetable_dto
     public decimal? qtnd_haulage { get; set; }
     public decimal? qtnd_ifs { get; set; }
     public decimal? qtnd_tot_amt { get; set; }
-    public int? order {get; set; }
+    public int? qtnd_order {get; set; }
 
 }

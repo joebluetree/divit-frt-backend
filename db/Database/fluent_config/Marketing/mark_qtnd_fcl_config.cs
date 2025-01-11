@@ -75,7 +75,7 @@ public class mark_qtnd_fcl_config : IEntityTypeConfiguration<mark_qtnd_fcl>
         modelBuilder.Property(u => u.qtnd_tot_amt)
             .HasColumnType("decimal(15,3)")
             .IsRequired();
-        modelBuilder.Property(u => u.order)
+        modelBuilder.Property(u => u.qtnd_order)
             .IsRequired(false);
         // modelBuilder.Property(u => u.rec_locked)
         //     .HasColumnType("char")
