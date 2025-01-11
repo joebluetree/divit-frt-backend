@@ -122,6 +122,10 @@ namespace Database.Lib
         {
             return value == null || value <= 0;
         }
+        public static bool IsZero(decimal? value)
+        {
+            return value == null || value <= 0;
+        }
 
         public static bool IsBlank(string? value)
         {

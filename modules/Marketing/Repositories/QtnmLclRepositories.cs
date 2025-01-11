@@ -110,7 +110,7 @@ namespace Marketing.Repositories
                 int StartRow = Lib.getStartRow(_page.currentPageNo, _page.pageSize);
 
                 query = query
-                    .OrderBy(c => c.qtnm_no)
+                    .OrderBy(c => c.qtnm_cfno)
                     .Skip(StartRow)
                     .Take(_page.pageSize);
 
@@ -176,7 +176,6 @@ namespace Marketing.Repositories
             try
             {
                 IQueryable<mark_qtnm> query = context.mark_qtnm;
-                // .Include(e => e.customer);
 
                 query = query.Where(f => f.qtnm_id == id);
 
@@ -303,17 +302,18 @@ namespace Marketing.Repositories
 
             string code = "";
             string name = "";
+            string per = "";
 
             if (Lib.IsZero(record_dto.qtnm_to_id))
                 str += "Quote To Cannot Be Blank!";
-            if (Lib.IsZero(record_dto.qtnm_salesman_id))
-                str += "Sales Rep. Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.qtnm_date))
                 str += "Quote Date Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.qtnm_quot_by))
                 str += "Quote By Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.qtnm_valid_date))
                 str += "Validity Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.qtnm_salesman_id))
+                str += "Sales Rep. Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.qtnm_move_type))
                 str += "Move Type Cannot Be Blank!";
 
@@ -323,28 +323,33 @@ namespace Marketing.Repositories
                     code = "Code Cannot Be Blank!";
                 if (Lib.IsBlank(rec.qtnd_acc_name))
                     name = "Description Cannot Be Blank!";
-            }
-            if (code != "")
-                str += code;
-            if (name != "")
-                str += name;
-
-            if (str != "")
-            {
-                error = error + str;
-                bRet = false;
+                if (Lib.IsZero(rec.qtnd_amt) && Lib.IsBlank(rec.qtnd_per))
+                    per = "Per Cannot Be Blank";
             }
 
             if (record_dto.qtnd_lcl.Count == 0)
             {
-                throw new Exception("No Quotation Detail to Save");
+                str += "Quotation Line Item Need To Be Entered";
             }
 
             decimal? nTotal = this.FindTotal(record_dto);
 
             if (record_dto.qtnm_amt != nTotal)
             {
-                throw new Exception(" Qtnm total and Qtnd line item total does not match");
+                str += " Qtnm total and Qtnd line item total does not match";
+            }
+            
+            if (code != "")
+                str += code;
+            if (name != "")
+                str += name;
+            if (per != "")
+                str += per;
+
+            if (str != "")
+            {
+                error = error + str;
+                bRet = false;
             }
             return bRet;
         }
