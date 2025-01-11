@@ -77,7 +77,6 @@ public class mark_qtnd_fcl_config : IEntityTypeConfiguration<mark_qtnd_fcl>
             .IsRequired();
         modelBuilder.Property(u => u.order)
             .IsRequired(false);
-
         // modelBuilder.Property(u => u.rec_locked)
         //     .HasColumnType("char")
         //     .HasMaxLength(1)
@@ -123,11 +122,11 @@ public class mark_qtnd_fcl_config : IEntityTypeConfiguration<mark_qtnd_fcl>
             .OnDelete(DeleteBehavior.NoAction)
             .IsRequired(false);
         modelBuilder
-            .HasOne(e => e.pod)
+            .HasOne(e => e.carrier)
             .WithMany()
-            .HasForeignKey(e => e.qtnd_pod_id)
+            .HasForeignKey(e => e.qtnd_carrier_id)
             .HasPrincipalKey(e => e.param_id)
-            .HasConstraintName("fk_mark_qtnd_fcl_qtnd_pod_id")
+            .HasConstraintName("fk_mark_qtnd_fcl_qtnd_carrier_id")
             .OnDelete(DeleteBehavior.NoAction)
             .IsRequired(false);
         modelBuilder
@@ -155,13 +154,13 @@ public class mark_qtnd_fcl_config : IEntityTypeConfiguration<mark_qtnd_fcl>
         new mark_qtnd_fcl
         {
             qtnd_id = 1,
-            qtnd_qtnm_id = 1,
-            qtnd_cntr_type = "40' ft",
-            qtnd_etd = "QL-1",
-            qtnd_cutoff = "ABC",
+            qtnd_qtnm_id = 10,
             qtnd_pol_id = null,
             qtnd_pod_id = null,
             qtnd_carrier_id = null,
+            qtnd_cntr_type = "40' ft",
+            qtnd_etd = "QF-10",
+            qtnd_cutoff = "ABC",
             qtnd_tot_amt = 5000,
             rec_created_by = "ADMIN",
             rec_created_date = DbLib.GetDateTime(),
