@@ -268,14 +268,13 @@ namespace Marketing.Repositories
             {
                 context.Database.BeginTransaction();
                 mark_qtnm_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record = await SaveFclDetailsAsync(_Record.qtnm_id, _Record);
+                _Record = await SaveFclDetailsAsync(_Record.qtnm_id, record_dto);
                 _Record.qtnm_fcl = await GetFclDetailsAsync(_Record.qtnm_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
             catch (DbUpdateConcurrencyException)
             {
-                context.Database.RollbackTransaction();
                 throw new Exception("Kindly reload the record, Another User May have modified the same record");
             }
 
@@ -360,7 +359,7 @@ namespace Marketing.Repositories
                     Record.qtnm_cfno = iNextNo;
                     Record.qtnm_no = sqtn_no;
                     Record.qtnm_type = "FCL";
-                    Record.qtnm_date = DbLib.GetDateTime();
+                    
 
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_branch_id = record_dto.rec_branch_id;
@@ -387,6 +386,7 @@ namespace Marketing.Repositories
                 Record.qtnm_to_addr2 = record_dto.qtnm_to_addr2;
                 Record.qtnm_to_addr3 = record_dto.qtnm_to_addr3;
                 Record.qtnm_to_addr4 = record_dto.qtnm_to_addr4;
+                Record.qtnm_date = Lib.ParseDate(record_dto.qtnm_date!);
                 Record.qtnm_quot_by = record_dto.qtnm_quot_by;
                 Record.qtnm_valid_date = Lib.ParseDate(record_dto.qtnm_valid_date!);
                 Record.qtnm_salesman_id = record_dto.qtnm_salesman_id;
@@ -407,7 +407,7 @@ namespace Marketing.Repositories
                 Record.qtnm_plfd_name = record_dto.qtnm_plfd_name;
                 Record.qtnm_trans_time = record_dto.qtnm_trans_time;
                 Record.qtnm_routing = record_dto.qtnm_routing;
-                Record.qtnm_amt = record_dto.qtnm_amt?? 0;
+                Record.qtnm_amt = record_dto.qtnm_amt ?? 0;
 
                 if (mode == "add")
                     await context.mark_qtnm.AddAsync(Record);
