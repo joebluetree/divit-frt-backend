@@ -10,7 +10,7 @@ using Common.DTO.Marketing;
 namespace Marketing.Controllers
 {
     [Authorize]
-    [Route("api/Marketing/qtnmfcl")]
+    [Route("api/Marketing/Qtnmfcl")]
     public class QtnmFclController : Controller
     {
         private readonly IQtnmFclRepository mRepository;

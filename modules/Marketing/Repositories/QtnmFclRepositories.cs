@@ -88,6 +88,7 @@ namespace Marketing.Repositories
                 int StartRow = Lib.getStartRow(_page.currentPageNo, _page.pageSize);
 
                 query = query
+                    .Where(f => f.qtnm_type == "FCL")
                     .OrderBy(c => c.qtnm_no)
                     .Skip(StartRow)
                     .Take(_page.pageSize);
@@ -209,7 +210,7 @@ namespace Marketing.Repositories
                 if (Record == null)
                     throw new Exception("No Qtn Found");
 
-                Record.qtnd_fcl = await GetFclDetailsAsync(Record.qtnm_id);
+                Record.qtnm_fcl = await GetFclDetailsAsync(Record.qtnm_id);
 
                 return Record;
             }
@@ -268,7 +269,7 @@ namespace Marketing.Repositories
                 context.Database.BeginTransaction();
                 mark_qtnm_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await SaveFclDetailsAsync(_Record.qtnm_id, _Record);
-                _Record.qtnd_fcl = await GetFclDetailsAsync(_Record.qtnm_id);
+                _Record.qtnm_fcl = await GetFclDetailsAsync(_Record.qtnm_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -306,7 +307,7 @@ namespace Marketing.Repositories
             if (Lib.IsBlank(record_dto.qtnm_move_type))
                 str += "Move Type Cannot Be Blank!";
 
-            foreach (mark_qtnd_fcl_dto rec in record_dto.qtnd_fcl!)
+            foreach (mark_qtnd_fcl_dto rec in record_dto.qtnm_fcl!)
             {
                 if (Lib.IsZero(rec.qtnd_pod_id))
                     code = "POD Cannot Be Blank!";
@@ -324,7 +325,7 @@ namespace Marketing.Repositories
                 bRet = false;
             }
 
-            if (record_dto.qtnd_fcl.Count == 0)
+            if (record_dto.qtnm_fcl.Count == 0)
             {
                 throw new Exception("No Quotation Detail to Save");
             }
@@ -450,7 +451,7 @@ namespace Marketing.Repositories
             try
             {
 
-                records_dto = record_dto.qtnd_fcl!;
+                records_dto = record_dto.qtnm_fcl!;
             
                 records = await context.mark_qtnd_fcl
                     .Where(w => w.qtnd_qtnm_id == id)
