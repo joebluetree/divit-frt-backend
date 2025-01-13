@@ -40,19 +40,19 @@ public class mark_qtnd_fcl_config : IEntityTypeConfiguration<mark_qtnd_fcl>
             .HasMaxLength(100)
             .IsRequired(false);
         modelBuilder.Property(u => u.qtnd_trans_time)
-            .HasMaxLength(100)
+            .HasMaxLength(15)
             .IsRequired(false);
         modelBuilder.Property(u => u.qtnd_routing)
             .HasMaxLength(100)
             .IsRequired(false);
         modelBuilder.Property(u => u.qtnd_cntr_type)
-            .HasMaxLength(15)
+            .HasMaxLength(6)
             .IsRequired();
         modelBuilder.Property(u => u.qtnd_etd)
-            .HasMaxLength(15)
+            .HasMaxLength(25)
             .IsRequired();
         modelBuilder.Property(u => u.qtnd_cutoff)
-            .HasMaxLength(100)
+            .HasMaxLength(25)
             .IsRequired();
         modelBuilder.Property(u => u.qtnd_of)
             .HasColumnType("decimal(15,3)")

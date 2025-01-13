@@ -14,7 +14,7 @@ namespace Marketing.Controllers
     public class QtnmFclController : Controller
     {
         private readonly IQtnmFclRepository mRepository;
-        public QtnmFclController (IQtnmFclRepository Repository)
+        public QtnmFclController(IQtnmFclRepository Repository)
         {
             this.mRepository = Repository;
         }
