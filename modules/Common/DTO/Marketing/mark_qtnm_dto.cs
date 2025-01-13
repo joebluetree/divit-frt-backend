@@ -13,8 +13,8 @@ namespace Common.DTO.Marketing
         public string? qtnm_type { get; set; } = "";
         public string? qtnm_no { get; set; } = "";
         public int qtnm_to_id { get; set; } = 0;
-        public string? qtnm_to_code { get; set;}= "";
         public string? qtnm_to_name { get; set; } = "";
+        public string? qtnm_to_code { get; set;}= "";
         public string? qtnm_to_addr1 { get; set;} = "";
         public string? qtnm_to_addr2 { get; set; } = "";
         public string? qtnm_to_addr3 { get; set; } = "";

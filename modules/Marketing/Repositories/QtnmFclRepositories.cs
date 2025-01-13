@@ -17,7 +17,7 @@ namespace Marketing.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
-        public QtnmFclRepository (AppDbContext _context, IAuditLog _auditLog)
+        public QtnmFclRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
             this.auditLog = _auditLog;
@@ -26,7 +26,7 @@ namespace Marketing.Repositories
         public async Task<Dictionary<string, object>> GetListAsync(Dictionary<string, object> data)
         {
             try
-           {
+            {
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
 
                 Page _page = new Page();
@@ -34,13 +34,13 @@ namespace Marketing.Repositories
                 var action = data["action"].ToString();
                 if (action == null)
                     action = "search";
-                
+
                 // var qtnm_date = "";
                 var qtnm_to_name = "";
                 var qtnm_no = "";
                 var company_id = 0;
                 var qtnm_pld_name = "";
-                
+
                 // if (data.ContainsKey("qtnm_date"))
                 //     qtnm_date = data["qtnm_date"].ToString();
                 if (data.ContainsKey("qtnm_to_name"))
@@ -60,7 +60,7 @@ namespace Marketing.Repositories
                 _page.pageSize = int.Parse(data["pageSize"].ToString()!);
 
                 IQueryable<mark_qtnm> query = context.mark_qtnm;
-                    // .Include(e => e.customer);
+                // .Include(e => e.customer);
 
                 query = query.Where(w => w.rec_company_id == company_id);
 
@@ -72,7 +72,7 @@ namespace Marketing.Repositories
                     query = query.Where(w => w.qtnm_no!.Contains(qtnm_no!));
                 if (!Lib.IsBlank(qtnm_pld_name))
                     query = query.Where(w => w.qtnm_pld_name!.Contains(qtnm_pld_name!));
-                
+
 
                 if (action == "SEARCH")
                 {
@@ -101,37 +101,37 @@ namespace Marketing.Repositories
                     qtnm_no = e.qtnm_no,
                     qtnm_to_id = e.customer!.cust_id,
                     qtnm_to_code = e.customer!.cust_code,
-                    qtnm_to_name = e.qtnm_to_name,
-                    qtnm_to_addr1 = e.qtnm_to_addr1,
-                    qtnm_to_addr2 = e.qtnm_to_addr2,
-                    qtnm_to_addr3 = e.qtnm_to_addr3,
+                    qtnm_to_name = e.customer!.cust_name,
+                    qtnm_to_addr1 = e.customer!.cust_address1,
+                    qtnm_to_addr2 = e.customer!.cust_address2,
+                    qtnm_to_addr3 = e.customer!.cust_address3,
                     qtnm_to_addr4 = e.qtnm_to_addr4,
-                    qtnm_date = Lib.FormatDate(e.qtnm_date,Lib.outputDateFormat),
+                    qtnm_date = Lib.FormatDate(e.qtnm_date, Lib.outputDateFormat),
                     qtnm_quot_by = e.qtnm_quot_by,
-                    qtnm_valid_date = Lib.FormatDate(e.qtnm_valid_date,Lib.outputDateFormat),
-                    qtnm_salesman_id = e.qtnm_salesman_id,
+                    qtnm_valid_date = Lib.FormatDate(e.qtnm_valid_date, Lib.outputDateFormat),
+                    qtnm_salesman_id = e.salesman!.param_id,
                     qtnm_salesman_name = e.salesman!.param_name,
                     qtnm_move_type = e.qtnm_move_type,
                     qtnm_commodity = e.qtnm_commodity,
-                    qtnm_package = e.qtnm_package, 
-                    qtnm_kgs = e.qtnm_kgs,
-                    qtnm_lbs = e.qtnm_lbs,
-                    qtnm_cbm = e.qtnm_cbm,
-                    qtnm_cft = e.qtnm_cft,
-                    qtnm_por_id = e.qtnm_por_id,
-                    qtnm_por_code = e.por!.param_code,
-                    qtnm_por_name = e.qtnm_por_name,
-                    qtnm_pol_id = e.qtnm_pol_id,
-                    qtnm_pol_code = e.pol!.param_code,
-                    qtnm_pol_name = e.qtnm_pol_name,
-                    qtnm_pod_id = e.qtnm_pod_id,
-                    qtnm_pod_code = e.pod!.param_code,
-                    qtnm_pod_name = e.qtnm_pod_name,
-                    qtnm_pld_name = e.qtnm_pld_name,
-                    qtnm_plfd_name = e.qtnm_plfd_name,
-                    qtnm_trans_time = e.qtnm_trans_time,
-                    qtnm_routing = e.qtnm_routing,
-                    qtnm_amt = e.qtnm_amt,
+                    // qtnm_package = e.qtnm_package,
+                    // qtnm_kgs = e.qtnm_kgs,
+                    // qtnm_lbs = e.qtnm_lbs,
+                    // qtnm_cbm = e.qtnm_cbm,
+                    // qtnm_cft = e.qtnm_cft,
+                    // qtnm_por_id = e.qtnm_por_id,
+                    // qtnm_por_code = e.por!.param_code,
+                    // qtnm_por_name = e.qtnm_por_name,
+                    // qtnm_pol_id = e.qtnm_pol_id,
+                    // qtnm_pol_code = e.pol!.param_code,
+                    // qtnm_pol_name = e.qtnm_pol_name,
+                    // qtnm_pod_id = e.qtnm_pod_id,
+                    // qtnm_pod_code = e.pod!.param_code,
+                    // qtnm_pod_name = e.qtnm_pod_name,
+                    // qtnm_pld_name = e.qtnm_pld_name,
+                    // qtnm_plfd_name = e.qtnm_plfd_name,
+                    // qtnm_trans_time = e.qtnm_trans_time,
+                    // qtnm_routing = e.qtnm_routing,
+                    // qtnm_amt = e.qtnm_amt,
 
 
                     rec_created_by = e.rec_created_by,
@@ -155,7 +155,7 @@ namespace Marketing.Repositories
             try
             {
                 IQueryable<mark_qtnm> query = context.mark_qtnm;
-                    // .Include(e => e.customer);
+                // .Include(e => e.customer);
 
                 query = query.Where(f => f.qtnm_id == id && f.qtnm_type == "FCL");
 
@@ -167,40 +167,40 @@ namespace Marketing.Repositories
                     qtnm_no = e.qtnm_no,
                     qtnm_to_id = e.qtnm_to_id,
                     qtnm_to_code = e.customer!.cust_code,
-                    qtnm_to_name = e.qtnm_to_name,
-                    qtnm_to_addr1 = e.qtnm_to_addr1,
-                    qtnm_to_addr2 = e.qtnm_to_addr2,
-                    qtnm_to_addr3 = e.qtnm_to_addr3,
+                    qtnm_to_name = e.customer!.cust_name,
+                    qtnm_to_addr1 = e.customer!.cust_address1,
+                    qtnm_to_addr2 = e.customer!.cust_address2,
+                    qtnm_to_addr3 = e.customer!.cust_address3,
                     qtnm_to_addr4 = e.qtnm_to_addr4,
-                    qtnm_date = Lib.FormatDate(e.qtnm_date,Lib.outputDateFormat),
+                    qtnm_date = Lib.FormatDate(e.qtnm_date, Lib.outputDateFormat),
                     qtnm_quot_by = e.qtnm_quot_by,
-                    qtnm_valid_date = Lib.FormatDate(e.qtnm_valid_date,Lib.outputDateFormat),
-                    qtnm_salesman_id = e.qtnm_salesman_id,
+                    qtnm_valid_date = Lib.FormatDate(e.qtnm_valid_date, Lib.outputDateFormat),
+                    qtnm_salesman_id = e.salesman!.param_id,
                     qtnm_salesman_name = e.salesman!.param_name,
                     qtnm_move_type = e.qtnm_move_type,
                     qtnm_commodity = e.qtnm_commodity,
-                    qtnm_package = e.qtnm_package, 
-                    qtnm_kgs = e.qtnm_kgs,
-                    qtnm_lbs = e.qtnm_lbs,
-                    qtnm_cbm = e.qtnm_cbm,
-                    qtnm_cft = e.qtnm_cft,
-                    qtnm_por_id = e.qtnm_por_id,
-                    qtnm_por_code = e.por!.param_code,
-                    qtnm_por_name = e.qtnm_por_name,
-                    qtnm_pol_id = e.qtnm_pol_id,
-                    qtnm_pol_code = e.pol!.param_code,
-                    qtnm_pol_name = e.qtnm_pol_name,
-                    qtnm_pod_id = e.qtnm_pod_id,
-                    qtnm_pod_code = e.pod!.param_code,
-                    qtnm_pod_name = e.qtnm_pod_name,
-                    qtnm_pld_name = e.qtnm_pld_name,
-                    qtnm_plfd_name = e.qtnm_plfd_name,
-                    qtnm_trans_time = e.qtnm_trans_time,
-                    qtnm_routing = e.qtnm_routing,
-                    qtnm_amt = e.qtnm_amt,
+                    // qtnm_package = e.qtnm_package,
+                    // qtnm_kgs = e.qtnm_kgs,
+                    // qtnm_lbs = e.qtnm_lbs,
+                    // qtnm_cbm = e.qtnm_cbm,
+                    // qtnm_cft = e.qtnm_cft,
+                    // qtnm_por_id = e.qtnm_por_id,
+                    // qtnm_por_code = e.por!.param_code,
+                    // qtnm_por_name = e.qtnm_por_name,
+                    // qtnm_pol_id = e.qtnm_pol_id,
+                    // qtnm_pol_code = e.pol!.param_code,
+                    // qtnm_pol_name = e.qtnm_pol_name,
+                    // qtnm_pod_id = e.qtnm_pod_id,
+                    // qtnm_pod_code = e.pod!.param_code,
+                    // qtnm_pod_name = e.qtnm_pod_name,
+                    // qtnm_pld_name = e.qtnm_pld_name,
+                    // qtnm_plfd_name = e.qtnm_plfd_name,
+                    // qtnm_trans_time = e.qtnm_trans_time,
+                    // qtnm_routing = e.qtnm_routing,
+                    // qtnm_amt = e.qtnm_amt,
 
                     rec_version = e.rec_version,
-                    rec_branch_id =e.rec_branch_id,
+                    rec_branch_id = e.rec_branch_id,
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                     rec_edited_by = e.rec_edited_by,
@@ -359,7 +359,7 @@ namespace Marketing.Repositories
                     Record.qtnm_cfno = iNextNo;
                     Record.qtnm_no = sqtn_no;
                     Record.qtnm_type = "FCL";
-                    
+
 
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_branch_id = record_dto.rec_branch_id;
@@ -392,22 +392,22 @@ namespace Marketing.Repositories
                 Record.qtnm_salesman_id = record_dto.qtnm_salesman_id;
                 Record.qtnm_move_type = record_dto.qtnm_move_type;
                 Record.qtnm_commodity = record_dto.qtnm_commodity;
-                Record.qtnm_package = record_dto.qtnm_package;
-                Record.qtnm_kgs = record_dto.qtnm_kgs;
-                Record.qtnm_lbs = record_dto.qtnm_lbs;
-                Record.qtnm_cbm = record_dto.qtnm_cbm;
-                Record.qtnm_cft = record_dto.qtnm_cft;
-                Record.qtnm_por_id = record_dto.qtnm_por_id;
-                Record.qtnm_por_name = record_dto.qtnm_por_name;
-                Record.qtnm_pol_id = record_dto.qtnm_pol_id;
-                Record.qtnm_pol_name = record_dto.qtnm_pol_name;
-                Record.qtnm_pod_id = record_dto.qtnm_pod_id;  
-                Record.qtnm_pod_name = record_dto.qtnm_pod_name;
-                Record.qtnm_pld_name = record_dto.qtnm_pld_name;
-                Record.qtnm_plfd_name = record_dto.qtnm_plfd_name;
-                Record.qtnm_trans_time = record_dto.qtnm_trans_time;
-                Record.qtnm_routing = record_dto.qtnm_routing;
-                Record.qtnm_amt = record_dto.qtnm_amt ?? 0;
+                // Record.qtnm_package = record_dto.qtnm_package;
+                // Record.qtnm_kgs = record_dto.qtnm_kgs;
+                // Record.qtnm_lbs = record_dto.qtnm_lbs;
+                // Record.qtnm_cbm = record_dto.qtnm_cbm;
+                // Record.qtnm_cft = record_dto.qtnm_cft;
+                // Record.qtnm_por_id = record_dto.qtnm_por_id;
+                // Record.qtnm_por_name = record_dto.qtnm_por_name;
+                // Record.qtnm_pol_id = record_dto.qtnm_pol_id;
+                // Record.qtnm_pol_name = record_dto.qtnm_pol_name;
+                // Record.qtnm_pod_id = record_dto.qtnm_pod_id;
+                // Record.qtnm_pod_name = record_dto.qtnm_pod_name;
+                // Record.qtnm_pld_name = record_dto.qtnm_pld_name;
+                // Record.qtnm_plfd_name = record_dto.qtnm_plfd_name;
+                // Record.qtnm_trans_time = record_dto.qtnm_trans_time;
+                // Record.qtnm_routing = record_dto.qtnm_routing;
+                // Record.qtnm_amt = record_dto.qtnm_amt ?? 0;
 
                 if (mode == "add")
                     await context.mark_qtnm.AddAsync(Record);
@@ -452,14 +452,14 @@ namespace Marketing.Repositories
             {
 
                 records_dto = record_dto.qtnm_fcl!;
-            
+
                 records = await context.mark_qtnd_fcl
                     .Where(w => w.qtnd_qtnm_id == id)
                     .ToListAsync();
 
                 int nextorder = 1;
 
-                
+
                 foreach (var existing_record in records)
                 {
                     var rec = records_dto.Find(f => f.qtnd_id == existing_record.qtnd_id);
@@ -552,9 +552,9 @@ namespace Marketing.Repositories
                 }
                 else
                 {
-                   var Qtnd_Fcl = context.mark_qtnd_fcl
-                    .Where(c => c.qtnd_qtnm_id == id);
-                     if (Qtnd_Fcl.Any())
+                    var Qtnd_Fcl = context.mark_qtnd_fcl
+                     .Where(c => c.qtnd_qtnm_id == id);
+                    if (Qtnd_Fcl.Any())
                     {
                         context.mark_qtnd_fcl.RemoveRange(Qtnd_Fcl);
 
