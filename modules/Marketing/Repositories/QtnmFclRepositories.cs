@@ -35,14 +35,12 @@ namespace Marketing.Repositories
                 if (action == null)
                     action = "search";
 
-                // var qtnm_date = "";
                 var qtnm_to_name = "";
                 var qtnm_no = "";
                 var company_id = 0;
+                var branch_id = 0;
                 var qtnm_pld_name = "";
-
-                // if (data.ContainsKey("qtnm_date"))
-                //     qtnm_date = data["qtnm_date"].ToString();
+                
                 if (data.ContainsKey("qtnm_to_name"))
                     qtnm_to_name = data["qtnm_to_name"].ToString();
                 if (data.ContainsKey("qtnm_no"))
@@ -53,6 +51,10 @@ namespace Marketing.Repositories
                     company_id = int.Parse(data["rec_company_id"].ToString()!);
                 if (company_id == 0)
                     throw new Exception("Company Id Not Found");
+                // if (data.ContainsKey("rec_branch_id"))
+                //     branch_id = int.Parse(data["rec_branch_id"].ToString()!);
+                // if (branch_id == 0)
+                //     throw new Exception("Branch Id Not Found");
 
                 _page.currentPageNo = int.Parse(data["currentPageNo"].ToString()!);
                 _page.pages = int.Parse(data["pages"].ToString()!);
@@ -60,12 +62,9 @@ namespace Marketing.Repositories
                 _page.pageSize = int.Parse(data["pageSize"].ToString()!);
 
                 IQueryable<mark_qtnm> query = context.mark_qtnm;
-                // .Include(e => e.customer);
 
-                query = query.Where(w => w.rec_company_id == company_id);
+                query = query.Where(i => i.rec_company_id == company_id );
 
-                // if (!Lib.IsBlank(qtnm_date))
-                //     query = query.Where(w => w.qtnm_date!.Contains(qtnm_date!));
                 if (!Lib.IsBlank(qtnm_to_name))
                     query = query.Where(w => w.qtnm_to_name!.Contains(qtnm_to_name!));
                 if (!Lib.IsBlank(qtnm_no))
@@ -88,7 +87,7 @@ namespace Marketing.Repositories
                 int StartRow = Lib.getStartRow(_page.currentPageNo, _page.pageSize);
 
                 query = query
-                    .Where(f => f.qtnm_type == "FCL")
+                    .Where(c => c.qtnm_type == "FCL")
                     .OrderBy(c => c.qtnm_no)
                     .Skip(StartRow)
                     .Take(_page.pageSize);
@@ -113,27 +112,7 @@ namespace Marketing.Repositories
                     qtnm_salesman_name = e.salesman!.param_name,
                     qtnm_move_type = e.qtnm_move_type,
                     qtnm_commodity = e.qtnm_commodity,
-                    // qtnm_package = e.qtnm_package,
-                    // qtnm_kgs = e.qtnm_kgs,
-                    // qtnm_lbs = e.qtnm_lbs,
-                    // qtnm_cbm = e.qtnm_cbm,
-                    // qtnm_cft = e.qtnm_cft,
-                    // qtnm_por_id = e.qtnm_por_id,
-                    // qtnm_por_code = e.por!.param_code,
-                    // qtnm_por_name = e.qtnm_por_name,
-                    // qtnm_pol_id = e.qtnm_pol_id,
-                    // qtnm_pol_code = e.pol!.param_code,
-                    // qtnm_pol_name = e.qtnm_pol_name,
-                    // qtnm_pod_id = e.qtnm_pod_id,
-                    // qtnm_pod_code = e.pod!.param_code,
-                    // qtnm_pod_name = e.qtnm_pod_name,
-                    // qtnm_pld_name = e.qtnm_pld_name,
-                    // qtnm_plfd_name = e.qtnm_plfd_name,
-                    // qtnm_trans_time = e.qtnm_trans_time,
-                    // qtnm_routing = e.qtnm_routing,
-                    // qtnm_amt = e.qtnm_amt,
-
-
+                   
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                     rec_edited_by = e.rec_edited_by,
@@ -179,25 +158,6 @@ namespace Marketing.Repositories
                     qtnm_salesman_name = e.salesman!.param_name,
                     qtnm_move_type = e.qtnm_move_type,
                     qtnm_commodity = e.qtnm_commodity,
-                    // qtnm_package = e.qtnm_package,
-                    // qtnm_kgs = e.qtnm_kgs,
-                    // qtnm_lbs = e.qtnm_lbs,
-                    // qtnm_cbm = e.qtnm_cbm,
-                    // qtnm_cft = e.qtnm_cft,
-                    // qtnm_por_id = e.qtnm_por_id,
-                    // qtnm_por_code = e.por!.param_code,
-                    // qtnm_por_name = e.qtnm_por_name,
-                    // qtnm_pol_id = e.qtnm_pol_id,
-                    // qtnm_pol_code = e.pol!.param_code,
-                    // qtnm_pol_name = e.qtnm_pol_name,
-                    // qtnm_pod_id = e.qtnm_pod_id,
-                    // qtnm_pod_code = e.pod!.param_code,
-                    // qtnm_pod_name = e.qtnm_pod_name,
-                    // qtnm_pld_name = e.qtnm_pld_name,
-                    // qtnm_plfd_name = e.qtnm_plfd_name,
-                    // qtnm_trans_time = e.qtnm_trans_time,
-                    // qtnm_routing = e.qtnm_routing,
-                    // qtnm_amt = e.qtnm_amt,
 
                     rec_version = e.rec_version,
                     rec_branch_id = e.rec_branch_id,
@@ -210,7 +170,7 @@ namespace Marketing.Repositories
                 if (Record == null)
                     throw new Exception("No Qtn Found");
 
-                Record.qtnm_fcl = await GetFclDetailsAsync(Record.qtnm_id);
+                Record.qtnm_fcl = await GetDetailsAsync(Record.qtnm_id);
 
                 return Record;
             }
@@ -220,7 +180,7 @@ namespace Marketing.Repositories
             }
         }
 
-        public async Task<List<mark_qtnd_fcl_dto>> GetFclDetailsAsync(int id)
+        public async Task<List<mark_qtnd_fcl_dto>> GetDetailsAsync(int id)
         {
             var query = from e in context.mark_qtnd_fcl
                         .Where(e => e.qtnd_qtnm_id == id)
@@ -268,13 +228,14 @@ namespace Marketing.Repositories
             {
                 context.Database.BeginTransaction();
                 mark_qtnm_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record = await SaveFclDetailsAsync(_Record.qtnm_id, record_dto);
-                _Record.qtnm_fcl = await GetFclDetailsAsync(_Record.qtnm_id);
+                _Record = await SaveDetailsAsync(_Record.qtnm_id, record_dto);
+                _Record.qtnm_fcl = await GetDetailsAsync(_Record.qtnm_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
             catch (DbUpdateConcurrencyException)
             {
+                context.Database.RollbackTransaction();
                 throw new Exception("Kindly reload the record, Another User May have modified the same record");
             }
 
@@ -326,15 +287,8 @@ namespace Marketing.Repositories
 
             if (record_dto.qtnm_fcl.Count == 0)
             {
-                throw new Exception("No Quotation Detail to Save");
+                throw new Exception("No Quotation Detail to Save"); /// change this
             }
-
-            // decimal? nTotal = this.FindTotal(record_dto);
-
-            // if ( record_dto.qtnm_amt !=  nTotal )
-            // {
-            //     throw new Exception(" Qtnm total and Qtnd line item total does not match");
-            // }
             return bRet;
         }
 
@@ -392,22 +346,6 @@ namespace Marketing.Repositories
                 Record.qtnm_salesman_id = record_dto.qtnm_salesman_id;
                 Record.qtnm_move_type = record_dto.qtnm_move_type;
                 Record.qtnm_commodity = record_dto.qtnm_commodity;
-                // Record.qtnm_package = record_dto.qtnm_package;
-                // Record.qtnm_kgs = record_dto.qtnm_kgs;
-                // Record.qtnm_lbs = record_dto.qtnm_lbs;
-                // Record.qtnm_cbm = record_dto.qtnm_cbm;
-                // Record.qtnm_cft = record_dto.qtnm_cft;
-                // Record.qtnm_por_id = record_dto.qtnm_por_id;
-                // Record.qtnm_por_name = record_dto.qtnm_por_name;
-                // Record.qtnm_pol_id = record_dto.qtnm_pol_id;
-                // Record.qtnm_pol_name = record_dto.qtnm_pol_name;
-                // Record.qtnm_pod_id = record_dto.qtnm_pod_id;
-                // Record.qtnm_pod_name = record_dto.qtnm_pod_name;
-                // Record.qtnm_pld_name = record_dto.qtnm_pld_name;
-                // Record.qtnm_plfd_name = record_dto.qtnm_plfd_name;
-                // Record.qtnm_trans_time = record_dto.qtnm_trans_time;
-                // Record.qtnm_routing = record_dto.qtnm_routing;
-                // Record.qtnm_amt = record_dto.qtnm_amt ?? 0;
 
                 if (mode == "add")
                     await context.mark_qtnm.AddAsync(Record);
@@ -443,7 +381,7 @@ namespace Marketing.Repositories
             return quantities.Sum();
         }
 
-        public async Task<mark_qtnm_dto> SaveFclDetailsAsync(int id, mark_qtnm_dto record_dto)
+        public async Task<mark_qtnm_dto> SaveDetailsAsync(int id, mark_qtnm_dto record_dto)
         {
             mark_qtnd_fcl? record;
             List<mark_qtnd_fcl_dto> records_dto;
@@ -479,7 +417,7 @@ namespace Marketing.Repositories
                         record.rec_branch_id = record_dto.rec_branch_id;
                         record.rec_created_by = record_dto.rec_created_by;
                         record.rec_created_date = DbLib.GetDateTime();
-                        // record.rec_locked = "N";
+
                     }
                     else
                     {
@@ -494,7 +432,6 @@ namespace Marketing.Repositories
                     record.qtnd_pol_name = rec.qtnd_pol_name;
                     record.qtnd_pod_id = rec.qtnd_pod_id;
                     record.qtnd_pod_name = rec.qtnd_pod_name;
-                    // record.qtnd_carrier_id = rec.qtnd_carrier_id;
                     if (Lib.IsZero(record.qtnd_carrier_id))
                         record.qtnd_carrier_id = null;
                     else
@@ -534,11 +471,7 @@ namespace Marketing.Repositories
             .Max();
             return maxCfNo + 1;
         }
-        // public decimal? FindTotal(mark_qtnm_dto record_dto)
-        // {
-        //     decimal nTotal =  record_dto.qtnm_qtnd_lcl!.Sum(x => x.qtnd_amt )  ?? 0;
-        //     return nTotal;
-        // }
+
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
             try
