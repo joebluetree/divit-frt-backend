@@ -51,10 +51,10 @@ namespace Marketing.Repositories
                     company_id = int.Parse(data["rec_company_id"].ToString()!);
                 if (company_id == 0)
                     throw new Exception("Company Id Not Found");
-                // if (data.ContainsKey("rec_branch_id"))
-                //     branch_id = int.Parse(data["rec_branch_id"].ToString()!);
-                // if (branch_id == 0)
-                //     throw new Exception("Branch Id Not Found");
+                if (data.ContainsKey("rec_branch_id"))
+                    branch_id = int.Parse(data["rec_branch_id"].ToString()!);
+                if (branch_id == 0)
+                    throw new Exception("Branch Id Not Found");
 
                 _page.currentPageNo = int.Parse(data["currentPageNo"].ToString()!);
                 _page.pages = int.Parse(data["pages"].ToString()!);
@@ -63,7 +63,7 @@ namespace Marketing.Repositories
 
                 IQueryable<mark_qtnm> query = context.mark_qtnm;
 
-                query = query.Where(i => i.rec_company_id == company_id );
+                query = query.Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id);
 
                 if (!Lib.IsBlank(qtnm_to_name))
                     query = query.Where(w => w.qtnm_to_name!.Contains(qtnm_to_name!));
