@@ -12,11 +12,11 @@ using Common.DTO.Marketing;
 
 namespace Marketing.Repositories
 {
-    public class QtnmLclRepository : IQtnmLclRepository
+    public class QtnmAirRepository : IQtnmAirRepository
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
-        public QtnmLclRepository(AppDbContext _context, IAuditLog _auditLog)
+        public QtnmAirRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
             this.auditLog = _auditLog;
@@ -39,7 +39,6 @@ namespace Marketing.Repositories
                 var qtnm_type = "";
                 var qtnm_to_name = "";
                 var qtnm_no = "";
-                var qtnm_pld_name = "";
                 var company_id = 0;
                 var branch_id = 0;
                 DateTime? from_date = null;
@@ -55,8 +54,6 @@ namespace Marketing.Repositories
                     qtnm_to_name = data["qtnm_to_name"].ToString();
                 if (data.ContainsKey("qtnm_no"))
                     qtnm_no = data["qtnm_no"].ToString();
-                if (data.ContainsKey("qtnm_pld_name"))
-                    qtnm_pld_name = data["qtnm_pld_name"].ToString();
                 if (data.ContainsKey("rec_company_id"))
                     company_id = int.Parse(data["rec_company_id"].ToString()!);
                 if (company_id == 0)
@@ -75,7 +72,7 @@ namespace Marketing.Repositories
 
                 query = query.Where(w => w.rec_company_id == company_id);
                 query = query.Where(w => w.rec_branch_id == branch_id);
-                query = query.Where(w => w.qtnm_type == "LCL");
+                query = query.Where(w => w.qtnm_type == "AIR");
 
 
                 if (!Lib.IsBlank(qtnm_from_date))
@@ -92,10 +89,7 @@ namespace Marketing.Repositories
                     query = query.Where(w => w.qtnm_to_name!.Contains(qtnm_to_name!));
                 if (!Lib.IsBlank(qtnm_no))
                     query = query.Where(w => w.qtnm_no!.Contains(qtnm_no!));
-                if (!Lib.IsBlank(qtnm_pld_name))
-                    query = query.Where(w => w.qtnm_pld_name!.Contains(qtnm_pld_name!));
-
-
+                
                 if (action == "SEARCH")
                 {
                     _page.rows = query.Count();
@@ -134,26 +128,6 @@ namespace Marketing.Repositories
                     qtnm_salesman_name = e.salesman!.param_name,
                     qtnm_move_type = e.qtnm_move_type,
                     qtnm_commodity = e.qtnm_commodity,
-                    qtnm_package = e.qtnm_package,
-                    qtnm_kgs = e.qtnm_kgs,
-                    qtnm_lbs = e.qtnm_lbs,
-                    qtnm_cbm = e.qtnm_cbm,
-                    qtnm_cft = e.qtnm_cft,
-                    qtnm_por_id = e.qtnm_por_id,
-                    qtnm_por_code = e.por!.param_code,
-                    qtnm_por_name = e.qtnm_por_name,
-                    qtnm_pol_id = e.qtnm_pol_id,
-                    qtnm_pol_code = e.pol!.param_code,
-                    qtnm_pol_name = e.qtnm_pol_name,
-                    qtnm_pod_id = e.qtnm_pod_id,
-                    qtnm_pod_code = e.pod!.param_code,
-                    qtnm_pod_name = e.qtnm_pod_name,
-                    qtnm_pld_name = e.qtnm_pld_name,
-                    qtnm_plfd_name = e.qtnm_plfd_name,
-                    qtnm_trans_time = e.qtnm_trans_time,
-                    qtnm_routing = e.qtnm_routing,
-                    qtnm_amt = e.qtnm_amt,
-
 
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
@@ -199,25 +173,6 @@ namespace Marketing.Repositories
                     qtnm_salesman_name = e.salesman!.param_name,
                     qtnm_move_type = e.qtnm_move_type,
                     qtnm_commodity = e.qtnm_commodity,
-                    qtnm_package = e.qtnm_package,
-                    qtnm_kgs = e.qtnm_kgs,
-                    qtnm_lbs = e.qtnm_lbs,
-                    qtnm_cbm = e.qtnm_cbm,
-                    qtnm_cft = e.qtnm_cft,
-                    qtnm_por_id = e.qtnm_por_id,
-                    qtnm_por_code = e.por!.param_code,
-                    qtnm_por_name = e.qtnm_por_name,
-                    qtnm_pol_id = e.qtnm_pol_id,
-                    qtnm_pol_code = e.pol!.param_code,
-                    qtnm_pol_name = e.qtnm_pol_name,
-                    qtnm_pod_id = e.qtnm_pod_id,
-                    qtnm_pod_code = e.pod!.param_code,
-                    qtnm_pod_name = e.qtnm_pod_name,
-                    qtnm_pld_name = e.qtnm_pld_name,
-                    qtnm_plfd_name = e.qtnm_plfd_name,
-                    qtnm_trans_time = e.qtnm_trans_time,
-                    qtnm_routing = e.qtnm_routing,
-                    qtnm_amt = e.qtnm_amt,
 
                     rec_version = e.rec_version,
                     rec_branch_id = e.rec_branch_id,
@@ -230,7 +185,7 @@ namespace Marketing.Repositories
                 if (Record == null)
                     throw new Exception("No Qtn Found");
 
-                Record.qtnd_lcl = await GetDetailsAsync(Record.qtnm_id);
+                Record.qtnd_air = await GetDetailsAsync(Record.qtnm_id);
 
                 return Record;
             }
@@ -240,21 +195,38 @@ namespace Marketing.Repositories
             }
         }
 
-        public async Task<List<mark_qtnd_lcl_dto>> GetDetailsAsync(int id)
+        public async Task<List<mark_qtnd_air_dto>> GetDetailsAsync(int id)
         {
-            var query = from e in context.mark_qtnd_lcl
+            var query = from e in context.mark_qtnd_air
                         .Where(e => e.qtnd_qtnm_id == id)
                         .OrderBy(o => o.qtnd_order)
-                        select (new mark_qtnd_lcl_dto
+                        select (new mark_qtnd_air_dto
                         {
                             qtnd_id = e.qtnd_id,
                             qtnd_qtnm_id = e.qtnd_qtnm_id,
-                            qtnd_acc_id = e.qtnd_acc_id,
-                            qtnd_acc_code = e.acctm!.acc_code,
-                            qtnd_acc_name = e.qtnd_acc_name,
-                            qtnd_amt = e.qtnd_amt,
-                            qtnd_per = e.qtnd_per,
-                            qtnd_order = e.qtnd_order,
+                            qtnd_pol_id = e.qtnd_pol_id,
+                            qtnd_pol_code = e.pol!.param_code,
+                            qtnd_pol_name = e.pol!.param_name,
+                            qtnd_pod_id = e.qtnd_pod_id,
+                            qtnd_pod_code = e.pod!.param_code,
+                            qtnd_pod_name = e.pod!.param_name,
+                            qtnd_carrier_id = e.qtnd_carrier_id,
+                            qtnd_carrier_code = e.carrier!.param_code,
+                            qtnd_carrier_name = e.carrier!.param_name,
+                            qtnd_trans_time = e.qtnd_trans_time,
+                            qtnd_routing = e.qtnd_routing,
+                            qtnd_etd = e.qtnd_etd,
+                            qtnd_min = e.qtnd_min,
+                            qtnd_45k = e.qtnd_45k,
+                            qtnd_100k = e.qtnd_100k,
+                            qtnd_300k = e.qtnd_300k,
+                            qtnd_500k = e.qtnd_500k,
+                            qtnd_1000k = e.qtnd_1000k,
+                            qtnd_fsc = e.qtnd_fsc,
+                            qtnd_war = e.qtnd_war,
+                            qtnd_sfc = e.qtnd_sfc,
+                            qtnd_hac = e.qtnd_hac,
+                            qtnd_order = e.qtnd_order,                                                        
 
                             rec_branch_id = e.rec_branch_id,
                             rec_created_by = e.rec_created_by,
@@ -276,7 +248,7 @@ namespace Marketing.Repositories
                 context.Database.BeginTransaction();
                 mark_qtnm_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await SaveDetailsAsync(_Record.qtnm_id, _Record);
-                _Record.qtnd_lcl = await GetDetailsAsync(_Record.qtnm_id);
+                _Record.qtnd_air = await GetDetailsAsync(_Record.qtnm_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -300,9 +272,10 @@ namespace Marketing.Repositories
 
             string str = "";
 
-            string code = "";
-            string name = "";
-            string per = "";
+            string pol = "";
+            string pod = "";
+            string carrier = "";
+            string ttime = "";
 
             if (Lib.IsZero(record_dto.qtnm_to_id))
                 str += "Quote To Cannot Be Blank!";
@@ -317,34 +290,31 @@ namespace Marketing.Repositories
             if (Lib.IsBlank(record_dto.qtnm_move_type))
                 str += "Move Type Cannot Be Blank!";
 
-            foreach (mark_qtnd_lcl_dto rec in record_dto.qtnd_lcl!)
+            foreach (mark_qtnd_air_dto rec in record_dto.qtnd_air!)
             {
-                if (Lib.IsBlank(rec.qtnd_acc_code))
-                    code = "Code Cannot Be Blank!";
-                if (Lib.IsBlank(rec.qtnd_acc_name))
-                    name = "Description Cannot Be Blank!";
-                if (Lib.IsZero(rec.qtnd_amt) && Lib.IsBlank(rec.qtnd_per))
-                    per = "Per Cannot Be Blank";
+                if (Lib.IsBlank(rec.qtnd_pol_code))
+                    pol = "POL Cannot Be Blank!";
+                if (Lib.IsBlank(rec.qtnd_pod_code))
+                    pod = "POD Cannot Be Blank!";
+                if (Lib.IsBlank(rec.qtnd_carrier_code))
+                    carrier = "Carrier Cannot Be Blank";
+                if (Lib.IsBlank(rec.qtnd_trans_time))
+                    ttime = "Transit Time Cannot Be Blank";
             }
 
-            if (record_dto.qtnd_lcl.Count == 0)
+            if (record_dto.qtnd_air.Count == 0)
             {
                 str += "Quotation Line Item Need To Be Entered";
             }
-
-            decimal? nTotal = this.FindTotal(record_dto);
-
-            if (record_dto.qtnm_amt != nTotal)
-            {
-                str += " Qtnm total and Qtnd line item total does not match";
-            }
             
-            if (code != "")
-                str += code;
-            if (name != "")
-                str += name;
-            if (per != "")
-                str += per;
+            if (pol != "")
+                str += pol;
+            if (pod != "")
+                str += pod;
+            if (carrier != "")
+                str += carrier;
+            if (ttime != "")
+                str += ttime;
 
             if (str != "")
             {
@@ -369,13 +339,15 @@ namespace Marketing.Repositories
                 if (mode == "add")
                 {
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id);
-                    string sqtn_no = $"QL-{iNextNo}";
-                    string stype = "LCL";
+                    string sqtn_no = $"QA-{iNextNo}";
+                    string stype = "AIR";
+                    int amt = 0;
 
                     Record = new mark_qtnm();
                     Record.qtnm_cfno = iNextNo;
                     Record.qtnm_no = sqtn_no;
                     Record.qtnm_type = stype;
+                    Record.qtnm_amt = amt;
 
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_branch_id = record_dto.rec_branch_id;
@@ -408,31 +380,6 @@ namespace Marketing.Repositories
                 Record.qtnm_salesman_id = record_dto.qtnm_salesman_id;
                 Record.qtnm_move_type = record_dto.qtnm_move_type;
                 Record.qtnm_commodity = record_dto.qtnm_commodity;
-                Record.qtnm_package = record_dto.qtnm_package;
-                Record.qtnm_kgs = record_dto.qtnm_kgs;
-                Record.qtnm_lbs = record_dto.qtnm_lbs;
-                Record.qtnm_cbm = record_dto.qtnm_cbm;
-                Record.qtnm_cft = record_dto.qtnm_cft;
-                if (Lib.IsZero(record_dto.qtnm_por_id))
-                    Record.qtnm_por_id = null;
-                else
-                    Record.qtnm_por_id = record_dto.qtnm_por_id;
-                Record.qtnm_por_name = record_dto.qtnm_por_name;
-                if (Lib.IsZero(record_dto.qtnm_pol_id))
-                    Record.qtnm_pol_id = null;
-                else
-                    Record.qtnm_pol_id = record_dto.qtnm_pol_id;
-                Record.qtnm_pol_name = record_dto.qtnm_pol_name;
-                if (Lib.IsZero(record_dto.qtnm_pod_id))
-                    Record.qtnm_pod_id = null;
-                else
-                    Record.qtnm_pod_id = record_dto.qtnm_pod_id;
-                Record.qtnm_pod_name = record_dto.qtnm_pod_name;
-                Record.qtnm_pld_name = record_dto.qtnm_pld_name;
-                Record.qtnm_plfd_name = record_dto.qtnm_plfd_name;
-                Record.qtnm_trans_time = record_dto.qtnm_trans_time;
-                Record.qtnm_routing = record_dto.qtnm_routing;
-                Record.qtnm_amt = record_dto.qtnm_amt ?? 0;
 
                 if (mode == "add")
                     await context.mark_qtnm.AddAsync(Record);
@@ -441,7 +388,6 @@ namespace Marketing.Repositories
                 context.SaveChanges();
                 record_dto.qtnm_id = Record.qtnm_id;
                 record_dto.qtnm_no = Record.qtnm_no;
-                record_dto.qtnm_amt = Record.qtnm_amt;
 
                 record_dto.rec_version = Record.rec_version;
                 Lib.AssignDates2DTO(id, mode, Record, record_dto);
@@ -456,15 +402,15 @@ namespace Marketing.Repositories
 
         public async Task<mark_qtnm_dto> SaveDetailsAsync(int id, mark_qtnm_dto record_dto)
         {
-            mark_qtnd_lcl? record;
-            List<mark_qtnd_lcl_dto> records_dto;
-            List<mark_qtnd_lcl> records;
+            mark_qtnd_air? record;
+            List<mark_qtnd_air_dto> records_dto;
+            List<mark_qtnd_air> records;
             try
             {
 
-                records_dto = record_dto.qtnd_lcl!;
+                records_dto = record_dto.qtnd_air!;
 
-                records = await context.mark_qtnd_lcl
+                records = await context.mark_qtnd_air
                     .Where(w => w.qtnd_qtnm_id == id)
                     .ToListAsync();
 
@@ -474,7 +420,7 @@ namespace Marketing.Repositories
                 {
                     var rec = records_dto.Find(f => f.qtnd_id == existing_record.qtnd_id);
                     if (rec == null)
-                        context.mark_qtnd_lcl.Remove(existing_record);
+                        context.mark_qtnd_air.Remove(existing_record);
                 }
 
                 foreach (var rec in records_dto)
@@ -482,7 +428,7 @@ namespace Marketing.Repositories
 
                     if (rec.qtnd_id == 0)
                     {
-                        record = new mark_qtnd_lcl();
+                        record = new mark_qtnd_air();
                         record.rec_company_id = record_dto.rec_company_id;
                         record.rec_branch_id = record_dto.rec_branch_id;
                         record.rec_created_by = record_dto.rec_created_by;
@@ -497,38 +443,58 @@ namespace Marketing.Repositories
                         record.rec_edited_date = DbLib.GetDateTime();
                     }
                     record.qtnd_qtnm_id = id;
-                    record.qtnd_acc_id = rec.qtnd_acc_id;
-                    record.qtnd_acc_name = rec.qtnd_acc_name;
-                    record.qtnd_amt = rec.qtnd_amt ?? 0;
-                    record.qtnd_per = rec.qtnd_per;
+                    if (Lib.IsZero(rec.qtnd_pol_id))
+                        record.qtnd_pol_id = null;
+                    else
+                        record.qtnd_pol_id = rec.qtnd_pol_id;
+                    record.qtnd_pol_name = rec.qtnd_pol_name;
+                    if (Lib.IsZero(rec.qtnd_pod_id))
+                        record.qtnd_pod_id = null;
+                    else
+                        record.qtnd_pod_id = rec.qtnd_pod_id;
+                    record.qtnd_pod_name = rec.qtnd_pod_name;
+                    if (Lib.IsZero(rec.qtnd_carrier_id))
+                        record.qtnd_carrier_id = null;
+                    else
+                        record.qtnd_carrier_id = rec.qtnd_carrier_id;
+                        record.qtnd_carrier_name = rec.qtnd_carrier_name;
+                    record.qtnd_trans_time = rec.qtnd_trans_time;
+                    record.qtnd_routing = rec.qtnd_routing;
+                    record.qtnd_etd = rec.qtnd_etd;
+                    record.qtnd_min = rec.qtnd_min;
+                    record.qtnd_45k = rec.qtnd_45k;
+                    record.qtnd_100k = rec.qtnd_100k;
+                    record.qtnd_300k = rec.qtnd_300k;
+                    record.qtnd_500k = rec.qtnd_500k;
+                    record.qtnd_1000k = rec.qtnd_1000k;
+                    record.qtnd_fsc = rec.qtnd_fsc;
+                    record.qtnd_war = rec.qtnd_war;
+                    record.qtnd_sfc = rec.qtnd_sfc;
+                    record.qtnd_hac = rec.qtnd_hac;
                     record.qtnd_order = nextorder++;
 
                     if (rec.qtnd_id == 0)
-                        await context.mark_qtnd_lcl.AddAsync(record);
+                        await context.mark_qtnd_air.AddAsync(record);
                 }
                 context.SaveChanges();
                 return record_dto;
             }
             catch (Exception Ex)
             {
-                Lib.getErrorMessage(Ex, "fk", "qtnd_acc_id", "Account type Cannot be blank");
-                throw;
+                throw new Exception(Ex.Message.ToString());
+                // Lib.getErrorMessage(Ex, "fk", "qtnd_pol_id", "POL Cannot be blank");
+                // throw;
             }
         }
         public int GetNextCfNo(int company_id, int? branch_id)
         {
             var maxCfNo = context.mark_qtnm
-            .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == "LCL")
+            .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == "AIR")
             .Select(e => e.qtnm_cfno)
             .DefaultIfEmpty()
             .Max();
 
             return maxCfNo + 1;
-        }
-        public decimal? FindTotal(mark_qtnm_dto record_dto)
-        {
-            decimal nTotal = record_dto.qtnd_lcl!.Sum(x => x.qtnd_amt) ?? 0;
-            return nTotal;
         }
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
@@ -547,11 +513,11 @@ namespace Marketing.Repositories
                 }
                 else
                 {
-                    var _Quote = context.mark_qtnd_lcl
+                    var _Quote = context.mark_qtnd_air
                      .Where(c => c.qtnd_qtnm_id == id);
                     if (_Quote.Any())
                     {
-                        context.mark_qtnd_lcl.RemoveRange(_Quote);
+                        context.mark_qtnd_air.RemoveRange(_Quote);
 
                     }
                     context.Remove(_Record);

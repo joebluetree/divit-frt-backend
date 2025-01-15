@@ -65,6 +65,7 @@ namespace Database
         //Marketing
         public DbSet<mark_qtnm> mark_qtnm { get; set; } = null!;
         public DbSet<mark_qtnd_lcl> mark_qtnd_lcl { get; set; } = null!;
+        public DbSet<mark_qtnd_air> mark_qtnd_air { get; set; } = null!;
 
         //Accounts
         public DbSet<acc_groupm> acc_groupm { get; set; } = null!;
@@ -444,6 +445,7 @@ namespace Database
         {
             modelBuilder.ApplyConfiguration(new mark_qtnm_config());
             modelBuilder.ApplyConfiguration(new mark_qtnd_lcl_config());
+            modelBuilder.ApplyConfiguration(new mark_qtnd_air_config());
         }
         private void CreateAcctmTables(ModelBuilder modelBuilder)
         {

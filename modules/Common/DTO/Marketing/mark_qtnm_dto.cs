@@ -50,6 +50,7 @@ namespace Common.DTO.Marketing
         public string? qtnm_routing { get; set; } = "";
         public decimal? qtnm_amt { get; set; } = 0;   
         public List<mark_qtnd_lcl_dto>? qtnd_lcl {get; set;} 
+        public List<mark_qtnd_air_dto>? qtnd_air {get; set;} 
                         
     }
 }

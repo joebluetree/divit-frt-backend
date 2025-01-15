@@ -45,6 +45,7 @@ namespace Database.Models.Marketing
         public mast_param? pol { get; set; }
         public mast_param? pod { get; set; }
         public List <mark_qtnd_lcl>? qtnd_lcl { get; set; } 
+        public List <mark_qtnd_air>? qtnd_air { get; set; } 
         
     }
 }

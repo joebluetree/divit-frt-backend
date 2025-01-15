@@ -214,6 +214,25 @@ namespace Database.fluent_config.Marketing
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1,
                 rec_branch_id =1,
+            },new mark_qtnm
+            {
+                qtnm_id = 20,
+                qtnm_cfno = 20,
+                qtnm_type = "AIR",
+                qtnm_no = "QA-20",
+                qtnm_to_id = 100,
+                qtnm_to_name = "ABC LTD KOCHI",
+                qtnm_to_addr1 = "KOCHI",
+                qtnm_date = DateTime.Now,
+                qtnm_quot_by = "ADMIN",
+                qtnm_valid_date = new DateTime(2025-05-12),
+                qtnm_salesman_id = 1,
+                qtnm_move_type = "DDU",
+                qtnm_amt = 0,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1,
+                rec_branch_id =1,
             });
         }
     }
