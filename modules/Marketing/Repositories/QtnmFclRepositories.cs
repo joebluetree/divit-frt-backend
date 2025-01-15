@@ -9,7 +9,7 @@ using Database.Models.BaseTables;
 using Marketing.Interfaces;
 using Database.Models.Marketing;
 using Common.DTO.Marketing;
-using Microsoft.AspNetCore.SignalR;
+
 
 namespace Marketing.Repositories
 {
@@ -40,7 +40,7 @@ namespace Marketing.Repositories
                 var company_id = 0;
                 var branch_id = 0;
                 var qtnm_pld_name = "";
-                
+
                 if (data.ContainsKey("qtnm_to_name"))
                     qtnm_to_name = data["qtnm_to_name"].ToString();
                 if (data.ContainsKey("qtnm_no"))
@@ -63,7 +63,7 @@ namespace Marketing.Repositories
 
                 IQueryable<mark_qtnm> query = context.mark_qtnm;
 
-                query = query.Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id);
+                query = query.Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == "FCL");
 
                 if (!Lib.IsBlank(qtnm_to_name))
                     query = query.Where(w => w.qtnm_to_name!.Contains(qtnm_to_name!));
@@ -87,7 +87,6 @@ namespace Marketing.Repositories
                 int StartRow = Lib.getStartRow(_page.currentPageNo, _page.pageSize);
 
                 query = query
-                    .Where(c => c.qtnm_type == "FCL")
                     .OrderBy(c => c.qtnm_no)
                     .Skip(StartRow)
                     .Take(_page.pageSize);
@@ -112,7 +111,7 @@ namespace Marketing.Repositories
                     qtnm_salesman_name = e.salesman!.param_name,
                     qtnm_move_type = e.qtnm_move_type,
                     qtnm_commodity = e.qtnm_commodity,
-                   
+
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                     rec_edited_by = e.rec_edited_by,
@@ -369,7 +368,7 @@ namespace Marketing.Repositories
 
         public decimal? GetTotalAmount(mark_qtnd_fcl_dto record_dto)
         {
-            var quantities = new List<decimal?>
+            var totcost = new List<decimal?>
             {
                 record_dto.qtnd_of,
                 record_dto.qtnd_pss,
@@ -378,7 +377,7 @@ namespace Marketing.Repositories
                 record_dto.qtnd_haulage,
                 record_dto.qtnd_ifs
             };
-            return quantities.Sum();
+            return totcost.Sum();
         }
 
         public async Task<mark_qtnm_dto> SaveDetailsAsync(int id, mark_qtnm_dto record_dto)
@@ -465,7 +464,7 @@ namespace Marketing.Repositories
         public int GetCfNo(int company_id, int? branch_id)
         {
             var maxCfNo = context.mark_qtnm
-            .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id)
+            .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == "FCL")
             .Select(e => e.qtnm_cfno)
             .DefaultIfEmpty()
             .Max();
