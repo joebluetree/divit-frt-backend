@@ -313,7 +313,6 @@ namespace Marketing.Repositories
                     Record.qtnm_no = sqtn_no;
                     Record.qtnm_type = "FCL";
 
-
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_branch_id = record_dto.rec_branch_id;
                     Record.rec_created_by = record_dto.rec_created_by;
