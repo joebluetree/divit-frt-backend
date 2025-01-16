@@ -214,10 +214,13 @@ namespace Marketing.Repositories
                             qtnd_id = e.qtnd_id,
                             qtnd_qtnm_id = e.qtnd_qtnm_id,
                             qtnd_pol_id = e.qtnd_pol_id,
+                            qtnd_pol_code = e.pol!.param_code,
                             qtnd_pol_name = e.pol!.param_name,
                             qtnd_pod_id = e.qtnd_pod_id,
+                            qtnd_pod_code = e.pod!.param_code,
                             qtnd_pod_name = e.pod!.param_name,
                             qtnd_carrier_id = e.qtnd_carrier_id,
+                            qtnd_carrier_code = e.carrier!.param_code,
                             qtnd_carrier_name = e.carrier!.param_name,
                             qtnd_trans_time = e.qtnd_trans_time,
                             qtnd_routing = e.qtnd_routing,
@@ -293,10 +296,10 @@ namespace Marketing.Repositories
 
             foreach (mark_qtnd_fcl_dto rec in record_dto.qtnm_fcl!)
             {
-                if (Lib.IsBlank(rec.qtnd_pod_name))
-                    code = "POD Name Cannot Be Blank!";
-                if (Lib.IsBlank(rec.qtnd_pol_name))
-                    name = "POL  Cannot Be Blank!";
+                if (Lib.IsZero(rec.qtnd_pod_id))
+                    code = "POD Cannot Be Blank!";
+                if (Lib.IsZero(rec.qtnd_pol_id))
+                    name = "POL Cannot Be Blank!";
             }
             if (code != "")
                 str += code;

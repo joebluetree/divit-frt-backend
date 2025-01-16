@@ -13,10 +13,13 @@ public class mark_qtnd_fcl_dto : basetable_dto
     public int? qtnd_id { get; set; }
     public int? qtnd_qtnm_id { get; set; }
     public int? qtnd_pol_id { get; set; }
+     public string? qtnd_pol_code { get; set; }
     public string? qtnd_pol_name { get; set; }
     public int? qtnd_pod_id { get; set; }
+     public string? qtnd_pod_code { get; set; }
     public string? qtnd_pod_name { get; set; }
     public int? qtnd_carrier_id { get; set; }
+    public string? qtnd_carrier_code { get; set; }
     public string? qtnd_carrier_name { get; set; }
     public string? qtnd_trans_time { get; set; }
     public string? qtnd_routing { get; set; }
