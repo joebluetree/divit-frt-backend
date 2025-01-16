@@ -3,6 +3,9 @@ using Database.Models.BaseTables;
 using Database.Models.Marketing;
 using System.ComponentModel.DataAnnotations;
 
+//Name : Sourav V
+//Created Date : 03/01/2025
+//Remark : this file defines data objects(variables) which transfer data from frontend to backend and vice-versa
 
 namespace Common.DTO.Marketing
 {
@@ -50,6 +53,7 @@ namespace Common.DTO.Marketing
         public string? qtnm_routing { get; set; } = "";
         public decimal? qtnm_amt { get; set; } = 0;   
         public List<mark_qtnd_lcl_dto>? qtnd_lcl {get; set;} 
+        public List<mark_qtnd_air_dto>? qtnd_air {get; set;} 
                         
     }
 }

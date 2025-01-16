@@ -2,12 +2,12 @@
 using Common.DTO.Marketing;
 
 //Name : Sourav V
-//Created Date : 03/01/2025
-//Remark : this file defines interface for managing qtnm-lcl data with function to save,retrive and delete records
+//Created Date : 10/01/2025
+//Remark : this file defines interface for managing qtnm-air data with function to save,retrive and delete records
 
 namespace Marketing.Interfaces
 {
-    public interface IQtnmLclRepository
+    public interface IQtnmAirRepository
     {
         Task<Dictionary<string, object>> GetListAsync(Dictionary<string, object> data);
         Task<mark_qtnm_dto?> GetRecordAsync(int id);
