@@ -10,6 +10,10 @@ using Marketing.Interfaces;
 using Database.Models.Marketing;
 using Common.DTO.Marketing;
 
+//Name : Sourav V
+//Created Date : 10/01/2025
+//Remark : this file defines functions like Save, Delete, getList and getRecords which save/retrieve data
+
 namespace Marketing.Repositories
 {
     public class QtnmAirRepository : IQtnmAirRepository
@@ -89,7 +93,7 @@ namespace Marketing.Repositories
                     query = query.Where(w => w.qtnm_to_name!.Contains(qtnm_to_name!));
                 if (!Lib.IsBlank(qtnm_no))
                     query = query.Where(w => w.qtnm_no!.Contains(qtnm_no!));
-                
+
                 if (action == "SEARCH")
                 {
                     _page.rows = query.Count();
@@ -206,13 +210,13 @@ namespace Marketing.Repositories
                             qtnd_qtnm_id = e.qtnd_qtnm_id,
                             qtnd_pol_id = e.qtnd_pol_id,
                             qtnd_pol_code = e.pol!.param_code,
-                            qtnd_pol_name = e.pol!.param_name,
+                            qtnd_pol_name = e.qtnd_pol_name,
                             qtnd_pod_id = e.qtnd_pod_id,
                             qtnd_pod_code = e.pod!.param_code,
-                            qtnd_pod_name = e.pod!.param_name,
+                            qtnd_pod_name = e.qtnd_pod_name,
                             qtnd_carrier_id = e.qtnd_carrier_id,
                             qtnd_carrier_code = e.carrier!.param_code,
-                            qtnd_carrier_name = e.carrier!.param_name,
+                            qtnd_carrier_name = e.qtnd_carrier_name,
                             qtnd_trans_time = e.qtnd_trans_time,
                             qtnd_routing = e.qtnd_routing,
                             qtnd_etd = e.qtnd_etd,
@@ -226,7 +230,7 @@ namespace Marketing.Repositories
                             qtnd_war = e.qtnd_war,
                             qtnd_sfc = e.qtnd_sfc,
                             qtnd_hac = e.qtnd_hac,
-                            qtnd_order = e.qtnd_order,                                                        
+                            qtnd_order = e.qtnd_order,
 
                             rec_branch_id = e.rec_branch_id,
                             rec_created_by = e.rec_created_by,
@@ -306,7 +310,7 @@ namespace Marketing.Repositories
             {
                 str += "Quotation Line Item Need To Be Entered";
             }
-            
+
             if (pol != "")
                 str += pol;
             if (pod != "")
@@ -339,7 +343,7 @@ namespace Marketing.Repositories
                 if (mode == "add")
                 {
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id);
-                    string sqtn_no = $"QA-{iNextNo}";
+                    string sqtn_no = $"QA-{iNextNo}";                               // for setting quote no by adding propper prefix (here QA - Quotation AIR)
                     string stype = "AIR";
                     int amt = 0;
 
@@ -457,7 +461,7 @@ namespace Marketing.Repositories
                         record.qtnd_carrier_id = null;
                     else
                         record.qtnd_carrier_id = rec.qtnd_carrier_id;
-                        record.qtnd_carrier_name = rec.qtnd_carrier_name;
+                    record.qtnd_carrier_name = rec.qtnd_carrier_name;
                     record.qtnd_trans_time = rec.qtnd_trans_time;
                     record.qtnd_routing = rec.qtnd_routing;
                     record.qtnd_etd = rec.qtnd_etd;
@@ -482,11 +486,9 @@ namespace Marketing.Repositories
             catch (Exception Ex)
             {
                 throw new Exception(Ex.Message.ToString());
-                // Lib.getErrorMessage(Ex, "fk", "qtnd_pol_id", "POL Cannot be blank");
-                // throw;
             }
         }
-        public int GetNextCfNo(int company_id, int? branch_id)
+        public int GetNextCfNo(int company_id, int? branch_id)          // function used to get the next cf number
         {
             var maxCfNo = context.mark_qtnm
             .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == "AIR")

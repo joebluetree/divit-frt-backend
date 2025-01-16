@@ -7,6 +7,10 @@ using Database.Lib;
 using Marketing.Interfaces;
 using Common.DTO.Marketing;
 
+//Name : Sourav V
+//Created Date : 03/01/2025
+//Remark : this file defines paths or route for accessing functions Repository
+
 namespace Marketing.Controllers
 {
     [Authorize]

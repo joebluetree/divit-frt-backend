@@ -10,6 +10,10 @@ using Marketing.Interfaces;
 using Database.Models.Marketing;
 using Common.DTO.Marketing;
 
+//Name : Sourav V
+//Created Date : 03/01/2025
+//Remark : this file defines functions like Save, Delete, getList and getRecords which save/retrieve data
+
 namespace Marketing.Repositories
 {
     public class QtnmLclRepository : IQtnmLclRepository
@@ -332,7 +336,7 @@ namespace Marketing.Repositories
                 str += "Quotation Line Item Need To Be Entered";
             }
 
-            decimal? nTotal = this.FindTotal(record_dto);
+            decimal? nTotal = this.FindTotal(record_dto);                   //find sum of each detail amount
 
             if (record_dto.qtnm_amt != nTotal)
             {
@@ -369,7 +373,7 @@ namespace Marketing.Repositories
                 if (mode == "add")
                 {
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id);
-                    string sqtn_no = $"QL-{iNextNo}";
+                    string sqtn_no = $"QL-{iNextNo}";                               // for setting quote no by adding propper prefix (here QL - Quotation LCL)
                     string stype = "LCL";
 
                     Record = new mark_qtnm();
@@ -515,7 +519,7 @@ namespace Marketing.Repositories
                 throw;
             }
         }
-        public int GetNextCfNo(int company_id, int? branch_id)
+        public int GetNextCfNo(int company_id, int? branch_id)   // function used to get the next cf number
         {
             var maxCfNo = context.mark_qtnm
             .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == "LCL")
@@ -525,7 +529,7 @@ namespace Marketing.Repositories
 
             return maxCfNo + 1;
         }
-        public decimal? FindTotal(mark_qtnm_dto record_dto)
+        public decimal? FindTotal(mark_qtnm_dto record_dto)   // used to find total amount from each records
         {
             decimal nTotal = record_dto.qtnd_lcl!.Sum(x => x.qtnd_amt) ?? 0;
             return nTotal;

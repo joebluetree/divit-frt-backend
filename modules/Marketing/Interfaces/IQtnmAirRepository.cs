@@ -1,6 +1,9 @@
 
 using Common.DTO.Marketing;
 
+//Name : Sourav V
+//Created Date : 10/01/2025
+//Remark : this file defines interface for managing qtnm-air data with function to save,retrive and delete records
 
 namespace Marketing.Interfaces
 {

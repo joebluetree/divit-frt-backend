@@ -3,6 +3,10 @@ using Database.Models.BaseTables;
 using Database.Models.Masters;
 using Database.Models.UserAdmin;
 
+//Name : Sourav V
+//Created Date : 03/01/2025
+//Remark : this file initialise data variables and their data type used in mark_qtnd-lcl table
+
 namespace Database.Models.Marketing
 {
     public class mark_qtnd_lcl : baseTable

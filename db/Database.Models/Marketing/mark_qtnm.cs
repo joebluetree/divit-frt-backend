@@ -1,6 +1,10 @@
 ﻿using Database.Models.BaseTables;
 using Database.Models.Masters;
 
+//Name : Sourav V
+//Created Date : 03/01/2025
+//Remark : this file initialise data variables and their data type used in parent table(mark_qtnm)
+
 namespace Database.Models.Marketing
 {
     public class mark_qtnm : baseTable
