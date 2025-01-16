@@ -13,6 +13,11 @@ using Common.DTO.Marketing;
 
 namespace Marketing.Repositories
 {
+
+    //Name : Alen Cherian
+    //Date : 03/01/2025
+    //Command :  Create Repository for the Quotation Fcl.
+
     public class QtnmFclRepository : IQtnmFclRepository
     {
         private readonly AppDbContext context;

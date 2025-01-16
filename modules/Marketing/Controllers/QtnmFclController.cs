@@ -9,6 +9,11 @@ using Common.DTO.Marketing;
 
 namespace Marketing.Controllers
 {
+    //Name : Alen Cherian
+    //Date : 03/01/2025
+    //Command :  Api Controller for the Quotation Fcl.
+
+
     [Authorize]
     [Route("api/Marketing/Qtnmfcl")]
     public class QtnmFclController : Controller

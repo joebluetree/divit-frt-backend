@@ -6,6 +6,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace database.fluent_config.Marketing;
 
+    //Name : Alen Cherian
+    //Date : 03/01/2025
+    //Command :  Database  fluent_Configuration for Quotation Fcl.
+
 public class mark_qtnd_fcl_config : IEntityTypeConfiguration<mark_qtnd_fcl>
 {
     public void Configure(EntityTypeBuilder<mark_qtnd_fcl> modelBuilder)

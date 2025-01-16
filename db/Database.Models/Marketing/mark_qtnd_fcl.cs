@@ -4,6 +4,11 @@ using Database.Models.Masters;
 
 namespace Database.Models.Marketing
 {
+
+    //Name : Alen Cherian
+    //Date : 03/01/2025
+    //Command :  Database Table for the Quotation Fcl.
+
     public class mark_qtnd_fcl : baseTable
     {
     public int? qtnd_id { get; set; } //pk

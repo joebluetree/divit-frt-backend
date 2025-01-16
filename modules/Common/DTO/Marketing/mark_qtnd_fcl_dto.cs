@@ -4,6 +4,10 @@ using Database.Models.BaseTables;
 
 namespace Common.DTO.Marketing;
 
+    //Name : Alen Cherian
+    //Date : 03/01/2025
+    //Command :  DTO Table for the Quotation Fcl.
+
 public class mark_qtnd_fcl_dto : basetable_dto
 {
     public int? qtnd_id { get; set; }

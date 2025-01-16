@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Common.DTO.Marketing
 {
+
     public class mark_qtnm_dto : basetable_dto
     {
         public int qtnm_id { get; set; } = 0;
