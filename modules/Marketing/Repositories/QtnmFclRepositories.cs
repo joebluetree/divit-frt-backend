@@ -45,6 +45,10 @@ namespace Marketing.Repositories
                 var company_id = 0;
                 var branch_id = 0;
                 var qtnm_pld_name = "";
+                var qtnm_from_date = "";
+                var qtnm_to_date = "";
+                DateTime? from_date = null;
+                DateTime? to_date = null;
 
                 if (data.ContainsKey("qtnm_to_name"))
                     qtnm_to_name = data["qtnm_to_name"].ToString();
@@ -52,6 +56,11 @@ namespace Marketing.Repositories
                     qtnm_no = data["qtnm_no"].ToString();
                 if (data.ContainsKey("qtnm_pld_name"))
                     qtnm_pld_name = data["qtnm_pld_name"].ToString();
+                if (data.ContainsKey("qtnm_from_date"))
+                    qtnm_from_date = data["qtnm_from_date"].ToString();
+                if (data.ContainsKey("qtnm_to_date"))
+                    qtnm_to_date = data["qtnm_to_date"].ToString();
+
                 if (data.ContainsKey("rec_company_id"))
                     company_id = int.Parse(data["rec_company_id"].ToString()!);
                 if (company_id == 0)
@@ -70,6 +79,17 @@ namespace Marketing.Repositories
 
                 query = query.Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == "FCL");
 
+
+                if (!Lib.IsBlank(qtnm_from_date))
+                {
+                    from_date = Lib.ParseDate(qtnm_from_date!);
+                    query = query.Where(w => w.qtnm_date >= from_date);
+                }
+                if (!Lib.IsBlank(qtnm_to_date))
+                {
+                    to_date = Lib.ParseDate(qtnm_to_date!);
+                    query = query.Where(w => w.qtnm_date <= to_date);
+                }
                 if (!Lib.IsBlank(qtnm_to_name))
                     query = query.Where(w => w.qtnm_to_name!.Contains(qtnm_to_name!));
                 if (!Lib.IsBlank(qtnm_no))
@@ -274,9 +294,9 @@ namespace Marketing.Repositories
             foreach (mark_qtnd_fcl_dto rec in record_dto.qtnm_fcl!)
             {
                 if (Lib.IsBlank(rec.qtnd_pod_name))
-                    code = "POD Cannot Be Blank!";
+                    code = "POD Name Cannot Be Blank!";
                 if (Lib.IsBlank(rec.qtnd_pol_name))
-                    name = "POL Cannot Be Blank!";
+                    name = "POL  Cannot Be Blank!";
             }
             if (code != "")
                 str += code;
@@ -367,6 +387,7 @@ namespace Marketing.Repositories
 
         }
 
+        //The function for total amount of Logistics Charges and Surcharges
         public decimal? GetTotalAmount(mark_qtnd_fcl_dto record_dto)
         {
             var totcost = new List<decimal?>

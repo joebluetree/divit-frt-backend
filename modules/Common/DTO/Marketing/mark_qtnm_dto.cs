@@ -48,6 +48,8 @@ namespace Common.DTO.Marketing
         public string? qtnm_trans_time { get; set; } = "";
         public string? qtnm_routing { get; set; } = "";
         public decimal? qtnm_amt { get; set; } = 0;   
+        public string? qtnm_to_date { get; set; } = "";
+        public string? qtnm_from_date { get; set; } = "";
         public List<mark_qtnd_fcl_dto>? qtnm_fcl {get; set;}             
     }
 }
