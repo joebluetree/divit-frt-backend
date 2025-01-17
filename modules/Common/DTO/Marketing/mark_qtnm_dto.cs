@@ -4,6 +4,15 @@ using Database.Models.Marketing;
 using System.ComponentModel.DataAnnotations;
 
 
+
+namespace Common.DTO.Marketing
+{
+
+
+//Name : Sourav V
+//Created Date : 03/01/2025
+//Remark : this file defines data objects(variables) which transfer data from frontend to backend and vice-versa
+
 namespace Common.DTO.Marketing
 {
 
@@ -14,13 +23,19 @@ namespace Common.DTO.Marketing
         public string? qtnm_type { get; set; } = "";
         public string? qtnm_no { get; set; } = "";
         public int qtnm_to_id { get; set; } = 0;
+
         public string? qtnm_to_name { get; set; } = "";
         public string? qtnm_to_code { get; set;}= "";
+
         public string? qtnm_to_addr1 { get; set;} = "";
         public string? qtnm_to_addr2 { get; set; } = "";
         public string? qtnm_to_addr3 { get; set; } = "";
         public string? qtnm_to_addr4 { get; set; } = "";
         public string? qtnm_date { get; set; } = "";
+
+        public string? qtnm_from_date { get; set; } = "";
+        public string? qtnm_to_date { get; set; } = "";
+
         public string? qtnm_quot_by { get; set; } = "";
         public string? qtnm_valid_date { get; set; } = "";
         public int qtnm_salesman_id { get; set; } = 0;
@@ -48,9 +63,13 @@ namespace Common.DTO.Marketing
         public string? qtnm_trans_time { get; set; } = "";
         public string? qtnm_routing { get; set; } = "";
         public decimal? qtnm_amt { get; set; } = 0;   
-        public string? qtnm_to_date { get; set; } = "";
-        public string? qtnm_from_date { get; set; } = "";
+
         public List<mark_qtnd_fcl_dto>? qtnm_fcl {get; set;}             
+
+        public List<mark_qtnd_lcl_dto>? qtnd_lcl {get; set;} 
+        public List<mark_qtnd_air_dto>? qtnd_air {get; set;} 
+                        
+
     }
 }
 

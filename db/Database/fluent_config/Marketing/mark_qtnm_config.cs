@@ -4,6 +4,9 @@ using Database.Models.Marketing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+//Name : Sourav V
+//Created Date : 03/01/2025
+//Remark : this file defines schema,relationship, constraint and initial seed data of mark_qtnm
 
 namespace Database.fluent_config.Marketing
 {
@@ -214,12 +217,12 @@ namespace Database.fluent_config.Marketing
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1,
                 rec_branch_id =1,
-            }, new mark_qtnm
+            },new mark_qtnm
             {
-                qtnm_id = 10,
-                qtnm_cfno = 10,
-                qtnm_type = "FCL",
-                qtnm_no = "QF-10",
+                qtnm_id = 20,
+                qtnm_cfno = 20,
+                qtnm_type = "AIR",
+                qtnm_no = "QA-20",
                 qtnm_to_id = 100,
                 qtnm_to_name = "ABC LTD KOCHI",
                 qtnm_to_addr1 = "KOCHI",
@@ -232,6 +235,8 @@ namespace Database.fluent_config.Marketing
                 qtnm_pol_id = null,
                 qtnm_pod_id = null,
                 qtnm_amt = 5000,
+                qtnm_move_type = "DDU",
+                qtnm_amt = 0,
                 rec_created_by = "ADMIN",
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1,

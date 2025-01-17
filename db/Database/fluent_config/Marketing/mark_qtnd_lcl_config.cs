@@ -4,6 +4,9 @@ using Database.Models.Marketing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+//Name : Sourav V
+//Created Date : 03/01/2025
+//Remark : this file defines schema,relationship, constraint and initial seed data of mark_qtnd_lcl
 
 namespace Database.fluent_config.Marketing
 {
@@ -27,7 +30,7 @@ namespace Database.fluent_config.Marketing
             //columns
             modelBuilder.Property(u => u.qtnd_acc_name)
                 .HasMaxLength(50)
-                .IsRequired();
+                .IsRequired(false);
             modelBuilder.Property(u => u.qtnd_amt)
                 .HasColumnType("decimal(15,3)")
                 .IsRequired(false);

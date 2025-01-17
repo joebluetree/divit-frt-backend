@@ -1,6 +1,10 @@
 ﻿using Database.Models.BaseTables;
 using Database.Models.Masters;
 
+//Name : Sourav V
+//Created Date : 03/01/2025
+//Remark : this file initialise data variables and their data type used in parent table(mark_qtnm)
+
 namespace Database.Models.Marketing
 {
     public class mark_qtnm : baseTable
@@ -44,7 +48,11 @@ namespace Database.Models.Marketing
         public mast_param? pol { get; set; }
         public mast_param? pod { get; set; }
         public List <mark_qtnd_lcl>? qtnd_lcl { get; set; } 
+
         public List <mark_qtnd_fcl>? qtnm_fcl { get; set; } 
+
+        public List <mark_qtnd_air>? qtnd_air { get; set; } 
+
         
     }
 }
