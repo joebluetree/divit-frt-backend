@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Database.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class newMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -279,7 +279,7 @@ namespace Database.Migrations
                     value = table.Column<string>(type: "character varying(1500)", maxLength: 1500, nullable: false),
                     code = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
-                    json = table.Column<string>(type: "text", nullable: false),
+                    json = table.Column<string>(type: "text", nullable: true),
                     param_id = table.Column<int>(type: "integer", nullable: true),
                     order = table.Column<int>(type: "integer", nullable: false),
                     rec_version = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
@@ -376,6 +376,91 @@ namespace Database.Migrations
                         principalColumn: "module_id");
                     table.ForeignKey(
                         name: "fk_mast_menum_rec_company_id",
+                        column: x => x.rec_company_id,
+                        principalTable: "mast_companym",
+                        principalColumn: "comp_id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "mark_qtnm",
+                columns: table => new
+                {
+                    qtnm_id = table.Column<int>(type: "integer", nullable: false, defaultValueSql: "nextval('\"master_sequence\"')"),
+                    qtnm_cfno = table.Column<int>(type: "integer", nullable: false),
+                    qtnm_type = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
+                    qtnm_no = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
+                    qtnm_to_id = table.Column<int>(type: "integer", nullable: false),
+                    qtnm_to_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    qtnm_to_addr1 = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    qtnm_to_addr2 = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnm_to_addr3 = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnm_to_addr4 = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnm_date = table.Column<DateTime>(type: "date", nullable: false),
+                    qtnm_quot_by = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    qtnm_valid_date = table.Column<DateTime>(type: "date", nullable: true),
+                    qtnm_salesman_id = table.Column<int>(type: "integer", nullable: false),
+                    qtnm_move_type = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    qtnm_commodity = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
+                    qtnm_package = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
+                    qtnm_kgs = table.Column<decimal>(type: "numeric(15,3)", nullable: true),
+                    qtnm_lbs = table.Column<decimal>(type: "numeric(15,3)", nullable: true),
+                    qtnm_cbm = table.Column<decimal>(type: "numeric(15,3)", nullable: true),
+                    qtnm_cft = table.Column<decimal>(type: "numeric(15,3)", nullable: true),
+                    qtnm_por_id = table.Column<int>(type: "integer", nullable: true),
+                    qtnm_por_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnm_pol_id = table.Column<int>(type: "integer", nullable: true),
+                    qtnm_pol_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnm_pod_id = table.Column<int>(type: "integer", nullable: true),
+                    qtnm_pod_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnm_pld_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnm_plfd_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnm_trans_time = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnm_routing = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnm_amt = table.Column<decimal>(type: "numeric(15,3)", nullable: false),
+                    rec_version = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
+                    rec_locked = table.Column<string>(type: "text", nullable: true),
+                    rec_created_by = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    rec_created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    rec_edited_by = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    rec_edited_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    rec_company_id = table.Column<int>(type: "integer", nullable: false),
+                    rec_branch_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_mark_qtnm_qtnm_pkid", x => x.qtnm_id);
+                    table.ForeignKey(
+                        name: "fk_mark_qtnm_qtnm_pod_id",
+                        column: x => x.qtnm_pod_id,
+                        principalTable: "mast_param",
+                        principalColumn: "param_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnm_qtnm_pol_id",
+                        column: x => x.qtnm_pol_id,
+                        principalTable: "mast_param",
+                        principalColumn: "param_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnm_qtnm_por_id",
+                        column: x => x.qtnm_por_id,
+                        principalTable: "mast_param",
+                        principalColumn: "param_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnm_qtnm_salesman_id",
+                        column: x => x.qtnm_salesman_id,
+                        principalTable: "mast_param",
+                        principalColumn: "param_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnm_qtnm_to_id",
+                        column: x => x.qtnm_to_id,
+                        principalTable: "mast_customerm",
+                        principalColumn: "cust_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnm_rec_branch_id",
+                        column: x => x.rec_branch_id,
+                        principalTable: "mast_branchm",
+                        principalColumn: "branch_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnm_rec_company_id",
                         column: x => x.rec_company_id,
                         principalTable: "mast_companym",
                         principalColumn: "comp_id");
@@ -507,6 +592,208 @@ namespace Database.Migrations
                         column: x => x.ub_user_id,
                         principalTable: "mast_userm",
                         principalColumn: "user_id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "mark_qtnd_air",
+                columns: table => new
+                {
+                    qtnd_id = table.Column<int>(type: "integer", nullable: false, defaultValueSql: "nextval('\"master_sequence\"')"),
+                    qtnd_qtnm_id = table.Column<int>(type: "integer", nullable: false),
+                    qtnd_pol_id = table.Column<int>(type: "integer", nullable: true),
+                    qtnd_pol_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    qtnd_pod_id = table.Column<int>(type: "integer", nullable: true),
+                    qtnd_pod_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    qtnd_carrier_id = table.Column<int>(type: "integer", nullable: true),
+                    qtnd_carrier_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    qtnd_trans_time = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
+                    qtnd_routing = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
+                    qtnd_etd = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    qtnd_min = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    qtnd_45k = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    qtnd_100k = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    qtnd_300k = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    qtnd_500k = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    qtnd_1000k = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    qtnd_fsc = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    qtnd_war = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    qtnd_sfc = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    qtnd_hac = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    qtnd_order = table.Column<int>(type: "integer", nullable: false),
+                    mark_qtnmqtnm_id = table.Column<int>(type: "integer", nullable: true),
+                    rec_version = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
+                    rec_locked = table.Column<string>(type: "text", nullable: true),
+                    rec_created_by = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    rec_created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    rec_edited_by = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    rec_edited_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    rec_company_id = table.Column<int>(type: "integer", nullable: false),
+                    rec_branch_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_mark_qtnd_air_qtnd_id", x => x.qtnd_id);
+                    table.ForeignKey(
+                        name: "FK_mark_qtnd_air_mark_qtnm_mark_qtnmqtnm_id",
+                        column: x => x.mark_qtnmqtnm_id,
+                        principalTable: "mark_qtnm",
+                        principalColumn: "qtnm_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_air_qtnd_carrier_id",
+                        column: x => x.qtnd_carrier_id,
+                        principalTable: "mast_param",
+                        principalColumn: "param_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_air_qtnd_pod_id",
+                        column: x => x.qtnd_pod_id,
+                        principalTable: "mast_param",
+                        principalColumn: "param_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_air_qtnd_pol_id",
+                        column: x => x.qtnd_pol_id,
+                        principalTable: "mast_param",
+                        principalColumn: "param_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_air_qtnd_qtnm_id",
+                        column: x => x.qtnd_qtnm_id,
+                        principalTable: "mark_qtnm",
+                        principalColumn: "qtnm_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_air_rec_branch_id",
+                        column: x => x.rec_branch_id,
+                        principalTable: "mast_branchm",
+                        principalColumn: "branch_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_air_rec_company_id",
+                        column: x => x.rec_company_id,
+                        principalTable: "mast_companym",
+                        principalColumn: "comp_id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "mark_qtnd_fcl",
+                columns: table => new
+                {
+                    qtnd_id = table.Column<int>(type: "integer", nullable: false, defaultValueSql: "nextval('\"master_sequence\"')"),
+                    qtnd_qtnm_id = table.Column<int>(type: "integer", nullable: false),
+                    qtnd_pol_id = table.Column<int>(type: "integer", nullable: true),
+                    qtnd_pol_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnd_pod_id = table.Column<int>(type: "integer", nullable: true),
+                    qtnd_pod_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnd_carrier_id = table.Column<int>(type: "integer", nullable: true),
+                    qtnd_carrier_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnd_trans_time = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: true),
+                    qtnd_routing = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnd_cntr_type = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
+                    qtnd_etd = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
+                    qtnd_cutoff = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
+                    qtnd_of = table.Column<decimal>(type: "numeric(15,3)", nullable: true),
+                    qtnd_pss = table.Column<decimal>(type: "numeric(15,3)", nullable: true),
+                    qtnd_baf = table.Column<decimal>(type: "numeric(15,3)", nullable: true),
+                    qtnd_isps = table.Column<decimal>(type: "numeric(15,3)", nullable: true),
+                    qtnd_haulage = table.Column<decimal>(type: "numeric(15,3)", nullable: true),
+                    qtnd_ifs = table.Column<decimal>(type: "numeric(15,3)", nullable: true),
+                    qtnd_tot_amt = table.Column<decimal>(type: "numeric(15,3)", nullable: false),
+                    qtnd_order = table.Column<int>(type: "integer", nullable: true),
+                    mark_qtnmqtnm_id = table.Column<int>(type: "integer", nullable: true),
+                    rec_version = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
+                    rec_locked = table.Column<string>(type: "text", nullable: true),
+                    rec_created_by = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    rec_created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    rec_edited_by = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    rec_edited_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    rec_company_id = table.Column<int>(type: "integer", nullable: false),
+                    rec_branch_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_mark_qtnd_fcl_qtnd_id", x => x.qtnd_id);
+                    table.ForeignKey(
+                        name: "FK_mark_qtnd_fcl_mark_qtnm_mark_qtnmqtnm_id",
+                        column: x => x.mark_qtnmqtnm_id,
+                        principalTable: "mark_qtnm",
+                        principalColumn: "qtnm_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_fcl_qtnd_carrier_id",
+                        column: x => x.qtnd_carrier_id,
+                        principalTable: "mast_param",
+                        principalColumn: "param_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_fcl_qtnd_pod_id",
+                        column: x => x.qtnd_pod_id,
+                        principalTable: "mast_param",
+                        principalColumn: "param_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_fcl_qtnd_pol_id",
+                        column: x => x.qtnd_pol_id,
+                        principalTable: "mast_param",
+                        principalColumn: "param_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_fcl_qtnd_qtnm_id",
+                        column: x => x.qtnd_qtnm_id,
+                        principalTable: "mark_qtnm",
+                        principalColumn: "qtnm_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_fcl_rec_branch_id",
+                        column: x => x.rec_branch_id,
+                        principalTable: "mast_branchm",
+                        principalColumn: "branch_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_fcl_rec_company_id",
+                        column: x => x.rec_company_id,
+                        principalTable: "mast_companym",
+                        principalColumn: "comp_id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "mark_qtnd_lcl",
+                columns: table => new
+                {
+                    qtnd_id = table.Column<int>(type: "integer", nullable: false, defaultValueSql: "nextval('\"master_sequence\"')"),
+                    qtnd_qtnm_id = table.Column<int>(type: "integer", nullable: false),
+                    qtnd_acc_id = table.Column<int>(type: "integer", nullable: false),
+                    qtnd_acc_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    qtnd_amt = table.Column<decimal>(type: "numeric(15,3)", nullable: true),
+                    qtnd_per = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    qtnd_order = table.Column<int>(type: "integer", nullable: false),
+                    mark_qtnmqtnm_id = table.Column<int>(type: "integer", nullable: true),
+                    rec_version = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
+                    rec_locked = table.Column<string>(type: "text", nullable: true),
+                    rec_created_by = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    rec_created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    rec_edited_by = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    rec_edited_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    rec_company_id = table.Column<int>(type: "integer", nullable: false),
+                    rec_branch_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_mark_qtnd_lcl_qtnd_pkid", x => x.qtnd_id);
+                    table.ForeignKey(
+                        name: "FK_mark_qtnd_lcl_mark_qtnm_mark_qtnmqtnm_id",
+                        column: x => x.mark_qtnmqtnm_id,
+                        principalTable: "mark_qtnm",
+                        principalColumn: "qtnm_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_lcl_qtnd_acc_id",
+                        column: x => x.qtnd_acc_id,
+                        principalTable: "acc_acctm",
+                        principalColumn: "acc_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_lcl_qtnm_pkid",
+                        column: x => x.qtnd_qtnm_id,
+                        principalTable: "mark_qtnm",
+                        principalColumn: "qtnm_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_lcl_rec_branch_id",
+                        column: x => x.rec_branch_id,
+                        principalTable: "mast_branchm",
+                        principalColumn: "branch_id");
+                    table.ForeignKey(
+                        name: "fk_mark_qtnd_lcl_rec_company_id",
+                        column: x => x.rec_company_id,
+                        principalTable: "mast_companym",
+                        principalColumn: "comp_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -655,8 +942,8 @@ namespace Database.Migrations
                 columns: new[] { "comp_id", "comp_address1", "comp_address2", "comp_address3", "comp_code", "comp_name", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date" },
                 values: new object[,]
                 {
-                    { 1, "ADDRESS LINE 1", "ADDRESS LINE 2", "ADDRESS LINE3 3", "COMPANY1", "COMPANY1", "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 100, DateTimeKind.Utc).AddTicks(5608), null, null },
-                    { 2, "ADDRESS LINE 1", "ADDRESS LINE 2", "ADDRESS LINE3 3", "COMPANY2", "COMPANY2", "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 100, DateTimeKind.Utc).AddTicks(5611), null, null }
+                    { 1, "ADDRESS LINE 1", "ADDRESS LINE 2", "ADDRESS LINE3 3", "COMPANY1", "COMPANY1", "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 956, DateTimeKind.Utc).AddTicks(2351), null, null },
+                    { 2, "ADDRESS LINE 1", "ADDRESS LINE 2", "ADDRESS LINE3 3", "COMPANY2", "COMPANY2", "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 956, DateTimeKind.Utc).AddTicks(2355), null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -664,10 +951,10 @@ namespace Database.Migrations
                 columns: new[] { "grp_id", "grp_main_group", "grp_name", "grp_order", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date", "rec_locked" },
                 values: new object[,]
                 {
-                    { 1, "ASSET", "CURRENT ASSETS", 1, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 118, DateTimeKind.Utc).AddTicks(8910), null, null, "N" },
-                    { 2, "LIABILITIES", "CURRENT LIABILITIES", 1, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 118, DateTimeKind.Utc).AddTicks(8912), null, null, "N" },
-                    { 3, "DIRECT INCOME", "DIRECT INCOME", 1, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 118, DateTimeKind.Utc).AddTicks(8913), null, null, "N" },
-                    { 4, "DIRECT EXPENSE", "DIRECT EXPENSE", 1, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 118, DateTimeKind.Utc).AddTicks(8915), null, null, "N" }
+                    { 1, "ASSET", "CURRENT ASSETS", 1, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 17, DateTimeKind.Utc).AddTicks(7423), null, null, "N" },
+                    { 2, "LIABILITIES", "CURRENT LIABILITIES", 1, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 17, DateTimeKind.Utc).AddTicks(7427), null, null, "N" },
+                    { 3, "DIRECT INCOME", "DIRECT INCOME", 1, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 17, DateTimeKind.Utc).AddTicks(7428), null, null, "N" },
+                    { 4, "DIRECT EXPENSE", "DIRECT EXPENSE", 1, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 17, DateTimeKind.Utc).AddTicks(7430), null, null, "N" }
                 });
 
             migrationBuilder.InsertData(
@@ -675,24 +962,24 @@ namespace Database.Migrations
                 columns: new[] { "branch_id", "branch_address1", "branch_address2", "branch_address3", "branch_code", "branch_name", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date", "rec_locked" },
                 values: new object[,]
                 {
-                    { 1, "ADDRESS LINE 1", "ADDRESS LINE 2", "ADDRESS LINE3 3", "BRANCH1", "BRANCH1", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 102, DateTimeKind.Utc).AddTicks(6600), null, null, "N" },
-                    { 2, "ADDRESS LINE 1", "ADDRESS LINE 2", "ADDRESS LINE3 3", "BRANCH2", "BRANCH2", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 102, DateTimeKind.Utc).AddTicks(6603), null, null, "N" },
-                    { 3, "ADDRESS LINE 1", "ADDRESS LINE 2", "ADDRESS LINE3 3", "BRANCH3", "BRANCH3", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 102, DateTimeKind.Utc).AddTicks(6604), null, null, "N" }
+                    { 1, "ADDRESS LINE 1", "ADDRESS LINE 2", "ADDRESS LINE3 3", "BRANCH1", "BRANCH1", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 965, DateTimeKind.Utc).AddTicks(5769), null, null, "N" },
+                    { 2, "ADDRESS LINE 1", "ADDRESS LINE 2", "ADDRESS LINE3 3", "BRANCH2", "BRANCH2", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 965, DateTimeKind.Utc).AddTicks(5773), null, null, "N" },
+                    { 3, "ADDRESS LINE 1", "ADDRESS LINE 2", "ADDRESS LINE3 3", "BRANCH3", "BRANCH3", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 965, DateTimeKind.Utc).AddTicks(5775), null, null, "N" }
                 });
 
             migrationBuilder.InsertData(
                 table: "mast_customerm",
                 columns: new[] { "cust_id", "cust_address1", "cust_address2", "cust_address3", "cust_code", "cust_credit_limit", "cust_display_name", "cust_est_dt", "cust_is_parent", "cust_name", "cust_parent_id", "cust_row_type", "cust_short_name", "cust_type", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date", "rec_locked" },
-                values: new object[] { 100, "PO BOX 12123", "LMS BUILDING", "KOCHI", "ABC", 0m, "ABC LTD", null, "Y", "ABC LTD KOCHI", null, "CUSTOMER", "ABC", "", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 116, DateTimeKind.Utc).AddTicks(3034), null, null, "N" });
+                values: new object[] { 100, "PO BOX 12123", "LMS BUILDING", "KOCHI", "ABC", 0m, "ABC LTD", null, "Y", "ABC LTD KOCHI", null, "CUSTOMER", "ABC", "", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 9, DateTimeKind.Utc).AddTicks(1111), null, null, "N" });
 
             migrationBuilder.InsertData(
                 table: "mast_modulem",
                 columns: new[] { "module_id", "module_is_installed", "module_name", "module_order", "module_parent_id", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date" },
                 values: new object[,]
                 {
-                    { 20, "Y", "Accounts", 1, null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 103, DateTimeKind.Utc).AddTicks(6805), null, null },
-                    { 21, "Y", "Masters", 3, null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 103, DateTimeKind.Utc).AddTicks(6807), null, null },
-                    { 22, "Y", "Tracking", 4, null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 103, DateTimeKind.Utc).AddTicks(6809), null, null }
+                    { 20, "Y", "Accounts", 1, null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 967, DateTimeKind.Utc).AddTicks(8096), null, null },
+                    { 21, "Y", "Masters", 3, null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 967, DateTimeKind.Utc).AddTicks(8098), null, null },
+                    { 22, "Y", "Tracking", 4, null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 967, DateTimeKind.Utc).AddTicks(8100), null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -700,31 +987,31 @@ namespace Database.Migrations
                 columns: new[] { "param_id", "param_code", "param_name", "param_order", "param_type", "param_value1", "param_value2", "param_value3", "param_value4", "param_value5", "rec_branch_id", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date" },
                 values: new object[,]
                 {
-                    { 1, "IN", "INDIA", 1, "COUNTRY", "", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7436), null, null },
-                    { 2, "US", "USA", 2, "COUNTRY", "", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7439), null, null },
-                    { 3, "KL", "KERALA", 1, "STATE", "", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7452), null, null },
-                    { 4, "CMA", "CMA CHM", 1, "SEA CARRIER", "CMDU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7461), null, null },
-                    { 5, "HLCU", "HAPAQ LLOYD", 2, "SEA CARRIER", "HLCU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7463), null, null },
-                    { 6, "MAEU", "MAERSK", 3, "SEA CARRIER", "MAEU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7465), null, null },
-                    { 7, "MSCU", "MSC", 4, "SEA CARRIER", "MSCU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7467), null, null },
-                    { 8, "EGLV", "EVERGREEN", 5, "SEA CARRIER", "EGLV", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7468), null, null },
-                    { 9, "HDMU", "HMM", 6, "SEA CARRIER", "HDMU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7470), null, null },
-                    { 10, "YMLU", "YANG MING", 7, "SEA CARRIER", "YMLU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7472), null, null },
-                    { 11, "ONEY", "OCEAN NETWORK EXPRESS", 8, "SEA CARRIER", "ONEY", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7473), null, null },
-                    { 12, "OOCL", "OOCL", 9, "SEA CARRIER", "OOLU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7475), null, null },
-                    { 13, "COSCO", "COSCO", 10, "SEA CARRIER", "COSU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7477), null, null },
-                    { 14, "ANL", "ANL", 11, "SEA CARRIER", "ANNU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7479), null, null },
-                    { 15, "APL", "APL", 12, "SEA CARRIER", "ANNU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7480), null, null },
-                    { 16, "EMIRATES", "EMIRATES", 13, "SEA CARRIER", "ESPU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7482), null, null },
-                    { 17, "HANJIN", "HANJIN", 14, "SEA CARRIER", "HJSC", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7483), null, null },
-                    { 18, "KLINE", "KLINE", 15, "SEA CARRIER", "KKLU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7485), null, null },
-                    { 19, "MOL", "MOL", 16, "SEA CARRIER", "MOLU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7487), null, null },
-                    { 20, "NYK", "NYK LINE", 17, "SEA CARRIER", "NYKS", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7488), null, null },
-                    { 21, "OSTI", "ORIENT STAR", 18, "SEA CARRIER", "OSTI", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7490), null, null },
-                    { 22, "PAN ASIA", "PAN ASIA", 19, "SEA CARRIER", "PALU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7491), null, null },
-                    { 23, "PIL", "PIL", 20, "SEA CARRIER", "PCIU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7493), null, null },
-                    { 24, "PMO", "PMO", 21, "SEA CARRIER", "PMOL", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7495), null, null },
-                    { 25, "ZIM", "ZIM", 22, "SEA CARRIER", "ZIMU", "", "", "", "", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 114, DateTimeKind.Utc).AddTicks(7497), null, null }
+                    { 1, "IN", "INDIA", 1, "COUNTRY", "", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1768), null, null },
+                    { 2, "US", "USA", 2, "COUNTRY", "", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1772), null, null },
+                    { 3, "KL", "KERALA", 1, "STATE", "", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1801), null, null },
+                    { 4, "CMA", "CMA CHM", 1, "SEA CARRIER", "CMDU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1808), null, null },
+                    { 5, "HLCU", "HAPAQ LLOYD", 2, "SEA CARRIER", "HLCU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1810), null, null },
+                    { 6, "MAEU", "MAERSK", 3, "SEA CARRIER", "MAEU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1813), null, null },
+                    { 7, "MSCU", "MSC", 4, "SEA CARRIER", "MSCU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1815), null, null },
+                    { 8, "EGLV", "EVERGREEN", 5, "SEA CARRIER", "EGLV", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1818), null, null },
+                    { 9, "HDMU", "HMM", 6, "SEA CARRIER", "HDMU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1820), null, null },
+                    { 10, "YMLU", "YANG MING", 7, "SEA CARRIER", "YMLU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1822), null, null },
+                    { 11, "ONEY", "OCEAN NETWORK EXPRESS", 8, "SEA CARRIER", "ONEY", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1825), null, null },
+                    { 12, "OOCL", "OOCL", 9, "SEA CARRIER", "OOLU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1827), null, null },
+                    { 13, "COSCO", "COSCO", 10, "SEA CARRIER", "COSU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1829), null, null },
+                    { 14, "ANL", "ANL", 11, "SEA CARRIER", "ANNU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1833), null, null },
+                    { 15, "APL", "APL", 12, "SEA CARRIER", "ANNU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1835), null, null },
+                    { 16, "EMIRATES", "EMIRATES", 13, "SEA CARRIER", "ESPU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1837), null, null },
+                    { 17, "HANJIN", "HANJIN", 14, "SEA CARRIER", "HJSC", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1840), null, null },
+                    { 18, "KLINE", "KLINE", 15, "SEA CARRIER", "KKLU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1842), null, null },
+                    { 19, "MOL", "MOL", 16, "SEA CARRIER", "MOLU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1844), null, null },
+                    { 20, "NYK", "NYK LINE", 17, "SEA CARRIER", "NYKS", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1846), null, null },
+                    { 21, "OSTI", "ORIENT STAR", 18, "SEA CARRIER", "OSTI", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1849), null, null },
+                    { 22, "PAN ASIA", "PAN ASIA", 19, "SEA CARRIER", "PALU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1851), null, null },
+                    { 23, "PIL", "PIL", 20, "SEA CARRIER", "PCIU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1853), null, null },
+                    { 24, "PMO", "PMO", 21, "SEA CARRIER", "PMOL", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1856), null, null },
+                    { 25, "ZIM", "ZIM", 22, "SEA CARRIER", "ZIMU", "", "", "", "", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1859), null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -732,10 +1019,20 @@ namespace Database.Migrations
                 columns: new[] { "acc_id", "acc_code", "acc_grp_id", "acc_maincode_id", "acc_name", "acc_row_type", "acc_short_name", "acc_type", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date", "rec_locked" },
                 values: new object[,]
                 {
-                    { 1, "OI", 1, null, "OCEAN IMPORT", "MAIN-CODE", "OI", "NA", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 120, DateTimeKind.Utc).AddTicks(5431), null, null, "N" },
-                    { 2, "OE", 1, null, "OCEAN EXPORT", "MAIN-CODE", "OE", "NA", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 120, DateTimeKind.Utc).AddTicks(5434), null, null, "N" },
-                    { 3, "AR", 1, null, "AR", "MAIN-CODE", "AR", "AR", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 120, DateTimeKind.Utc).AddTicks(5436), null, null, "N" },
-                    { 4, "AP", 2, null, "AP", "MAIN-CODE", "AP", "AP", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 120, DateTimeKind.Utc).AddTicks(5438), null, null, "N" }
+                    { 1, "OI", 1, null, "OCEAN IMPORT", "MAIN-CODE", "OI", "NA", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 21, DateTimeKind.Utc).AddTicks(2127), null, null, "N" },
+                    { 2, "OE", 1, null, "OCEAN EXPORT", "MAIN-CODE", "OE", "NA", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 21, DateTimeKind.Utc).AddTicks(2132), null, null, "N" },
+                    { 3, "AR", 1, null, "AR", "MAIN-CODE", "AR", "AR", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 21, DateTimeKind.Utc).AddTicks(2135), null, null, "N" },
+                    { 4, "AP", 2, null, "AP", "MAIN-CODE", "AP", "AP", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 21, DateTimeKind.Utc).AddTicks(2180), null, null, "N" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "mark_qtnm",
+                columns: new[] { "qtnm_id", "qtnm_amt", "qtnm_cbm", "qtnm_cfno", "qtnm_cft", "qtnm_commodity", "qtnm_date", "qtnm_kgs", "qtnm_lbs", "qtnm_move_type", "qtnm_no", "qtnm_package", "qtnm_pld_name", "qtnm_plfd_name", "qtnm_pod_id", "qtnm_pod_name", "qtnm_pol_id", "qtnm_pol_name", "qtnm_por_id", "qtnm_por_name", "qtnm_quot_by", "qtnm_routing", "qtnm_salesman_id", "qtnm_to_addr1", "qtnm_to_addr2", "qtnm_to_addr3", "qtnm_to_addr4", "qtnm_to_id", "qtnm_to_name", "qtnm_trans_time", "qtnm_type", "qtnm_valid_date", "rec_branch_id", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date", "rec_locked" },
+                values: new object[,]
+                {
+                    { 1, 5000m, null, 1, null, null, new DateTime(2025, 1, 17, 14, 10, 36, 40, DateTimeKind.Local).AddTicks(5139), null, null, "TRUCKING", "QL-1", null, null, null, null, null, null, null, null, null, "ADMIN", null, 1, "KOCHI", null, null, null, 100, "ABC LTD KOCHI", null, "LCL", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), 1, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 40, DateTimeKind.Utc).AddTicks(5168), null, null, null },
+                    { 10, 0m, null, 10, null, null, new DateTime(2025, 1, 17, 14, 10, 36, 40, DateTimeKind.Local).AddTicks(5219), null, null, "TRUCKING", "QF-10", null, null, null, null, null, null, null, null, null, "ADMIN", null, 1, "KOCHI", null, null, null, 100, "ABC LTD KOCHI", null, "FCL", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), 1, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 40, DateTimeKind.Utc).AddTicks(5221), null, null, null },
+                    { 20, 0m, null, 20, null, null, new DateTime(2025, 1, 17, 14, 10, 36, 40, DateTimeKind.Local).AddTicks(5213), null, null, "TRUCKING", "QA-20", null, null, null, null, null, null, null, null, null, "ADMIN", null, 1, "KOCHI", null, null, null, 100, "ABC LTD KOCHI", null, "AIR", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008), 1, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 40, DateTimeKind.Utc).AddTicks(5217), null, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -743,8 +1040,8 @@ namespace Database.Migrations
                 columns: new[] { "cont_id", "cont_country_id", "cont_designation", "cont_email", "cont_mobile", "cont_name", "cont_parent_id", "cont_remarks", "cont_tel", "cont_title", "mast_customermcust_id", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date", "rec_locked" },
                 values: new object[,]
                 {
-                    { 1, 1, "EXECUTIVE", "joy@cargomar.in", "9947194307", "JOY", 100, null, "0484-245678", "MR", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 118, DateTimeKind.Utc).AddTicks(1300), null, null, "N" },
-                    { 2, 1, "EXECUTIVE", "ajith@cargomar.in", "9917294107", "AJITH", 100, null, "0484-245678", "MR", null, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 118, DateTimeKind.Utc).AddTicks(1303), null, null, "N" }
+                    { 1, 1, "EXECUTIVE", "joy@cargomar.in", "9947194307", "JOY", 100, null, "0484-245678", "MR", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 16, DateTimeKind.Utc).AddTicks(2543), null, null, "N" },
+                    { 2, 1, "EXECUTIVE", "ajith@cargomar.in", "9917294107", "AJITH", 100, null, "0484-245678", "MR", null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 16, DateTimeKind.Utc).AddTicks(2550), null, null, "N" }
                 });
 
             migrationBuilder.InsertData(
@@ -752,24 +1049,26 @@ namespace Database.Migrations
                 columns: new[] { "menu_id", "menu_code", "menu_module_id", "menu_name", "menu_order", "menu_param", "menu_route", "menu_submenu_id", "menu_visible", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date" },
                 values: new object[,]
                 {
-                    { 501, "ACCGROUP", 20, "A/c Group", 1, "{'type':'ACCGROUP'}", "accounts/accgroupList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1104), null, null },
-                    { 502, "ACCTM-MAINCODE", 20, "A/c Main Code", 2, "{'type':'MAIN-CODE'}", "accounts/acctmList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1109), null, null },
-                    { 503, "ACCTM", 20, "A/c Master", 3, "{'type':'ACC-CODE'}", "accounts/acctmList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1111), null, null },
-                    { 701, "COMPANY", 21, "Company Master", 1, "{'type':'COMPANY'}", "admin/companyList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1127), null, null },
-                    { 702, "BRANCH", 21, "Branch Master", 2, "{'type':'BRANCH'}", "admin/branchList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1129), null, null },
-                    { 703, "MODULE", 21, "Module Master", 3, "{'type':'MODULE'}", "admin/moduleList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1130), null, null },
-                    { 704, "USER", 21, "User Master", 4, "{'type':'USER'}", "admin/userList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1132), null, null },
-                    { 705, "MENU", 21, "Menu Master", 5, "{'type':'MENU'}", "admin/menuList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1133), null, null },
-                    { 706, "RIGHTS", 21, "User Rights", 6, "{'type':'RIGHTS'}", "admin/rightsList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1135), null, null },
-                    { 707, "COUNTRY", 21, "Country Master", 7, "{'type':'COUNTRY'}", "masters/paramList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1151), null, null },
-                    { 708, "STATE", 21, "State Master", 8, "{'type':'STATE'}", "masters/paramList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1152), null, null },
-                    { 709, "COMPANY-SETTINGS", 21, "Company Settings", 9, "{'type':'COMPANY-SETTINGS'}", "admin/settingsList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1154), null, null },
-                    { 710, "BRANCH-SETTINGS", 21, "Branch Settings", 10, "{'type':'BRANCH-SETTINGS'}", "admin/settingsList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1155), null, null },
-                    { 711, "CUSTOMER", 21, "Customer Master", 11, "{'type':'CUSTOMER'}", "masters/customerList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1157), null, null },
-                    { 800, "TRACKING", 22, "Container Tracking", 1, "{'type':'TRACKING'}", "tnt/trackList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1158), null, null },
-                    { 801, "SEACARRIER", 21, "Ocean Carrier", 10, "{'type':'SEA CARRIER'}", "masters/paramList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1159), null, null },
-                    { 802, "AIRCARRIER", 21, "Air Carrier", 10, "{'type':'AIR CARRIER'}", "masters/paramList", null, "Y", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1162), null, null },
-                    { 810, "PARAM-SETTINGS", 21, "Param Settings", 11, "{'type':'PARAM-SETTINGS'}", "admin/settingsList", null, "N", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 107, DateTimeKind.Utc).AddTicks(1163), null, null }
+                    { 501, "ACCGROUP", 20, "A/c Group", 1, "{'type':'ACCGROUP'}", "accounts/accgroupList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4798), null, null },
+                    { 502, "ACCTM-MAINCODE", 20, "A/c Main Code", 2, "{'type':'MAIN-CODE'}", "accounts/acctmList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4802), null, null },
+                    { 503, "ACCTM", 20, "A/c Master", 3, "{'type':'ACC-CODE'}", "accounts/acctmList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4804), null, null },
+                    { 701, "COMPANY", 21, "Company Master", 1, "{'type':'COMPANY'}", "admin/companyList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4829), null, null },
+                    { 702, "BRANCH", 21, "Branch Master", 2, "{'type':'BRANCH'}", "admin/branchList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4831), null, null },
+                    { 703, "MODULE", 21, "Module Master", 3, "{'type':'MODULE'}", "admin/moduleList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4833), null, null },
+                    { 704, "USER", 21, "User Master", 4, "{'type':'USER'}", "admin/userList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4835), null, null },
+                    { 705, "MENU", 21, "Menu Master", 5, "{'type':'MENU'}", "admin/menuList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4837), null, null },
+                    { 706, "RIGHTS", 21, "User Rights", 6, "{'type':'RIGHTS'}", "admin/rightsList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4839), null, null },
+                    { 707, "COUNTRY", 21, "Country Master", 7, "{'type':'COUNTRY'}", "masters/paramList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4841), null, null },
+                    { 708, "STATE", 21, "State Master", 8, "{'type':'STATE'}", "masters/paramList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4843), null, null },
+                    { 709, "COMPANY-SETTINGS", 21, "Company Settings", 9, "{'type':'COMPANY-SETTINGS'}", "admin/settingsList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4845), null, null },
+                    { 710, "BRANCH-SETTINGS", 21, "Branch Settings", 10, "{'type':'BRANCH-SETTINGS'}", "admin/settingsList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4847), null, null },
+                    { 711, "CUSTOMER", 21, "Customer Master", 11, "{'type':'CUSTOMER'}", "masters/customerList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4849), null, null },
+                    { 800, "TRACKING", 22, "Container Tracking", 1, "{'type':'TRACKING'}", "tnt/trackList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4851), null, null },
+                    { 801, "SEACARRIER", 21, "Ocean Carrier", 10, "{'type':'SEA CARRIER'}", "masters/paramList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4853), null, null },
+                    { 802, "AIRCARRIER", 21, "Air Carrier", 10, "{'type':'AIR CARRIER'}", "masters/paramList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4855), null, null },
+                    { 810, "PARAM-SETTINGS", 21, "Param Settings", 11, "{'type':'PARAM-SETTINGS'}", "admin/settingsList", null, "N", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4857), null, null },
+                    { 811, "SALESMAN", 21, "Salesman", 12, "{'type':'SALESMAN'}", "masters/paramList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4859), null, null },
+                    { 812, "SEA-PORT", 21, "Sea port", 13, "{'type':'SEA-PORT'}", "masters/paramList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4917), null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -777,9 +1076,9 @@ namespace Database.Migrations
                 columns: new[] { "user_id", "rec_branch_id", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date", "user_code", "user_email", "user_is_admin", "user_name", "user_password" },
                 values: new object[,]
                 {
-                    { 1, 1, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 108, DateTimeKind.Utc).AddTicks(6661), null, null, "ADMIN", "admin@gmail.com", "Y", "ADMIN", "ADMIN" },
-                    { 2, 1, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 108, DateTimeKind.Utc).AddTicks(6663), null, null, "USER1", "user1@gmail.com", "N", "USER1", "USER1" },
-                    { 3, 1, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 108, DateTimeKind.Utc).AddTicks(6665), null, null, "USER2", "user2@gmail.com", "N", "USER2", "USER2" }
+                    { 1, 1, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 977, DateTimeKind.Utc).AddTicks(117), null, null, "ADMIN", "admin@gmail.com", "Y", "ADMIN", "ADMIN" },
+                    { 2, 1, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 977, DateTimeKind.Utc).AddTicks(129), null, null, "USER1", "user1@gmail.com", "N", "USER1", "USER1" },
+                    { 3, 1, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 977, DateTimeKind.Utc).AddTicks(132), null, null, "USER2", "user2@gmail.com", "N", "USER2", "USER2" }
                 });
 
             migrationBuilder.InsertData(
@@ -787,26 +1086,41 @@ namespace Database.Migrations
                 columns: new[] { "track_id", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date", "track_api_type", "track_book_no", "track_carrier_id", "track_cntr_no", "track_last_updated_on", "track_pod_code", "track_pod_eta", "track_pod_name", "track_pol_code", "track_pol_etd", "track_pol_name", "track_request_id", "track_sent_on", "track_trackd_id", "track_vessel_code", "track_vessel_name", "track_voyage" },
                 values: new object[,]
                 {
-                    { 100, 1, "admin", new DateTime(2024, 12, 3, 8, 49, 22, 122, DateTimeKind.Utc).AddTicks(2500), null, null, "API", "", 5, "HLXU8787996", null, null, null, null, null, null, null, null, null, 0, null, null, null },
+                    { 100, 1, "admin", new DateTime(2025, 1, 17, 8, 40, 36, 23, DateTimeKind.Utc).AddTicks(9358), null, null, "API", "", 5, "HLXU8787996", null, null, null, null, null, null, null, null, null, 0, null, null, null },
                     { 101, 1, "admin", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "API", "", 4, "CMAU7228147", null, null, null, null, null, null, null, null, null, 0, null, null, null },
-                    { 102, 1, "admin", new DateTime(2024, 12, 3, 8, 49, 22, 122, DateTimeKind.Utc).AddTicks(2503), null, null, "API", "", 6, "MAEU3417227", null, null, null, null, null, null, null, null, null, 0, null, null, null },
-                    { 103, 1, "admin", new DateTime(2024, 12, 3, 8, 49, 22, 122, DateTimeKind.Utc).AddTicks(2505), null, null, "API-1", "", 10, "MAGU5540135", null, null, null, null, null, null, null, null, null, 0, null, null, null },
-                    { 104, 1, "admin", new DateTime(2024, 12, 3, 8, 49, 22, 122, DateTimeKind.Utc).AddTicks(2506), null, null, "SHIPSGO", "", 13, "BEAU6030782", null, null, null, null, null, null, null, "4179934", null, 0, null, null, null },
-                    { 105, 1, "admin", new DateTime(2024, 12, 3, 8, 49, 22, 122, DateTimeKind.Utc).AddTicks(2508), null, null, "SHIPSGO", "", 7, "SEGU9471335", null, null, null, null, null, null, null, "4182169", null, 0, null, null, null }
+                    { 102, 1, "admin", new DateTime(2025, 1, 17, 8, 40, 36, 23, DateTimeKind.Utc).AddTicks(9362), null, null, "API", "", 6, "MAEU3417227", null, null, null, null, null, null, null, null, null, 0, null, null, null },
+                    { 103, 1, "admin", new DateTime(2025, 1, 17, 8, 40, 36, 23, DateTimeKind.Utc).AddTicks(9364), null, null, "API-1", "", 10, "MAGU5540135", null, null, null, null, null, null, null, null, null, 0, null, null, null },
+                    { 104, 1, "admin", new DateTime(2025, 1, 17, 8, 40, 36, 23, DateTimeKind.Utc).AddTicks(9366), null, null, "SHIPSGO", "", 13, "BEAU6030782", null, null, null, null, null, null, null, "4179934", null, 0, null, null, null },
+                    { 105, 1, "admin", new DateTime(2025, 1, 17, 8, 40, 36, 23, DateTimeKind.Utc).AddTicks(9367), null, null, "SHIPSGO", "", 7, "SEGU9471335", null, null, null, null, null, null, null, "4182169", null, 0, null, null, null }
                 });
 
             migrationBuilder.InsertData(
                 table: "acc_acctm",
                 columns: new[] { "acc_id", "acc_code", "acc_grp_id", "acc_maincode_id", "acc_name", "acc_row_type", "acc_short_name", "acc_type", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date", "rec_locked" },
-                values: new object[] { 5, "OE", 2, 2, "OCEAN EXPORT", "ACC-CODE", "OE", "NA", 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 120, DateTimeKind.Utc).AddTicks(5439), null, null, "N" });
+                values: new object[] { 5, "OE", 2, 2, "OCEAN EXPORT", "ACC-CODE", "OE", "NA", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 21, DateTimeKind.Utc).AddTicks(2183), null, null, "N" });
+
+            migrationBuilder.InsertData(
+                table: "mark_qtnd_air",
+                columns: new[] { "qtnd_id", "mark_qtnmqtnm_id", "qtnd_1000k", "qtnd_100k", "qtnd_300k", "qtnd_45k", "qtnd_500k", "qtnd_carrier_id", "qtnd_carrier_name", "qtnd_etd", "qtnd_fsc", "qtnd_hac", "qtnd_min", "qtnd_order", "qtnd_pod_id", "qtnd_pod_name", "qtnd_pol_id", "qtnd_pol_name", "qtnd_qtnm_id", "qtnd_routing", "qtnd_sfc", "qtnd_trans_time", "qtnd_war", "rec_branch_id", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date", "rec_locked" },
+                values: new object[] { 1, null, null, null, null, "1.5/kg", null, null, null, null, null, null, null, 1, null, null, null, null, 20, null, null, null, null, 1, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 62, DateTimeKind.Utc).AddTicks(4868), null, null, null });
+
+            migrationBuilder.InsertData(
+                table: "mark_qtnd_fcl",
+                columns: new[] { "qtnd_id", "mark_qtnmqtnm_id", "qtnd_baf", "qtnd_carrier_id", "qtnd_carrier_name", "qtnd_cntr_type", "qtnd_cutoff", "qtnd_etd", "qtnd_haulage", "qtnd_ifs", "qtnd_isps", "qtnd_of", "qtnd_order", "qtnd_pod_id", "qtnd_pod_name", "qtnd_pol_id", "qtnd_pol_name", "qtnd_pss", "qtnd_qtnm_id", "qtnd_routing", "qtnd_tot_amt", "qtnd_trans_time", "rec_branch_id", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date", "rec_locked" },
+                values: new object[] { 1, null, null, null, null, "40' ft", "ABC", "QF-10", null, null, null, null, null, null, null, null, null, null, 10, null, 5000m, null, 1, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 53, DateTimeKind.Utc).AddTicks(8616), null, null, null });
+
+            migrationBuilder.InsertData(
+                table: "mark_qtnd_lcl",
+                columns: new[] { "qtnd_id", "mark_qtnmqtnm_id", "qtnd_acc_id", "qtnd_acc_name", "qtnd_amt", "qtnd_order", "qtnd_per", "qtnd_qtnm_id", "rec_branch_id", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date", "rec_locked" },
+                values: new object[] { 1, null, 1, "OCEAN IMPORT", 100m, 1, "koc-mum", 1, 1, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 36, 45, DateTimeKind.Utc).AddTicks(5274), null, null, null });
 
             migrationBuilder.InsertData(
                 table: "mast_userbranches",
                 columns: new[] { "ub_id", "rec_branch_id", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date", "ub_user_id" },
                 values: new object[,]
                 {
-                    { 1, 1, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 110, DateTimeKind.Utc).AddTicks(2833), null, null, 2 },
-                    { 2, 2, 1, "ADMIN", new DateTime(2024, 12, 3, 8, 49, 22, 110, DateTimeKind.Utc).AddTicks(2834), null, null, 2 }
+                    { 1, 1, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 981, DateTimeKind.Utc).AddTicks(358), null, null, 2 },
+                    { 2, 2, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 40, 35, 981, DateTimeKind.Utc).AddTicks(363), null, null, 2 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -842,6 +1156,136 @@ namespace Database.Migrations
                 table: "acc_groupm",
                 columns: new[] { "rec_company_id", "grp_name" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_air_mark_qtnmqtnm_id",
+                table: "mark_qtnd_air",
+                column: "mark_qtnmqtnm_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_air_qtnd_carrier_id",
+                table: "mark_qtnd_air",
+                column: "qtnd_carrier_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_air_qtnd_pod_id",
+                table: "mark_qtnd_air",
+                column: "qtnd_pod_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_air_qtnd_pol_id",
+                table: "mark_qtnd_air",
+                column: "qtnd_pol_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_air_qtnd_qtnm_id",
+                table: "mark_qtnd_air",
+                column: "qtnd_qtnm_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_air_rec_branch_id",
+                table: "mark_qtnd_air",
+                column: "rec_branch_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_air_rec_company_id",
+                table: "mark_qtnd_air",
+                column: "rec_company_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_fcl_mark_qtnmqtnm_id",
+                table: "mark_qtnd_fcl",
+                column: "mark_qtnmqtnm_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_fcl_qtnd_carrier_id",
+                table: "mark_qtnd_fcl",
+                column: "qtnd_carrier_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_fcl_qtnd_pod_id",
+                table: "mark_qtnd_fcl",
+                column: "qtnd_pod_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_fcl_qtnd_pol_id",
+                table: "mark_qtnd_fcl",
+                column: "qtnd_pol_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_fcl_qtnd_qtnm_id",
+                table: "mark_qtnd_fcl",
+                column: "qtnd_qtnm_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_fcl_rec_branch_id",
+                table: "mark_qtnd_fcl",
+                column: "rec_branch_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_fcl_rec_company_id",
+                table: "mark_qtnd_fcl",
+                column: "rec_company_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_lcl_mark_qtnmqtnm_id",
+                table: "mark_qtnd_lcl",
+                column: "mark_qtnmqtnm_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_lcl_qtnd_acc_id",
+                table: "mark_qtnd_lcl",
+                column: "qtnd_acc_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_lcl_qtnd_qtnm_id",
+                table: "mark_qtnd_lcl",
+                column: "qtnd_qtnm_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_lcl_rec_branch_id",
+                table: "mark_qtnd_lcl",
+                column: "rec_branch_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnd_lcl_rec_company_id",
+                table: "mark_qtnd_lcl",
+                column: "rec_company_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnm_qtnm_pod_id",
+                table: "mark_qtnm",
+                column: "qtnm_pod_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnm_qtnm_pol_id",
+                table: "mark_qtnm",
+                column: "qtnm_pol_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnm_qtnm_por_id",
+                table: "mark_qtnm",
+                column: "qtnm_por_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnm_qtnm_salesman_id",
+                table: "mark_qtnm",
+                column: "qtnm_salesman_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnm_qtnm_to_id",
+                table: "mark_qtnm",
+                column: "qtnm_to_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnm_rec_branch_id",
+                table: "mark_qtnm",
+                column: "rec_branch_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_mark_qtnm_rec_company_id",
+                table: "mark_qtnm",
+                column: "rec_company_id");
 
             migrationBuilder.CreateIndex(
                 name: "uq_mast_branchm_branch_code",
@@ -1074,7 +1518,13 @@ namespace Database.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "acc_acctm");
+                name: "mark_qtnd_air");
+
+            migrationBuilder.DropTable(
+                name: "mark_qtnd_fcl");
+
+            migrationBuilder.DropTable(
+                name: "mark_qtnd_lcl");
 
             migrationBuilder.DropTable(
                 name: "mast_contactm");
@@ -1092,10 +1542,10 @@ namespace Database.Migrations
                 name: "tnt_tracking_data");
 
             migrationBuilder.DropTable(
-                name: "acc_groupm");
+                name: "mark_qtnm");
 
             migrationBuilder.DropTable(
-                name: "mast_customerm");
+                name: "acc_acctm");
 
             migrationBuilder.DropTable(
                 name: "mast_menum");
@@ -1105,6 +1555,12 @@ namespace Database.Migrations
 
             migrationBuilder.DropTable(
                 name: "tnt_trackd");
+
+            migrationBuilder.DropTable(
+                name: "mast_customerm");
+
+            migrationBuilder.DropTable(
+                name: "acc_groupm");
 
             migrationBuilder.DropTable(
                 name: "mast_modulem");

@@ -4,11 +4,6 @@ using Database.Models.Marketing;
 using System.ComponentModel.DataAnnotations;
 
 
-
-namespace Common.DTO.Marketing
-{
-
-
 //Name : Sourav V
 //Created Date : 03/01/2025
 //Remark : this file defines data objects(variables) which transfer data from frontend to backend and vice-versa

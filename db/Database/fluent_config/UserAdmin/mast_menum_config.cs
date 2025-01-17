@@ -95,6 +95,7 @@ namespace Database.fluent_config.UserAdmin
 
             insertdata_Accounts(modelBuilder);
             insertdata_Masters(modelBuilder);
+            insertdata_Marketing(modelBuilder);
         }
 
 
@@ -391,7 +392,53 @@ namespace Database.fluent_config.UserAdmin
             }
             );
         }
-
+        void insertdata_Marketing(EntityTypeBuilder<mast_menum> modelBuilder)
+        {
+            modelBuilder.HasData(
+            new mast_menum
+            {
+                menu_id = 901,
+                menu_module_id = 23,
+                menu_order = 1,
+                menu_code = "QUOTATIONS-LCL",
+                menu_name = "Quotations Lcl & Local",
+                menu_route = "marketing/qtnmlclList",
+                menu_param = "{'type':'QUOTATIONS-LCL'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum
+            {
+                menu_id = 902,
+                menu_module_id = 23,
+                menu_order = 2,
+                menu_code = "QUOTATIONS-FCL",
+                menu_name = "Quotations Fcl",
+                menu_route = "marketing/qtnmfclList",
+                menu_param = "{'type':'QUOTATIONS-FCL'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum
+            {
+                menu_id = 903,
+                menu_module_id = 23,
+                menu_order = 3,
+                menu_code = "QUOTATIONS-AIR",
+                menu_name = "Quotations Air",
+                menu_route = "marketing/qtnmairList",
+                menu_param = "{'type':'QUOTATIONS-AIR'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            }
+            );
+        }
 
     }
 }
