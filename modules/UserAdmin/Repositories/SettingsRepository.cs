@@ -295,6 +295,10 @@ namespace UserAdmin.Repositories
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "REPORT FOLDER", "", "STRING", "", "", "", "", 2);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "TEMP FOLDER", "", "STRING", "", "", "", "", 3);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SHOW BOE", "", "BOOLEAN", "", "", "", "", 4);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-LCL-PREFIX", "", "STRING", "", "", "", "", 5);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-LCL-STARTING-NO", "", "INT", "", "", "", "", 6);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-AIR-PREFIX", "", "STRING", "", "", "", "", 7);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-AIR-STARTING-NO", "", "INT", "", "", "", "", 8);
             return retValue;
         }
 
