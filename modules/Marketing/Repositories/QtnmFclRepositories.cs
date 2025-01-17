@@ -9,6 +9,7 @@ using Database.Models.BaseTables;
 using Marketing.Interfaces;
 using Database.Models.Marketing;
 using Common.DTO.Marketing;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 
 namespace Marketing.Repositories
@@ -112,7 +113,7 @@ namespace Marketing.Repositories
                 int StartRow = Lib.getStartRow(_page.currentPageNo, _page.pageSize);
 
                 query = query
-                    .OrderBy(c => c.qtnm_no)
+                    .OrderBy(c => c.qtnm_date)
                     .Skip(StartRow)
                     .Take(_page.pageSize);
 
@@ -158,7 +159,7 @@ namespace Marketing.Repositories
             try
             {
                 IQueryable<mark_qtnm> query = context.mark_qtnm;
-                // .Include(e => e.customer);
+
 
                 query = query.Where(f => f.qtnm_id == id && f.qtnm_type == "FCL");
 
@@ -301,6 +302,12 @@ namespace Marketing.Repositories
                 if (Lib.IsZero(rec.qtnd_pol_id))
                     name = "POL Cannot Be Blank!";
             }
+
+            if(record_dto.qtnm_fcl == null || record_dto.qtnm_fcl.Count == 0)
+            {
+                str += "No data found in FCL Details";
+            }
+
             if (code != "")
                 str += code;
             if (name != "")
@@ -310,11 +317,6 @@ namespace Marketing.Repositories
             {
                 error = error + str;
                 bRet = false;
-            }
-
-            if (record_dto.qtnm_fcl.Count == 0)
-            {
-                throw new Exception("No Quotation Detail to Save"); /// change this
             }
             return bRet;
         }
@@ -486,6 +488,8 @@ namespace Marketing.Repositories
                 throw;
             }
         }
+
+        //function for geting the quotation number
         public int GetCfNo(int company_id, int? branch_id)
         {
             var maxCfNo = context.mark_qtnm
