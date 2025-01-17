@@ -127,7 +127,7 @@ namespace Database.Migrations
                             acc_type = "NA",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 4, 42, 9, 728, DateTimeKind.Utc).AddTicks(318),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 641, DateTimeKind.Utc).AddTicks(1590),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -142,8 +142,7 @@ namespace Database.Migrations
                             acc_type = "NA",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 683, DateTimeKind.Utc).AddTicks(2693),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 641, DateTimeKind.Utc).AddTicks(1627),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -158,8 +157,7 @@ namespace Database.Migrations
                             acc_type = "AR",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 683, DateTimeKind.Utc).AddTicks(2695),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 641, DateTimeKind.Utc).AddTicks(1630),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -174,8 +172,8 @@ namespace Database.Migrations
                             acc_type = "AP",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 683, DateTimeKind.Utc).AddTicks(2698),
-                           rec_locked = "N",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 641, DateTimeKind.Utc).AddTicks(1633),
+                            rec_locked = "N",
                             rec_version = 0
                         },
                         new
@@ -190,8 +188,7 @@ namespace Database.Migrations
                             acc_type = "NA",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 683, DateTimeKind.Utc).AddTicks(2700),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 641, DateTimeKind.Utc).AddTicks(1635),
                             rec_locked = "N",
                             rec_version = 0
                         });
@@ -266,7 +263,7 @@ namespace Database.Migrations
                             grp_order = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 678, DateTimeKind.Utc).AddTicks(8293),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 636, DateTimeKind.Utc).AddTicks(6975),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -278,7 +275,7 @@ namespace Database.Migrations
                             grp_order = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 678, DateTimeKind.Utc).AddTicks(8297),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 636, DateTimeKind.Utc).AddTicks(6978),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -290,7 +287,7 @@ namespace Database.Migrations
                             grp_order = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 678, DateTimeKind.Utc).AddTicks(8299),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 636, DateTimeKind.Utc).AddTicks(6980),
                             rec_locked = "N",
                             rec_version = 0
                         },
@@ -302,16 +299,11 @@ namespace Database.Migrations
                             grp_order = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 678, DateTimeKind.Utc).AddTicks(8301),
-                           rec_locked = "N",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 636, DateTimeKind.Utc).AddTicks(6982),
+                            rec_locked = "N",
                             rec_version = 0
                         });
                 });
-
-
-            modelBuilder.Entity("Database.Models.Marketing.mark_qtnd_fcl", b =>
-                {
-                    b.Property<int?>("qtnd_id")
 
             modelBuilder.Entity("Database.Models.Marketing.mark_qtnd_air", b =>
                 {
@@ -322,7 +314,6 @@ namespace Database.Migrations
 
                     b.Property<int?>("mark_qtnmqtnm_id")
                         .HasColumnType("integer");
-
 
                     b.Property<string>("qtnd_1000k")
                         .HasMaxLength(20)
@@ -343,6 +334,143 @@ namespace Database.Migrations
                     b.Property<string>("qtnd_500k")
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
+
+                    b.Property<int?>("qtnd_carrier_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("qtnd_carrier_name")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("qtnd_etd")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("qtnd_fsc")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("qtnd_hac")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("qtnd_min")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("qtnd_order")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("qtnd_pod_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("qtnd_pod_name")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int?>("qtnd_pol_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("qtnd_pol_name")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("qtnd_qtnm_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("qtnd_routing")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("qtnd_sfc")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("qtnd_trans_time")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("qtnd_war")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<int?>("rec_branch_id")
+                        .IsRequired()
+                        .HasColumnType("integer");
+
+                    b.Property<int>("rec_company_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("rec_created_by")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("rec_created_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_edited_by")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("rec_edited_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_locked")
+                        .HasColumnType("text");
+
+                    b.Property<int>("rec_version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
+
+                    b.HasKey("qtnd_id")
+                        .HasName("pk_mark_qtnd_air_qtnd_id");
+
+                    b.HasIndex("mark_qtnmqtnm_id");
+
+                    b.HasIndex("qtnd_carrier_id");
+
+                    b.HasIndex("qtnd_pod_id");
+
+                    b.HasIndex("qtnd_pol_id");
+
+                    b.HasIndex("qtnd_qtnm_id");
+
+                    b.HasIndex("rec_branch_id");
+
+                    b.HasIndex("rec_company_id");
+
+                    b.ToTable("mark_qtnd_air", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            qtnd_id = 1,
+                            qtnd_45k = "1.5/kg",
+                            qtnd_order = 1,
+                            qtnd_qtnm_id = 20,
+                            rec_branch_id = 1,
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 685, DateTimeKind.Utc).AddTicks(4691),
+                            rec_version = 0
+                        });
+                });
+
+            modelBuilder.Entity("Database.Models.Marketing.mark_qtnd_fcl", b =>
+                {
+                    b.Property<int?>("qtnd_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValueSql("nextval('\"master_sequence\"')");
+
+                    b.Property<int?>("mark_qtnmqtnm_id")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("qtnd_baf")
+                        .HasColumnType("decimal(15,3)");
 
                     b.Property<int?>("qtnd_carrier_id")
                         .HasColumnType("integer");
@@ -379,44 +507,19 @@ namespace Database.Migrations
                         .HasColumnType("decimal(15,3)");
 
                     b.Property<int?>("qtnd_order")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("qtnd_etd")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("qtnd_fsc")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("qtnd_hac")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("qtnd_min")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<int>("qtnd_order")
-
                         .HasColumnType("integer");
 
                     b.Property<int?>("qtnd_pod_id")
                         .HasColumnType("integer");
 
                     b.Property<string>("qtnd_pod_name")
-
-
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int?>("qtnd_pol_id")
                         .HasColumnType("integer");
 
                     b.Property<string>("qtnd_pol_name")
-
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
@@ -438,29 +541,6 @@ namespace Database.Migrations
                     b.Property<string>("qtnd_trans_time")
                         .HasMaxLength(15)
                         .HasColumnType("character varying(15)");
-
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<int>("qtnd_qtnm_id")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("qtnd_routing")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
-
-                    b.Property<string>("qtnd_sfc")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("qtnd_trans_time")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
-
-                    b.Property<string>("qtnd_war")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
 
                     b.Property<int?>("rec_branch_id")
                         .IsRequired()
@@ -494,9 +574,7 @@ namespace Database.Migrations
                         .HasDefaultValue(1);
 
                     b.HasKey("qtnd_id")
-
                         .HasName("pk_mark_qtnd_fcl_qtnd_id");
-
 
                     b.HasIndex("mark_qtnmqtnm_id");
 
@@ -512,17 +590,12 @@ namespace Database.Migrations
 
                     b.HasIndex("rec_company_id");
 
-
                     b.ToTable("mark_qtnd_fcl", (string)null);
-
-                    b.ToTable("mark_qtnd_air", (string)null);
-
 
                     b.HasData(
                         new
                         {
                             qtnd_id = 1,
-
                             qtnd_cntr_type = "40' ft",
                             qtnd_cutoff = "ABC",
                             qtnd_etd = "QF-10",
@@ -531,18 +604,7 @@ namespace Database.Migrations
                             rec_branch_id = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 4, 42, 9, 741, DateTimeKind.Utc).AddTicks(9007),
-
-                            qtnd_45k = "1.5/kg",
-                            qtnd_order = 1,
-                            qtnd_pod_id = 1005,
-                            qtnd_pod_name = "AABENRAA, DENMARK",
-                            qtnd_qtnm_id = 20,
-                            rec_branch_id = 1,
-                            rec_company_id = 1,
-                            rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 728, DateTimeKind.Utc).AddTicks(1881),
-
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 676, DateTimeKind.Utc).AddTicks(4413),
                             rec_version = 0
                         });
                 });
@@ -636,9 +698,7 @@ namespace Database.Migrations
                             rec_branch_id = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-
-                            rec_created_date = new DateTime(2025, 1, 13, 4, 42, 9, 738, DateTimeKind.Utc).AddTicks(2812),
-
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 667, DateTimeKind.Utc).AddTicks(249),
                             rec_version = 0
                         });
                 });
@@ -824,9 +884,7 @@ namespace Database.Migrations
                             qtnm_id = 1,
                             qtnm_amt = 5000m,
                             qtnm_cfno = 1,
-
-                            qtnm_date = new DateTime(2025, 1, 13, 10, 12, 9, 736, DateTimeKind.Local).AddTicks(3870),
-
+                            qtnm_date = new DateTime(2025, 1, 17, 14, 24, 6, 661, DateTimeKind.Local).AddTicks(9049),
                             qtnm_move_type = "TRUCKING",
                             qtnm_no = "QL-1",
                             qtnm_quot_by = "ADMIN",
@@ -839,18 +897,17 @@ namespace Database.Migrations
                             rec_branch_id = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 711, DateTimeKind.Utc).AddTicks(924),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 661, DateTimeKind.Utc).AddTicks(9081),
                             rec_version = 0
                         },
                         new
                         {
-
-                            qtnm_id = 10,
-                            qtnm_amt = 5000m,
-                            qtnm_cfno = 10,
-                            qtnm_date = new DateTime(2025, 1, 13, 10, 12, 9, 736, DateTimeKind.Local).AddTicks(3892),
+                            qtnm_id = 20,
+                            qtnm_amt = 0m,
+                            qtnm_cfno = 20,
+                            qtnm_date = new DateTime(2025, 1, 17, 14, 24, 6, 661, DateTimeKind.Local).AddTicks(9134),
                             qtnm_move_type = "TRUCKING",
-                            qtnm_no = "QF-10",
+                            qtnm_no = "QA-20",
                             qtnm_quot_by = "ADMIN",
                             qtnm_salesman_id = 1,
                             qtnm_to_addr1 = "KOCHI",
@@ -861,7 +918,28 @@ namespace Database.Migrations
                             rec_branch_id = 1,
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 4, 42, 9, 736, DateTimeKind.Utc).AddTicks(3894),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 661, DateTimeKind.Utc).AddTicks(9139),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            qtnm_id = 10,
+                            qtnm_amt = 0m,
+                            qtnm_cfno = 10,
+                            qtnm_date = new DateTime(2025, 1, 17, 14, 24, 6, 661, DateTimeKind.Local).AddTicks(9141),
+                            qtnm_move_type = "TRUCKING",
+                            qtnm_no = "QF-10",
+                            qtnm_quot_by = "ADMIN",
+                            qtnm_salesman_id = 1,
+                            qtnm_to_addr1 = "KOCHI",
+                            qtnm_to_id = 100,
+                            qtnm_to_name = "ABC LTD KOCHI",
+                            qtnm_type = "FCL",
+                            qtnm_valid_date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddTicks(2008),
+                            rec_branch_id = 1,
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 661, DateTimeKind.Utc).AddTicks(9143),
                             rec_version = 0
                         });
                 });
@@ -972,8 +1050,8 @@ namespace Database.Migrations
                             cont_title = "MR",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 677, DateTimeKind.Utc).AddTicks(163),
-                           rec_locked = "N",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 634, DateTimeKind.Utc).AddTicks(9945),
+                            rec_locked = "N",
                             rec_version = 0
                         },
                         new
@@ -989,7 +1067,7 @@ namespace Database.Migrations
                             cont_title = "MR",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 677, DateTimeKind.Utc).AddTicks(168),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 634, DateTimeKind.Utc).AddTicks(9953),
                             rec_locked = "N",
                             rec_version = 0
                         });
@@ -1125,7 +1203,7 @@ namespace Database.Migrations
                             cust_type = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 672, DateTimeKind.Utc).AddTicks(6662),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 631, DateTimeKind.Utc).AddTicks(23),
                             rec_locked = "N",
                             rec_version = 0
                         });
@@ -1240,8 +1318,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4739),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4005),
                             rec_version = 0
                         },
                         new
@@ -1258,7 +1335,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4761),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4009),
                             rec_version = 0
                         },
                         new
@@ -1275,8 +1352,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4801),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4037),
                             rec_version = 0
                         },
                         new
@@ -1293,8 +1369,8 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4808),
-                           rec_version = 0
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4043),
+                            rec_version = 0
                         },
                         new
                         {
@@ -1310,7 +1386,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4810),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4046),
                             rec_version = 0
                         },
                         new
@@ -1327,7 +1403,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4813),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4048),
                             rec_version = 0
                         },
                         new
@@ -1344,8 +1420,8 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4815),
-                           rec_version = 0
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4050),
+                            rec_version = 0
                         },
                         new
                         {
@@ -1361,7 +1437,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4817),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4053),
                             rec_version = 0
                         },
                         new
@@ -1378,7 +1454,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4820),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4055),
                             rec_version = 0
                         },
                         new
@@ -1395,7 +1471,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4822),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4057),
                             rec_version = 0
                         },
                         new
@@ -1412,7 +1488,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4825),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4060),
                             rec_version = 0
                         },
                         new
@@ -1429,7 +1505,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4828),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4062),
                             rec_version = 0
                         },
                         new
@@ -1446,7 +1522,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4830),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4065),
                             rec_version = 0
                         },
                         new
@@ -1463,8 +1539,8 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4832),
-                           rec_version = 0
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4067),
+                            rec_version = 0
                         },
                         new
                         {
@@ -1480,7 +1556,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4835),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4069),
                             rec_version = 0
                         },
                         new
@@ -1497,7 +1573,7 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4837),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4072),
                             rec_version = 0
                         },
                         new
@@ -1514,9 +1590,2384 @@ namespace Database.Migrations
                             param_value5 = "",
                             rec_company_id = 1,
                             rec_created_by = "ADMIN",
-                            rec_created_date = new DateTime(2025, 1, 13, 6, 8, 55, 663, DateTimeKind.Utc).AddTicks(4840),
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4074),
                             rec_version = 0
                         },
+                        new
+                        {
+                            param_id = 18,
+                            param_code = "KLINE",
+                            param_name = "KLINE",
+                            param_order = 15,
+                            param_type = "SEA CARRIER",
+                            param_value1 = "KKLU",
+                            param_value2 = "",
+                            param_value3 = "",
+                            param_value4 = "",
+                            param_value5 = "",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4076),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            param_id = 19,
+                            param_code = "MOL",
+                            param_name = "MOL",
+                            param_order = 16,
+                            param_type = "SEA CARRIER",
+                            param_value1 = "MOLU",
+                            param_value2 = "",
+                            param_value3 = "",
+                            param_value4 = "",
+                            param_value5 = "",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4078),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            param_id = 20,
+                            param_code = "NYK",
+                            param_name = "NYK LINE",
+                            param_order = 17,
+                            param_type = "SEA CARRIER",
+                            param_value1 = "NYKS",
+                            param_value2 = "",
+                            param_value3 = "",
+                            param_value4 = "",
+                            param_value5 = "",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4081),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            param_id = 21,
+                            param_code = "OSTI",
+                            param_name = "ORIENT STAR",
+                            param_order = 18,
+                            param_type = "SEA CARRIER",
+                            param_value1 = "OSTI",
+                            param_value2 = "",
+                            param_value3 = "",
+                            param_value4 = "",
+                            param_value5 = "",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4083),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            param_id = 22,
+                            param_code = "PAN ASIA",
+                            param_name = "PAN ASIA",
+                            param_order = 19,
+                            param_type = "SEA CARRIER",
+                            param_value1 = "PALU",
+                            param_value2 = "",
+                            param_value3 = "",
+                            param_value4 = "",
+                            param_value5 = "",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4085),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            param_id = 23,
+                            param_code = "PIL",
+                            param_name = "PIL",
+                            param_order = 20,
+                            param_type = "SEA CARRIER",
+                            param_value1 = "PCIU",
+                            param_value2 = "",
+                            param_value3 = "",
+                            param_value4 = "",
+                            param_value5 = "",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4087),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            param_id = 24,
+                            param_code = "PMO",
+                            param_name = "PMO",
+                            param_order = 21,
+                            param_type = "SEA CARRIER",
+                            param_value1 = "PMOL",
+                            param_value2 = "",
+                            param_value3 = "",
+                            param_value4 = "",
+                            param_value5 = "",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4090),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            param_id = 25,
+                            param_code = "ZIM",
+                            param_name = "ZIM",
+                            param_order = 22,
+                            param_type = "SEA CARRIER",
+                            param_value1 = "ZIMU",
+                            param_value2 = "",
+                            param_value3 = "",
+                            param_value4 = "",
+                            param_value5 = "",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4093),
+                            rec_version = 0
+                        });
+                });
+
+            modelBuilder.Entity("Database.Models.TnT.tnt_trackd", b =>
+                {
+                    b.Property<int>("trackd_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValueSql("nextval('\"master_sequence\"')");
+
+                    b.Property<int>("rec_company_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("rec_created_by")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("rec_created_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_edited_by")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("rec_edited_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_locked")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1)
+                        .HasColumnType("char")
+                        .HasDefaultValue("N");
+
+                    b.Property<int>("rec_version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
+
+                    b.Property<DateTime?>("trackd_last_updated_on")
+                        .HasColumnType("timestamp");
+
+                    b.Property<int>("trackd_trackm_id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("trackd_id")
+                        .HasName("pk_tnt_trackd_trackd_id");
+
+                    b.HasIndex("rec_company_id");
+
+                    b.HasIndex("trackd_trackm_id");
+
+                    b.ToTable("tnt_trackd", (string)null);
+                });
+
+            modelBuilder.Entity("Database.Models.TnT.tnt_tracking_data", b =>
+                {
+                    b.Property<int>("track_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("track_id"));
+
+                    b.Property<int>("rec_company_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("rec_created_by")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("rec_created_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_edited_by")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("rec_edited_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_locked")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1)
+                        .HasColumnType("char")
+                        .HasDefaultValue("N");
+
+                    b.Property<int>("rec_version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("tnt_container")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("tnt_eventCreatedDateTime")
+                        .HasColumnType("timestamp");
+
+                    b.Property<DateTime>("tnt_eventCreatedDateTime_utc")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<DateTime>("tnt_eventDateTime")
+                        .HasColumnType("timestamp");
+
+                    b.Property<DateTime>("tnt_eventDateTime_utc")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<string>("tnt_event_confirm_status")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("tnt_event_type")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("tnt_port_code")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("tnt_port_location")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("tnt_port_name")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("tnt_row_type")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("tnt_status_code")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("tnt_status_name")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("tnt_trackd_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("tnt_trackm_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("tnt_transport_mode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("tnt_vessel")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("tnt_vessel_imon")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("tnt_voyage")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("track_id")
+                        .HasName("pk_tnt_tracking_data_track_id");
+
+                    b.HasIndex("rec_company_id");
+
+                    b.HasIndex("tnt_trackd_id");
+
+                    b.HasIndex("tnt_trackm_id");
+
+                    b.ToTable("tnt_tracking_data", (string)null);
+                });
+
+            modelBuilder.Entity("Database.Models.TnT.tnt_trackm", b =>
+                {
+                    b.Property<int>("track_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValueSql("nextval('\"master_sequence\"')");
+
+                    b.Property<int>("rec_company_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("rec_created_by")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("rec_created_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_edited_by")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("rec_edited_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_locked")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1)
+                        .HasColumnType("char")
+                        .HasDefaultValue("N");
+
+                    b.Property<int>("rec_version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("track_api_type")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("track_book_no")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("track_carrier_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("track_cntr_no")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("character varying(11)");
+
+                    b.Property<DateTime?>("track_last_updated_on")
+                        .HasColumnType("timestamp");
+
+                    b.Property<string>("track_pod_code")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("track_pod_eta")
+                        .HasColumnType("date");
+
+                    b.Property<string>("track_pod_name")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("track_pol_code")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("track_pol_etd")
+                        .HasColumnType("date");
+
+                    b.Property<string>("track_pol_name")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("track_request_id")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
+                    b.Property<DateTime?>("track_sent_on")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("track_trackd_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("track_vessel_code")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("track_vessel_name")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("track_voyage")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("track_id")
+                        .HasName("pk_tnt_trackm_track_id");
+
+                    b.HasIndex("rec_company_id");
+
+                    b.HasIndex("track_carrier_id");
+
+                    b.ToTable("tnt_trackm", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            track_id = 100,
+                            rec_company_id = 1,
+                            rec_created_by = "admin",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 644, DateTimeKind.Utc).AddTicks(4476),
+                            rec_version = 0,
+                            track_api_type = "API",
+                            track_book_no = "",
+                            track_carrier_id = 5,
+                            track_cntr_no = "HLXU8787996",
+                            track_trackd_id = 0
+                        },
+                        new
+                        {
+                            track_id = 101,
+                            rec_company_id = 1,
+                            rec_created_by = "admin",
+                            rec_created_date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            rec_version = 0,
+                            track_api_type = "API",
+                            track_book_no = "",
+                            track_carrier_id = 4,
+                            track_cntr_no = "CMAU7228147",
+                            track_trackd_id = 0
+                        },
+                        new
+                        {
+                            track_id = 102,
+                            rec_company_id = 1,
+                            rec_created_by = "admin",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 644, DateTimeKind.Utc).AddTicks(4482),
+                            rec_version = 0,
+                            track_api_type = "API",
+                            track_book_no = "",
+                            track_carrier_id = 6,
+                            track_cntr_no = "MAEU3417227",
+                            track_trackd_id = 0
+                        },
+                        new
+                        {
+                            track_id = 103,
+                            rec_company_id = 1,
+                            rec_created_by = "admin",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 644, DateTimeKind.Utc).AddTicks(4483),
+                            rec_version = 0,
+                            track_api_type = "API-1",
+                            track_book_no = "",
+                            track_carrier_id = 10,
+                            track_cntr_no = "MAGU5540135",
+                            track_trackd_id = 0
+                        },
+                        new
+                        {
+                            track_id = 104,
+                            rec_company_id = 1,
+                            rec_created_by = "admin",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 644, DateTimeKind.Utc).AddTicks(4485),
+                            rec_version = 0,
+                            track_api_type = "SHIPSGO",
+                            track_book_no = "",
+                            track_carrier_id = 13,
+                            track_cntr_no = "BEAU6030782",
+                            track_request_id = "4179934",
+                            track_trackd_id = 0
+                        },
+                        new
+                        {
+                            track_id = 105,
+                            rec_company_id = 1,
+                            rec_created_by = "admin",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 644, DateTimeKind.Utc).AddTicks(4487),
+                            rec_version = 0,
+                            track_api_type = "SHIPSGO",
+                            track_book_no = "",
+                            track_carrier_id = 7,
+                            track_cntr_no = "SEGU9471335",
+                            track_request_id = "4182169",
+                            track_trackd_id = 0
+                        });
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_auditm", b =>
+                {
+                    b.Property<int>("log_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValueSql("nextval('\"master_sequence\"')");
+
+                    b.Property<string>("log_column")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("log_date")
+                        .IsRequired()
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("log_desc")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("log_refno")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("log_table")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
+                    b.Property<int>("log_table_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("log_user_code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("log_value")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int>("rec_branch_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("rec_company_id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("log_id")
+                        .HasName("pk_mast_logm_log_id");
+
+                    b.HasIndex("log_id")
+                        .HasDatabaseName("uq_mast_logm_log_id");
+
+                    b.ToTable("mast_logm", (string)null);
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_branchm", b =>
+                {
+                    b.Property<int>("branch_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValueSql("nextval('\"master_sequence\"')");
+
+                    b.Property<string>("branch_address1")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("branch_address2")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("branch_address3")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("branch_code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("branch_name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("rec_company_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("rec_created_by")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("rec_created_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_edited_by")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("rec_edited_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_locked")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1)
+                        .HasColumnType("char")
+                        .HasDefaultValue("N");
+
+                    b.Property<int>("rec_version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
+
+                    b.HasKey("branch_id")
+                        .HasName("pk_mast_branchm_branch_id");
+
+                    b.HasIndex("rec_company_id", "branch_code")
+                        .IsUnique()
+                        .HasDatabaseName("uq_mast_branchm_branch_code");
+
+                    b.HasIndex("rec_company_id", "branch_name")
+                        .IsUnique()
+                        .HasDatabaseName("uq_mast_branchm_branch_name");
+
+                    b.ToTable("mast_branchm", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            branch_id = 1,
+                            branch_address1 = "ADDRESS LINE 1",
+                            branch_address2 = "ADDRESS LINE 2",
+                            branch_address3 = "ADDRESS LINE3 3",
+                            branch_code = "BRANCH1",
+                            branch_name = "BRANCH1",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 590, DateTimeKind.Utc).AddTicks(243),
+                            rec_locked = "N",
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            branch_id = 2,
+                            branch_address1 = "ADDRESS LINE 1",
+                            branch_address2 = "ADDRESS LINE 2",
+                            branch_address3 = "ADDRESS LINE3 3",
+                            branch_code = "BRANCH2",
+                            branch_name = "BRANCH2",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 590, DateTimeKind.Utc).AddTicks(248),
+                            rec_locked = "N",
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            branch_id = 3,
+                            branch_address1 = "ADDRESS LINE 1",
+                            branch_address2 = "ADDRESS LINE 2",
+                            branch_address3 = "ADDRESS LINE3 3",
+                            branch_code = "BRANCH3",
+                            branch_name = "BRANCH3",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 590, DateTimeKind.Utc).AddTicks(251),
+                            rec_locked = "N",
+                            rec_version = 0
+                        });
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_companym", b =>
+                {
+                    b.Property<int>("comp_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValueSql("nextval('\"master_sequence\"')");
+
+                    b.Property<string>("comp_address1")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("comp_address2")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("comp_address3")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("comp_code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("comp_name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("rec_created_by")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("rec_created_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_edited_by")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("rec_edited_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_locked")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1)
+                        .HasColumnType("char")
+                        .HasDefaultValue("N");
+
+                    b.Property<int>("rec_version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
+
+                    b.HasKey("comp_id")
+                        .HasName("pk_mast_companym_comp_id");
+
+                    b.HasIndex("comp_id", "comp_code")
+                        .IsUnique()
+                        .HasDatabaseName("uq_mast_companym_comp_code");
+
+                    b.HasIndex("comp_id", "comp_name")
+                        .IsUnique()
+                        .HasDatabaseName("uq_mast_companym_comp_name");
+
+                    b.ToTable("mast_companym", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            comp_id = 1,
+                            comp_address1 = "ADDRESS LINE 1",
+                            comp_address2 = "ADDRESS LINE 2",
+                            comp_address3 = "ADDRESS LINE3 3",
+                            comp_code = "COMPANY1",
+                            comp_name = "COMPANY1",
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 581, DateTimeKind.Utc).AddTicks(1990),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            comp_id = 2,
+                            comp_address1 = "ADDRESS LINE 1",
+                            comp_address2 = "ADDRESS LINE 2",
+                            comp_address3 = "ADDRESS LINE3 3",
+                            comp_code = "COMPANY2",
+                            comp_name = "COMPANY2",
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 581, DateTimeKind.Utc).AddTicks(1993),
+                            rec_version = 0
+                        });
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_menum", b =>
+                {
+                    b.Property<int>("menu_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValueSql("nextval('\"master_sequence\"')");
+
+                    b.Property<string>("menu_code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<int>("menu_module_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("menu_name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("menu_order")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("menu_param")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("menu_route")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int?>("menu_submenu_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("menu_visible")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("char");
+
+                    b.Property<int>("rec_company_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("rec_created_by")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("rec_created_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_edited_by")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("rec_edited_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_locked")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1)
+                        .HasColumnType("char")
+                        .HasDefaultValue("N");
+
+                    b.Property<int>("rec_version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
+
+                    b.HasKey("menu_id")
+                        .HasName("pk_mast_menum_menu_id");
+
+                    b.HasIndex("menu_module_id");
+
+                    b.HasIndex("menu_submenu_id");
+
+                    b.HasIndex("rec_company_id");
+
+                    b.HasIndex("menu_id", "menu_name")
+                        .IsUnique()
+                        .HasDatabaseName("uq_mast_menum_menu_name");
+
+                    b.ToTable("mast_menum", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            menu_id = 501,
+                            menu_code = "ACCGROUP",
+                            menu_module_id = 20,
+                            menu_name = "A/c Group",
+                            menu_order = 1,
+                            menu_param = "{'type':'ACCGROUP'}",
+                            menu_route = "accounts/accgroupList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8107),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 502,
+                            menu_code = "ACCTM-MAINCODE",
+                            menu_module_id = 20,
+                            menu_name = "A/c Main Code",
+                            menu_order = 2,
+                            menu_param = "{'type':'MAIN-CODE'}",
+                            menu_route = "accounts/acctmList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8115),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 503,
+                            menu_code = "ACCTM",
+                            menu_module_id = 20,
+                            menu_name = "A/c Master",
+                            menu_order = 3,
+                            menu_param = "{'type':'ACC-CODE'}",
+                            menu_route = "accounts/acctmList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8118),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 701,
+                            menu_code = "COMPANY",
+                            menu_module_id = 21,
+                            menu_name = "Company Master",
+                            menu_order = 1,
+                            menu_param = "{'type':'COMPANY'}",
+                            menu_route = "admin/companyList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8152),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 702,
+                            menu_code = "BRANCH",
+                            menu_module_id = 21,
+                            menu_name = "Branch Master",
+                            menu_order = 2,
+                            menu_param = "{'type':'BRANCH'}",
+                            menu_route = "admin/branchList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8154),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 703,
+                            menu_code = "MODULE",
+                            menu_module_id = 21,
+                            menu_name = "Module Master",
+                            menu_order = 3,
+                            menu_param = "{'type':'MODULE'}",
+                            menu_route = "admin/moduleList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8156),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 704,
+                            menu_code = "USER",
+                            menu_module_id = 21,
+                            menu_name = "User Master",
+                            menu_order = 4,
+                            menu_param = "{'type':'USER'}",
+                            menu_route = "admin/userList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8158),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 705,
+                            menu_code = "MENU",
+                            menu_module_id = 21,
+                            menu_name = "Menu Master",
+                            menu_order = 5,
+                            menu_param = "{'type':'MENU'}",
+                            menu_route = "admin/menuList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8160),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 706,
+                            menu_code = "RIGHTS",
+                            menu_module_id = 21,
+                            menu_name = "User Rights",
+                            menu_order = 6,
+                            menu_param = "{'type':'RIGHTS'}",
+                            menu_route = "admin/rightsList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8162),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 707,
+                            menu_code = "COUNTRY",
+                            menu_module_id = 21,
+                            menu_name = "Country Master",
+                            menu_order = 7,
+                            menu_param = "{'type':'COUNTRY'}",
+                            menu_route = "masters/paramList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8164),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 708,
+                            menu_code = "STATE",
+                            menu_module_id = 21,
+                            menu_name = "State Master",
+                            menu_order = 8,
+                            menu_param = "{'type':'STATE'}",
+                            menu_route = "masters/paramList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8166),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 709,
+                            menu_code = "COMPANY-SETTINGS",
+                            menu_module_id = 21,
+                            menu_name = "Company Settings",
+                            menu_order = 9,
+                            menu_param = "{'type':'COMPANY-SETTINGS'}",
+                            menu_route = "admin/settingsList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8168),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 710,
+                            menu_code = "BRANCH-SETTINGS",
+                            menu_module_id = 21,
+                            menu_name = "Branch Settings",
+                            menu_order = 10,
+                            menu_param = "{'type':'BRANCH-SETTINGS'}",
+                            menu_route = "admin/settingsList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8170),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 711,
+                            menu_code = "CUSTOMER",
+                            menu_module_id = 21,
+                            menu_name = "Customer Master",
+                            menu_order = 11,
+                            menu_param = "{'type':'CUSTOMER'}",
+                            menu_route = "masters/customerList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8172),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 800,
+                            menu_code = "TRACKING",
+                            menu_module_id = 22,
+                            menu_name = "Container Tracking",
+                            menu_order = 1,
+                            menu_param = "{'type':'TRACKING'}",
+                            menu_route = "tnt/trackList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8174),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 801,
+                            menu_code = "SEACARRIER",
+                            menu_module_id = 21,
+                            menu_name = "Ocean Carrier",
+                            menu_order = 10,
+                            menu_param = "{'type':'SEA CARRIER'}",
+                            menu_route = "masters/paramList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8176),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 802,
+                            menu_code = "AIRCARRIER",
+                            menu_module_id = 21,
+                            menu_name = "Air Carrier",
+                            menu_order = 10,
+                            menu_param = "{'type':'AIR CARRIER'}",
+                            menu_route = "masters/paramList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8178),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 810,
+                            menu_code = "PARAM-SETTINGS",
+                            menu_module_id = 21,
+                            menu_name = "Param Settings",
+                            menu_order = 11,
+                            menu_param = "{'type':'PARAM-SETTINGS'}",
+                            menu_route = "admin/settingsList",
+                            menu_visible = "N",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8181),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 811,
+                            menu_code = "SALESMAN",
+                            menu_module_id = 21,
+                            menu_name = "Salesman",
+                            menu_order = 12,
+                            menu_param = "{'type':'SALESMAN'}",
+                            menu_route = "masters/paramList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8183),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 812,
+                            menu_code = "SEA-PORT",
+                            menu_module_id = 21,
+                            menu_name = "Sea port",
+                            menu_order = 13,
+                            menu_param = "{'type':'SEA-PORT'}",
+                            menu_route = "masters/paramList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8230),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 901,
+                            menu_code = "QUOTATIONS-LCL",
+                            menu_module_id = 23,
+                            menu_name = "Quotations Lcl & Local",
+                            menu_order = 1,
+                            menu_param = "{'type':'QUOTATIONS-LCL'}",
+                            menu_route = "marketing/qtnmlclList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8256),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 902,
+                            menu_code = "QUOTATIONS-FCL",
+                            menu_module_id = 23,
+                            menu_name = "Quotations Fcl",
+                            menu_order = 2,
+                            menu_param = "{'type':'QUOTATIONS-FCL'}",
+                            menu_route = "marketing/qtnmfclList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8258),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            menu_id = 903,
+                            menu_code = "QUOTATIONS-AIR",
+                            menu_module_id = 23,
+                            menu_name = "Quotations Air",
+                            menu_order = 3,
+                            menu_param = "{'type':'QUOTATIONS-AIR'}",
+                            menu_route = "marketing/qtnmairList",
+                            menu_visible = "Y",
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8260),
+                            rec_version = 0
+                        });
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_modulem", b =>
+                {
+                    b.Property<int>("module_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("module_is_installed")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("char");
+
+                    b.Property<string>("module_name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("module_order")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("module_parent_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("rec_company_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("rec_created_by")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("rec_created_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_edited_by")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("rec_edited_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_locked")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char")
+                        .HasDefaultValue("N");
+
+                    b.Property<int>("rec_version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
+
+                    b.HasKey("module_id")
+                        .HasName("pk_mast_modulem_module_id");
+
+                    b.HasIndex("module_parent_id");
+
+                    b.HasIndex("rec_company_id", "module_name")
+                        .IsUnique()
+                        .HasDatabaseName("uq_mast_modulem_rec_company_id_module_name");
+
+                    b.ToTable("mast_modulem", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            module_id = 20,
+                            module_is_installed = "Y",
+                            module_name = "Accounts",
+                            module_order = 1,
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 592, DateTimeKind.Utc).AddTicks(2771),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            module_id = 21,
+                            module_is_installed = "Y",
+                            module_name = "Masters",
+                            module_order = 3,
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 592, DateTimeKind.Utc).AddTicks(2776),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            module_id = 22,
+                            module_is_installed = "Y",
+                            module_name = "Tracking",
+                            module_order = 4,
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 592, DateTimeKind.Utc).AddTicks(2778),
+                            rec_version = 0
+                        },
+                        new
+                        {
+                            module_id = 23,
+                            module_is_installed = "Y",
+                            module_name = "Marketing",
+                            module_order = 2,
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 592, DateTimeKind.Utc).AddTicks(2780),
+                            rec_version = 0
+                        });
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_rightsm", b =>
+                {
+                    b.Property<int>("rights_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValueSql("nextval('\"master_sequence\"')");
+
+                    b.Property<int?>("rec_branch_id")
+                        .IsRequired()
+                        .HasColumnType("integer");
+
+                    b.Property<int>("rec_company_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("rec_created_by")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("rec_created_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_edited_by")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("rec_edited_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_locked")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1)
+                        .HasColumnType("char")
+                        .HasDefaultValue("N");
+
+                    b.Property<int>("rec_version")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("rights_add")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("char");
+
+                    b.Property<string>("rights_admin")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("char");
+
+                    b.Property<string>("rights_approver")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("char");
+
+                    b.Property<string>("rights_company")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("char");
+
+                    b.Property<string>("rights_delete")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("char");
+
+                    b.Property<string>("rights_doc_upload")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("char");
+
+                    b.Property<string>("rights_doc_view")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("char");
+
+                    b.Property<string>("rights_edit")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("char");
+
+                    b.Property<int>("rights_menu_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("rights_parent_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("rights_print")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("char");
+
+                    b.Property<int>("rights_user_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("rights_value")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("rights_view")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("char");
+
+                    b.HasKey("rights_id")
+                        .HasName("pk_mast_rightsm_rights_id");
+
+                    b.HasIndex("rec_branch_id");
+
+                    b.HasIndex("rights_menu_id");
+
+                    b.HasIndex("rights_parent_id");
+
+                    b.HasIndex("rights_user_id");
+
+                    b.HasIndex("rec_company_id", "rec_branch_id", "rights_user_id", "rights_menu_id")
+                        .IsUnique()
+                        .HasDatabaseName("uq_mast_rightsm_menu_id");
+
+                    b.ToTable("mast_rightsm", (string)null);
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_settings", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValueSql("nextval('\"master_sequence\"')");
+
+                    b.Property<string>("caption")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("category")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("code")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("json")
+                        .HasColumnType("text");
+
+                    b.Property<string>("name")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<int>("order")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("param_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("rec_branch_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("rec_company_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("rec_created_by")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("rec_created_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_edited_by")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("rec_edited_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_locked")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1)
+                        .HasColumnType("char")
+                        .HasDefaultValue("N");
+
+                    b.Property<int>("rec_version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("remarks")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("table")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("value")
+                        .IsRequired()
+                        .HasMaxLength(1500)
+                        .HasColumnType("character varying(1500)");
+
+                    b.HasKey("id")
+                        .HasName("pk_mast_settigs_id");
+
+                    b.HasIndex("rec_branch_id");
+
+                    b.HasIndex("rec_company_id", "rec_branch_id", "param_id", "caption")
+                        .IsUnique()
+                        .HasDatabaseName("uq_mast_settings_rec_company_id_branch_id_param_id_caption");
+
+                    b.ToTable("mast_settings", (string)null);
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_userbranches", b =>
+                {
+                    b.Property<int>("ub_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValueSql("nextval('\"master_sequence\"')");
+
+                    b.Property<int?>("rec_branch_id")
+                        .IsRequired()
+                        .HasColumnType("integer");
+
+                    b.Property<int>("rec_company_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("rec_created_by")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("rec_created_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_edited_by")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("rec_edited_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_locked")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1)
+                        .HasColumnType("char")
+                        .HasDefaultValue("N");
+
+                    b.Property<int>("rec_version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
+
+                    b.Property<int>("ub_user_id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ub_id")
+                        .HasName("pk_mast_userbranches_ub_id");
+
+                    b.HasIndex("rec_branch_id");
+
+                    b.HasIndex("ub_user_id");
+
+                    b.HasIndex("rec_company_id", "ub_user_id", "rec_branch_id")
+                        .IsUnique()
+                        .HasDatabaseName("uq_mast_userbranches_branch");
+
+                    b.ToTable("mast_userbranches", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ub_id = 1,
+                            rec_branch_id = 1,
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 604, DateTimeKind.Utc).AddTicks(9209),
+                            rec_version = 0,
+                            ub_user_id = 2
+                        },
+                        new
+                        {
+                            ub_id = 2,
+                            rec_branch_id = 2,
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 604, DateTimeKind.Utc).AddTicks(9212),
+                            rec_version = 0,
+                            ub_user_id = 2
+                        });
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_userm", b =>
+                {
+                    b.Property<int>("user_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("rec_branch_id")
+                        .IsRequired()
+                        .HasColumnType("integer");
+
+                    b.Property<int>("rec_company_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("rec_created_by")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("rec_created_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_edited_by")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("rec_edited_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("rec_locked")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1)
+                        .HasColumnType("char")
+                        .HasDefaultValue("N");
+
+                    b.Property<int>("rec_version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("user_code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("user_email")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
+                    b.Property<string>("user_is_admin")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("char");
+
+                    b.Property<string>("user_name")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
+                    b.Property<string>("user_password")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("user_id")
+                        .HasName("pk_mast_userm_user_id");
+
+                    b.HasIndex("rec_branch_id");
+
+                    b.HasIndex("rec_company_id", "user_code")
+                        .IsUnique()
+                        .HasDatabaseName("uq_mast_userm_user_code");
+
+                    b.HasIndex("rec_company_id", "user_name")
+                        .IsUnique()
+                        .HasDatabaseName("uq_mast_userm_user_name");
+
+                    b.ToTable("mast_userm", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            user_id = 1,
+                            rec_branch_id = 1,
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 601, DateTimeKind.Utc).AddTicks(2542),
+                            rec_version = 0,
+                            user_code = "ADMIN",
+                            user_email = "admin@gmail.com",
+                            user_is_admin = "Y",
+                            user_name = "ADMIN",
+                            user_password = "ADMIN"
+                        },
+                        new
+                        {
+                            user_id = 2,
+                            rec_branch_id = 1,
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 601, DateTimeKind.Utc).AddTicks(2547),
+                            rec_version = 0,
+                            user_code = "USER1",
+                            user_email = "user1@gmail.com",
+                            user_is_admin = "N",
+                            user_name = "USER1",
+                            user_password = "USER1"
+                        },
+                        new
+                        {
+                            user_id = 3,
+                            rec_branch_id = 1,
+                            rec_company_id = 1,
+                            rec_created_by = "ADMIN",
+                            rec_created_date = new DateTime(2025, 1, 17, 8, 54, 6, 601, DateTimeKind.Utc).AddTicks(2549),
+                            rec_version = 0,
+                            user_code = "USER2",
+                            user_email = "user2@gmail.com",
+                            user_is_admin = "N",
+                            user_name = "USER2",
+                            user_password = "USER2"
+                        });
+                });
+
+            modelBuilder.Entity("Database.Models.Accounts.acc_acctm", b =>
+                {
+                    b.HasOne("Database.Models.Accounts.acc_groupm", "acc_groupm")
+                        .WithMany()
+                        .HasForeignKey("acc_grp_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_acctm_acc_grp_id");
+
+                    b.HasOne("Database.Models.Accounts.acc_acctm", "acctm")
+                        .WithMany()
+                        .HasForeignKey("acc_maincode_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mast_acctm_acc_maincode_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_acctm_rec_company_id");
+
+                    b.Navigation("acc_groupm");
+
+                    b.Navigation("acctm");
+
+                    b.Navigation("company");
+                });
+
+            modelBuilder.Entity("Database.Models.Accounts.acc_groupm", b =>
+                {
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_acc_groupm_rec_company_id");
+
+                    b.Navigation("company");
+                });
+
+            modelBuilder.Entity("Database.Models.Marketing.mark_qtnd_air", b =>
+                {
+                    b.HasOne("Database.Models.Marketing.mark_qtnm", null)
+                        .WithMany("qtnd_air")
+                        .HasForeignKey("mark_qtnmqtnm_id");
+
+                    b.HasOne("Database.Models.Masters.mast_param", "carrier")
+                        .WithMany()
+                        .HasForeignKey("qtnd_carrier_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mark_qtnd_air_qtnd_carrier_id");
+
+                    b.HasOne("Database.Models.Masters.mast_param", "pod")
+                        .WithMany()
+                        .HasForeignKey("qtnd_pod_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mark_qtnd_air_qtnd_pod_id");
+
+                    b.HasOne("Database.Models.Masters.mast_param", "pol")
+                        .WithMany()
+                        .HasForeignKey("qtnd_pol_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mark_qtnd_air_qtnd_pol_id");
+
+                    b.HasOne("Database.Models.Marketing.mark_qtnm", "qtnm")
+                        .WithMany()
+                        .HasForeignKey("qtnd_qtnm_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mark_qtnd_air_qtnd_qtnm_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_branchm", "branch")
+                        .WithMany()
+                        .HasForeignKey("rec_branch_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mark_qtnd_air_rec_branch_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mark_qtnd_air_rec_company_id");
+
+                    b.Navigation("branch");
+
+                    b.Navigation("carrier");
+
+                    b.Navigation("company");
+
+                    b.Navigation("pod");
+
+                    b.Navigation("pol");
+
+                    b.Navigation("qtnm");
+                });
+
+            modelBuilder.Entity("Database.Models.Marketing.mark_qtnd_fcl", b =>
+                {
+                    b.HasOne("Database.Models.Marketing.mark_qtnm", null)
+                        .WithMany("qtnm_fcl")
+                        .HasForeignKey("mark_qtnmqtnm_id");
+
+                    b.HasOne("Database.Models.Masters.mast_param", "carrier")
+                        .WithMany()
+                        .HasForeignKey("qtnd_carrier_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mark_qtnd_fcl_qtnd_carrier_id");
+
+                    b.HasOne("Database.Models.Masters.mast_param", "pod")
+                        .WithMany()
+                        .HasForeignKey("qtnd_pod_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mark_qtnd_fcl_qtnd_pod_id");
+
+                    b.HasOne("Database.Models.Masters.mast_param", "pol")
+                        .WithMany()
+                        .HasForeignKey("qtnd_pol_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mark_qtnd_fcl_qtnd_pol_id");
+
+                    b.HasOne("Database.Models.Marketing.mark_qtnm", "qtnm")
+                        .WithMany()
+                        .HasForeignKey("qtnd_qtnm_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mark_qtnd_fcl_qtnd_qtnm_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_branchm", "branch")
+                        .WithMany()
+                        .HasForeignKey("rec_branch_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mark_qtnd_fcl_rec_branch_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mark_qtnd_fcl_rec_company_id");
+
+                    b.Navigation("branch");
+
+                    b.Navigation("carrier");
+
+                    b.Navigation("company");
+
+                    b.Navigation("pod");
+
+                    b.Navigation("pol");
+
+                    b.Navigation("qtnm");
+                });
+
+            modelBuilder.Entity("Database.Models.Marketing.mark_qtnd_lcl", b =>
+                {
+                    b.HasOne("Database.Models.Marketing.mark_qtnm", null)
+                        .WithMany("qtnd_lcl")
+                        .HasForeignKey("mark_qtnmqtnm_id");
+
+                    b.HasOne("Database.Models.Accounts.acc_acctm", "acctm")
+                        .WithMany()
+                        .HasForeignKey("qtnd_acc_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mark_qtnd_lcl_qtnd_acc_id");
+
+                    b.HasOne("Database.Models.Marketing.mark_qtnm", "qtnm")
+                        .WithMany()
+                        .HasForeignKey("qtnd_qtnm_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mark_qtnd_lcl_qtnm_pkid");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_branchm", "branch")
+                        .WithMany()
+                        .HasForeignKey("rec_branch_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mark_qtnd_lcl_rec_branch_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mark_qtnd_lcl_rec_company_id");
+
+                    b.Navigation("acctm");
+
+                    b.Navigation("branch");
+
+                    b.Navigation("company");
+
+                    b.Navigation("qtnm");
+                });
+
+            modelBuilder.Entity("Database.Models.Marketing.mark_qtnm", b =>
+                {
+                    b.HasOne("Database.Models.Masters.mast_param", "pod")
+                        .WithMany()
+                        .HasForeignKey("qtnm_pod_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mark_qtnm_qtnm_pod_id");
+
+                    b.HasOne("Database.Models.Masters.mast_param", "pol")
+                        .WithMany()
+                        .HasForeignKey("qtnm_pol_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mark_qtnm_qtnm_pol_id");
+
+                    b.HasOne("Database.Models.Masters.mast_param", "por")
+                        .WithMany()
+                        .HasForeignKey("qtnm_por_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mark_qtnm_qtnm_por_id");
+
+                    b.HasOne("Database.Models.Masters.mast_param", "salesman")
+                        .WithMany()
+                        .HasForeignKey("qtnm_salesman_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mark_qtnm_qtnm_salesman_id");
+
+                    b.HasOne("Database.Models.Masters.mast_customerm", "customer")
+                        .WithMany()
+                        .HasForeignKey("qtnm_to_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mark_qtnm_qtnm_to_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_branchm", "branch")
+                        .WithMany()
+                        .HasForeignKey("rec_branch_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mark_qtnm_rec_branch_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mark_qtnm_rec_company_id");
+
+                    b.Navigation("branch");
+
+                    b.Navigation("company");
+
+                    b.Navigation("customer");
+
+                    b.Navigation("pod");
+
+                    b.Navigation("pol");
+
+                    b.Navigation("por");
+
+                    b.Navigation("salesman");
+                });
+
+            modelBuilder.Entity("Database.Models.Masters.mast_contactm", b =>
+                {
+                    b.HasOne("Database.Models.Masters.mast_param", "country")
+                        .WithMany()
+                        .HasForeignKey("cont_country_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_contactm_cont_country_id");
+
+                    b.HasOne("Database.Models.Masters.mast_customerm", "customer")
+                        .WithMany()
+                        .HasForeignKey("cont_parent_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_contactm_cont_parent_id");
+
+                    b.HasOne("Database.Models.Masters.mast_customerm", null)
+                        .WithMany("cust_contacts")
+                        .HasForeignKey("mast_customermcust_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_contactm_rec_company_id");
+
+                    b.Navigation("company");
+
+                    b.Navigation("country");
+
+                    b.Navigation("customer");
+                });
+
+            modelBuilder.Entity("Database.Models.Masters.mast_customerm", b =>
+                {
+                    b.HasOne("Database.Models.Masters.mast_customerm", "customer")
+                        .WithMany()
+                        .HasForeignKey("cust_parent_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mast_customerm_cust_parent_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_customerm_rec_company_id");
+
+                    b.Navigation("company");
+
+                    b.Navigation("customer");
+                });
+
+            modelBuilder.Entity("Database.Models.Masters.mast_param", b =>
+                {
+                    b.HasOne("Database.Models.UserAdmin.mast_branchm", "branch")
+                        .WithMany()
+                        .HasForeignKey("rec_branch_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mast_param_rec_branch_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_param_rec_company_id");
+
+                    b.Navigation("branch");
+
+                    b.Navigation("company");
+                });
+
+            modelBuilder.Entity("Database.Models.TnT.tnt_trackd", b =>
+                {
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_trackd_rec_company_id");
+
+                    b.HasOne("Database.Models.TnT.tnt_trackm", "trackm")
+                        .WithMany("trackd")
+                        .HasForeignKey("trackd_trackm_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("company");
+
+                    b.Navigation("trackm");
+                });
+
+            modelBuilder.Entity("Database.Models.TnT.tnt_tracking_data", b =>
+                {
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_tracking_data_rec_company_id");
+
+                    b.HasOne("Database.Models.TnT.tnt_trackd", "trackd")
+                        .WithMany("tracking_data")
+                        .HasForeignKey("tnt_trackd_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Database.Models.TnT.tnt_trackm", "trackm")
+                        .WithMany("tracking_data")
+                        .HasForeignKey("tnt_trackm_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("company");
+
+                    b.Navigation("trackd");
+
+                    b.Navigation("trackm");
+                });
+
+            modelBuilder.Entity("Database.Models.TnT.tnt_trackm", b =>
+                {
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_tnt_trackm_rec_company_id");
+
+                    b.HasOne("Database.Models.Masters.mast_param", "param_carrier")
+                        .WithMany()
+                        .HasForeignKey("track_carrier_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("company");
+
+                    b.Navigation("param_carrier");
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_branchm", b =>
+                {
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany("branches")
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_branchm_rec_company_id");
+
+                    b.Navigation("company");
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_menum", b =>
+                {
+                    b.HasOne("Database.Models.UserAdmin.mast_modulem", "module")
+                        .WithMany("menus")
+                        .HasForeignKey("menu_module_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_menum_menu_module_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_modulem", "submenu")
+                        .WithMany()
+                        .HasForeignKey("menu_submenu_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mast_menum_menu_submenu_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_menum_rec_company_id");
+
+                    b.Navigation("company");
+
+                    b.Navigation("module");
+
+                    b.Navigation("submenu");
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_modulem", b =>
+                {
+                    b.HasOne("Database.Models.UserAdmin.mast_modulem", "module")
+                        .WithMany()
+                        .HasForeignKey("module_parent_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mast_modulem_module_parent_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_modulem_rec_company_id");
+
+                    b.Navigation("company");
+
+                    b.Navigation("module");
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_rightsm", b =>
+                {
+                    b.HasOne("Database.Models.UserAdmin.mast_branchm", "branch")
+                        .WithMany()
+                        .HasForeignKey("rec_branch_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_branchm_rec_branch_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_rightsm_rec_company_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_menum", "menu")
+                        .WithMany()
+                        .HasForeignKey("rights_menu_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_rightsm_rights_menu_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_userbranches", "userbranches")
+                        .WithMany()
+                        .HasForeignKey("rights_parent_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_rightsm_rights_parent_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_userm", "user")
+                        .WithMany()
+                        .HasForeignKey("rights_user_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_rightsm_rights_user_id");
+
+                    b.Navigation("branch");
+
+                    b.Navigation("company");
+
+                    b.Navigation("menu");
+
+                    b.Navigation("user");
+
+                    b.Navigation("userbranches");
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_settings", b =>
+                {
+                    b.HasOne("Database.Models.UserAdmin.mast_branchm", "branch")
+                        .WithMany()
+                        .HasForeignKey("rec_branch_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mast_settings_rec_branch_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_settings_rec_company_id");
+
+                    b.Navigation("branch");
+
+                    b.Navigation("company");
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_userbranches", b =>
+                {
+                    b.HasOne("Database.Models.UserAdmin.mast_branchm", "branch")
+                        .WithMany()
+                        .HasForeignKey("rec_branch_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_branchm_rec_branch_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_userbranches_rec_company_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_userm", "user")
+                        .WithMany("userbranches")
+                        .HasForeignKey("ub_user_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_userbranches_ub_user_id");
+
+                    b.Navigation("branch");
+
+                    b.Navigation("company");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_userm", b =>
+                {
+                    b.HasOne("Database.Models.UserAdmin.mast_branchm", "branch")
+                        .WithMany()
+                        .HasForeignKey("rec_branch_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_userm_rec_branch_id");
+
+                    b.HasOne("Database.Models.UserAdmin.mast_companym", "company")
+                        .WithMany()
+                        .HasForeignKey("rec_company_id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
+                        .HasConstraintName("fk_mast_userm_rec_company_id");
+
+                    b.Navigation("branch");
+
+                    b.Navigation("company");
+                });
+
+            modelBuilder.Entity("Database.Models.Marketing.mark_qtnm", b =>
+                {
+                    b.Navigation("qtnd_air");
+
+                    b.Navigation("qtnd_lcl");
+
+                    b.Navigation("qtnm_fcl");
+                });
+
+            modelBuilder.Entity("Database.Models.Masters.mast_customerm", b =>
+                {
+                    b.Navigation("cust_contacts");
+                });
+
+            modelBuilder.Entity("Database.Models.TnT.tnt_trackd", b =>
+                {
+                    b.Navigation("tracking_data");
+                });
+
+            modelBuilder.Entity("Database.Models.TnT.tnt_trackm", b =>
+                {
+                    b.Navigation("trackd");
+
+                    b.Navigation("tracking_data");
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_companym", b =>
+                {
+                    b.Navigation("branches");
+                });
+
+            modelBuilder.Entity("Database.Models.UserAdmin.mast_modulem", b =>
+                {
+                    b.Navigation("menus");
+                });
 
             modelBuilder.Entity("Database.Models.UserAdmin.mast_userm", b =>
                 {

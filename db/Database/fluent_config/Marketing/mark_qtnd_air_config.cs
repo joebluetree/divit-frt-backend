@@ -149,8 +149,7 @@ namespace Database.fluent_config.Marketing
             {
                 qtnd_id = 1,
                 qtnd_qtnm_id = 20,
-                qtnd_pod_id = 1005,
-                qtnd_pod_name = "AABENRAA, DENMARK",
+                qtnd_pod_id = null,
                 qtnd_45k = "1.5/kg",
                 qtnd_order = 1,
                 rec_created_by = "ADMIN",
