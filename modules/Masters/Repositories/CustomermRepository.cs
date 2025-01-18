@@ -31,9 +31,18 @@ namespace Masters.Repositories
                 var action = data["action"].ToString();
                 if (action == null)
                     action = "search";
-                var cust_row_type = data["cust_row_type"].ToString();
-                var cust_name = data["cust_name"].ToString();
-                var company_id = int.Parse(data["rec_company_id"].ToString()!);
+                var cust_row_type = "";
+                var cust_name = "";
+                var company_id = 0;
+                
+                if (data.ContainsKey("cust_row_type"))
+                    cust_row_type = data["cust_row_type"].ToString();
+                if (data.ContainsKey("cust_name"))
+                    cust_name = data["cust_name"].ToString();
+                if (data.ContainsKey("rec_company_id"))
+                    company_id = int.Parse(data["rec_company_id"].ToString()!);
+                if (company_id == 0)
+                    throw new Exception("Company Id Not Found");
 
                 _page.currentPageNo = int.Parse(data["currentPageNo"].ToString()!);
                 _page.pages = int.Parse(data["pages"].ToString()!);
@@ -46,8 +55,8 @@ namespace Masters.Repositories
                 query = query.Where(w => w.rec_company_id == company_id);
                 query = query.Where(w => w.cust_row_type == cust_row_type);
 
-                if (cust_name != "" && cust_name != null)
-                    query = query.Where(w => w.cust_name!.Contains(cust_name));
+                if (!Lib.IsBlank(cust_name))
+                    query = query.Where(w => w.cust_name!.Contains(cust_name!));
 
                 if (action == "SEARCH")
                 {
@@ -74,10 +83,31 @@ namespace Masters.Repositories
                     cust_code = e.cust_code,
                     cust_short_name = e.cust_short_name,
                     cust_name = e.cust_name,
-                    cust_display_name = e.cust_display_name,
+                    cust_official_name = e.cust_official_name,
                     cust_address1 = e.cust_address1,
                     cust_address2 = e.cust_address3,
                     cust_address3 = e.cust_address3,
+                    cust_city = e.cust_city,
+                    cust_state_id = e.cust_state_id,
+                    cust_state_code = e.state!.param_code,
+                    cust_state_name = e.cust_state_name,
+                    cust_country_id = e.cust_country_id,
+                    cust_country_code = e.country!.param_code,
+                    cust_country_name = e.cust_country_name,
+                    cust_zip_code = e.cust_zip_code,
+                    cust_contact = e.cust_contact,
+                    cust_title = e.cust_title,
+                    cust_tel = e.cust_tel,
+                    cust_fax = e.cust_fax,
+                    cust_mobile = e.cust_mobile,
+                    cust_web = e.cust_web,
+                    cust_email = e.cust_email,
+                    cust_refer_by = e.cust_refer_by,            
+                    cust_salesman_id = e.cust_salesman_id,
+                    cust_salesman_name = e.salesman!.param_name,
+                    cust_handled_id = e.cust_handled_id,
+                    cust_handled_name = e.handled!.param_name,
+                    cust_location = e.cust_location,
                     cust_row_type = e.customer!.cust_row_type,
                     cust_is_parent = e.customer.cust_is_parent,
                     cust_parent_name = e.customer.cust_name,
@@ -114,12 +144,34 @@ namespace Masters.Repositories
                     cust_code = e.cust_code,
                     cust_short_name = e.cust_short_name,
                     cust_name = e.cust_name,
-                    cust_display_name = e.cust_display_name,
+                    cust_official_name = e.cust_official_name,
                     cust_address1 = e.cust_address1,
-                    cust_address2 = e.cust_address2,
+                    cust_address2 = e.cust_address3,
                     cust_address3 = e.cust_address3,
-                    cust_row_type = e.cust_row_type,
-                    cust_is_parent = e.cust_is_parent,
+                    cust_city = e.cust_city,
+                    cust_state_id = e.cust_state_id,
+                    cust_state_code = e.state!.param_code,
+                    cust_state_name = e.cust_state_name,
+                    cust_country_id = e.cust_country_id,
+                    cust_country_code = e.country!.param_code,
+                    cust_country_name = e.cust_country_name,
+                    cust_zip_code = e.cust_zip_code,
+                    cust_contact = e.cust_contact,
+                    cust_title = e.cust_title,
+                    cust_tel = e.cust_tel,
+                    cust_fax = e.cust_fax,
+                    cust_mobile = e.cust_mobile,
+                    cust_web = e.cust_web,
+                    cust_email = e.cust_email,
+                    cust_refer_by = e.cust_refer_by,            
+                    cust_salesman_id = e.cust_salesman_id,
+                    cust_salesman_name = e.salesman!.param_name,
+                    cust_handled_id = e.cust_handled_id,
+                    cust_handled_name = e.handled!.param_name,
+                    cust_location = e.cust_location,
+
+                    cust_row_type = e.customer!.cust_row_type,
+                    cust_is_parent = e.customer.cust_is_parent,
                     cust_credit_limit = e.cust_credit_limit,
 
                     cust_est_dt = Lib.FormatDate(e.cust_est_dt, Lib.outputDateFormat),
@@ -289,10 +341,31 @@ namespace Masters.Repositories
                 Record.cust_code = record_dto.cust_code;
                 Record.cust_short_name = record_dto.cust_short_name;
                 Record.cust_name = record_dto.cust_name;
-                Record.cust_display_name = record_dto.cust_display_name;
+                Record.cust_official_name = record_dto.cust_official_name;
                 Record.cust_address1 = record_dto.cust_address1;
                 Record.cust_address2 = record_dto.cust_address2;
                 Record.cust_address3 = record_dto.cust_address3;
+                Record.cust_city =record_dto.cust_city;
+                Record.cust_state_id = record_dto.cust_state_id;
+                Record.cust_state_name = record_dto.cust_state_name;
+                Record.cust_country_id = record_dto.cust_country_id;
+                Record.cust_country_name = record_dto.cust_country_name;
+                
+                Record.cust_zip_code =record_dto.cust_zip_code;
+                Record.cust_contact =record_dto.cust_contact;
+                Record.cust_title =record_dto.cust_title;
+                Record.cust_tel =record_dto.cust_tel;
+                Record.cust_fax =record_dto.cust_fax;
+                Record.cust_mobile =record_dto.cust_mobile;
+                Record.cust_web =record_dto.cust_web;
+                Record.cust_email =record_dto.cust_email;
+                Record.cust_refer_by =record_dto.cust_refer_by;
+                Record.cust_salesman_id =record_dto.cust_salesman_id;
+                Record.cust_salesman_name =record_dto.cust_salesman_name;
+                Record.cust_handled_id =record_dto.cust_handled_id;
+                Record.cust_handled_name =record_dto.cust_handled_name;
+                Record.cust_location =record_dto.cust_location;
+
 
                 Record.cust_row_type = record_dto.cust_row_type;
 

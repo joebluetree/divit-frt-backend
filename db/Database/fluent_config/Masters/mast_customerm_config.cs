@@ -24,27 +24,68 @@ namespace Database.fluent_config.Masters
                 .IsRequired();
             modelBuilder.Property(u => u.cust_code)
                 .HasMaxLength(15)
-                .IsRequired();
+                .IsRequired(false);
             modelBuilder.Property(u => u.cust_short_name)
-                .HasMaxLength(15)
-                .IsRequired();
+                .HasMaxLength(50)
+                .IsRequired(false);
             modelBuilder.Property(u => u.cust_name)
                 .HasMaxLength(100)
-                .IsRequired();
-
-            modelBuilder.Property(u => u.cust_display_name)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_official_name)
                 .HasMaxLength(100)
-                .IsRequired();
-
+                .IsRequired(false);
             modelBuilder.Property(u => u.cust_address1)
                 .HasMaxLength(100)
                 .IsRequired();
-
             modelBuilder.Property(u => u.cust_address2)
                 .HasMaxLength(100)
-                .IsRequired();
-
+                .IsRequired(false);
             modelBuilder.Property(u => u.cust_address3)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_city)
+                .HasMaxLength(60)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_state_name)
+                .HasMaxLength(60)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_country_name)
+                .HasMaxLength(60)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_zip_code)
+                .HasMaxLength(20)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_contact)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_title)
+                .HasMaxLength(30)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_tel)
+                .HasMaxLength(20)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_fax)
+                .HasMaxLength(20)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_mobile)
+                .HasMaxLength(20)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_web)
+                .HasMaxLength(30)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_email)
+                .HasMaxLength(30)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_refer_by)
+                .HasMaxLength(60)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_salesman_name)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_handled_name)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_location)
                 .HasMaxLength(100)
                 .IsRequired(false);
 
@@ -100,6 +141,38 @@ namespace Database.fluent_config.Masters
                 .HasConstraintName("fk_mast_customerm_cust_parent_id")
                 .IsRequired(false);
             modelBuilder
+                .HasOne(e => e.state)
+                .WithMany()
+                .HasForeignKey(e => e.cust_state_id)
+                .HasPrincipalKey(e => e.param_id)
+                .HasConstraintName("fk_cust_customerm_cust_state_id")
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+            modelBuilder
+                .HasOne(e => e.country)
+                .WithMany()
+                .HasForeignKey(e => e.cust_country_id)
+                .HasPrincipalKey(e => e.param_id)
+                .HasConstraintName("fk_cust_customerm_cust_country_id")
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+            modelBuilder
+                .HasOne(e => e.salesman)
+                .WithMany()
+                .HasForeignKey(e => e.cust_salesman_id)
+                .HasPrincipalKey(e => e.param_id)
+                .HasConstraintName("fk_cust_customerm_cust_salesman_id")
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+            modelBuilder
+                .HasOne(e => e.handled)
+                .WithMany()
+                .HasForeignKey(e => e.cust_handled_id)
+                .HasPrincipalKey(e => e.param_id)
+                .HasConstraintName("fk_cust_customerm_cust_handled_id")
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+            modelBuilder
                 .HasOne(e => e.company)
                 .WithMany()
                 .HasForeignKey(e => e.rec_company_id)
@@ -120,7 +193,7 @@ namespace Database.fluent_config.Masters
                cust_code = "ABC",
                cust_short_name = "ABC",
                cust_name = "ABC LTD KOCHI",
-               cust_display_name ="ABC LTD",
+               cust_official_name ="ABC LTD KOCHI",
                cust_address1 = "PO BOX 12123",
                cust_address2 = "LMS BUILDING",
                cust_address3 = "KOCHI",
