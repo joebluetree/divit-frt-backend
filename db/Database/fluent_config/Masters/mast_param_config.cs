@@ -109,7 +109,7 @@ namespace Database.fluent_config.Masters
             insertDataCooFormat(modelBuilder);
             insertDataContainerTracking(modelBuilder);
             insertDataOceanShipMove(modelBuilder);
-            insertDataAirShipMove(modelBuilder);
+            insertDataAirShipMovement(modelBuilder);
             insertDataBudgetType(modelBuilder);
             insertDataFormCategory(modelBuilder);
             insertDataUnitMaster(modelBuilder);
@@ -397,7 +397,7 @@ namespace Database.fluent_config.Masters
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1
 
-            },new mast_param
+            }, new mast_param
             {
                 param_id = 19,
                 param_type = "SEA CARRIER",
@@ -594,7 +594,7 @@ namespace Database.fluent_config.Masters
                 rec_company_id = 1
             }, new mast_param
             {
-               param_id = 31,
+                param_id = 31,
                 param_type = "CUSTOMER-GROUP",
                 param_code = "102",
                 param_name = "LOCAL DEBTORS",
@@ -629,7 +629,7 @@ namespace Database.fluent_config.Masters
                 rec_company_id = 1
             }, new mast_param
             {
-               param_id = 33,
+                param_id = 33,
                 param_type = "INVOICE-DESCRIPTION",
                 param_code = "102",
                 param_name = "ADMIN FEE",
@@ -683,7 +683,7 @@ namespace Database.fluent_config.Masters
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1
             }, new mast_param
-            { 
+            {
                 param_id = 36,
                 param_type = "FREIGHT-STATUS",
                 param_code = "PREPAID",
@@ -718,7 +718,7 @@ namespace Database.fluent_config.Masters
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1
             }, new mast_param
-            { 
+            {
                 param_id = 38,
                 param_type = "NOMINATION",
                 param_code = "MUTUAL",
@@ -753,7 +753,7 @@ namespace Database.fluent_config.Masters
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1
             }, new mast_param
-            { 
+            {
                 param_id = 40,
                 param_type = "CONTAINER-TYPE",
                 param_code = "40FR",
@@ -787,7 +787,7 @@ namespace Database.fluent_config.Masters
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1
             }, new mast_param
-            { 
+            {
                 param_id = 42,
                 param_type = "CARGO-MOVEMENT",
                 param_code = "DOOR/DOOR",
@@ -821,7 +821,7 @@ namespace Database.fluent_config.Masters
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1
             }, new mast_param
-            { 
+            {
                 param_id = 44,
                 param_type = "CONTACT-GROUP",
                 param_code = "NA",
@@ -837,7 +837,7 @@ namespace Database.fluent_config.Masters
                 rec_company_id = 1
             });
         }
-        
+
         void insertDataHawbFormat(EntityTypeBuilder<mast_param> modelBuilder)
         {
             modelBuilder.HasData(new mast_param
@@ -876,7 +876,7 @@ namespace Database.fluent_config.Masters
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1
             }, new mast_param
-            { 
+            {
                 param_id = 47,
                 param_type = "HBL-FORMAT",
                 param_code = "MLINES-DRAFT",
@@ -983,26 +983,6 @@ namespace Database.fluent_config.Masters
             });
         }
 
-        void insertDataAirShipMove(EntityTypeBuilder<mast_param> modelBuilder)
-        {
-            modelBuilder.HasData(new mast_param
-            {
-                param_id = 53,
-                param_type = "AIR-SHIP-MOVE-STATUS",
-                param_code = "101",
-                param_name = "SHIPMENT ARRIVED",
-                param_value1 = "",
-                param_value2 = "",
-                param_value3 = "",
-                param_value4 = "",
-                param_value5 = "",
-                param_order = 1,
-                rec_created_by = "ADMIN",
-                rec_created_date = DbLib.GetDateTime(),
-                rec_company_id = 1
-            });
-        }
-
         void insertDataBudgetType(EntityTypeBuilder<mast_param> modelBuilder)
         {
             modelBuilder.HasData(new mast_param
@@ -1092,6 +1072,26 @@ namespace Database.fluent_config.Masters
                 rec_company_id = 1
             });
         }
+        void insertDataAirShipMovement(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 59,
+                param_type = "AIR-MOVE-STATUS",
+                param_code = "101",
+                param_name = "SHIPMENT ARRIVED",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
 
     }
 }
