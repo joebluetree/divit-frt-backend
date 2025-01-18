@@ -94,7 +94,25 @@ namespace Database.fluent_config.Masters
             insertDataCountry(modelBuilder);
             insertDataState(modelBuilder);
             insertDataSeaCarrier(modelBuilder);
+            insertDataAirPort(modelBuilder);
+            insertDataCustomerGrp(modelBuilder);
+            insertDataInvoiceDesc(modelBuilder);
+            insertDataCheckFormat(modelBuilder);
             insertDataCurrency(modelBuilder);
+            insertDataFreightStatus(modelBuilder);
+            insertDataNominationStatus(modelBuilder);
+            insertDataContainerType(modelBuilder);
+            insertDataCargoMovement(modelBuilder);
+            insertDataContactGrp(modelBuilder);
+            insertDataHawbFormat(modelBuilder);
+            insertDataHblFormat(modelBuilder);
+            insertDataCooFormat(modelBuilder);
+            insertDataContainerTracking(modelBuilder);
+            insertDataOceanShipMove(modelBuilder);
+            insertDataAirShipMove(modelBuilder);
+            insertDataBudgetType(modelBuilder);
+            insertDataFormCategory(modelBuilder);
+            insertDataUnitMaster(modelBuilder);
         }
 
         void insertDataCountry(EntityTypeBuilder<mast_param> modelBuilder)
@@ -578,7 +596,7 @@ namespace Database.fluent_config.Masters
             {
                param_id = 31,
                 param_type = "CUSTOMER-GROUP",
-                param_code = "101",
+                param_code = "102",
                 param_name = "LOCAL DEBTORS",
                 param_value1 = "",
                 param_value2 = "",
