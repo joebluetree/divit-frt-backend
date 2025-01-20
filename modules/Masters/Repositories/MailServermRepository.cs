@@ -16,8 +16,8 @@ namespace Marketing.Repositories
 {
 
     //Name : Alen Cherian
-    //Date : 03/01/2025
-    //Command :  Create Repository for the Quotation Fcl.
+    //Date : 20/01/2025
+    //Command :  Create Repository for the Mail Server Settings.
 
     public class MailServermRepository : IMailServermRepository
     {
