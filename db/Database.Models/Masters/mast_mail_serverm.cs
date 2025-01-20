@@ -3,7 +3,7 @@ using Database.Models.BaseTables;
 
 namespace Database.Models.Masters;
 
-public class mast_mail_server : baseTable_company
+public class mast_mail_serverm : baseTable_company
 {
     public int mail_id { get; set; }
     public string? mail_name { get; set; }
