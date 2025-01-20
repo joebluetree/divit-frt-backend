@@ -36,6 +36,27 @@ namespace Database.Models.Masters
         public DateTime? cust_est_dt { get; set; }
         public string? cust_row_type { get; set; }
         public string? cust_is_parent { get; set; }
+        public string? cust_is_shipper { get; set; }
+        public string? cust_is_consignee { get; set; }
+        public string? cust_is_importer { get; set; }
+        public string? cust_is_exporter { get; set; }
+        public string? cust_is_cha { get; set; }
+        public string? cust_is_forwarder { get; set; }
+        public string? cust_is_oagent { get; set; }
+        public string? cust_is_acarrier { get; set; }
+        public string? cust_is_scarrier { get; set; }
+        public string? cust_is_trucker { get; set; }
+        public string? cust_is_warehouse { get; set; }
+        public string? cust_is_sterminal { get; set; }
+        public string? cust_is_aterminal { get; set; }
+        public string? cust_is_shipvendor { get; set; }
+        public string? cust_is_gvendor { get; set; }
+        public string? cust_is_employee { get; set; }
+        public string? cust_is_contract { get; set; }
+        public string? cust_is_miscell { get; set; }
+        public string? cust_is_tbd { get; set; }
+        public string? cust_is_bank { get; set; }
+        
 
         public Nullable<int> cust_parent_id { get; set; }
         public mast_customerm? customer { get; set; }

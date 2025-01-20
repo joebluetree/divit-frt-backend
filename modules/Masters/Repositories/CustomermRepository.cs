@@ -34,7 +34,7 @@ namespace Masters.Repositories
                 var cust_row_type = "";
                 var cust_name = "";
                 var company_id = 0;
-                
+
                 if (data.ContainsKey("cust_row_type"))
                     cust_row_type = data["cust_row_type"].ToString();
                 if (data.ContainsKey("cust_name"))
@@ -85,15 +85,13 @@ namespace Masters.Repositories
                     cust_name = e.cust_name,
                     cust_official_name = e.cust_official_name,
                     cust_address1 = e.cust_address1,
-                    cust_address2 = e.cust_address3,
+                    cust_address2 = e.cust_address2,
                     cust_address3 = e.cust_address3,
                     cust_city = e.cust_city,
                     cust_state_id = e.cust_state_id,
-                    cust_state_code = e.state!.param_code,
-                    cust_state_name = e.cust_state_name,
+                    cust_state_name = e.state!.param_name,
                     cust_country_id = e.cust_country_id,
-                    cust_country_code = e.country!.param_code,
-                    cust_country_name = e.cust_country_name,
+                    cust_country_name = e.country!.param_name,
                     cust_zip_code = e.cust_zip_code,
                     cust_contact = e.cust_contact,
                     cust_title = e.cust_title,
@@ -102,15 +100,36 @@ namespace Masters.Repositories
                     cust_mobile = e.cust_mobile,
                     cust_web = e.cust_web,
                     cust_email = e.cust_email,
-                    cust_refer_by = e.cust_refer_by,            
+                    cust_refer_by = e.cust_refer_by,
                     cust_salesman_id = e.cust_salesman_id,
                     cust_salesman_name = e.salesman!.param_name,
                     cust_handled_id = e.cust_handled_id,
                     cust_handled_name = e.handled!.param_name,
                     cust_location = e.cust_location,
                     cust_row_type = e.customer!.cust_row_type,
-                    cust_is_parent = e.customer.cust_is_parent,
-                    cust_parent_name = e.customer.cust_name,
+                    cust_is_parent = e.cust_is_parent,
+                    cust_parent_name = e.cust_name,
+
+                    cust_is_shipper = e.cust_is_shipper,
+                    cust_is_consignee = e.cust_is_consignee,
+                    cust_is_importer = e.cust_is_importer,
+                    cust_is_exporter = e.cust_is_exporter,
+                    cust_is_cha = e.cust_is_cha,
+                    cust_is_forwarder = e.cust_is_forwarder,
+                    cust_is_oagent = e.cust_is_oagent,
+                    cust_is_acarrier = e.cust_is_acarrier,
+                    cust_is_scarrier = e.cust_is_scarrier,
+                    cust_is_trucker = e.cust_is_trucker,
+                    cust_is_warehouse = e.cust_is_warehouse,
+                    cust_is_sterminal = e.cust_is_sterminal,
+                    cust_is_aterminal = e.cust_is_aterminal,
+                    cust_is_shipvendor = e.cust_is_shipvendor,
+                    cust_is_gvendor = e.cust_is_gvendor,
+                    cust_is_employee = e.cust_is_employee,
+                    cust_is_contract = e.cust_is_contract,
+                    cust_is_miscell = e.cust_is_miscell,
+                    cust_is_tbd = e.cust_is_tbd,
+                    cust_is_bank = e.cust_is_bank,
 
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
@@ -146,15 +165,13 @@ namespace Masters.Repositories
                     cust_name = e.cust_name,
                     cust_official_name = e.cust_official_name,
                     cust_address1 = e.cust_address1,
-                    cust_address2 = e.cust_address3,
+                    cust_address2 = e.cust_address2,
                     cust_address3 = e.cust_address3,
                     cust_city = e.cust_city,
                     cust_state_id = e.cust_state_id,
-                    cust_state_code = e.state!.param_code,
-                    cust_state_name = e.cust_state_name,
+                    cust_state_name = e.state!.param_name,
                     cust_country_id = e.cust_country_id,
-                    cust_country_code = e.country!.param_code,
-                    cust_country_name = e.cust_country_name,
+                    cust_country_name = e.country!.param_name,
                     cust_zip_code = e.cust_zip_code,
                     cust_contact = e.cust_contact,
                     cust_title = e.cust_title,
@@ -163,12 +180,33 @@ namespace Masters.Repositories
                     cust_mobile = e.cust_mobile,
                     cust_web = e.cust_web,
                     cust_email = e.cust_email,
-                    cust_refer_by = e.cust_refer_by,            
+                    cust_refer_by = e.cust_refer_by,
                     cust_salesman_id = e.cust_salesman_id,
                     cust_salesman_name = e.salesman!.param_name,
                     cust_handled_id = e.cust_handled_id,
                     cust_handled_name = e.handled!.param_name,
                     cust_location = e.cust_location,
+
+                    cust_is_shipper = e.cust_is_shipper,
+                    cust_is_consignee = e.cust_is_consignee,
+                    cust_is_importer = e.cust_is_importer,
+                    cust_is_exporter = e.cust_is_exporter,
+                    cust_is_cha = e.cust_is_cha,
+                    cust_is_forwarder = e.cust_is_forwarder,
+                    cust_is_oagent = e.cust_is_oagent,
+                    cust_is_acarrier = e.cust_is_acarrier,
+                    cust_is_scarrier = e.cust_is_scarrier,
+                    cust_is_trucker = e.cust_is_trucker,
+                    cust_is_warehouse = e.cust_is_warehouse,
+                    cust_is_sterminal = e.cust_is_sterminal,
+                    cust_is_aterminal = e.cust_is_aterminal,
+                    cust_is_shipvendor = e.cust_is_shipvendor,
+                    cust_is_gvendor = e.cust_is_gvendor,
+                    cust_is_employee = e.cust_is_employee,
+                    cust_is_contract = e.cust_is_contract,
+                    cust_is_miscell = e.cust_is_miscell,
+                    cust_is_tbd = e.cust_is_tbd,
+                    cust_is_bank = e.cust_is_bank,
 
                     cust_row_type = e.customer!.cust_row_type,
                     cust_is_parent = e.customer.cust_is_parent,
@@ -199,10 +237,10 @@ namespace Masters.Repositories
             }
         }
 
-        public async Task<List<mast_contactm_dto>> GetContactsAsync(int cust_id)
+        public async Task<List<mast_contactm_dto>> GetContactsAsync(int id)
         {
             var query = from e in context.mast_contactm
-                        .Where(a => a.cont_parent_id == cust_id)
+                        .Where(a => a.cont_parent_id == id)
                         .OrderBy(o => o.cont_id)
                         select (new mast_contactm_dto
                         {
@@ -235,10 +273,9 @@ namespace Masters.Repositories
             try
             {
                 context.Database.BeginTransaction();
-                record_dto = await SaveParentAsync(id, mode, record_dto);
-                record_dto = await saveContactAsync(id, record_dto);
-                record_dto.cust_contacts = await GetContactsAsync(id);
-
+                mast_customerm_dto _Record = await SaveParentAsync(id, mode, record_dto);
+                _Record = await saveContactAsync(_Record.cust_id, _Record);
+                _Record.cust_contacts = await GetContactsAsync(_Record.cust_id);
                 context.Database.CommitTransaction();
                 return record_dto;
             }
@@ -283,7 +320,7 @@ namespace Masters.Repositories
                 if (Lib.IsBlank(rec.cont_email))
                     email = "Email Cannot Be Blank!";
                 if (Lib.IsZero(rec.cont_country_id))
-                    email = "Country Name Cannot Be Blank!";
+                    country = "Country Name Cannot Be Blank!";
             }
             if (title != "")
                 str += title;
@@ -302,7 +339,56 @@ namespace Masters.Repositories
 
             return bRet;
         }
+        public string GetCustomerType(mast_customerm_dto record_dto)
+        {
+            var custTypeMapping = new Dictionary<string, string>
+            {
+                { "S", "S" },
+                { "C", "C" },
+                { "I", "I" },
+                { "X", "X" },
+                { "B", "B" },
+                { "F", "F" },
+                { "A", "A" },
+                { "L", "L" },
+                { "R", "R" },
+                { "T", "T" },
+                { "W", "W" },
+                { "N", "N" },
+                { "P", "P" },
+                { "H", "H" },
+                { "V", "V" },
+                { "E", "E" },
+                { "O", "O" },
+                { "M", "M" },
+                { "D", "D" },
+                { "K", "K" }
+            };
+            if (record_dto.cust_is_shipper == "Y") return custTypeMapping["S"];
+            if (record_dto.cust_is_consignee== "Y") return custTypeMapping["C"];
+            if (record_dto.cust_is_importer== "Y") return custTypeMapping["I"];
+            if (record_dto.cust_is_exporter== "Y") return custTypeMapping["X"];
+            if (record_dto.cust_is_cha== "Y") return custTypeMapping["B"];
+            if (record_dto.cust_is_forwarder== "Y") return custTypeMapping["F"];
+            if (record_dto.cust_is_oagent== "Y") return custTypeMapping["A"];
+            if (record_dto.cust_is_acarrier== "Y") return custTypeMapping["L"];
+            if (record_dto.cust_is_scarrier== "Y") return custTypeMapping["R"];
+            if (record_dto.cust_is_trucker== "Y") return custTypeMapping["T"];
+            if (record_dto.cust_is_warehouse== "Y") return custTypeMapping["W"];
+            if (record_dto.cust_is_sterminal== "Y") return custTypeMapping["N"];
+            if (record_dto.cust_is_aterminal== "Y") return custTypeMapping["P"];
+            if (record_dto.cust_is_shipvendor== "Y") return custTypeMapping["H"];
+            if (record_dto.cust_is_gvendor== "Y") return custTypeMapping["V"];
+            if (record_dto.cust_is_employee== "Y") return custTypeMapping["E"];
+            if (record_dto.cust_is_contract== "Y") return custTypeMapping["O"];
+            if (record_dto.cust_is_miscell== "Y") return custTypeMapping["M"];
+            if (record_dto.cust_is_tbd== "Y") return custTypeMapping["D"];
+            if (record_dto.cust_is_bank== "Y") return custTypeMapping["K"];
 
+            return "";
+        }
+
+        // Filter the dictionary to include only true values
         public async Task<mast_customerm_dto> SaveParentAsync(int id, string mode, mast_customerm_dto record_dto)
         {
             mast_customerm? Record;
@@ -310,7 +396,7 @@ namespace Masters.Repositories
             try
             {
                 if (record_dto == null)
-                    throw new Exception("No Data Found To Save");
+                    throw new Exception("No Data Found");
 
                 if (!AllValid(mode, record_dto, ref error))
                     throw new Exception(error);
@@ -326,7 +412,7 @@ namespace Masters.Repositories
                 else
                 {
                     Record = await context.mast_customerm
-                        .Where(f => f.cust_id == record_dto.cust_id)
+                        .Where(f => f.cust_id == id)
                         .FirstOrDefaultAsync();
 
                     if (Record == null)
@@ -337,7 +423,9 @@ namespace Masters.Repositories
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
-                Record.cust_type = record_dto.cust_type;
+                string cust_type = GetCustomerType(record_dto);
+                Record.cust_type = cust_type;
+                // Record.cust_type = record_dto.cust_type;
                 Record.cust_code = record_dto.cust_code;
                 Record.cust_short_name = record_dto.cust_short_name;
                 Record.cust_name = record_dto.cust_name;
@@ -345,27 +433,58 @@ namespace Masters.Repositories
                 Record.cust_address1 = record_dto.cust_address1;
                 Record.cust_address2 = record_dto.cust_address2;
                 Record.cust_address3 = record_dto.cust_address3;
-                Record.cust_city =record_dto.cust_city;
-                Record.cust_state_id = record_dto.cust_state_id;
+                Record.cust_city = record_dto.cust_city;
+                if (Lib.IsZero(record_dto.cust_state_id))
+                    Record.cust_state_id = null;
+                else
+                    Record.cust_state_id = record_dto.cust_state_id;
                 Record.cust_state_name = record_dto.cust_state_name;
-                Record.cust_country_id = record_dto.cust_country_id;
+                if (Lib.IsZero(record_dto.cust_country_id))
+                    Record.cust_country_id = null;
+                else
+                    Record.cust_country_id = record_dto.cust_country_id;
                 Record.cust_country_name = record_dto.cust_country_name;
-                
-                Record.cust_zip_code =record_dto.cust_zip_code;
-                Record.cust_contact =record_dto.cust_contact;
-                Record.cust_title =record_dto.cust_title;
-                Record.cust_tel =record_dto.cust_tel;
-                Record.cust_fax =record_dto.cust_fax;
-                Record.cust_mobile =record_dto.cust_mobile;
-                Record.cust_web =record_dto.cust_web;
-                Record.cust_email =record_dto.cust_email;
-                Record.cust_refer_by =record_dto.cust_refer_by;
-                Record.cust_salesman_id =record_dto.cust_salesman_id;
-                Record.cust_salesman_name =record_dto.cust_salesman_name;
-                Record.cust_handled_id =record_dto.cust_handled_id;
-                Record.cust_handled_name =record_dto.cust_handled_name;
-                Record.cust_location =record_dto.cust_location;
 
+                Record.cust_zip_code = record_dto.cust_zip_code;
+                Record.cust_contact = record_dto.cust_contact;
+                Record.cust_title = record_dto.cust_title;
+                Record.cust_tel = record_dto.cust_tel;
+                Record.cust_fax = record_dto.cust_fax;
+                Record.cust_mobile = record_dto.cust_mobile;
+                Record.cust_web = record_dto.cust_web;
+                Record.cust_email = record_dto.cust_email;
+                Record.cust_refer_by = record_dto.cust_refer_by;
+                if (Lib.IsZero(record_dto.cust_salesman_id))
+                    Record.cust_salesman_id = null;
+                else
+                    Record.cust_salesman_id = record_dto.cust_salesman_id;
+                Record.cust_salesman_name = record_dto.cust_salesman_name;
+                if (Lib.IsZero(record_dto.cust_handled_id))
+                    Record.cust_handled_id = null;
+                else
+                    Record.cust_handled_id = record_dto.cust_handled_id;
+                Record.cust_handled_name = record_dto.cust_handled_name;
+                Record.cust_location = record_dto.cust_location;
+                Record.cust_is_shipper = record_dto.cust_is_shipper;
+                Record.cust_is_consignee = record_dto.cust_is_consignee;
+                Record.cust_is_importer = record_dto.cust_is_importer;
+                Record.cust_is_exporter = record_dto.cust_is_exporter;
+                Record.cust_is_cha = record_dto.cust_is_cha;
+                Record.cust_is_forwarder = record_dto.cust_is_forwarder;
+                Record.cust_is_oagent = record_dto.cust_is_oagent;
+                Record.cust_is_acarrier = record_dto.cust_is_acarrier;
+                Record.cust_is_scarrier = record_dto.cust_is_scarrier;
+                Record.cust_is_trucker = record_dto.cust_is_trucker;
+                Record.cust_is_warehouse = record_dto.cust_is_warehouse;
+                Record.cust_is_sterminal = record_dto.cust_is_sterminal;
+                Record.cust_is_aterminal = record_dto.cust_is_aterminal;
+                Record.cust_is_shipvendor = record_dto.cust_is_shipvendor;
+                Record.cust_is_gvendor = record_dto.cust_is_gvendor;
+                Record.cust_is_employee = record_dto.cust_is_employee;
+                Record.cust_is_contract = record_dto.cust_is_contract;
+                Record.cust_is_miscell = record_dto.cust_is_miscell;
+                Record.cust_is_tbd = record_dto.cust_is_tbd;
+                Record.cust_is_bank = record_dto.cust_is_bank;
 
                 Record.cust_row_type = record_dto.cust_row_type;
 
@@ -407,8 +526,6 @@ namespace Masters.Repositories
             List<mast_contactm> records;
             try
             {
-                if (record_dto == null)
-                    throw new Exception("No Data Found");
 
                 // get contacts from the front end
                 records_dto = record_dto.cust_contacts!;
@@ -482,6 +599,13 @@ namespace Masters.Repositories
                 }
                 else
                 {
+                    var _Contact = context.mast_contactm
+                    .Where(c => c.cont_parent_id == id);
+                    if (_Contact.Any())
+                    {
+                        context.mast_contactm.RemoveRange(_Contact);
+
+                    }
                     context.Remove(_Record);
                     context.SaveChanges();
                     RetData.Add("status", true);

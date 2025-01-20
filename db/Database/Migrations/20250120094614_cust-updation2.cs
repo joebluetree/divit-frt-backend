@@ -3,1188 +3,1427 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace Database.Migrations
 {
     /// <inheritdoc />
-    public partial class modulemenu : Migration
+    public partial class custupdation2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_acarrier",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_aterminal",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_bank",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_cha",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_consignee",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_contract",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_employee",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_exporter",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_forwarder",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_gvendor",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_importer",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_miscell",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_oagent",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_scarrier",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_shipper",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_shipvendor",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_sterminal",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_tbd",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_trucker",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "cust_is_warehouse",
+                table: "mast_customerm",
+                type: "character varying(1)",
+                maxLength: 1,
+                nullable: true);
+
             migrationBuilder.UpdateData(
                 table: "acc_acctm",
                 keyColumn: "acc_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 641, DateTimeKind.Utc).AddTicks(1590));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 308, DateTimeKind.Utc).AddTicks(9113));
 
             migrationBuilder.UpdateData(
                 table: "acc_acctm",
                 keyColumn: "acc_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 641, DateTimeKind.Utc).AddTicks(1627));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 308, DateTimeKind.Utc).AddTicks(9118));
 
             migrationBuilder.UpdateData(
                 table: "acc_acctm",
                 keyColumn: "acc_id",
                 keyValue: 3,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 641, DateTimeKind.Utc).AddTicks(1630));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 308, DateTimeKind.Utc).AddTicks(9121));
 
             migrationBuilder.UpdateData(
                 table: "acc_acctm",
                 keyColumn: "acc_id",
                 keyValue: 4,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 641, DateTimeKind.Utc).AddTicks(1633));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 308, DateTimeKind.Utc).AddTicks(9124));
 
             migrationBuilder.UpdateData(
                 table: "acc_acctm",
                 keyColumn: "acc_id",
                 keyValue: 5,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 641, DateTimeKind.Utc).AddTicks(1635));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 308, DateTimeKind.Utc).AddTicks(9126));
 
             migrationBuilder.UpdateData(
                 table: "acc_groupm",
                 keyColumn: "grp_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 636, DateTimeKind.Utc).AddTicks(6975));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 305, DateTimeKind.Utc).AddTicks(3273));
 
             migrationBuilder.UpdateData(
                 table: "acc_groupm",
                 keyColumn: "grp_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 636, DateTimeKind.Utc).AddTicks(6978));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 305, DateTimeKind.Utc).AddTicks(3278));
 
             migrationBuilder.UpdateData(
                 table: "acc_groupm",
                 keyColumn: "grp_id",
                 keyValue: 3,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 636, DateTimeKind.Utc).AddTicks(6980));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 305, DateTimeKind.Utc).AddTicks(3281));
 
             migrationBuilder.UpdateData(
                 table: "acc_groupm",
                 keyColumn: "grp_id",
                 keyValue: 4,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 636, DateTimeKind.Utc).AddTicks(6982));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 305, DateTimeKind.Utc).AddTicks(3283));
 
             migrationBuilder.UpdateData(
                 table: "mark_qtnd_air",
                 keyColumn: "qtnd_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 685, DateTimeKind.Utc).AddTicks(4691));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 349, DateTimeKind.Utc).AddTicks(609));
 
             migrationBuilder.UpdateData(
                 table: "mark_qtnd_fcl",
                 keyColumn: "qtnd_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 676, DateTimeKind.Utc).AddTicks(4413));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 341, DateTimeKind.Utc).AddTicks(925));
 
             migrationBuilder.UpdateData(
                 table: "mark_qtnd_lcl",
                 keyColumn: "qtnd_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 667, DateTimeKind.Utc).AddTicks(249));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 332, DateTimeKind.Utc).AddTicks(6325));
 
             migrationBuilder.UpdateData(
                 table: "mark_qtnm",
                 keyColumn: "qtnm_id",
                 keyValue: 1,
                 columns: new[] { "qtnm_date", "rec_created_date" },
-                values: new object[] { new DateTime(2025, 1, 17, 14, 24, 6, 661, DateTimeKind.Local).AddTicks(9049), new DateTime(2025, 1, 17, 8, 54, 6, 661, DateTimeKind.Utc).AddTicks(9081) });
+                values: new object[] { new DateTime(2025, 1, 20, 15, 16, 13, 328, DateTimeKind.Local).AddTicks(1492), new DateTime(2025, 1, 20, 9, 46, 13, 328, DateTimeKind.Utc).AddTicks(1520) });
 
             migrationBuilder.UpdateData(
                 table: "mark_qtnm",
                 keyColumn: "qtnm_id",
                 keyValue: 10,
                 columns: new[] { "qtnm_date", "rec_created_date" },
-                values: new object[] { new DateTime(2025, 1, 17, 14, 24, 6, 661, DateTimeKind.Local).AddTicks(9141), new DateTime(2025, 1, 17, 8, 54, 6, 661, DateTimeKind.Utc).AddTicks(9143) });
+                values: new object[] { new DateTime(2025, 1, 20, 15, 16, 13, 328, DateTimeKind.Local).AddTicks(1529), new DateTime(2025, 1, 20, 9, 46, 13, 328, DateTimeKind.Utc).AddTicks(1534) });
 
             migrationBuilder.UpdateData(
                 table: "mark_qtnm",
                 keyColumn: "qtnm_id",
                 keyValue: 20,
                 columns: new[] { "qtnm_date", "rec_created_date" },
-                values: new object[] { new DateTime(2025, 1, 17, 14, 24, 6, 661, DateTimeKind.Local).AddTicks(9134), new DateTime(2025, 1, 17, 8, 54, 6, 661, DateTimeKind.Utc).AddTicks(9139) });
+                values: new object[] { new DateTime(2025, 1, 20, 15, 16, 13, 328, DateTimeKind.Local).AddTicks(1524), new DateTime(2025, 1, 20, 9, 46, 13, 328, DateTimeKind.Utc).AddTicks(1527) });
 
             migrationBuilder.UpdateData(
                 table: "mast_branchm",
                 keyColumn: "branch_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 590, DateTimeKind.Utc).AddTicks(243));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 247, DateTimeKind.Utc).AddTicks(4810));
 
             migrationBuilder.UpdateData(
                 table: "mast_branchm",
                 keyColumn: "branch_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 590, DateTimeKind.Utc).AddTicks(248));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 247, DateTimeKind.Utc).AddTicks(4814));
 
             migrationBuilder.UpdateData(
                 table: "mast_branchm",
                 keyColumn: "branch_id",
                 keyValue: 3,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 590, DateTimeKind.Utc).AddTicks(251));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 247, DateTimeKind.Utc).AddTicks(4817));
 
             migrationBuilder.UpdateData(
                 table: "mast_companym",
                 keyColumn: "comp_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 581, DateTimeKind.Utc).AddTicks(1990));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 239, DateTimeKind.Utc).AddTicks(5245));
 
             migrationBuilder.UpdateData(
                 table: "mast_companym",
                 keyColumn: "comp_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 581, DateTimeKind.Utc).AddTicks(1993));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 239, DateTimeKind.Utc).AddTicks(5252));
 
             migrationBuilder.UpdateData(
                 table: "mast_contactm",
                 keyColumn: "cont_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 634, DateTimeKind.Utc).AddTicks(9945));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 303, DateTimeKind.Utc).AddTicks(2095));
 
             migrationBuilder.UpdateData(
                 table: "mast_contactm",
                 keyColumn: "cont_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 634, DateTimeKind.Utc).AddTicks(9953));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 303, DateTimeKind.Utc).AddTicks(2100));
 
             migrationBuilder.UpdateData(
                 table: "mast_customerm",
                 keyColumn: "cust_id",
                 keyValue: 100,
-                column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 631, DateTimeKind.Utc).AddTicks(23));
+                columns: new[] { "cust_is_acarrier", "cust_is_aterminal", "cust_is_bank", "cust_is_cha", "cust_is_consignee", "cust_is_contract", "cust_is_employee", "cust_is_exporter", "cust_is_forwarder", "cust_is_gvendor", "cust_is_importer", "cust_is_miscell", "cust_is_oagent", "cust_is_scarrier", "cust_is_shipper", "cust_is_shipvendor", "cust_is_sterminal", "cust_is_tbd", "cust_is_trucker", "cust_is_warehouse", "rec_created_date" },
+                values: new object[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new DateTime(2025, 1, 20, 9, 46, 13, 299, DateTimeKind.Utc).AddTicks(4800) });
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 501,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8107));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7665));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 502,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8115));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7670));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 503,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8118));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7673));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 701,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8152));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7702));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 702,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8154));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7704));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 703,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8156));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7706));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 704,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8158));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7708));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 705,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8160));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7711));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 706,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8162));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7713));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 707,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8164));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7715));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 708,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8166));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7717));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 709,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8168));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7719));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 710,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8170));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7721));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 711,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8172));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7724));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 800,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8174));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7727));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 801,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8176));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7730));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 802,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8178));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7732));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 810,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8181));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7734));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 811,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8183));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7737));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 812,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8230));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7739));
+
+            migrationBuilder.UpdateData(
+                table: "mast_menum",
+                keyColumn: "menu_id",
+                keyValue: 901,
+                column: "rec_created_date",
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7763));
+
+            migrationBuilder.UpdateData(
+                table: "mast_menum",
+                keyColumn: "menu_id",
+                keyValue: 902,
+                column: "rec_created_date",
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7766));
+
+            migrationBuilder.UpdateData(
+                table: "mast_menum",
+                keyColumn: "menu_id",
+                keyValue: 903,
+                column: "rec_created_date",
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 254, DateTimeKind.Utc).AddTicks(7768));
 
             migrationBuilder.UpdateData(
                 table: "mast_modulem",
                 keyColumn: "module_id",
                 keyValue: 20,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 592, DateTimeKind.Utc).AddTicks(2771));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 249, DateTimeKind.Utc).AddTicks(7877));
 
             migrationBuilder.UpdateData(
                 table: "mast_modulem",
                 keyColumn: "module_id",
                 keyValue: 21,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 592, DateTimeKind.Utc).AddTicks(2776));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 249, DateTimeKind.Utc).AddTicks(7881));
 
             migrationBuilder.UpdateData(
                 table: "mast_modulem",
                 keyColumn: "module_id",
                 keyValue: 22,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 592, DateTimeKind.Utc).AddTicks(2778));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 249, DateTimeKind.Utc).AddTicks(7883));
 
-            migrationBuilder.InsertData(
+            migrationBuilder.UpdateData(
                 table: "mast_modulem",
-                columns: new[] { "module_id", "module_is_installed", "module_name", "module_order", "module_parent_id", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date" },
-                values: new object[] { 23, "Y", "Marketing", 2, null, 1, "ADMIN", new DateTime(2025, 1, 17, 8, 54, 6, 592, DateTimeKind.Utc).AddTicks(2780), null, null });
+                keyColumn: "module_id",
+                keyValue: 23,
+                column: "rec_created_date",
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 249, DateTimeKind.Utc).AddTicks(7885));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4005));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5081));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4009));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5086));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 3,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4037));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5111));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 4,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4043));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5117));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 5,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4046));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5120));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 6,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4048));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5122));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 7,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4050));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5125));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 8,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4053));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5127));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 9,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4055));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5129));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 10,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4057));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5131));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 11,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4060));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5134));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 12,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4062));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5136));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 13,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4065));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5139));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 14,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4067));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5141));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 15,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4069));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5144));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 16,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4072));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5146));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 17,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4074));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5148));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 18,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4076));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5150));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 19,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4078));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5153));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 20,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4081));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5155));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 21,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4083));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5157));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 22,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4085));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5160));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 23,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4087));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5230));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 24,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4090));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5233));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 25,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 626, DateTimeKind.Utc).AddTicks(4093));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 286, DateTimeKind.Utc).AddTicks(5235));
 
             migrationBuilder.UpdateData(
                 table: "mast_userbranches",
                 keyColumn: "ub_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 604, DateTimeKind.Utc).AddTicks(9209));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 261, DateTimeKind.Utc).AddTicks(5413));
 
             migrationBuilder.UpdateData(
                 table: "mast_userbranches",
                 keyColumn: "ub_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 604, DateTimeKind.Utc).AddTicks(9212));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 261, DateTimeKind.Utc).AddTicks(5416));
 
             migrationBuilder.UpdateData(
                 table: "mast_userm",
                 keyColumn: "user_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 601, DateTimeKind.Utc).AddTicks(2542));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 258, DateTimeKind.Utc).AddTicks(2500));
 
             migrationBuilder.UpdateData(
                 table: "mast_userm",
                 keyColumn: "user_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 601, DateTimeKind.Utc).AddTicks(2547));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 258, DateTimeKind.Utc).AddTicks(2506));
 
             migrationBuilder.UpdateData(
                 table: "mast_userm",
                 keyColumn: "user_id",
                 keyValue: 3,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 601, DateTimeKind.Utc).AddTicks(2549));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 258, DateTimeKind.Utc).AddTicks(2508));
 
             migrationBuilder.UpdateData(
                 table: "tnt_trackm",
                 keyColumn: "track_id",
                 keyValue: 100,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 644, DateTimeKind.Utc).AddTicks(4476));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 311, DateTimeKind.Utc).AddTicks(6605));
 
             migrationBuilder.UpdateData(
                 table: "tnt_trackm",
                 keyColumn: "track_id",
                 keyValue: 102,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 644, DateTimeKind.Utc).AddTicks(4482));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 311, DateTimeKind.Utc).AddTicks(6610));
 
             migrationBuilder.UpdateData(
                 table: "tnt_trackm",
                 keyColumn: "track_id",
                 keyValue: 103,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 644, DateTimeKind.Utc).AddTicks(4483));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 311, DateTimeKind.Utc).AddTicks(6612));
 
             migrationBuilder.UpdateData(
                 table: "tnt_trackm",
                 keyColumn: "track_id",
                 keyValue: 104,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 644, DateTimeKind.Utc).AddTicks(4485));
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 311, DateTimeKind.Utc).AddTicks(6614));
 
             migrationBuilder.UpdateData(
                 table: "tnt_trackm",
                 keyColumn: "track_id",
                 keyValue: 105,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 54, 6, 644, DateTimeKind.Utc).AddTicks(4487));
-
-            migrationBuilder.InsertData(
-                table: "mast_menum",
-                columns: new[] { "menu_id", "menu_code", "menu_module_id", "menu_name", "menu_order", "menu_param", "menu_route", "menu_submenu_id", "menu_visible", "rec_company_id", "rec_created_by", "rec_created_date", "rec_edited_by", "rec_edited_date" },
-                values: new object[,]
-                {
-                    { 901, "QUOTATIONS-LCL", 23, "Quotations Lcl & Local", 1, "{'type':'QUOTATIONS-LCL'}", "marketing/qtnmlclList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8256), null, null },
-                    { 902, "QUOTATIONS-FCL", 23, "Quotations Fcl", 2, "{'type':'QUOTATIONS-FCL'}", "marketing/qtnmfclList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8258), null, null },
-                    { 903, "QUOTATIONS-AIR", 23, "Quotations Air", 3, "{'type':'QUOTATIONS-AIR'}", "marketing/qtnmairList", null, "Y", 1, "ADMIN", new DateTime(2025, 1, 17, 8, 54, 6, 597, DateTimeKind.Utc).AddTicks(8260), null, null }
-                });
+                value: new DateTime(2025, 1, 20, 9, 46, 13, 311, DateTimeKind.Utc).AddTicks(6616));
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DeleteData(
-                table: "mast_menum",
-                keyColumn: "menu_id",
-                keyValue: 901);
+            migrationBuilder.DropColumn(
+                name: "cust_is_acarrier",
+                table: "mast_customerm");
 
-            migrationBuilder.DeleteData(
-                table: "mast_menum",
-                keyColumn: "menu_id",
-                keyValue: 902);
+            migrationBuilder.DropColumn(
+                name: "cust_is_aterminal",
+                table: "mast_customerm");
 
-            migrationBuilder.DeleteData(
-                table: "mast_menum",
-                keyColumn: "menu_id",
-                keyValue: 903);
+            migrationBuilder.DropColumn(
+                name: "cust_is_bank",
+                table: "mast_customerm");
 
-            migrationBuilder.DeleteData(
-                table: "mast_modulem",
-                keyColumn: "module_id",
-                keyValue: 23);
+            migrationBuilder.DropColumn(
+                name: "cust_is_cha",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_consignee",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_contract",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_employee",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_exporter",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_forwarder",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_gvendor",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_importer",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_miscell",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_oagent",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_scarrier",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_shipper",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_shipvendor",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_sterminal",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_tbd",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_trucker",
+                table: "mast_customerm");
+
+            migrationBuilder.DropColumn(
+                name: "cust_is_warehouse",
+                table: "mast_customerm");
 
             migrationBuilder.UpdateData(
                 table: "acc_acctm",
                 keyColumn: "acc_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 21, DateTimeKind.Utc).AddTicks(2127));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 981, DateTimeKind.Utc).AddTicks(8132));
 
             migrationBuilder.UpdateData(
                 table: "acc_acctm",
                 keyColumn: "acc_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 21, DateTimeKind.Utc).AddTicks(2132));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 981, DateTimeKind.Utc).AddTicks(8136));
 
             migrationBuilder.UpdateData(
                 table: "acc_acctm",
                 keyColumn: "acc_id",
                 keyValue: 3,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 21, DateTimeKind.Utc).AddTicks(2135));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 981, DateTimeKind.Utc).AddTicks(8139));
 
             migrationBuilder.UpdateData(
                 table: "acc_acctm",
                 keyColumn: "acc_id",
                 keyValue: 4,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 21, DateTimeKind.Utc).AddTicks(2180));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 981, DateTimeKind.Utc).AddTicks(8141));
 
             migrationBuilder.UpdateData(
                 table: "acc_acctm",
                 keyColumn: "acc_id",
                 keyValue: 5,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 21, DateTimeKind.Utc).AddTicks(2183));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 981, DateTimeKind.Utc).AddTicks(8144));
 
             migrationBuilder.UpdateData(
                 table: "acc_groupm",
                 keyColumn: "grp_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 17, DateTimeKind.Utc).AddTicks(7423));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 978, DateTimeKind.Utc).AddTicks(2648));
 
             migrationBuilder.UpdateData(
                 table: "acc_groupm",
                 keyColumn: "grp_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 17, DateTimeKind.Utc).AddTicks(7427));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 978, DateTimeKind.Utc).AddTicks(2651));
 
             migrationBuilder.UpdateData(
                 table: "acc_groupm",
                 keyColumn: "grp_id",
                 keyValue: 3,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 17, DateTimeKind.Utc).AddTicks(7428));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 978, DateTimeKind.Utc).AddTicks(2654));
 
             migrationBuilder.UpdateData(
                 table: "acc_groupm",
                 keyColumn: "grp_id",
                 keyValue: 4,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 17, DateTimeKind.Utc).AddTicks(7430));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 978, DateTimeKind.Utc).AddTicks(2655));
 
             migrationBuilder.UpdateData(
                 table: "mark_qtnd_air",
                 keyColumn: "qtnd_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 62, DateTimeKind.Utc).AddTicks(4868));
+                value: new DateTime(2025, 1, 20, 6, 0, 36, 23, DateTimeKind.Utc).AddTicks(2859));
 
             migrationBuilder.UpdateData(
                 table: "mark_qtnd_fcl",
                 keyColumn: "qtnd_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 53, DateTimeKind.Utc).AddTicks(8616));
+                value: new DateTime(2025, 1, 20, 6, 0, 36, 14, DateTimeKind.Utc).AddTicks(7319));
 
             migrationBuilder.UpdateData(
                 table: "mark_qtnd_lcl",
                 keyColumn: "qtnd_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 45, DateTimeKind.Utc).AddTicks(5274));
+                value: new DateTime(2025, 1, 20, 6, 0, 36, 6, DateTimeKind.Utc).AddTicks(6475));
 
             migrationBuilder.UpdateData(
                 table: "mark_qtnm",
                 keyColumn: "qtnm_id",
                 keyValue: 1,
                 columns: new[] { "qtnm_date", "rec_created_date" },
-                values: new object[] { new DateTime(2025, 1, 17, 14, 10, 36, 40, DateTimeKind.Local).AddTicks(5139), new DateTime(2025, 1, 17, 8, 40, 36, 40, DateTimeKind.Utc).AddTicks(5168) });
+                values: new object[] { new DateTime(2025, 1, 20, 11, 30, 36, 2, DateTimeKind.Local).AddTicks(1347), new DateTime(2025, 1, 20, 6, 0, 36, 2, DateTimeKind.Utc).AddTicks(1377) });
 
             migrationBuilder.UpdateData(
                 table: "mark_qtnm",
                 keyColumn: "qtnm_id",
                 keyValue: 10,
                 columns: new[] { "qtnm_date", "rec_created_date" },
-                values: new object[] { new DateTime(2025, 1, 17, 14, 10, 36, 40, DateTimeKind.Local).AddTicks(5219), new DateTime(2025, 1, 17, 8, 40, 36, 40, DateTimeKind.Utc).AddTicks(5221) });
+                values: new object[] { new DateTime(2025, 1, 20, 11, 30, 36, 2, DateTimeKind.Local).AddTicks(1385), new DateTime(2025, 1, 20, 6, 0, 36, 2, DateTimeKind.Utc).AddTicks(1387) });
 
             migrationBuilder.UpdateData(
                 table: "mark_qtnm",
                 keyColumn: "qtnm_id",
                 keyValue: 20,
                 columns: new[] { "qtnm_date", "rec_created_date" },
-                values: new object[] { new DateTime(2025, 1, 17, 14, 10, 36, 40, DateTimeKind.Local).AddTicks(5213), new DateTime(2025, 1, 17, 8, 40, 36, 40, DateTimeKind.Utc).AddTicks(5217) });
+                values: new object[] { new DateTime(2025, 1, 20, 11, 30, 36, 2, DateTimeKind.Local).AddTicks(1381), new DateTime(2025, 1, 20, 6, 0, 36, 2, DateTimeKind.Utc).AddTicks(1383) });
 
             migrationBuilder.UpdateData(
                 table: "mast_branchm",
                 keyColumn: "branch_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 965, DateTimeKind.Utc).AddTicks(5769));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 923, DateTimeKind.Utc).AddTicks(1871));
 
             migrationBuilder.UpdateData(
                 table: "mast_branchm",
                 keyColumn: "branch_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 965, DateTimeKind.Utc).AddTicks(5773));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 923, DateTimeKind.Utc).AddTicks(1876));
 
             migrationBuilder.UpdateData(
                 table: "mast_branchm",
                 keyColumn: "branch_id",
                 keyValue: 3,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 965, DateTimeKind.Utc).AddTicks(5775));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 923, DateTimeKind.Utc).AddTicks(1878));
 
             migrationBuilder.UpdateData(
                 table: "mast_companym",
                 keyColumn: "comp_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 956, DateTimeKind.Utc).AddTicks(2351));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 914, DateTimeKind.Utc).AddTicks(9152));
 
             migrationBuilder.UpdateData(
                 table: "mast_companym",
                 keyColumn: "comp_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 956, DateTimeKind.Utc).AddTicks(2355));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 914, DateTimeKind.Utc).AddTicks(9160));
 
             migrationBuilder.UpdateData(
                 table: "mast_contactm",
                 keyColumn: "cont_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 16, DateTimeKind.Utc).AddTicks(2543));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 976, DateTimeKind.Utc).AddTicks(8358));
 
             migrationBuilder.UpdateData(
                 table: "mast_contactm",
                 keyColumn: "cont_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 16, DateTimeKind.Utc).AddTicks(2550));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 976, DateTimeKind.Utc).AddTicks(8364));
 
             migrationBuilder.UpdateData(
                 table: "mast_customerm",
                 keyColumn: "cust_id",
                 keyValue: 100,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 9, DateTimeKind.Utc).AddTicks(1111));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 973, DateTimeKind.Utc).AddTicks(1867));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 501,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4798));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5167));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 502,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4802));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5171));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 503,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4804));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5173));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 701,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4829));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5205));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 702,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4831));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5207));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 703,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4833));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5210));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 704,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4835));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5212));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 705,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4837));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5214));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 706,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4839));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5216));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 707,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4841));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5218));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 708,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4843));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5220));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 709,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4845));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5222));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 710,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4847));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5224));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 711,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4849));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5226));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 800,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4851));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5228));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 801,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4853));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5230));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 802,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4855));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5232));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 810,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4857));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5234));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 811,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4859));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5236));
 
             migrationBuilder.UpdateData(
                 table: "mast_menum",
                 keyColumn: "menu_id",
                 keyValue: 812,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 973, DateTimeKind.Utc).AddTicks(4917));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5238));
+
+            migrationBuilder.UpdateData(
+                table: "mast_menum",
+                keyColumn: "menu_id",
+                keyValue: 901,
+                column: "rec_created_date",
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5262));
+
+            migrationBuilder.UpdateData(
+                table: "mast_menum",
+                keyColumn: "menu_id",
+                keyValue: 902,
+                column: "rec_created_date",
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5264));
+
+            migrationBuilder.UpdateData(
+                table: "mast_menum",
+                keyColumn: "menu_id",
+                keyValue: 903,
+                column: "rec_created_date",
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 930, DateTimeKind.Utc).AddTicks(5266));
 
             migrationBuilder.UpdateData(
                 table: "mast_modulem",
                 keyColumn: "module_id",
                 keyValue: 20,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 967, DateTimeKind.Utc).AddTicks(8096));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 925, DateTimeKind.Utc).AddTicks(1213));
 
             migrationBuilder.UpdateData(
                 table: "mast_modulem",
                 keyColumn: "module_id",
                 keyValue: 21,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 967, DateTimeKind.Utc).AddTicks(8098));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 925, DateTimeKind.Utc).AddTicks(1218));
 
             migrationBuilder.UpdateData(
                 table: "mast_modulem",
                 keyColumn: "module_id",
                 keyValue: 22,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 967, DateTimeKind.Utc).AddTicks(8100));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 925, DateTimeKind.Utc).AddTicks(1220));
+
+            migrationBuilder.UpdateData(
+                table: "mast_modulem",
+                keyColumn: "module_id",
+                keyValue: 23,
+                column: "rec_created_date",
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 925, DateTimeKind.Utc).AddTicks(1222));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1768));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9439));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1772));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9444));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 3,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1801));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9470));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 4,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1808));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9477));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 5,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1810));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9480));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 6,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1813));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9482));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 7,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1815));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9485));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 8,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1818));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9487));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 9,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1820));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9490));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 10,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1822));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9492));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 11,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1825));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9495));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 12,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1827));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9497));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 13,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1829));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9500));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 14,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1833));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9502));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 15,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1835));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9504));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 16,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1837));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9507));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 17,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1840));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9509));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 18,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1842));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9511));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 19,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1844));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9514));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 20,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1846));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9516));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 21,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1849));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9518));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 22,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1851));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9521));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 23,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1853));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9523));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 24,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1856));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9525));
 
             migrationBuilder.UpdateData(
                 table: "mast_param",
                 keyColumn: "param_id",
                 keyValue: 25,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 4, DateTimeKind.Utc).AddTicks(1859));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 961, DateTimeKind.Utc).AddTicks(9527));
 
             migrationBuilder.UpdateData(
                 table: "mast_userbranches",
                 keyColumn: "ub_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 981, DateTimeKind.Utc).AddTicks(358));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 937, DateTimeKind.Utc).AddTicks(4109));
 
             migrationBuilder.UpdateData(
                 table: "mast_userbranches",
                 keyColumn: "ub_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 981, DateTimeKind.Utc).AddTicks(363));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 937, DateTimeKind.Utc).AddTicks(4112));
 
             migrationBuilder.UpdateData(
                 table: "mast_userm",
                 keyColumn: "user_id",
                 keyValue: 1,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 977, DateTimeKind.Utc).AddTicks(117));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 934, DateTimeKind.Utc).AddTicks(154));
 
             migrationBuilder.UpdateData(
                 table: "mast_userm",
                 keyColumn: "user_id",
                 keyValue: 2,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 977, DateTimeKind.Utc).AddTicks(129));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 934, DateTimeKind.Utc).AddTicks(159));
 
             migrationBuilder.UpdateData(
                 table: "mast_userm",
                 keyColumn: "user_id",
                 keyValue: 3,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 35, 977, DateTimeKind.Utc).AddTicks(132));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 934, DateTimeKind.Utc).AddTicks(161));
 
             migrationBuilder.UpdateData(
                 table: "tnt_trackm",
                 keyColumn: "track_id",
                 keyValue: 100,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 23, DateTimeKind.Utc).AddTicks(9358));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 985, DateTimeKind.Utc).AddTicks(3814));
 
             migrationBuilder.UpdateData(
                 table: "tnt_trackm",
                 keyColumn: "track_id",
                 keyValue: 102,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 23, DateTimeKind.Utc).AddTicks(9362));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 985, DateTimeKind.Utc).AddTicks(3819));
 
             migrationBuilder.UpdateData(
                 table: "tnt_trackm",
                 keyColumn: "track_id",
                 keyValue: 103,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 23, DateTimeKind.Utc).AddTicks(9364));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 985, DateTimeKind.Utc).AddTicks(3821));
 
             migrationBuilder.UpdateData(
                 table: "tnt_trackm",
                 keyColumn: "track_id",
                 keyValue: 104,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 23, DateTimeKind.Utc).AddTicks(9366));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 985, DateTimeKind.Utc).AddTicks(3824));
 
             migrationBuilder.UpdateData(
                 table: "tnt_trackm",
                 keyColumn: "track_id",
                 keyValue: 105,
                 column: "rec_created_date",
-                value: new DateTime(2025, 1, 17, 8, 40, 36, 23, DateTimeKind.Utc).AddTicks(9367));
+                value: new DateTime(2025, 1, 20, 6, 0, 35, 985, DateTimeKind.Utc).AddTicks(3826));
         }
     }
 }

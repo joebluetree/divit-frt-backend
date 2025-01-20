@@ -99,9 +99,69 @@ namespace Database.fluent_config.Masters
                 .IsRequired(false);
             modelBuilder.Property(e => e.cust_credit_limit)
                 .HasColumnType("decimal(15,3)");
-
             modelBuilder.Property(u => u.cust_est_dt)
                 .HasColumnType("date")
+                .IsRequired(false);
+
+            modelBuilder.Property(u => u.cust_is_shipper)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_consignee)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_importer)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_exporter)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_cha)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_forwarder)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_oagent)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_acarrier)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_scarrier)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_trucker)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_warehouse)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_sterminal)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_aterminal)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_shipvendor)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_gvendor)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_employee)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_contract)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_miscell)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_tbd)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_bank)
+                .HasMaxLength(1)
                 .IsRequired(false);
 
             modelBuilder.Property(u => u.rec_locked)

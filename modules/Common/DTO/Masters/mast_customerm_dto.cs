@@ -18,10 +18,8 @@ namespace Common.DTO.Masters
         public string? cust_address3 { get; set; } = "";
         public string? cust_city { get; set; } = "";
         public int? cust_state_id { get; set; }= 0;
-        public string? cust_state_code { get; set; } = "";
         public string? cust_state_name { get; set; } = "";
         public int? cust_country_id { get; set; } = 0;
-        public string? cust_country_code { get; set; } = "";
         public string? cust_country_name { get; set; } = "";
         public string? cust_zip_code {get; set; } = "";
         public string? cust_contact { get; set; } = "";
@@ -33,10 +31,8 @@ namespace Common.DTO.Masters
         public string? cust_email { get; set; } = "";
         public string? cust_refer_by { get; set; } = ""; 
         public int? cust_salesman_id { get; set; } = 0;
-        public string? cust_salesman_code { get; set; } = ""; 
         public string? cust_salesman_name { get; set; } = ""; 
         public int? cust_handled_id { get; set; } = 0;
-        public string? cust_handled_code { get; set; } = ""; 
         public string? cust_handled_name { get; set; } = ""; 
         public string? cust_location { get; set; } = "";
 
@@ -44,6 +40,29 @@ namespace Common.DTO.Masters
 
         public decimal? cust_credit_limit { get; set; } = 0;
         public string? cust_is_parent { get; set; } = "";
+
+        public string? cust_is_shipper { get; set; } = "";
+        public string? cust_is_consignee { get; set; } = "";
+        public string? cust_is_importer { get; set; } = "";
+        public string? cust_is_exporter { get; set; } = "";
+        public string? cust_is_cha { get; set; } = "";
+        public string? cust_is_forwarder { get; set; } = "";
+        public string? cust_is_oagent { get; set; } = "";
+        public string? cust_is_acarrier { get; set; } = "";
+        public string? cust_is_scarrier { get; set; } = "";
+        public string? cust_is_trucker { get; set; } = "";
+        public string? cust_is_warehouse { get; set; } = "";
+        public string? cust_is_sterminal { get; set; } = "";
+        public string? cust_is_aterminal { get; set; } = "";
+        public string? cust_is_shipvendor { get; set; } = "";
+        public string? cust_is_gvendor { get; set; } = "";
+        public string? cust_is_employee { get; set; } = "";
+        public string? cust_is_contract { get; set; } = "";
+        public string? cust_is_miscell { get; set; } = "";
+        public string? cust_is_tbd { get; set; } = "";
+        public string? cust_is_bank { get; set; } = "";
+
+
         public Nullable<int> cust_parent_id { get; set; }
         public string? cust_parent_name { get; set; } = "";
         public List<mast_contactm_dto>? cust_contacts { get; set; }
