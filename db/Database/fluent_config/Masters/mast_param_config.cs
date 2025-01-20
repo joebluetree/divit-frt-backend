@@ -94,6 +94,25 @@ namespace Database.fluent_config.Masters
             insertDataCountry(modelBuilder);
             insertDataState(modelBuilder);
             insertDataSeaCarrier(modelBuilder);
+            insertDataAirPort(modelBuilder);
+            insertDataCustomerGrp(modelBuilder);
+            insertDataInvoiceDesc(modelBuilder);
+            insertDataCheckFormat(modelBuilder);
+            insertDataCurrency(modelBuilder);
+            insertDataFreightStatus(modelBuilder);
+            insertDataNominationStatus(modelBuilder);
+            insertDataContainerType(modelBuilder);
+            insertDataCargoMovement(modelBuilder);
+            insertDataContactGrp(modelBuilder);
+            insertDataHawbFormat(modelBuilder);
+            insertDataHblFormat(modelBuilder);
+            insertDataCooFormat(modelBuilder);
+            insertDataContainerTracking(modelBuilder);
+            insertDataOceanShipMove(modelBuilder);
+            insertDataAirShipMovement(modelBuilder);
+            insertDataBudgetType(modelBuilder);
+            insertDataFormCategory(modelBuilder);
+            insertDataUnitMaster(modelBuilder);
         }
 
         void insertDataCountry(EntityTypeBuilder<mast_param> modelBuilder)
@@ -378,7 +397,7 @@ namespace Database.fluent_config.Masters
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1
 
-            },new mast_param
+            }, new mast_param
             {
                 param_id = 19,
                 param_type = "SEA CARRIER",
@@ -484,10 +503,595 @@ namespace Database.fluent_config.Masters
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1
             }
-
-
             );
         }
+        void insertDataCurrency(EntityTypeBuilder<mast_param> modelBuilder)    //CURRENCY ADDED TO THE PARAMLIST
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 26,
+                param_type = "CURRENCY",
+                param_code = "INR",
+                param_name = "INDIAN RUPEE",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            }, new mast_param
+            {
+                param_id = 27,
+                param_type = "CURRENCY",
+                param_code = "USD",
+                param_name = "US DOLLAR",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 2,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataAirPort(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 28,
+                param_type = "AIR-PORT",
+                param_code = "CMA",
+                param_name = "CMA CHM",
+                param_value1 = "CMDU",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            }, new mast_param
+            {
+                param_id = 29,
+                param_type = "AIR-PORT",
+                param_code = "ZIM",
+                param_name = "ZIM",
+                param_value1 = "ZIMU",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 2,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataCustomerGrp(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 30,
+                param_type = "CUSTOMER-GROUP",
+                param_code = "101",
+                param_name = "LOCAL CREDITORS",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            }, new mast_param
+            {
+                param_id = 31,
+                param_type = "CUSTOMER-GROUP",
+                param_code = "102",
+                param_name = "LOCAL DEBTORS",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 2,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataInvoiceDesc(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 32,
+                param_type = "INVOICE-DESCRIPTION",
+                param_code = "101",
+                param_name = "ACCOUNTANT SERVICE FEE",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            }, new mast_param
+            {
+                param_id = 33,
+                param_type = "INVOICE-DESCRIPTION",
+                param_code = "102",
+                param_name = "ADMIN FEE",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 2,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataCheckFormat(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 34,
+                param_type = "CHQ-FORMAT",
+                param_code = "ASTORIA",
+                param_name = "ASTORIA",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataFreightStatus(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 35,
+                param_type = "FREIGHT-STATUS",
+                param_code = "COLLECT",
+                param_name = "COLLECT",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            }, new mast_param
+            {
+                param_id = 36,
+                param_type = "FREIGHT-STATUS",
+                param_code = "PREPAID",
+                param_name = "PREPAID",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 2,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataNominationStatus(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 37,
+                param_type = "NOMINATION",
+                param_code = "FREEHAND",
+                param_name = "FREEHAND",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            }, new mast_param
+            {
+                param_id = 38,
+                param_type = "NOMINATION",
+                param_code = "MUTUAL",
+                param_name = "MUTUAL",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 2,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataContainerType(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 39,
+                param_type = "CONTAINER-TYPE",
+                param_code = "20FR",
+                param_name = "20' FR",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            }, new mast_param
+            {
+                param_id = 40,
+                param_type = "CONTAINER-TYPE",
+                param_code = "40FR",
+                param_name = "40' FR",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 2,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+        void insertDataCargoMovement(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 41,
+                param_type = "CARGO-MOVEMENT",
+                param_code = "CFS/CFS",
+                param_name = "CFS/CFS",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            }, new mast_param
+            {
+                param_id = 42,
+                param_type = "CARGO-MOVEMENT",
+                param_code = "DOOR/DOOR",
+                param_name = "DOOR/DOOR",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 2,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+        void insertDataContactGrp(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 43,
+                param_type = "CONTACT-GROUP",
+                param_code = "FOR REMITTANCE",
+                param_name = "FOR REMITTANCE",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            }, new mast_param
+            {
+                param_id = 44,
+                param_type = "CONTACT-GROUP",
+                param_code = "NA",
+                param_name = "NA",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 2,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataHawbFormat(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 45,
+                param_type = "HAWB-FORMAT",
+                param_code = "DEFAULT",
+                param_name = "DEFAULT FORMAT",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataHblFormat(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 46,
+                param_type = "HBL-FORMAT",
+                param_code = "MOTHERLINES",
+                param_name = "MOTHERLINES BLANK",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            }, new mast_param
+            {
+                param_id = 47,
+                param_type = "HBL-FORMAT",
+                param_code = "MLINES-DRAFT",
+                param_name = "MOTHERLINES DRAFT",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 2,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataCooFormat(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 48,
+                param_type = "COO-FORMAT",
+                param_code = "DEFAULT",
+                param_name = "DEFAULT FORMAT",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataContainerTracking(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 49,
+                param_type = "CNTR-MOVE-STATUS",
+                param_code = "101",
+                param_name = "CONTAINER LOADED ON BOARD",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            }, new mast_param
+            {
+                param_id = 50,
+                param_type = "CNTR-MOVE-STATUS",
+                param_code = "102",
+                param_name = "CONTAINER TRANSSHIPPED",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 2,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataOceanShipMove(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 51,
+                param_type = "SHIP-MOVE-STATUS",
+                param_code = "101",
+                param_name = "CONTAINER IS DEVANNING",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            }, new mast_param
+            {
+                param_id = 52,
+                param_type = "SHIP-MOVE-STATUS",
+                param_code = "102",
+                param_name = "SHIPMENT ON TRANSIT",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 2,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataBudgetType(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 54,
+                param_type = "BUDGET-TYPE",
+                param_code = "EMPLOYEE",
+                param_name = "EMPLOYEE",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            }, new mast_param
+            {
+                param_id = 55,
+                param_type = "BUDGET-TYPE",
+                param_code = "MARKETING",
+                param_name = "MARKETING",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 2,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataFormCategory(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 56,
+                param_type = "FORM-CATEGORY",
+                param_code = "ACCOUNTING FORM",
+                param_name = "ACCOUNTING FORM",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            }, new mast_param
+            {
+                param_id = 57,
+                param_type = "FORM-CATEGORY",
+                param_code = "APPLICATION",
+                param_name = "APPLICATION",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 2,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
+        void insertDataUnitMaster(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 58,
+                param_type = "UNIT-MASTER",
+                param_code = "101",
+                param_name = "UNIT MASTER 1",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+        void insertDataAirShipMovement(EntityTypeBuilder<mast_param> modelBuilder)
+        {
+            modelBuilder.HasData(new mast_param
+            {
+                param_id = 59,
+                param_type = "AIR-MOVE-STATUS",
+                param_code = "101",
+                param_name = "SHIPMENT ARRIVED",
+                param_value1 = "",
+                param_value2 = "",
+                param_value3 = "",
+                param_value4 = "",
+                param_value5 = "",
+                param_order = 1,
+                rec_created_by = "ADMIN",
+                rec_created_date = DbLib.GetDateTime(),
+                rec_company_id = 1
+            });
+        }
+
 
     }
 }

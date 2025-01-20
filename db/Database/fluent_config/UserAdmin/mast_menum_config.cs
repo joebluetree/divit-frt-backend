@@ -310,7 +310,7 @@ namespace Database.fluent_config.UserAdmin
             {
                 menu_id = 800,
                 menu_module_id = 22,
-                menu_order = 1,
+                menu_order = 12,
                 menu_code = "TRACKING",
                 menu_name = "Container Tracking",
                 menu_route = "tnt/trackList",
@@ -324,7 +324,7 @@ namespace Database.fluent_config.UserAdmin
             {
                 menu_id = 801,
                 menu_module_id = 21,
-                menu_order = 10,
+                menu_order = 13,
                 menu_code = "SEACARRIER",
                 menu_name = "Ocean Carrier",
                 menu_route = "masters/paramList",
@@ -338,7 +338,7 @@ namespace Database.fluent_config.UserAdmin
             {
                 menu_id = 802,
                 menu_module_id = 21,
-                menu_order = 10,
+                menu_order = 14,
                 menu_code = "AIRCARRIER",
                 menu_name = "Air Carrier",
                 menu_route = "masters/paramList",
@@ -352,7 +352,7 @@ namespace Database.fluent_config.UserAdmin
             {
                 menu_id = 810,
                 menu_module_id = 21,
-                menu_order = 11,
+                menu_order = 15,
                 menu_code = "PARAM-SETTINGS",
                 menu_name = "Param Settings",
                 menu_route = "admin/settingsList",
@@ -366,7 +366,7 @@ namespace Database.fluent_config.UserAdmin
             {
                 menu_id = 811,
                 menu_module_id = 21,
-                menu_order = 12,
+                menu_order = 16,
                 menu_code = "SALESMAN",
                 menu_name = "Salesman",
                 menu_route = "masters/paramList",
@@ -380,11 +380,277 @@ namespace Database.fluent_config.UserAdmin
             {
                 menu_id = 812,
                 menu_module_id = 21,
-                menu_order = 13,
+                menu_order = 17,
                 menu_code = "SEA-PORT",
                 menu_name = "Sea port",
                 menu_route = "masters/paramList",
                 menu_param = "{'type':'SEA-PORT'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum       //AIR-PORT Added to master
+            {
+                menu_id = 813,
+                menu_module_id = 21,
+                menu_order = 18,
+                menu_code = "AIR-PORT",
+                menu_name = "Air port",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'AIR-PORT'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum       //CUSTOMER-GROUP Added to master
+            {
+                menu_id = 814,
+                menu_module_id = 21,
+                menu_order = 19,
+                menu_code = "CUSTOMER-GROUP",
+                menu_name = "Customer Group",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'CUSTOMER-GROUP'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum       //INVOICE-DESCRIPTION Added to master
+            {
+                menu_id = 815,
+                menu_module_id = 21,
+                menu_order = 20,
+                menu_code = "INVOICE-DESCRIPTION",
+                menu_name = "Invoice Description",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'INVOICE-DESCRIPTION'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum       //CHQ-FORMAT Added to master
+            {
+                menu_id = 816,
+                menu_module_id = 21,
+                menu_order = 21,
+                menu_code = "CHQ-FORMAT",
+                menu_name = "Check Format",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'CHQ-FORMAT'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //Currency Added to Master Module
+            {
+                menu_id = 817,
+                menu_module_id = 21,
+                menu_order = 22,
+                menu_code = "CURRENCY",
+                menu_name = "Currency Master",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'CURRENCY'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //Freight Status Added to Master Module
+            {
+                menu_id = 818,
+                menu_module_id = 21,
+                menu_order = 23,
+                menu_code = "FREIGHT-STATUS",
+                menu_name = "Freight Status",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'FREIGHT-STATUS'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //Nomination Status Added to Master Module
+            {
+                menu_id = 819,
+                menu_module_id = 21,
+                menu_order = 24,
+                menu_code = "NOMINATION",
+                menu_name = "Nomination Status",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'NOMINATION'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //CONTAINER TYPE Added to Master Module
+            {
+                menu_id = 820,
+                menu_module_id = 21,
+                menu_order = 25,
+                menu_code = "CONTAINER-TYPE",
+                menu_name = "Container Type",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'CONTAINER-TYPE'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //CARGO MOVEMENT Added to Master Module
+            {
+                menu_id = 821,
+                menu_module_id = 21,
+                menu_order = 26,
+                menu_code = "CARGO-MOVEMENT",
+                menu_name = "Cargo Movement",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'CARGO-MOVEMENT'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //CONTACT-GROUP Added to Master Module
+            {
+                menu_id = 822,
+                menu_module_id = 21,
+                menu_order = 27,
+                menu_code = "CONTACT-GROUP",
+                menu_name = "Contact Group",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'CONTACT-GROUP'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //HAWB-FORMAT Added to Master Module
+            {
+                menu_id = 823,
+                menu_module_id = 21,
+                menu_order = 28,
+                menu_code = "HAWB-FORMAT",
+                menu_name = "HAWB Format",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'HAWB-FORMAT'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //HBL-FORMAT Added to Master Module
+            {
+                menu_id = 824,
+                menu_module_id = 21,
+                menu_order = 29,
+                menu_code = "HBL-FORMAT",
+                menu_name = "HBL Format",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'HBL-FORMAT'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //COO-FORMAT Added to Master Module
+            {
+                menu_id = 825,
+                menu_module_id = 21,
+                menu_order = 30,
+                menu_code = "COO-FORMAT",
+                menu_name = "COO Format",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'COO-FORMAT'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //CNTR-MOVE-STATUS Added to Master Module
+            {
+                menu_id = 826,
+                menu_module_id = 21,
+                menu_order = 31,
+                menu_code = "CNTR-MOVE-STATUS",
+                menu_name = "Container Tracking Events",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'CNTR-MOVE-STATUS'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //SHIP-MOVE-STATUS Added to Master Module
+            {
+                menu_id = 827,
+                menu_module_id = 21,
+                menu_order = 32,
+                menu_code = "SHIP-MOVE-STATUS",
+                menu_name = "Ocean Shipment Tracking Events",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'SHIP-MOVE-STATUS'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //AIR-SHIP-MOVE-STATUS Added to Master Module
+            {
+                menu_id = 828,
+                menu_module_id = 21,
+                menu_order = 33,
+                menu_code = "AIR-MOVE-STATUS",
+                menu_name = "Air Shipment Tracking Events",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'AIR-MOVE-STATUS'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //BUDGET-TYPE Added to Master Module
+            {
+                menu_id = 829,
+                menu_module_id = 21,
+                menu_order = 34,
+                menu_code = "BUDGET-TYPE",
+                menu_name = "Budget Category",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'BUDGET-TYPE'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //FORM-CATEGORY Added to Master Module
+            {
+                menu_id = 830,
+                menu_module_id = 21,
+                menu_order = 35,
+                menu_code = "FORM-CATEGORY",
+                menu_name = "Form Category",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'FORM-CATEGORY'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //UNIT-MASTER Added to Master Module
+            {
+                menu_id = 831,
+                menu_module_id = 21,
+                menu_order = 36,
+                menu_code = "UNIT-MASTER",
+                menu_name = "Unit Master",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'UNIT-MASTER'}",
                 menu_visible = "Y",
                 rec_company_id = 1,
                 rec_created_date = DbLib.GetDateTime(),
