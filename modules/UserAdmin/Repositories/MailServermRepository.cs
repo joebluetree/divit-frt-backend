@@ -148,8 +148,6 @@ namespace UserAdmin.Repositories
             }
         }
 
-
-
         public async Task<mast_mail_serverm_dto> SaveAsync(int id, string mode, mast_mail_serverm_dto record_dto)
         {
             try
@@ -164,7 +162,6 @@ namespace UserAdmin.Repositories
                 context.Database.RollbackTransaction();
                 throw new Exception("Kindly reload the record, Another User May have modified the same record");
             }
-
             catch (Exception)
             {
                 context.Database.RollbackTransaction();
@@ -180,7 +177,9 @@ namespace UserAdmin.Repositories
             string str = "";
 
             if (Lib.IsBlank(record_dto.mail_name))
-                str += "Name Date Cannot Be Blank!";
+                str += "Name Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mail_smtp_name))
+                str += "Smtp Name Cannot Be Blank!";
 
 
             if (str != "")
