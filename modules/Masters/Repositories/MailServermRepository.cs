@@ -65,7 +65,6 @@ namespace Marketing.Repositories
                 if (!Lib.IsBlank(mail_name))
                     query = query.Where(w => w.mail_name!.Contains(mail_name!));
 
-
                 if (action == "SEARCH")
                 {
                     _page.rows = query.Count();

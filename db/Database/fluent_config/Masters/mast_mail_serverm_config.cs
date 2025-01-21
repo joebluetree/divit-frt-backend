@@ -38,7 +38,7 @@ namespace Database.fluent_config.Masters
                 .IsRequired(false);
             modelBuilder.Property(u => u.mail_is_spa)
                 .HasMaxLength(10)
-                .IsRequired();
+                .IsRequired(false);
             modelBuilder.Property(e => e.mail_bulk_tot)
                 .IsRequired(false);
             modelBuilder.Property(e => e.mail_bulk_sub)

@@ -70,7 +70,6 @@ builder.Services.AddScoped<IMailServermRepository, MailServermRepository>();
 //Marketing
 
 builder.Services.AddScoped<IQtnmFclRepository, QtnmFclRepository>();
-
 builder.Services.AddScoped<IQtnmLclRepository, QtnmLclRepository>();
 builder.Services.AddScoped<IQtnmAirRepository, QtnmAirRepository>();
 
