@@ -717,7 +717,7 @@ namespace Database.fluent_config.UserAdmin
                 menu_order = 1,
                 menu_code = "MAIL-SERVER",
                 menu_name = "Mail Server Settings",
-                menu_route = "masters/mailservermList",
+                menu_route = "admin/mailservermList",
                 menu_param = "{'type':'MAIL-SERVER'}",
                 menu_visible = "Y",
                 rec_company_id = 1,
