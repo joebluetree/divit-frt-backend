@@ -180,6 +180,8 @@ namespace UserAdmin.Repositories
                 str += "Name Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mail_smtp_name))
                 str += "Smtp Name Cannot Be Blank!";
+            if (record_dto.mail_bulk_sub > record_dto.mail_bulk_tot)
+                str += "Batch Split Count must be less than Bulkmail Batch Total.";
 
 
             if (str != "")
