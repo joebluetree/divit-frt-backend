@@ -61,8 +61,10 @@ namespace Database.fluent_config.UserAdmin
             modelBuilder.Property(u => u.rec_edited_date)
                 .IsRequired(false);
             //unique
+            modelBuilder.HasIndex(e => new { e.rec_company_id, e.mail_name })
+                .HasDatabaseName("uq_mast_mail_serverm_mail_name")
+                .IsUnique();
             //Foreign Key
-
             modelBuilder
                 .HasOne(e => e.company)
                 .WithMany()

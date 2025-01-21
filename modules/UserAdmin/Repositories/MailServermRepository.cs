@@ -246,6 +246,7 @@ namespace UserAdmin.Repositories
             }
             catch (Exception Ex)
             {
+                Lib.getErrorMessage(Ex, "uq", "mail_name", "Name Duplication");
                 throw new Exception(Ex.Message.ToString());
             }
 
