@@ -256,8 +256,8 @@ namespace UserAdmin.Repositories
             {
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
                 RetData.Add("id", id);
-                var _Record = await context.mark_qtnm
-                    .Where(f => f.qtnm_id == id)
+                var _Record = await context.mast_mail_serverm
+                    .Where(f => f.mail_id == id)
                     .FirstOrDefaultAsync();
 
                 if (_Record == null)
@@ -267,13 +267,6 @@ namespace UserAdmin.Repositories
                 }
                 else
                 {
-                    var Qtnd_Fcl = context.mark_qtnd_fcl
-                     .Where(c => c.qtnd_qtnm_id == id);
-                    if (Qtnd_Fcl.Any())
-                    {
-                        context.mark_qtnd_fcl.RemoveRange(Qtnd_Fcl);
-
-                    }
                     context.Remove(_Record);
                     context.SaveChanges();
                     RetData.Add("status", true);
