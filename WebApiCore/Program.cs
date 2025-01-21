@@ -61,11 +61,11 @@ builder.Services.AddScoped<IAuditLog, AuditLog>();
 builder.Services.AddScoped<ICommonRepository, CommonRepository>();
 builder.Services.AddScoped<IRightsRepository, RightsRepository>();
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
+builder.Services.AddScoped<IMailServermRepository, MailServermRepository>();
 
 //Masters
 builder.Services.AddScoped<IParamRepository, ParamRepository>();
 builder.Services.AddScoped<ICustomermRepository, CustomermRepository>();
-builder.Services.AddScoped<IMailServermRepository, MailServermRepository>();
 
 //Marketing
 

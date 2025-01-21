@@ -1,18 +1,14 @@
 using Database;
 using Database.Lib;
-using Common.DTO.Masters;
-
 using Microsoft.EntityFrameworkCore;
 using Database.Lib.Interfaces;
-using Database.Models.Masters;
 using Database.Models.BaseTables;
-using Database.Models.Marketing;
-using Common.DTO.Marketing;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Masters.Interfaces;
+using UserAdmin.Interfaces;
+using Database.Models.UserAdmin;
+using Common.DTO.UserAdmin;
 
 
-namespace Marketing.Repositories
+namespace UserAdmin.Repositories
 {
 
     //Name : Alen Cherian

@@ -57,12 +57,13 @@ namespace Database
         public DbSet<mast_userbranches> mast_userBranches { get; set; } = null!;
         public DbSet<mast_rightsm> mast_rightsm { get; set; } = null!;
         public DbSet<mast_settings> mast_settings { get; set; } = null!;
+        public DbSet<mast_mail_serverm> mast_mail_serverm { get; set; } = null!;
 
         //Masters
         public DbSet<mast_param> mast_param { get; set; } = null!;
         public DbSet<mast_customerm> mast_customerm { get; set; } = null!;
         public DbSet<mast_contactm> mast_contactm { get; set; } = null!;
-        public DbSet<mast_mail_serverm> mast_mail_serverm { get; set; } = null!;
+        
 
         //Marketing
         public DbSet<mark_qtnm> mark_qtnm { get; set; } = null!;
@@ -440,13 +441,14 @@ namespace Database
             modelBuilder.ApplyConfiguration(new mast_rightsm_config());
             modelBuilder.ApplyConfiguration(new mast_settings_config());
             modelBuilder.ApplyConfiguration(new mast_param_config());
+            modelBuilder.ApplyConfiguration(new mast_mail_serverm_config());
         }
  
         private void CreateMasterTables(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new mast_custmerm_config());
             modelBuilder.ApplyConfiguration(new mast_contactm_config());
-            modelBuilder.ApplyConfiguration(new mast_mail_serverm_config());
+            
         }
         private void CreateMarketingTables(ModelBuilder modelBuilder)
         {

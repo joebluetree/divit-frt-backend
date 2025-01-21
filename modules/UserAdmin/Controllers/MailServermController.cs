@@ -1,9 +1,8 @@
-using Common.DTO.Masters;
 using Database.Lib;
-using Masters.Interfaces;
+using UserAdmin.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Common.DTO.UserAdmin;
 
 namespace Masters.Controllers
 {

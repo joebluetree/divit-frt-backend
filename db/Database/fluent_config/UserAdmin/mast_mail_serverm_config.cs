@@ -1,8 +1,9 @@
 using Database.Models.Masters;
+using Database.Models.UserAdmin;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Database.fluent_config.Masters
+namespace Database.fluent_config.UserAdmin
 {
    public class mast_mail_serverm_config : IEntityTypeConfiguration<mast_mail_serverm>
     { 
