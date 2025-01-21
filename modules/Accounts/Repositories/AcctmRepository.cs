@@ -31,6 +31,7 @@ namespace Accounts.Repositories
                 var action = data["action"].ToString();
                 if (action == null)
                     action = "search";
+                    
                 var acc_name = data["acc_name"].ToString();
                 var acc_row_type = data["acc_row_type"].ToString();
 

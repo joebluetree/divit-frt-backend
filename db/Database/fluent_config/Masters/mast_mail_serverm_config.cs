@@ -15,8 +15,8 @@ namespace Database.fluent_config.Masters
             //Sequence
             modelBuilder.Property(u => u.mail_id)
             //.HasDefaultValueSql("next value for MasterSequence")
-            .HasDefaultValueSql("nextval('\"master_sequence\"')")
-            .ValueGeneratedOnAdd();
+                .HasDefaultValueSql("nextval('\"master_sequence\"')")
+                .ValueGeneratedOnAdd();
             //Columns
             modelBuilder.Property(p => p.rec_version)
                 .HasDefaultValue(1)

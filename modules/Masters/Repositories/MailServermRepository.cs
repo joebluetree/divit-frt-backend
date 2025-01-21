@@ -42,7 +42,7 @@ namespace Marketing.Repositories
                     action = "search";
 
                 var mail_name = "";
-                var company_id = 0;           
+                var company_id = 0;
 
                 if (data.ContainsKey("mail_name"))
                     mail_name = data["mail_name"].ToString();
@@ -119,9 +119,7 @@ namespace Marketing.Repositories
             try
             {
                 IQueryable<mast_mail_serverm> query = context.mast_mail_serverm;
-
-
-                query = query.Where(f => f. mail_id == id );
+                query = query.Where(f => f.mail_id == id);
 
                 var Record = await query.Select(e => new mast_mail_serverm_dto
                 {
@@ -145,7 +143,7 @@ namespace Marketing.Repositories
                 }).FirstOrDefaultAsync();
 
                 if (Record == null)
-                    throw new Exception("No Qtn Found");
+                    throw new Exception("No Data Found");
 
                 return Record;
             }
@@ -155,7 +153,7 @@ namespace Marketing.Repositories
             }
         }
 
-        
+
 
         public async Task<mast_mail_serverm_dto> SaveAsync(int id, string mode, mast_mail_serverm_dto record_dto)
         {
@@ -221,7 +219,7 @@ namespace Marketing.Repositories
                 else
                 {
                     Record = await context.mast_mail_serverm
-                        .Where(f => f.mail_id == id)
+                        .Where(f => f.mail_id == record_dto.mail_id)
                         .FirstOrDefaultAsync();
 
                     if (Record == null)
@@ -246,8 +244,6 @@ namespace Marketing.Repositories
                     await context.mast_mail_serverm.AddAsync(Record);
                 context.SaveChanges();
                 record_dto.mail_id = Record.mail_id;
-
-
                 record_dto.rec_version = Record.rec_version;
                 Lib.AssignDates2DTO(id, mode, Record, record_dto);
                 return record_dto;
