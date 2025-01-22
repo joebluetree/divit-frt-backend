@@ -66,6 +66,7 @@ builder.Services.AddScoped<IMailServermRepository, MailServermRepository>();
 //Masters
 builder.Services.AddScoped<IParamRepository, ParamRepository>();
 builder.Services.AddScoped<ICustomermRepository, CustomermRepository>();
+builder.Services.AddScoped<IRemarkmRepository, RemarkmRepository>();
 
 //Marketing
 
