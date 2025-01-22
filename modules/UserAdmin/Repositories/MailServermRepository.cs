@@ -168,8 +168,6 @@ namespace UserAdmin.Repositories
                 throw;
             }
         }
-
-
         private Boolean AllValid(string mode, mast_mail_serverm_dto record_dto, ref string error)
         {
             Boolean bRet = true;
@@ -249,9 +247,7 @@ namespace UserAdmin.Repositories
                 Lib.getErrorMessage(Ex, "uq", "mail_name", "Name Duplication");
                 throw new Exception(Ex.Message.ToString());
             }
-
         }
-
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
             try
