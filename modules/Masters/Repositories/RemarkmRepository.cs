@@ -187,7 +187,7 @@ namespace Masters.Repositories
 
             if(record_dto.rem_remarks == null || record_dto.rem_remarks.Count == 0)
             {
-                str += "No data found in Remarks Details";
+                str += "No data found in Remarks Description Details";
             }
 
             if (code != "")
@@ -245,6 +245,7 @@ namespace Masters.Repositories
             }
             catch (Exception Ex)
             {
+                Lib.getErrorMessage(Ex, "uq", "rem_name", "Name Duplication");
                 throw new Exception(Ex.Message.ToString());
             }
 
