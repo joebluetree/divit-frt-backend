@@ -11,6 +11,7 @@ using Database.fluent_config.UserAdmin;
 using Database.fluent_config.Tnt;
 using Database.fluent_config.Marketing;
 using database.fluent_config.Marketing;
+using database.fluent_config.Masters;
 
 
 namespace Database
@@ -63,6 +64,8 @@ namespace Database
         public DbSet<mast_param> mast_param { get; set; } = null!;
         public DbSet<mast_customerm> mast_customerm { get; set; } = null!;
         public DbSet<mast_contactm> mast_contactm { get; set; } = null!;
+        public DbSet<mast_remarkm> mast_remarkm { get; set; } = null!;
+        public DbSet<mast_remarkd> mast_remarkd { get; set; } = null!;
         
 
         //Marketing
@@ -448,6 +451,8 @@ namespace Database
         {
             modelBuilder.ApplyConfiguration(new mast_custmerm_config());
             modelBuilder.ApplyConfiguration(new mast_contactm_config());
+            modelBuilder.ApplyConfiguration(new mast_remarkm_config());
+            modelBuilder.ApplyConfiguration(new mast_remarkd_config());
             
         }
         private void CreateMarketingTables(ModelBuilder modelBuilder)

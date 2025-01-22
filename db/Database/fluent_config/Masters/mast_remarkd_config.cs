@@ -25,7 +25,7 @@ public class mast_remarkd_config : IEntityTypeConfiguration<mast_remarkd>
             .IsConcurrencyToken();
         modelBuilder.Property(u => u.remd_desc1)
             .HasMaxLength(100)
-            .IsRequired();
+            .IsRequired(false);
         modelBuilder.Property(u => u.remd_order)
             .IsRequired(false);
         modelBuilder.Property(u => u.rec_created_by)
@@ -64,6 +64,7 @@ public class mast_remarkd_config : IEntityTypeConfiguration<mast_remarkd>
         new mast_remarkd
         {
             remd_id = 1,
+            remd_remarkm_id = 1,
             remd_desc1 = "Quotation Fcl",
             rec_created_by = "ADMIN",
             rec_created_date = DbLib.GetDateTime(),

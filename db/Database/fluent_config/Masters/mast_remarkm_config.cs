@@ -25,7 +25,7 @@ public class mast_remarkm_config : IEntityTypeConfiguration<mast_remarkm>
             .IsConcurrencyToken();
         modelBuilder.Property(u => u.rem_name)
             .HasMaxLength(100)
-            .IsRequired();
+            .IsRequired(false);
         modelBuilder.Property(u => u.rec_created_by)
             .HasMaxLength(20)
             .IsRequired();
