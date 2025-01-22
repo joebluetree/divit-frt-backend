@@ -9,7 +9,7 @@ using Database.Lib;
 namespace Masters.Controllers
 {
     [Authorize]
-    [Route("api/customer")]
+    [Route("api/remark")]
     public class RemarkmController : Controller
     {
         private readonly IRemarkmRepository mRepository;
