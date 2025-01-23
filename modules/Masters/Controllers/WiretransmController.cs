@@ -10,7 +10,7 @@ using Database.Lib;
 namespace Masters.Controllers
 {
     [Authorize]
-    [Route("api/wiretrans")]
+    [Route("api/wiretransm")]
     public class WiretransmController : Controller
     {
 
