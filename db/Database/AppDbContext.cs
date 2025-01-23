@@ -66,14 +66,14 @@ namespace Database
         public DbSet<mast_contactm> mast_contactm { get; set; } = null!;
         public DbSet<mast_remarkm> mast_remarkm { get; set; } = null!;
         public DbSet<mast_remarkd> mast_remarkd { get; set; } = null!;
+        public DbSet<mast_wiretransm> mast_wiretransm { get; set; } = null!;
+        public DbSet<mast_wiretransd> mast_wiretransd { get; set; } = null!;
         
 
         //Marketing
         public DbSet<mark_qtnm> mark_qtnm { get; set; } = null!;
         public DbSet<mark_qtnd_lcl> mark_qtnd_lcl { get; set; } = null!;
-
         public DbSet<mark_qtnd_fcl> mark_qtnd_fcl { get; set; } = null!;
-
         public DbSet<mark_qtnd_air> mark_qtnd_air { get; set; } = null!;
 
 

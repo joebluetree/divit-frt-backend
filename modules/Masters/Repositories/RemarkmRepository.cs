@@ -74,7 +74,7 @@ namespace Masters.Repositories
                 {
                     rem_id = e.rem_id,
                     rem_name = e.rem_name,
-                    
+
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                     rec_edited_by = e.rec_edited_by,
@@ -143,7 +143,6 @@ namespace Masters.Repositories
             return records;
         }
 
-
         public async Task<mast_remarkm_dto> SaveAsync(int id, string mode, mast_remarkm_dto record_dto)
         {
             try
@@ -168,7 +167,6 @@ namespace Masters.Repositories
             }
         }
 
-
         private Boolean AllValid(string mode, mast_remarkm_dto record_dto, ref string error)
         {
             Boolean bRet = true;
@@ -185,7 +183,7 @@ namespace Masters.Repositories
                     code = "Description Cannot Be Blank!";
             }
 
-            if(record_dto.rem_remarks == null || record_dto.rem_remarks.Count == 0)
+            if (record_dto.rem_remarks == null || record_dto.rem_remarks.Count == 0)
             {
                 str += "No data found in Remarks Description Details";
             }
@@ -250,7 +248,6 @@ namespace Masters.Repositories
             }
 
         }
-
 
         public async Task<mast_remarkm_dto> SaveDetailsAsync(int? id, mast_remarkm_dto record_dto)
         {

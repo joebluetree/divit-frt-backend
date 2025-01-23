@@ -8,7 +8,7 @@ namespace database.fluent_config.Masters;
 
 public class mast_remarkd_config : IEntityTypeConfiguration<mast_remarkd>
 {
-     public void Configure(EntityTypeBuilder<mast_remarkd> modelBuilder)
+    public void Configure(EntityTypeBuilder<mast_remarkd> modelBuilder)
     {
         //table and primary key
         modelBuilder.ToTable("mast_remarkd");

@@ -13,7 +13,7 @@ namespace Masters.Controllers
     public class RemarkmController : Controller
     {
         private readonly IRemarkmRepository mRepository;
-        public RemarkmController (IRemarkmRepository Repository)
+        public RemarkmController(IRemarkmRepository Repository)
         {
             this.mRepository = Repository;
         }
