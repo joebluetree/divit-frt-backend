@@ -453,6 +453,8 @@ namespace Database
             modelBuilder.ApplyConfiguration(new mast_contactm_config());
             modelBuilder.ApplyConfiguration(new mast_remarkm_config());
             modelBuilder.ApplyConfiguration(new mast_remarkd_config());
+            modelBuilder.ApplyConfiguration(new mast_wiretransm_config());
+            modelBuilder.ApplyConfiguration(new mast_wiretransd_config());
             
         }
         private void CreateMarketingTables(ModelBuilder modelBuilder)
