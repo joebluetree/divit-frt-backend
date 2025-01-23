@@ -131,6 +131,46 @@ namespace Masters.Repositories
                     cust_is_tbd = e.cust_is_tbd,
                     cust_is_bank = e.cust_is_bank,
 
+                    cust_nomination = e.cust_nomination,
+                    cust_priority = e.cust_priority,
+                    cust_criteria = e.cust_criteria,
+                    cust_min_profit = e.cust_min_profit,
+                    cust_firm_code = e.cust_firm_code,
+                    cust_einirsno = e.cust_einirsno,
+                    cust_days = e.cust_days,
+                    cust_is_splacc = e.cust_is_splacc,
+                    cust_is_actual_vendor = e.cust_is_actual_vendor,
+                    cust_is_blackacc = e.cust_is_blackacc,
+                    cust_splacc_memo = e.cust_splacc_memo,
+                    cust_is_ctpat = e.cust_is_ctpat,
+                    cust_ctpat_no = e.cust_ctpat_no,
+                    cust_marketing_mail = e.cust_marketing_mail,
+
+                    cust_chb_id = e.cust_chb_id,
+                    cust_chb_code = e.customer!.cust_code,
+                    cust_chb_name = e.cust_chb_name,
+                    cust_chb_address1 = e.cust_chb_address1,
+                    cust_chb_address2 = e.cust_chb_address2,
+                    cust_chb_address3 = e.cust_chb_address3,
+                    cust_chb_group = e.cust_chb_group,
+                    cust_chb_contact = e.cust_chb_contact,
+                    cust_chb_tel = e.cust_chb_tel,
+                    cust_chb_fax = e.cust_chb_fax,
+                    cust_chb_email = e.cust_chb_email,
+
+                    cust_poa_customs_yn = e.cust_poa_customs_yn,
+                    cust_brokers = e.cust_brokers,
+                    cust_poa_isf_yn = e.cust_poa_isf_yn,
+                    cust_bond_yn = e.cust_bond_yn,
+                    cust_punch_from = e.cust_punch_from,
+                    cust_bond_no = e.cust_bond_no,
+                    cust_bond_expdt = Lib.FormatDate(e.cust_bond_expdt, Lib.outputDateFormat),
+
+                    cust_branch = e.cust_branch,
+                    cust_protected = e.cust_protected,
+                    cust_cur_code = e.cust_cur_code,
+
+
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                     rec_edited_by = e.rec_edited_by,
@@ -207,6 +247,45 @@ namespace Masters.Repositories
                     cust_is_miscell = e.cust_is_miscell,
                     cust_is_tbd = e.cust_is_tbd,
                     cust_is_bank = e.cust_is_bank,
+
+                    cust_nomination = e.cust_nomination,
+                    cust_priority = e.cust_priority,
+                    cust_criteria = e.cust_criteria,
+                    cust_min_profit = e.cust_min_profit,
+                    cust_firm_code = e.cust_firm_code,
+                    cust_einirsno = e.cust_einirsno,
+                    cust_days = e.cust_days,
+                    cust_is_splacc = e.cust_is_splacc,
+                    cust_is_actual_vendor = e.cust_is_actual_vendor,
+                    cust_is_blackacc = e.cust_is_blackacc,
+                    cust_splacc_memo = e.cust_splacc_memo,
+                    cust_is_ctpat = e.cust_is_ctpat,
+                    cust_ctpat_no = e.cust_ctpat_no,
+                    cust_marketing_mail = e.cust_marketing_mail,
+
+                    cust_chb_id = e.cust_chb_id,
+                    cust_chb_code = e.customer!.cust_code,
+                    cust_chb_name = e.cust_chb_name,
+                    cust_chb_address1 = e.cust_chb_address1,
+                    cust_chb_address2 = e.cust_chb_address2,
+                    cust_chb_address3 = e.cust_chb_address3,
+                    cust_chb_group = e.cust_chb_group,
+                    cust_chb_contact = e.cust_chb_contact,
+                    cust_chb_tel = e.cust_chb_tel,
+                    cust_chb_fax = e.cust_chb_fax,
+                    cust_chb_email = e.cust_chb_email,
+
+                    cust_poa_customs_yn = e.cust_poa_customs_yn,
+                    cust_brokers = e.cust_brokers,
+                    cust_poa_isf_yn = e.cust_poa_isf_yn,
+                    cust_bond_yn = e.cust_bond_yn,
+                    cust_punch_from = e.cust_punch_from,
+                    cust_bond_no = e.cust_bond_no,
+                    cust_bond_expdt = Lib.FormatDate(e.cust_bond_expdt, Lib.outputDateFormat),
+
+                    cust_branch = e.cust_branch,
+                    cust_protected = e.cust_protected,
+                    cust_cur_code = e.cust_cur_code,
 
                     cust_row_type = e.customer!.cust_row_type,
                     cust_is_parent = e.customer.cust_is_parent,
@@ -339,56 +418,60 @@ namespace Masters.Repositories
 
             return bRet;
         }
+
+        // to add cust_type value when selected
         public string GetCustomerType(mast_customerm_dto record_dto)
         {
             var custTypeMapping = new Dictionary<string, string>
             {
-                { "S", "S" },
-                { "C", "C" },
-                { "I", "I" },
-                { "X", "X" },
-                { "B", "B" },
-                { "F", "F" },
-                { "A", "A" },
-                { "L", "L" },
-                { "R", "R" },
-                { "T", "T" },
-                { "W", "W" },
-                { "N", "N" },
-                { "P", "P" },
-                { "H", "H" },
-                { "V", "V" },
-                { "E", "E" },
-                { "O", "O" },
-                { "M", "M" },
-                { "D", "D" },
-                { "K", "K" }
+                { "Shipper", "S" },
+                { "Consignee", "C" },
+                { "Importer", "I" },
+                { "Exporter", "X" },
+                { "Customs Broker", "B" },
+                { "Domestic Forwarder", "F" },
+                { "Overseas Agent", "A" },
+                { "Air Carrier", "L" },
+                { "Sea Carrier", "R" },
+                { "Trucker", "T" },
+                { "Warehouse", "W" },
+                { "Terminal Sea / Rail", "N" },
+                { "Terminal Air", "P" },
+                { "Shipping Vendor", "H" },
+                { "General Vendor", "V" },
+                { "Employees", "E" },
+                { "Contractor", "O" },
+                { "Miscellaneous", "M" },
+                { "TBD", "D" },
+                { "Bank / Financial Institute", "K" }
             };
-            if (record_dto.cust_is_shipper == "Y") return custTypeMapping["S"];
-            if (record_dto.cust_is_consignee== "Y") return custTypeMapping["C"];
-            if (record_dto.cust_is_importer== "Y") return custTypeMapping["I"];
-            if (record_dto.cust_is_exporter== "Y") return custTypeMapping["X"];
-            if (record_dto.cust_is_cha== "Y") return custTypeMapping["B"];
-            if (record_dto.cust_is_forwarder== "Y") return custTypeMapping["F"];
-            if (record_dto.cust_is_oagent== "Y") return custTypeMapping["A"];
-            if (record_dto.cust_is_acarrier== "Y") return custTypeMapping["L"];
-            if (record_dto.cust_is_scarrier== "Y") return custTypeMapping["R"];
-            if (record_dto.cust_is_trucker== "Y") return custTypeMapping["T"];
-            if (record_dto.cust_is_warehouse== "Y") return custTypeMapping["W"];
-            if (record_dto.cust_is_sterminal== "Y") return custTypeMapping["N"];
-            if (record_dto.cust_is_aterminal== "Y") return custTypeMapping["P"];
-            if (record_dto.cust_is_shipvendor== "Y") return custTypeMapping["H"];
-            if (record_dto.cust_is_gvendor== "Y") return custTypeMapping["V"];
-            if (record_dto.cust_is_employee== "Y") return custTypeMapping["E"];
-            if (record_dto.cust_is_contract== "Y") return custTypeMapping["O"];
-            if (record_dto.cust_is_miscell== "Y") return custTypeMapping["M"];
-            if (record_dto.cust_is_tbd== "Y") return custTypeMapping["D"];
-            if (record_dto.cust_is_bank== "Y") return custTypeMapping["K"];
+            var custTypes = new List<string>();
 
-            return "";
+            if (record_dto.cust_is_shipper == "Y") custTypes.Add("Shipper");
+            if (record_dto.cust_is_consignee == "Y") custTypes.Add("Consignee");
+            if (record_dto.cust_is_importer == "Y") custTypes.Add("Importer");
+            if (record_dto.cust_is_exporter == "Y") custTypes.Add("Exporter");
+            if (record_dto.cust_is_cha == "Y") custTypes.Add("Customs Broker");
+            if (record_dto.cust_is_forwarder == "Y") custTypes.Add("Domestic Forwarder");
+            if (record_dto.cust_is_oagent == "Y") custTypes.Add("Overseas Agent");
+            if (record_dto.cust_is_acarrier == "Y") custTypes.Add("Air Carrier");
+            if (record_dto.cust_is_scarrier == "Y") custTypes.Add("Sea Carrier");
+            if (record_dto.cust_is_trucker == "Y") custTypes.Add("Trucker");
+            if (record_dto.cust_is_warehouse == "Y") custTypes.Add("Warehouse");
+            if (record_dto.cust_is_sterminal == "Y") custTypes.Add("Terminal Sea / Rail");
+            if (record_dto.cust_is_aterminal == "Y") custTypes.Add("Terminal Air");
+            if (record_dto.cust_is_shipvendor == "Y") custTypes.Add("Shipping Vendor");
+            if (record_dto.cust_is_gvendor == "Y") custTypes.Add("General Vendor");
+            if (record_dto.cust_is_employee == "Y") custTypes.Add("Employees");
+            if (record_dto.cust_is_contract == "Y") custTypes.Add("Contractor");
+            if (record_dto.cust_is_miscell == "Y") custTypes.Add("Miscellaneous");
+            if (record_dto.cust_is_tbd == "Y") custTypes.Add("TBD");
+            if (record_dto.cust_is_bank == "Y") custTypes.Add("Bank / Financial Institute");
+
+            return string.Join("", custTypes.Select(type => custTypeMapping[type]));
         }
 
-        // Filter the dictionary to include only true values
+
         public async Task<mast_customerm_dto> SaveParentAsync(int id, string mode, mast_customerm_dto record_dto)
         {
             mast_customerm? Record;
@@ -425,7 +508,6 @@ namespace Masters.Repositories
                 }
                 string cust_type = GetCustomerType(record_dto);
                 Record.cust_type = cust_type;
-                // Record.cust_type = record_dto.cust_type;
                 Record.cust_code = record_dto.cust_code;
                 Record.cust_short_name = record_dto.cust_short_name;
                 Record.cust_name = record_dto.cust_name;
@@ -486,10 +568,46 @@ namespace Masters.Repositories
                 Record.cust_is_tbd = record_dto.cust_is_tbd;
                 Record.cust_is_bank = record_dto.cust_is_bank;
 
+                Record.cust_nomination = record_dto.cust_nomination;
+                Record.cust_priority = record_dto.cust_priority;
+                Record.cust_criteria = record_dto.cust_criteria;
+                Record.cust_min_profit = record_dto.cust_min_profit;
+                Record.cust_firm_code = record_dto.cust_firm_code;
+                Record.cust_einirsno = record_dto.cust_einirsno;
+                Record.cust_days = record_dto.cust_days;
+                Record.cust_is_splacc = record_dto.cust_is_splacc;
+                Record.cust_is_actual_vendor = record_dto.cust_is_actual_vendor;
+                Record.cust_is_blackacc = record_dto.cust_is_blackacc;
+                Record.cust_splacc_memo = record_dto.cust_splacc_memo;
+                Record.cust_is_ctpat = record_dto.cust_is_ctpat;
+                Record.cust_ctpat_no = record_dto.cust_ctpat_no;
+                Record.cust_marketing_mail = record_dto.cust_marketing_mail;
+
+                Record.cust_chb_id = record_dto.cust_chb_id;
+                Record.cust_chb_name = record_dto.cust_chb_name;
+                Record.cust_chb_address1 = record_dto.cust_chb_address1;
+                Record.cust_chb_address2 = record_dto.cust_chb_address2;
+                Record.cust_chb_address3 = record_dto.cust_chb_address3;
+                Record.cust_chb_group = record_dto.cust_chb_group;
+                Record.cust_chb_contact = record_dto.cust_chb_contact;
+                Record.cust_chb_tel = record_dto.cust_chb_tel;
+                Record.cust_chb_fax = record_dto.cust_chb_fax;
+                Record.cust_chb_email = record_dto.cust_chb_email;
+
+                Record.cust_poa_customs_yn = record_dto.cust_poa_customs_yn;
+                Record.cust_brokers = record_dto.cust_brokers;
+                Record.cust_poa_isf_yn = record_dto.cust_poa_isf_yn;
+                Record.cust_bond_yn = record_dto.cust_bond_yn;
+                Record.cust_punch_from = record_dto.cust_punch_from;
+                Record.cust_bond_no = record_dto.cust_bond_no;
+                Record.cust_bond_expdt = Lib.ParseDate(record_dto.cust_bond_expdt!);
+
+                Record.cust_branch = record_dto.cust_branch;
+                Record.cust_protected = record_dto.cust_protected;
+                Record.cust_cur_code = record_dto.cust_cur_code;
+
                 Record.cust_row_type = record_dto.cust_row_type;
-
                 Record.cust_credit_limit = record_dto.cust_credit_limit ?? 0;
-
                 Record.cust_est_dt = Lib.ParseDate(record_dto.cust_est_dt!);
 
                 Record.cust_parent_id = record_dto.cust_parent_id;
@@ -545,7 +663,7 @@ namespace Masters.Repositories
                 //Add or Edit Records 
                 foreach (var rec in records_dto)
                 {
-                    // if cont_id is zero it is a new record
+                    
                     if (rec.cont_id == 0)
                     {
                         record = new mast_contactm();

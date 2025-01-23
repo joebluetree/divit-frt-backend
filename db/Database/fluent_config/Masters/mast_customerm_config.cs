@@ -164,6 +164,112 @@ namespace Database.fluent_config.Masters
                 .HasMaxLength(1)
                 .IsRequired(false);
 
+            modelBuilder.Property(u => u.cust_nomination)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_priority)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_criteria)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(e => e.cust_min_profit)
+                .HasColumnType("decimal(15,3)")
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_firm_code)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_einirsno)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_days)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_splacc)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_actual_vendor)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_is_blackacc)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_splacc_memo)
+                .HasMaxLength(100)
+                .IsRequired(false);
+
+            modelBuilder.Property(u => u.cust_is_ctpat)
+                .HasMaxLength(1)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_ctpat_no)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_marketing_mail)
+                .HasMaxLength(100)
+                .IsRequired(false);
+
+            modelBuilder.Property(e => e.cust_chb_id)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_chb_name)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_chb_address1)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_chb_address2)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_chb_address3)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_chb_group)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_chb_contact)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_chb_tel)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_chb_fax)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_chb_email)
+                .HasMaxLength(100)
+                .IsRequired(false);
+
+            modelBuilder.Property(u => u.cust_poa_customs_yn)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_brokers)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_poa_isf_yn)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_bond_yn)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_punch_from)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_bond_no)
+                .HasMaxLength(100)
+                .IsRequired(false);
+                modelBuilder.Property(u => u.cust_bond_expdt)
+                .HasColumnType("date")
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_branch)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_protected)
+                .HasMaxLength(100)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_cur_code)
+                .HasMaxLength(100)
+                .IsRequired(false);
+
+        
+
             modelBuilder.Property(u => u.rec_locked)
                 .HasColumnType("char")
                 .HasMaxLength(1)

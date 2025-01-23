@@ -62,6 +62,45 @@ namespace Common.DTO.Masters
         public string? cust_is_tbd { get; set; } = "";
         public string? cust_is_bank { get; set; } = "";
 
+        public string? cust_nomination { get; set; } = "";
+        public string? cust_priority { get; set; } = "";
+        public string? cust_criteria { get; set; } = "";
+        public decimal? cust_min_profit { get; set; } = 0;
+        public string? cust_firm_code { get; set; } = "";
+        public string? cust_einirsno { get; set; } = "";
+        public int? cust_days { get; set; } = 0;
+        public string? cust_is_splacc { get; set; } = "";
+        public string? cust_is_actual_vendor { get; set; } = "";
+        public string? cust_is_blackacc { get; set; } = "";
+        public string? cust_splacc_memo { get; set; } = "";
+        public string? cust_is_ctpat { get; set; } = "";
+        public string? cust_ctpat_no { get; set; } = "";
+        public string? cust_marketing_mail { get; set; } = "";
+
+        public int? cust_chb_id { get; set; } = 0;
+        public string? cust_chb_code { get; set; } = "";
+        public string? cust_chb_name { get; set; } = "";
+        public string? cust_chb_address1 { get; set; } = "";
+        public string? cust_chb_address2 { get; set; } = "";
+        public string? cust_chb_address3 { get; set; } = "";
+        public string? cust_chb_group { get; set; } = "";
+        public string? cust_chb_contact { get; set; } = "";
+        public string? cust_chb_tel { get; set; } = "";
+        public string? cust_chb_fax { get; set; } = "";
+        public string? cust_chb_email { get; set; } = "";
+
+        public string? cust_poa_customs_yn { get; set; } = "";
+        public string? cust_brokers { get; set; } = "";
+        public string? cust_poa_isf_yn { get; set; } = "";
+        public string? cust_bond_yn { get; set; } = "";
+        public string? cust_punch_from { get; set; } = "";
+        public string? cust_bond_no { get; set; } = "";
+        public string? cust_bond_expdt { get; set; } = ""; 
+
+        public string? cust_branch { get; set; } = "";
+        public string? cust_protected { get; set; } = "";
+        public string? cust_cur_code { get; set; } = "";
+
 
         public Nullable<int> cust_parent_id { get; set; }
         public string? cust_parent_name { get; set; } = "";
