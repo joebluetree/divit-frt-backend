@@ -9,10 +9,10 @@ public class mast_wiretransm : baseTable
     public int wtim_slno { get; set; }
     public string? wtim_refno { get; set; }
     public string? wtim_to_name { get; set; }
-    public int wtim_comp_id { get; set; } //fk
-    public string? wtim_comp_name { get; set; }
-    public string? wtim_comp_fax { get; set; }
-    public string? wtim_comp_tel { get; set; }
+    public int wtim_cust_id { get; set; } //fk
+    public string? wtim_cust_name { get; set; }
+    public string? wtim_cust_fax { get; set; }
+    public string? wtim_cust_tel { get; set; }
     public string? wtim_acc_no { get; set; }
     public string? wtim_req_type { get; set; }
     public string? wtim_from_name { get; set; }

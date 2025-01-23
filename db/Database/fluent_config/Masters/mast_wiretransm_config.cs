@@ -30,13 +30,13 @@ public class mast_wiretransm_config : IEntityTypeConfiguration<mast_wiretransm>
         modelBuilder.Property(u => u.wtim_to_name)
             .HasMaxLength(100)
             .IsRequired(false);
-        modelBuilder.Property(u => u.wtim_comp_name)
+        modelBuilder.Property(u => u.wtim_cust_name)
             .HasMaxLength(100)
             .IsRequired(false);
-        modelBuilder.Property(u => u.wtim_comp_fax)
+        modelBuilder.Property(u => u.wtim_cust_fax)
             .HasMaxLength(100)
             .IsRequired(false);
-        modelBuilder.Property(u => u.wtim_comp_tel)
+        modelBuilder.Property(u => u.wtim_cust_tel)
             .HasMaxLength(100)
             .IsRequired(false);
         modelBuilder.Property(u => u.wtim_acc_no)
@@ -93,9 +93,9 @@ public class mast_wiretransm_config : IEntityTypeConfiguration<mast_wiretransm>
         modelBuilder
             .HasOne(e => e.customer)
             .WithMany()
-            .HasForeignKey(e => e.wtim_comp_id)
+            .HasForeignKey(e => e.wtim_cust_id)
             .HasPrincipalKey(e => e.cust_id)
-            .HasConstraintName("fk_mast_wiretransm_wtim_comp_id")
+            .HasConstraintName("fk_mast_wiretransm_wtim_cust_id")
             .OnDelete(DeleteBehavior.NoAction)
             .IsRequired();
         modelBuilder
@@ -125,7 +125,7 @@ public class mast_wiretransm_config : IEntityTypeConfiguration<mast_wiretransm>
             wtim_slno = 1,
             wtim_refno = "WT-1",
             wtim_to_name = "WT-1",
-            wtim_comp_id = 100,
+            wtim_cust_id = 100,
             wtim_date = DateTime.Now,
             rec_created_by = "ADMIN",
             rec_created_date = DbLib.GetDateTime(),
