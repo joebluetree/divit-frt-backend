@@ -86,9 +86,7 @@ public class mast_wiretransm_config : IEntityTypeConfiguration<mast_wiretransm>
         modelBuilder.Property(u => u.rec_edited_date)
             .IsRequired(false);
         //unique
-        // modelBuilder.HasIndex(e => new { e.rec_company_id, e.wtim_to_name })
-        //     .HasDatabaseName("uq_mast_wiretransm_wtim_to_name")
-        //     .IsUnique();
+
         //Foreign Key
         modelBuilder
             .HasOne(e => e.customer)

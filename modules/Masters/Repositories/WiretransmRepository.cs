@@ -240,6 +240,7 @@ namespace Masters.Repositories
             string name = "";
             string email = "";
             string reference = "";
+            string benef = "";
 
             if (Lib.IsBlank(record_dto.wtim_to_name))
                 str += "To Name Cannot Be Blank!";
@@ -252,11 +253,13 @@ namespace Masters.Repositories
             {
                 
                 if (Lib.IsZero(rec.wtid_benef_id))
-                    name = "Customer Name Cannot Be Blank!";
+                    name = "Beneficiary Name Cannot Be Blank!";
                 if (Lib.IsZero(rec.wtid_bank_id))
-                    email = "Country Name Cannot Be Blank!";
+                    email = "Bank Name Cannot Be Blank!";
                 if (Lib.IsBlank(rec.wtid_benef_ref))
-                    reference = "Email Cannot Be Blank!";
+                    benef = "Beneficiary details Cannot Be Blank!";
+                if (Lib.IsZero(rec.wtid_trns_amt))
+                    reference = "Amount Cannot Be Blank!";
             }
             if (record_dto.wtim_details.Count == 0)
             {
@@ -266,8 +269,11 @@ namespace Masters.Repositories
                 str += name;
             if (email != "")
                 str += email;
+            if (benef != "")
+                str += benef;
             if (reference != "")
                 str += reference;
+            
             if (str != "")
             {
                 error = error + str;
@@ -294,6 +300,7 @@ namespace Masters.Repositories
             {
                 if (record_dto == null)
                     throw new Exception("No Data Found To Save");
+
                 if (!AllValid(mode, record_dto, ref error))
                     throw new Exception(error);
 
@@ -346,8 +353,8 @@ namespace Masters.Repositories
 
                 if (mode == "add")
                     await context.mast_wiretransm.AddAsync(Record);
-
-                await context.SaveChangesAsync();
+                    
+                context.SaveChanges();
                 record_dto.wtim_id = Record.wtim_id;
                 record_dto.wtim_refno = Record.wtim_refno;
                 record_dto.rec_version = Record.rec_version;
