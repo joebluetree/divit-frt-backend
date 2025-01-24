@@ -19,8 +19,9 @@ namespace Database.Models.Masters
         public int? cust_country_id { get; set; }
         public string? cust_country_name { get; set; }
         public string? cust_zip_code {get; set; }
-        public string? cust_contact { get; set; }
         public string? cust_title { get; set; }
+        public string? cust_contact { get; set; }
+        public string? cust_designation { get; set; }
         public string? cust_tel { get; set; }
         public string? cust_fax { get; set; }
         public string? cust_mobile { get; set; }
@@ -73,6 +74,7 @@ namespace Database.Models.Masters
         public string? cust_marketing_mail { get; set; }
 
         public int? cust_chb_id { get; set; }
+        public string? cust_chb_code { get; set; }
         public string? cust_chb_name { get; set; }
         public string? cust_chb_address1 { get; set; }
         public string? cust_chb_address2 { get; set; }

@@ -12,6 +12,8 @@ namespace Common.DTO.Masters
         public int cont_parent_id { get; set; }
         public string? cont_title { get; set; }
         public string? cont_name { get; set; }
+        public int? cont_group_id { get; set; }
+        public string? cont_group_name { get; set; }
         public string? cont_designation { get; set; }
         public string? cont_email { get; set; }
         public string? cont_tel { get; set; }

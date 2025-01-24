@@ -22,8 +22,9 @@ namespace Common.DTO.Masters
         public int? cust_country_id { get; set; } = 0;
         public string? cust_country_name { get; set; } = "";
         public string? cust_zip_code {get; set; } = "";
-        public string? cust_contact { get; set; } = "";
         public string? cust_title { get; set; } = "";
+        public string? cust_contact { get; set; } = "";
+        public string? cust_designation { get; set; } = "";
         public string? cust_tel { get; set; } = "";
         public string? cust_fax { get; set; } = "";
         public string? cust_mobile { get; set; } = "";

@@ -389,6 +389,20 @@ namespace Database.fluent_config.UserAdmin
                 rec_company_id = 1,
                 rec_created_date = DbLib.GetDateTime(),
                 rec_created_by = "ADMIN"
+            },
+            new mast_menum
+            {
+                menu_id = 813,
+                menu_module_id = 21,
+                menu_order = 14,
+                menu_code = "CONTACT-GROUP",
+                menu_name = "Contact Group",
+                menu_route = "masters/paramList",
+                menu_param = "{'type':'CONTACT-GROUP'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
             }
             );
         }

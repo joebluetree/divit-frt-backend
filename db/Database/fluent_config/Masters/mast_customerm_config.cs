@@ -55,11 +55,14 @@ namespace Database.fluent_config.Masters
             modelBuilder.Property(u => u.cust_zip_code)
                 .HasMaxLength(20)
                 .IsRequired(false);
+            modelBuilder.Property(u => u.cust_title)
+                .HasMaxLength(15)
+                .IsRequired(false);
             modelBuilder.Property(u => u.cust_contact)
                 .HasMaxLength(100)
                 .IsRequired(false);
-            modelBuilder.Property(u => u.cust_title)
-                .HasMaxLength(30)
+            modelBuilder.Property(u => u.cust_designation)
+                .HasMaxLength(60)
                 .IsRequired(false);
             modelBuilder.Property(u => u.cust_tel)
                 .HasMaxLength(20)
@@ -208,6 +211,9 @@ namespace Database.fluent_config.Masters
                 .IsRequired(false);
 
             modelBuilder.Property(e => e.cust_chb_id)
+                .IsRequired(false);
+            modelBuilder.Property(u => u.cust_chb_code)
+                .HasMaxLength(100)
                 .IsRequired(false);
             modelBuilder.Property(u => u.cust_chb_name)
                 .HasMaxLength(100)

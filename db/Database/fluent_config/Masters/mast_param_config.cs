@@ -91,6 +91,7 @@ namespace Database.fluent_config.Masters
                 .HasConstraintName("fk_mast_param_rec_branch_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);
+                
             insertDataCountry(modelBuilder);
             insertDataState(modelBuilder);
             insertDataSeaCarrier(modelBuilder);

@@ -93,8 +93,9 @@ namespace Masters.Repositories
                     cust_country_id = e.cust_country_id,
                     cust_country_name = e.country!.param_name,
                     cust_zip_code = e.cust_zip_code,
-                    cust_contact = e.cust_contact,
                     cust_title = e.cust_title,
+                    cust_contact = e.cust_contact,
+                    cust_designation = e.cust_designation,
                     cust_tel = e.cust_tel,
                     cust_fax = e.cust_fax,
                     cust_mobile = e.cust_mobile,
@@ -147,7 +148,7 @@ namespace Masters.Repositories
                     cust_marketing_mail = e.cust_marketing_mail,
 
                     cust_chb_id = e.cust_chb_id,
-                    cust_chb_code = e.customer!.cust_code,
+                    cust_chb_code = e.cust_chb_code,
                     cust_chb_name = e.cust_chb_name,
                     cust_chb_address1 = e.cust_chb_address1,
                     cust_chb_address2 = e.cust_chb_address2,
@@ -213,8 +214,9 @@ namespace Masters.Repositories
                     cust_country_id = e.cust_country_id,
                     cust_country_name = e.country!.param_name,
                     cust_zip_code = e.cust_zip_code,
-                    cust_contact = e.cust_contact,
                     cust_title = e.cust_title,
+                    cust_contact = e.cust_contact,
+                    cust_designation = e.cust_designation,
                     cust_tel = e.cust_tel,
                     cust_fax = e.cust_fax,
                     cust_mobile = e.cust_mobile,
@@ -264,7 +266,7 @@ namespace Masters.Repositories
                     cust_marketing_mail = e.cust_marketing_mail,
 
                     cust_chb_id = e.cust_chb_id,
-                    cust_chb_code = e.customer!.cust_code,
+                    cust_chb_code = e.cust_chb_code,
                     cust_chb_name = e.cust_chb_name,
                     cust_chb_address1 = e.cust_chb_address1,
                     cust_chb_address2 = e.cust_chb_address2,
@@ -327,6 +329,8 @@ namespace Masters.Repositories
                             cont_parent_id = e.cont_parent_id,
                             cont_title = e.cont_title,
                             cont_name = e.cont_name,
+                            cont_group_id = e.cont_group_id,
+                            cont_group_name = e.contgroup!.param_name,
                             cont_designation = e.cont_designation,
                             cont_email = e.cont_email,
                             cont_tel = e.cont_tel,
@@ -345,7 +349,6 @@ namespace Masters.Repositories
 
             return records;
         }
-
 
         public async Task<mast_customerm_dto> SaveAsync(int id, string mode, mast_customerm_dto record_dto)
         {
@@ -528,8 +531,9 @@ namespace Masters.Repositories
                 Record.cust_country_name = record_dto.cust_country_name;
 
                 Record.cust_zip_code = record_dto.cust_zip_code;
-                Record.cust_contact = record_dto.cust_contact;
                 Record.cust_title = record_dto.cust_title;
+                Record.cust_contact = record_dto.cust_contact;
+                Record.cust_designation = record_dto.cust_designation;
                 Record.cust_tel = record_dto.cust_tel;
                 Record.cust_fax = record_dto.cust_fax;
                 Record.cust_mobile = record_dto.cust_mobile;
@@ -574,7 +578,7 @@ namespace Masters.Repositories
                 Record.cust_min_profit = record_dto.cust_min_profit;
                 Record.cust_firm_code = record_dto.cust_firm_code;
                 Record.cust_einirsno = record_dto.cust_einirsno;
-                Record.cust_days = record_dto.cust_days;
+                Record.cust_days = record_dto.cust_days?? 0;
                 Record.cust_is_splacc = record_dto.cust_is_splacc;
                 Record.cust_is_actual_vendor = record_dto.cust_is_actual_vendor;
                 Record.cust_is_blackacc = record_dto.cust_is_blackacc;
@@ -584,6 +588,7 @@ namespace Masters.Repositories
                 Record.cust_marketing_mail = record_dto.cust_marketing_mail;
 
                 Record.cust_chb_id = record_dto.cust_chb_id;
+                Record.cust_chb_code = record_dto.cust_chb_code;
                 Record.cust_chb_name = record_dto.cust_chb_name;
                 Record.cust_chb_address1 = record_dto.cust_chb_address1;
                 Record.cust_chb_address2 = record_dto.cust_chb_address2;
@@ -683,6 +688,7 @@ namespace Masters.Repositories
                     record.cont_parent_id = id;
                     record.cont_title = rec.cont_title;
                     record.cont_name = rec.cont_name;
+                    record.cont_group_id = rec.cont_group_id;
                     record.cont_designation = rec.cont_designation;
                     record.cont_email = rec.cont_email;
                     record.cont_tel = rec.cont_tel;
