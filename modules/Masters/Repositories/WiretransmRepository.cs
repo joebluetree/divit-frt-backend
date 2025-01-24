@@ -213,7 +213,7 @@ namespace Masters.Repositories
             {
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);
-                record_dto = await saveDetailsAsync(id, record_dto);
+                record_dto = await saveDetailsAsync(record_dto.wtim_id, record_dto);
                 record_dto.wtim_details = await GetDetailsAsync(id);
                 context.Database.CommitTransaction();
                 return record_dto;
@@ -390,6 +390,7 @@ namespace Masters.Repositories
                     {
                         record = new mast_wiretransd();
                         record.rec_company_id = record_dto.rec_company_id;
+                        record.rec_branch_id = record_dto.rec_branch_id;
                         record.rec_created_by = record_dto.rec_created_by;
                         record.rec_created_date = DbLib.GetDateTime();
                         record.rec_locked = "N";
