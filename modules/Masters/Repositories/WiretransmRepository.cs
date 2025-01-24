@@ -163,6 +163,7 @@ namespace Masters.Repositories
                     wtim_is_recycle = e.wtim_is_recycle,
                     wtim_remarks = e.wtim_remarks,
 
+                    rec_version = e.rec_version,
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                     rec_edited_by = e.rec_edited_by,
@@ -353,7 +354,7 @@ namespace Masters.Repositories
 
                 if (mode == "add")
                     await context.mast_wiretransm.AddAsync(Record);
-                    
+
                 context.SaveChanges();
                 record_dto.wtim_id = Record.wtim_id;
                 record_dto.wtim_refno = Record.wtim_refno;
