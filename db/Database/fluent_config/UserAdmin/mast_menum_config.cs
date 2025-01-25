@@ -655,6 +655,34 @@ namespace Database.fluent_config.UserAdmin
                 rec_company_id = 1,
                 rec_created_date = DbLib.GetDateTime(),
                 rec_created_by = "ADMIN"
+            },
+            new mast_menum     //Wire Transfer Added to Master Module
+            {
+                menu_id = 832,
+                menu_module_id = 21,
+                menu_order = 37,
+                menu_code = "WIRETRANSM",
+                menu_name = "Wire Transfer Instruction",
+                menu_route = "masters/wiretransmList",
+                menu_param = "{'type':'WIRETRANSM'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            },
+            new mast_menum     //Wire Transfer Added to Master Module
+            {
+                menu_id = 833,
+                menu_module_id = 21,
+                menu_order = 38,
+                menu_code = "REMARKS",
+                menu_name = "Remarks",
+                menu_route = "masters/remarkList",
+                menu_param = "{'type':'REMARKS'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
             }
             );
         }
