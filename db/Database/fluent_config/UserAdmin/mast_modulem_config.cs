@@ -116,6 +116,16 @@ namespace Database.fluent_config.UserAdmin
                 rec_company_id = 1,
                 rec_created_date = DbLib.GetDateTime(),
                 rec_created_by = "ADMIN"
+            },
+            new mast_modulem //create settings module
+            {
+                module_id = 24,
+                module_name = "Settings",
+                module_is_installed = "Y",
+                module_order = 5,
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
             }
             );
         }

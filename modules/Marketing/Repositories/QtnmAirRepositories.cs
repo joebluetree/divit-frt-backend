@@ -460,7 +460,7 @@ namespace Marketing.Repositories
                     if (Lib.IsZero(rec.qtnd_carrier_id))
                         record.qtnd_carrier_id = null;
                     else
-                        record.qtnd_carrier_id = rec.qtnd_carrier_id;
+                    record.qtnd_carrier_id = rec.qtnd_carrier_id;
                     record.qtnd_carrier_name = rec.qtnd_carrier_name;
                     record.qtnd_trans_time = rec.qtnd_trans_time;
                     record.qtnd_routing = rec.qtnd_routing;

@@ -96,6 +96,7 @@ namespace Database.fluent_config.UserAdmin
             insertdata_Accounts(modelBuilder);
             insertdata_Masters(modelBuilder);
             insertdata_Marketing(modelBuilder);
+            insertdata_Settings(modelBuilder);
         }
 
 
@@ -727,6 +728,26 @@ namespace Database.fluent_config.UserAdmin
                 menu_name = "Quotations Air",
                 menu_route = "marketing/qtnmairList",
                 menu_param = "{'type':'QUOTATIONS-AIR'}",
+                menu_visible = "Y",
+                rec_company_id = 1,
+                rec_created_date = DbLib.GetDateTime(),
+                rec_created_by = "ADMIN"
+            }
+            );
+        }
+
+        void insertdata_Settings(EntityTypeBuilder<mast_menum> modelBuilder)
+        {
+            modelBuilder.HasData(
+            new mast_menum
+            {
+                menu_id = 1001,
+                menu_module_id = 24,
+                menu_order = 1,
+                menu_code = "MAIL-SERVER",
+                menu_name = "Mail Server Settings",
+                menu_route = "admin/mailservermList",
+                menu_param = "{'type':'MAIL-SERVER'}",
                 menu_visible = "Y",
                 rec_company_id = 1,
                 rec_created_date = DbLib.GetDateTime(),

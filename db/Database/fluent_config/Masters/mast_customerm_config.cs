@@ -377,7 +377,6 @@ namespace Database.fluent_config.Masters
                rec_created_by = "ADMIN",
                rec_created_date = DbLib.GetDateTime(),
                rec_company_id = 1
-
            }
            );
         }

@@ -1,6 +1,5 @@
-﻿using Common.UserAdmin.DTO;
-using Database.Models.BaseTables;
-using System.ComponentModel.DataAnnotations;
+﻿using Database.Models.BaseTables;
+
 
 
 namespace Common.DTO.Masters
