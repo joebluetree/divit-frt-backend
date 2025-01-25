@@ -308,7 +308,7 @@ namespace Masters.Repositories
                 if (mode == "add")
                 {
                     int iNextNo = GetNextRefNo(record_dto.rec_company_id, record_dto.rec_branch_id);
-                    string sqtn_no = $"{iNextNo}";               
+                    string sqtn_no = $"WT-{iNextNo}";               
 
                     Record = new mast_wiretransm();
                     Record.wtim_slno = iNextNo;
