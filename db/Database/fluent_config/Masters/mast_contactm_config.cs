@@ -31,6 +31,8 @@ namespace Database.fluent_config.Masters
             modelBuilder.Property(u => u.cont_name)
                 .HasMaxLength(100)
                 .IsRequired();
+            modelBuilder.Property(u => u.cont_group_id)
+                .IsRequired(false);
             modelBuilder.Property(u => u.cont_designation)
                 .HasMaxLength(100)
                 .IsRequired();
@@ -83,6 +85,14 @@ namespace Database.fluent_config.Masters
                 .HasConstraintName("fk_mast_contactm_cont_country_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
+            modelBuilder
+                .HasOne(e => e.contgroup)
+                .WithMany()
+                .HasForeignKey(e => e.cont_group_id)
+                .HasPrincipalKey(e => e.param_id)
+                .HasConstraintName("fk_mast_contactm_cont_group_id")
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
             modelBuilder
                 .HasOne(e => e.company)
                 .WithMany()

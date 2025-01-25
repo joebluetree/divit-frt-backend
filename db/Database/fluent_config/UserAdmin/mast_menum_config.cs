@@ -390,6 +390,7 @@ namespace Database.fluent_config.UserAdmin
                 rec_created_date = DbLib.GetDateTime(),
                 rec_created_by = "ADMIN"
             },
+
             new mast_menum       //AIR-PORT Added to master
             {
                 menu_id = 813,
