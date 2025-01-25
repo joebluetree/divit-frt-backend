@@ -215,7 +215,7 @@ namespace Masters.Repositories
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);
                 record_dto = await saveDetailsAsync(record_dto.wtim_id, record_dto);
-                record_dto.wtim_details = await GetDetailsAsync(id);
+                record_dto.wtim_details = await GetDetailsAsync(record_dto.wtim_id);
                 context.Database.CommitTransaction();
                 return record_dto;
             }
@@ -258,7 +258,7 @@ namespace Masters.Repositories
                 if (Lib.IsZero(rec.wtid_bank_id))
                     email = "Bank Name Cannot Be Blank!";
                 if (Lib.IsBlank(rec.wtid_benef_ref))
-                    benef = "Beneficiary details Cannot Be Blank!";
+                    benef = "Beneficiary Reference details Cannot Be Blank!";
                 if (Lib.IsZero(rec.wtid_trns_amt))
                     reference = "Amount Cannot Be Blank!";
             }
@@ -384,6 +384,7 @@ namespace Masters.Repositories
                 records = await context.mast_wiretransd
                     .Where(w => w.wtid_wtim_id == id)
                     .ToListAsync();
+
                 int nextorder = 1;
 
                 foreach (var existing_record in records)
