@@ -388,10 +388,27 @@ namespace Masters.Repositories
 
             if (Lib.IsBlank(record_dto.cust_code))
                 str += "Code Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.cust_short_name))
+                str += "Short Name Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.cust_name))
                 str += "Name Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.cust_official_name))
+                str += "Official Name Cannot Be Blank!";
             if (Lib.IsZero(record_dto.cust_parent_id))
                 str += "Parent Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.cust_address1))
+                str += "Address 1 Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.cust_address2))
+                str += "Address 2 Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.cust_city))
+                str += "City Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.cust_state_name))
+                str += "State Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.cust_country_name))
+                str += "Country Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.cust_zip_code))
+                str += "Zip Code Cannot Be Blank!";
+            
 
             foreach (mast_contactm_dto rec in record_dto.cust_contacts!)
             {
@@ -529,7 +546,6 @@ namespace Masters.Repositories
                 else
                     Record.cust_country_id = record_dto.cust_country_id;
                 Record.cust_country_name = record_dto.cust_country_name;
-
                 Record.cust_zip_code = record_dto.cust_zip_code;
                 Record.cust_title = record_dto.cust_title;
                 Record.cust_contact = record_dto.cust_contact;
@@ -578,7 +594,7 @@ namespace Masters.Repositories
                 Record.cust_min_profit = record_dto.cust_min_profit;
                 Record.cust_firm_code = record_dto.cust_firm_code;
                 Record.cust_einirsno = record_dto.cust_einirsno;
-                Record.cust_days = record_dto.cust_days?? 0;
+                Record.cust_days = record_dto.cust_days;
                 Record.cust_is_splacc = record_dto.cust_is_splacc;
                 Record.cust_is_actual_vendor = record_dto.cust_is_actual_vendor;
                 Record.cust_is_blackacc = record_dto.cust_is_blackacc;
