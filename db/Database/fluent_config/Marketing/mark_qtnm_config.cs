@@ -17,7 +17,7 @@ namespace Database.fluent_config.Marketing
             //table and primary key
             modelBuilder.ToTable("mark_qtnm");
             modelBuilder.HasKey(u => u.qtnm_id)
-                .HasName("pk_mark_qtnm_qtnm_pkid");
+                .HasName("pk_mark_qtnm_qtnm_id");
             //Sequence
             modelBuilder.Property(u => u.qtnm_id)
                 //.HasDefaultValueSql("next value for MasterSequence")

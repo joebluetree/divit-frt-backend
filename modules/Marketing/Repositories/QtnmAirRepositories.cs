@@ -9,6 +9,9 @@ using Database.Models.BaseTables;
 using Marketing.Interfaces;
 using Database.Models.Marketing;
 using Common.DTO.Marketing;
+using Microsoft.VisualBasic;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
+using Common.Lib;
 
 //Name : Sourav V
 //Created Date : 10/01/2025
@@ -20,6 +23,7 @@ namespace Marketing.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
+        private string sqtnm_type = "AIR";
         public QtnmAirRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -342,15 +346,31 @@ namespace Marketing.Repositories
 
                 if (mode == "add")
                 {
-                    int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id);
-                    string sqtn_no = $"QA-{iNextNo}";                               // for setting quote no by adding propper prefix (here QA - Quotation AIR)
-                    string stype = "AIR";
+                    
+                    var result = CommonLib.GetBranchsettings(this.context,record_dto.rec_company_id, record_dto.rec_branch_id, "'QUOTATION-AIR-STARTING-NO','QUOTATION-AIR-PREFIX'");
+
+                    // var a = result.ContainsKey["QUOTATION-AIR-PREFIX"];
+                    var DefaultCfNo = "";
+                    var sprefix = "";
+                    if(result.ContainsKey("QUOTATION-AIR-STARTING-NO")){
+                        DefaultCfNo = result["QUOTATION-AIR-STARTING-NO"].ToString();
+                    }
+                    if(result.ContainsKey("QUOTATION-AIR-PREFIX")){
+                        sprefix = result["QUOTATION-AIR-PREFIX"];
+                    }
+                    if(Lib.IsBlank(DefaultCfNo)||Lib.IsBlank(sprefix)){
+                        throw new Exception("Prefix/Starting Number Not Found in Branch Settings ");
+                    }
+
+                    int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id,DefaultCfNo);
+
+                    string sqtn_no = $"{sprefix}{iNextNo}";                               // for setting quote no by adding propper prefix (here QA - Quotation AIR)
                     int amt = 0;
 
                     Record = new mark_qtnm();
                     Record.qtnm_cfno = iNextNo;
                     Record.qtnm_no = sqtn_no;
-                    Record.qtnm_type = stype;
+                    Record.qtnm_type = sqtnm_type;
                     Record.qtnm_amt = amt;
 
                     Record.rec_company_id = record_dto.rec_company_id;
@@ -488,15 +508,19 @@ namespace Marketing.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
-        public int GetNextCfNo(int company_id, int? branch_id)          // function used to get the next cf number
-        {
-            var maxCfNo = context.mark_qtnm
-            .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == "AIR")
+
+        public int GetNextCfNo(int company_id, int? branch_id, string? DefaultCfNo)          
+        {   
+            int iDefaultCfNo = int.Parse(DefaultCfNo!);
+        
+            var CfNo = context.mark_qtnm
+            .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == sqtnm_type)
             .Select(e => e.qtnm_cfno)
             .DefaultIfEmpty()
             .Max();
-
-            return maxCfNo + 1;
+     
+            int nCfNo = CfNo > 0 ? CfNo + 1 : iDefaultCfNo;
+            return nCfNo ;
         }
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
