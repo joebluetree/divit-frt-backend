@@ -22,15 +22,18 @@ namespace Marketing.Repositories
 
     public class QtnmFclRepository : IQtnmFclRepository
     {
+
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
+
+        string qtnm_type = "FCL";
+
         public QtnmFclRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
             this.auditLog = _auditLog;
         }
         
-        string qtnm_type = "FCL";
 
         public async Task<Dictionary<string, object>> GetListAsync(Dictionary<string, object> data)
         {
