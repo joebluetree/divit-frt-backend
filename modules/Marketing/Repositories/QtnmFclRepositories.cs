@@ -25,8 +25,7 @@ namespace Marketing.Repositories
 
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
-
-        string qtnm_type = "FCL";
+     string qtnm_type = "FCL";
 
         public QtnmFclRepository(AppDbContext _context, IAuditLog _auditLog)
         {
@@ -83,9 +82,7 @@ namespace Marketing.Repositories
                 _page.pageSize = int.Parse(data["pageSize"].ToString()!);
 
                 IQueryable<mark_qtnm> query = context.mark_qtnm;
-
                 query = query.Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == qtnm_type);
-
 
                 if (!Lib.IsBlank(qtnm_from_date))
                 {
@@ -165,7 +162,6 @@ namespace Marketing.Repositories
             try
             {
                 IQueryable<mark_qtnm> query = context.mark_qtnm;
-
 
                 query = query.Where(f => f.qtnm_id == id && f.qtnm_type == qtnm_type);
 
@@ -333,14 +329,13 @@ namespace Marketing.Repositories
             {
                 throw new ArgumentNullException(nameof(caption), "Caption cannot be null or empty.");
             }
-
             var settings = context.mast_settings
                 .Where(s => s.rec_company_id == company_id && s.rec_branch_id == branch_id && s.category == "BRANCH-SETTINGS")
                 .Where(s => s.caption != null && caption.Contains(s.caption))
                 .ToDictionary(s => s.caption!, s => s.value);
-
             return settings;
         }
+
 
         public async Task<mark_qtnm_dto> SaveParentAsync(int id, string mode, mark_qtnm_dto record_dto)
         {
@@ -368,7 +363,6 @@ namespace Marketing.Repositories
                     if (Lib.IsZero(iNextNo))
                         throw new Exception("QUOTATION-FCL-Starting number cannot be null or empty.");
 
-                    
                     string sqtn_no = $"{prefix}{iNextNo}";
 
                     Record = new mark_qtnm();
@@ -521,7 +515,6 @@ namespace Marketing.Repositories
                 throw;
             }
         }
-
         public int GetFclCfNo(int company_id, int? branch_id, string? startingNo)
         {
             var maxCfNo = context.mark_qtnm
