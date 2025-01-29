@@ -24,6 +24,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="table_config\" />
+    <Folder Include="table_config\Accounts\" />
   </ItemGroup>
 
 </Project>
