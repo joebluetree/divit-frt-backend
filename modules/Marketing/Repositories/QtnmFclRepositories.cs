@@ -324,14 +324,6 @@ namespace Marketing.Repositories
             return bRet;
         }
 
-        // public string? GetPre(int company_id, int? branch_id)
-        // {
-        //     var maxPre = context.mast_settings
-        //         .Where(i =>i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.caption == "QUOTATION-FCL-PREFIX" && i.category == "BRANCH-SETTINGS")
-        //         .Select(e => e.value)
-        //         .FirstOrDefault();
-        //     return !string.IsNullOrEmpty(maxPre) ? maxPre : "";
-        // }
         public Dictionary<string, string?> GetBranchSettings(int? company_id, int? branch_id, string? caption)
         {
             if (string.IsNullOrWhiteSpace(caption))
@@ -368,7 +360,7 @@ namespace Marketing.Repositories
                     if (Lib.IsBlank(prefix))
                         throw new Exception("QUOTATION-FCL-Prefix cannot be null or empty.");
 
-                    var iNextNo = GetCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, StartingNo);
+                    var iNextNo = GetFclCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, StartingNo);
 
                     if (Lib.IsZero(iNextNo))
                         throw new Exception("QUOTATION-FCL-Starting number cannot be null or empty.");
@@ -527,7 +519,7 @@ namespace Marketing.Repositories
             }
         }
 
-        public int GetCfNo(int company_id, int? branch_id, string? startingNo)
+        public int GetFclCfNo(int company_id, int? branch_id, string? startingNo)
         {
             var maxCfNo = context.mark_qtnm
                 .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == qtnm_type)
@@ -535,7 +527,7 @@ namespace Marketing.Repositories
                 .DefaultIfEmpty()
                 .Max();
 
-                var StartingNo = int.Parse(startingNo?.ToString()!);  // changes needed.
+                var StartingNo = int.Parse(startingNo?.ToString()!); 
             return maxCfNo == 0 ? StartingNo : maxCfNo + 1; 
         }
 
