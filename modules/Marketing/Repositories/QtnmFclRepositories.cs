@@ -367,11 +367,13 @@ namespace Marketing.Repositories
 
                     if (Lib.IsBlank(prefix))
                         throw new Exception("QUOTATION-FCL-Prefix cannot be null or empty.");
-                    
-                    if (Lib.IsBlank(StartingNo))
-                        throw new Exception("QUOTATION-FCL-Starting number cannot be null or empty.");
 
                     var iNextNo = GetCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, StartingNo);
+
+                    if (Lib.IsZero(iNextNo))
+                        throw new Exception("QUOTATION-FCL-Starting number cannot be null or empty.");
+
+                    
                     string sqtn_no = $"{prefix}{iNextNo}";
 
                     Record = new mark_qtnm();
