@@ -5,13 +5,22 @@ using Database.Models.Accounts;
 using Database.Models.TnT;
 using Database.Models.Marketing;
 
-using Database.fluent_config.Masters;
-using Database.fluent_config.Accounts;
-using Database.fluent_config.UserAdmin;
-using Database.fluent_config.Tnt;
-using Database.fluent_config.Marketing;
-using database.fluent_config.Marketing;
-using database.fluent_config.Masters;
+// using Database.fluent_config.Masters;
+// using Database.fluent_config.Accounts;
+// using Database.fluent_config.UserAdmin;
+// using Database.fluent_config.Tnt;
+// using Database.fluent_config.Marketing;
+// using database.fluent_config.Marketing;
+// using database.fluent_config.Masters;
+
+
+using Database.table_config.Masters;
+using Database.table_config.Accounts;
+using Database.table_config.UserAdmin;
+using Database.table_config.Tnt;
+using Database.table_config.Marketing;
+using database.table_config.Marketing;
+using database.table_config.Masters;
 
 
 namespace Database
@@ -107,6 +116,9 @@ namespace Database
                 .StartsAt(1000)
                 .IncrementsBy(1);
 
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+            base.OnModelCreating(modelBuilder);
+
             /*
             CreateRelation_BaseTables(modelBuilder);
             CreateRelation_MasterTables(modelBuilder);
@@ -114,13 +126,13 @@ namespace Database
             CreateRelation_TnTTables(modelBuilder);
             */
 
-
+            /*    
             CreateTables(modelBuilder);
             CreateMasterTables(modelBuilder);
             CreateAcctmTables(modelBuilder);
             CreateTnTTables(modelBuilder);
             CreateMarketingTables(modelBuilder);
-
+            */
 
         }
 
