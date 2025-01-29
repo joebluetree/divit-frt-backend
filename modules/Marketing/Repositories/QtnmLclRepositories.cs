@@ -9,6 +9,7 @@ using Database.Models.BaseTables;
 using Marketing.Interfaces;
 using Database.Models.Marketing;
 using Common.DTO.Marketing;
+using Common.Lib;
 
 //Name : Sourav V
 //Created Date : 03/01/2025
@@ -20,6 +21,7 @@ namespace Marketing.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
+        private string sqtnm_type = "LCL";
         public QtnmLclRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -79,7 +81,7 @@ namespace Marketing.Repositories
 
                 query = query.Where(w => w.rec_company_id == company_id);
                 query = query.Where(w => w.rec_branch_id == branch_id);
-                query = query.Where(w => w.qtnm_type == "LCL");
+                query = query.Where(w => w.qtnm_type == sqtnm_type);
 
 
                 if (!Lib.IsBlank(qtnm_from_date))
@@ -372,9 +374,29 @@ namespace Marketing.Repositories
 
                 if (mode == "add")
                 {
-                    int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id);
-                    string sqtn_no = $"QL-{iNextNo}";                               // for setting quote no by adding propper prefix (here QL - Quotation LCL)
-                    string stype = "LCL";
+                    var result = CommonLib.GetBranchsettings(this.context,record_dto.rec_company_id, record_dto.rec_branch_id, "'QUOTATION-LCL-STARTING-NO','QUOTATION-LCL-PREFIX'");
+
+                    var DefaultCfNo = "";
+                    var sprefix = "";
+                    
+                    if(result.ContainsKey("QUOTATION-LCL-STARTING-NO")){
+                        DefaultCfNo = result["QUOTATION-LCL-STARTING-NO"].ToString();
+                    }
+                    if(result.ContainsKey("QUOTATION-LCL-PREFIX")){
+                        sprefix = result["QUOTATION-LCL-PREFIX"];
+                    }
+                    if(Lib.IsBlank(DefaultCfNo)||Lib.IsBlank(sprefix)){
+                        throw new Exception("Prefix/Starting Number Not Found in Branch Settings ");
+                    }
+
+                    int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
+                    if(Lib.IsZero(iNextNo)){
+                        throw new Exception("Quotation Number Cannot Be Generated");
+                    }
+
+
+                    string sqtn_no = $"{sprefix}{iNextNo}";                                                             // for setting quote no by adding propper prefix (here QL - Quotation LCL)
+                    string stype = sqtnm_type;
 
                     Record = new mark_qtnm();
                     Record.qtnm_cfno = iNextNo;
@@ -519,15 +541,18 @@ namespace Marketing.Repositories
                 throw;
             }
         }
-        public int GetNextCfNo(int company_id, int? branch_id)   // function used to get the next cf number
-        {
-            var maxCfNo = context.mark_qtnm
-            .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == "LCL")
+        public int GetNextCfNo(int company_id, int? branch_id, string? DefaultCfNo)          
+        {   
+            int iDefaultCfNo = int.Parse(DefaultCfNo!);
+        
+            var CfNo = context.mark_qtnm
+            .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == sqtnm_type)
             .Select(e => e.qtnm_cfno)
             .DefaultIfEmpty()
             .Max();
-
-            return maxCfNo + 1;
+     
+            int nCfNo = CfNo > 0 ? CfNo + 1 : iDefaultCfNo;
+            return nCfNo ;
         }
         public decimal? FindTotal(mark_qtnm_dto record_dto)   // used to find total amount from each records
         {

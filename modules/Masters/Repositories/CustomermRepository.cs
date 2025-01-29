@@ -32,13 +32,39 @@ namespace Masters.Repositories
                 if (action == null)
                     action = "search";
                 var cust_row_type = "";
-                var cust_name = "";
                 var company_id = 0;
+                var cust_date_type ="";
+                var cust_from_date ="";
+                var cust_to_date ="";
+                var cust_created_by ="";
+                var cust_edited_by ="";
+                var cust_code ="";
+                var cust_name = "";
+                var cust_firm_code ="";
+                var cust_is_blackacc = "";
+                DateTime? from_date = null;
+                DateTime? to_date = null;
 
                 if (data.ContainsKey("cust_row_type"))
                     cust_row_type = data["cust_row_type"].ToString();
+                if (data.ContainsKey("cust_date_type"))
+                    cust_date_type = data["cust_date_type"].ToString();
+                if (data.ContainsKey("cust_from_date"))
+                    cust_from_date = data["cust_from_date"].ToString();
+                if (data.ContainsKey("cust_to_date"))
+                    cust_to_date = data["cust_to_date"].ToString();
+                if (data.ContainsKey("cust_created_by"))
+                    cust_created_by = data["cust_created_by"].ToString();
+                if (data.ContainsKey("cust_edited_by"))
+                    cust_edited_by = data["cust_edited_by"].ToString();
+                if (data.ContainsKey("cust_code"))
+                    cust_code = data["cust_code"].ToString();
                 if (data.ContainsKey("cust_name"))
                     cust_name = data["cust_name"].ToString();
+                if (data.ContainsKey("cust_firm_code"))
+                    cust_firm_code = data["cust_firm_code"].ToString();
+                if (data.ContainsKey("cust_is_blackacc"))
+                    cust_is_blackacc = data["cust_is_blackacc"].ToString();
                 if (data.ContainsKey("rec_company_id"))
                     company_id = int.Parse(data["rec_company_id"].ToString()!);
                 if (company_id == 0)
@@ -55,8 +81,33 @@ namespace Masters.Repositories
                 query = query.Where(w => w.rec_company_id == company_id);
                 query = query.Where(w => w.cust_row_type == cust_row_type);
 
+
+
+                if (!Lib.IsBlank(cust_from_date))
+                {
+                    from_date = Lib.ParseDate(cust_from_date!);
+                    // if(cust_date_type == "Created Date")
+                    //     query = query.Where(w => w.rec_created_date.Date >= from_date);
+                    // DateOnly created_date = rec_created_date.Date;
+                    query = query.Where(w => w.rec_created_date.Date >= from_date);
+                }
+                if (!Lib.IsBlank(cust_to_date))
+                {
+                    to_date = Lib.ParseDate(cust_to_date!);
+                    query = query.Where(w => w.rec_created_date.Date <= to_date);
+                }
+                if (!Lib.IsBlank(cust_created_by))
+                    query = query.Where(w => w.rec_created_by!.Contains(cust_created_by!));
+                if (!Lib.IsBlank(cust_edited_by))
+                    query = query.Where(w => w.rec_edited_by!.Contains(cust_edited_by!));
+                if (!Lib.IsBlank(cust_code))
+                    query = query.Where(w => w.cust_code!.Contains(cust_code!));
                 if (!Lib.IsBlank(cust_name))
                     query = query.Where(w => w.cust_name!.Contains(cust_name!));
+                if (!Lib.IsBlank(cust_firm_code))
+                    query = query.Where(w => w.cust_firm_code!.Contains(cust_firm_code!));
+                if (!Lib.IsBlank(cust_is_blackacc))
+                    query = query.Where(w => w.cust_is_blackacc!.Contains(cust_is_blackacc!));
 
                 if (action == "SEARCH")
                 {
@@ -439,7 +490,7 @@ namespace Masters.Repositories
             return bRet;
         }
 
-        // to add cust_type value when selected
+        // to add cust_type value when selected using dictionary
         public string GetCustomerType(mast_customerm_dto record_dto)
         {
             var custTypeMapping = new Dictionary<string, string>

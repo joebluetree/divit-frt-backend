@@ -17,7 +17,7 @@ namespace Database.fluent_config.Marketing
             //table and primary key
             modelBuilder.ToTable("mark_qtnd_lcl");
             modelBuilder.HasKey(u => u.qtnd_id)
-                .HasName("pk_mark_qtnd_lcl_qtnd_pkid");
+                .HasName("pk_mark_qtnd_lcl_qtnd_id");
             //Sequence
             modelBuilder.Property(u => u.qtnd_id)
                 //.HasDefaultValueSql("next value for MasterSequence")
@@ -56,7 +56,7 @@ namespace Database.fluent_config.Marketing
                 .WithMany()
                 .HasForeignKey(e => e.qtnd_qtnm_id)
                 .HasPrincipalKey(e => e.qtnm_id)
-                .HasConstraintName("fk_mark_qtnd_lcl_qtnm_pkid")
+                .HasConstraintName("fk_mark_qtnd_lcl_qtnd_qtnm_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             modelBuilder
