@@ -10,6 +10,7 @@ using Marketing.Interfaces;
 using Database.Models.Marketing;
 using Common.DTO.Marketing;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.VisualBasic;
 
 
 namespace Marketing.Repositories
@@ -21,13 +22,17 @@ namespace Marketing.Repositories
 
     public class QtnmFclRepository : IQtnmFclRepository
     {
+
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
+     string qtnm_type = "FCL";
+
         public QtnmFclRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
             this.auditLog = _auditLog;
         }
+        
 
         public async Task<Dictionary<string, object>> GetListAsync(Dictionary<string, object> data)
         {
@@ -77,9 +82,7 @@ namespace Marketing.Repositories
                 _page.pageSize = int.Parse(data["pageSize"].ToString()!);
 
                 IQueryable<mark_qtnm> query = context.mark_qtnm;
-
-                query = query.Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == "FCL");
-
+                query = query.Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == qtnm_type);
 
                 if (!Lib.IsBlank(qtnm_from_date))
                 {
@@ -160,8 +163,7 @@ namespace Marketing.Repositories
             {
                 IQueryable<mark_qtnm> query = context.mark_qtnm;
 
-
-                query = query.Where(f => f.qtnm_id == id && f.qtnm_type == "FCL");
+                query = query.Where(f => f.qtnm_id == id && f.qtnm_type == qtnm_type);
 
                 var Record = await query.Select(e => new mark_qtnm_dto
                 {
@@ -321,6 +323,20 @@ namespace Marketing.Repositories
             return bRet;
         }
 
+        public Dictionary<string, string?> GetBranchSettings(int? company_id, int? branch_id, string? caption)
+        {
+            if (string.IsNullOrWhiteSpace(caption))
+            {
+                throw new ArgumentNullException(nameof(caption), "Caption cannot be null or empty.");
+            }
+            var settings = context.mast_settings
+                .Where(s => s.rec_company_id == company_id && s.rec_branch_id == branch_id && s.category == "BRANCH-SETTINGS")
+                .Where(s => s.caption != null && caption.Contains(s.caption))
+                .ToDictionary(s => s.caption!, s => s.value);
+            return settings;
+        }
+
+
         public async Task<mark_qtnm_dto> SaveParentAsync(int id, string mode, mark_qtnm_dto record_dto)
         {
             mark_qtnm? Record;
@@ -335,13 +351,24 @@ namespace Marketing.Repositories
 
                 if (mode == "add")
                 {
-                    int iNextNo = GetCfNo(record_dto.rec_company_id, record_dto.rec_branch_id);
-                    string sqtn_no = $"QF-{iNextNo}";
+                    var settingsdata = GetBranchSettings(record_dto.rec_company_id, record_dto.rec_branch_id, "'QUOTATION-FCL-PREFIX','QUOTATION-FCL-STARTING-NO'");
+                    var prefix = settingsdata.ContainsKey("QUOTATION-FCL-PREFIX") ? settingsdata["QUOTATION-FCL-PREFIX"] : "";
+                    var StartingNo = settingsdata.ContainsKey("QUOTATION-FCL-STARTING-NO") ? settingsdata["QUOTATION-FCL-STARTING-NO"] : "";
+
+                    if (Lib.IsBlank(prefix))
+                        throw new Exception("QUOTATION-FCL-Prefix cannot be null or empty.");
+
+                    var iNextNo = GetFclCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, StartingNo);
+
+                    if (Lib.IsZero(iNextNo))
+                        throw new Exception("QUOTATION-FCL-Starting number cannot be null or empty.");
+
+                    string sqtn_no = $"{prefix}{iNextNo}";
 
                     Record = new mark_qtnm();
                     Record.qtnm_cfno = iNextNo;
                     Record.qtnm_no = sqtn_no;
-                    Record.qtnm_type = "FCL";
+                    Record.qtnm_type = qtnm_type;
 
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_branch_id = record_dto.rec_branch_id;
@@ -488,17 +515,18 @@ namespace Marketing.Repositories
                 throw;
             }
         }
-
-        //function for geting the quotation number
-        public int GetCfNo(int company_id, int? branch_id)
+        public int GetFclCfNo(int company_id, int? branch_id, string? startingNo)
         {
             var maxCfNo = context.mark_qtnm
-            .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == "FCL")
-            .Select(e => e.qtnm_cfno)
-            .DefaultIfEmpty()
-            .Max();
-            return maxCfNo + 1;
+                .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == qtnm_type)
+                .Select(e => e.qtnm_cfno)
+                .DefaultIfEmpty()
+                .Max();
+
+                var StartingNo = int.Parse(startingNo?.ToString()!); 
+            return maxCfNo == 0 ? StartingNo : maxCfNo + 1; 
         }
+
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
