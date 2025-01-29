@@ -5,6 +5,10 @@ using Database.Lib.Interfaces;
 using Database;
 using Microsoft.EntityFrameworkCore;
 
+//Name : Sourav V
+//Created Date : 29/01/2025
+//Remark : this file defines common functions which is used in multiple repositories
+
 namespace Common.Lib
 {
     public static class CommonLib

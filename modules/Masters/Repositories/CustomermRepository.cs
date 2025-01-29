@@ -82,7 +82,7 @@ namespace Masters.Repositories
                 query = query.Where(w => w.cust_row_type == cust_row_type);
 
 
-                
+
                 if (!Lib.IsBlank(cust_from_date))
                 {
                     from_date = Lib.ParseDate(cust_from_date!);
@@ -94,7 +94,7 @@ namespace Masters.Repositories
                 if (!Lib.IsBlank(cust_to_date))
                 {
                     to_date = Lib.ParseDate(cust_to_date!);
-                    query = query.Where(w => w.cust_est_dt <= to_date);
+                    query = query.Where(w => w.rec_created_date.Date <= to_date);
                 }
                 if (!Lib.IsBlank(cust_created_by))
                     query = query.Where(w => w.rec_created_by!.Contains(cust_created_by!));
@@ -490,7 +490,7 @@ namespace Masters.Repositories
             return bRet;
         }
 
-        // to add cust_type value when selected
+        // to add cust_type value when selected using dictionary
         public string GetCustomerType(mast_customerm_dto record_dto)
         {
             var custTypeMapping = new Dictionary<string, string>

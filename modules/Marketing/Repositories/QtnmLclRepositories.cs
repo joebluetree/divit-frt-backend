@@ -378,6 +378,7 @@ namespace Marketing.Repositories
 
                     var DefaultCfNo = "";
                     var sprefix = "";
+                    
                     if(result.ContainsKey("QUOTATION-LCL-STARTING-NO")){
                         DefaultCfNo = result["QUOTATION-LCL-STARTING-NO"].ToString();
                     }
