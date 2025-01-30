@@ -12,6 +12,9 @@ using WebApiCore;
 using Database;
 using Database.Lib.Interfaces;
 using Database.Lib.Repositories;
+
+using Common.Interfaces;
+using Common.Repositories;
 using UserAdmin.Interfaces;
 using UserAdmin.Repositories;
 using Masters.Interfaces;
@@ -23,6 +26,7 @@ using TnT.Interfaces;
 using TnT.Repositories;
 using Marketing.Interfaces;
 using Marketing.Repositories;
+
 
 
 //Program.cs version 6.0
@@ -46,6 +50,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Other Services
 
+// Common
+builder.Services.AddScoped<ITableRepository, TableRepository>();
 
 //User Admin
 builder.Services.AddSingleton<IHeaderRepository, HeaderRepository>();

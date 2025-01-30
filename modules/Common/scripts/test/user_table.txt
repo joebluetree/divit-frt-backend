@@ -1,0 +1,46 @@
+
+CREATE TABLE IF NOT EXISTS Users (
+    Id SERIAL PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS Products (
+    Id SERIAL PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Price DECIMAL(18, 2) NOT NULL
+);
+
+INSERT INTO Users (Name, Email)
+SELECT 'John Doe', 'john.doe@example.com'
+WHERE NOT EXISTS (SELECT 1 FROM Users WHERE Email = 'john.doe@example.com');
+
+INSERT INTO Users (Name, Email)
+SELECT 'Jane Smith', 'jane.smith@example.com'
+WHERE NOT EXISTS (SELECT 1 FROM Users WHERE Email = 'jane.smith@example.com');
+
+INSERT INTO Users (Name, Email)
+SELECT 'Jane Smith 1', 'jane.smith@example.com1'
+WHERE NOT EXISTS (SELECT 1 FROM Users WHERE Email = 'jane.smith@example.com1');
+
+INSERT INTO Users (Name, Email)
+SELECT 'Jane Smith 2', 'jane.smith@example.com2'
+WHERE NOT EXISTS (SELECT 1 FROM Users WHERE Email = 'jane.smith@example.com2');
+
+
+
+INSERT INTO Products (Name, Price)
+SELECT 'Product A', 19.99
+WHERE NOT EXISTS (SELECT 1 FROM Products WHERE Name = 'Product A');
+
+INSERT INTO Products (Name, Price)
+SELECT 'Product B', 29.99
+WHERE NOT EXISTS (SELECT 1 FROM Products WHERE Name = 'Product B');
+
+INSERT INTO Products (Name, Price)
+SELECT 'Product C', 29.99
+WHERE NOT EXISTS (SELECT 1 FROM Products WHERE Name = 'Product C');
+
+INSERT INTO Products (Name, Price)
+SELECT 'Product D', 39.99
+WHERE NOT EXISTS (SELECT 1 FROM Products WHERE Name = 'Product D');

@@ -18,6 +18,14 @@
 
   <ItemGroup>
     <Folder Include="DTO\Marketing\" />
+    <Folder Include="scripts\" />
+    <Folder Include="scripts\test\" />
+  </ItemGroup>
+
+    <ItemGroup>
+    <None Update="scripts\**\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
