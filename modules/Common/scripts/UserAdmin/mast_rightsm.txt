@@ -1,0 +1,55 @@
+CREATE TABLE IF NOT EXISTS mast_rightsm (
+    rights_id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+    rights_parent_id int4 NOT NULL,
+    rights_user_id int4 NOT NULL,
+    rights_menu_id int4 NOT NULL,
+    rights_company bpchar(1) NOT NULL,
+    rights_admin bpchar(1) NOT NULL,
+    rights_add bpchar(1) NOT NULL,
+    rights_edit bpchar(1) NOT NULL,
+    rights_view bpchar(1) NOT NULL,
+    rights_delete bpchar(1) NOT NULL,
+    rights_print bpchar(1) NOT NULL,
+    rights_doc_upload bpchar(1) NOT NULL,
+    rights_doc_view bpchar(1) NOT NULL,
+    rights_approver bpchar(1) NOT NULL,
+    rights_value varchar(250) NULL,
+    rec_version int4 NOT NULL,
+    rec_locked bpchar(1) DEFAULT 'N'::bpchar NOT NULL,
+    rec_created_by varchar(20) NOT NULL,
+    rec_created_date timestamptz NOT NULL,
+    rec_edited_by varchar(20) NULL,
+    rec_edited_date timestamptz NULL,
+    rec_company_id int4 NOT NULL,
+    rec_branch_id int4 NOT NULL,
+    CONSTRAINT pk_mast_rightsm_rights_id PRIMARY KEY (rights_id),
+    CONSTRAINT fk_mast_rightsm_rec_company_id FOREIGN KEY (rec_company_id) REFERENCES mast_companym(comp_id),
+    CONSTRAINT fk_mast_rightsm_rights_user_id FOREIGN KEY (rights_user_id) REFERENCES mast_userm(user_id),
+    CONSTRAINT fk_mast_rightsm_rights_menu_id FOREIGN KEY (rights_menu_id) REFERENCES mast_menum(menu_id),
+    CONSTRAINT fk_mast_rightsm_rights_parent_id FOREIGN KEY (rights_parent_id) REFERENCES mast_userbranches(ub_id),
+    CONSTRAINT fk_mast_branchm_rec_branch_id FOREIGN KEY (rec_branch_id) REFERENCES mast_branchm(branch_id)
+);
+
+DO $$
+BEGIN
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_rightsm_rec_branch_id') THEN
+        CREATE INDEX "IX_mast_rightsm_rec_branch_id" ON mast_rightsm USING btree (rec_branch_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_rightsm_rights_menu_id') THEN
+        CREATE INDEX "IX_mast_rightsm_rights_menu_id" ON mast_rightsm USING btree (rights_menu_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_rightsm_rights_parent_id') THEN
+        CREATE INDEX "IX_mast_rightsm_rights_parent_id" ON mast_rightsm USING btree (rights_parent_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_rightsm_rights_user_id') THEN
+        CREATE INDEX "IX_mast_rightsm_rights_user_id" ON mast_rightsm USING btree (rights_user_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'uq_mast_rightsm_menu_id') THEN
+        CREATE UNIQUE INDEX uq_mast_rightsm_menu_id ON mast_rightsm USING btree (rec_company_id, rec_branch_id, rights_user_id, rights_menu_id);
+    END IF;
+END $$;

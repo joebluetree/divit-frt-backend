@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS mast_logm (
+    log_id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+    log_date timestamptz NOT NULL,
+    log_user_code varchar(20) NOT NULL,
+    log_table varchar(60) NOT NULL,
+    log_table_id int4 NOT NULL,
+    log_column varchar(100) NOT NULL,
+    log_desc varchar(100) NOT NULL,
+    log_refno varchar(100) NOT NULL,
+    log_value varchar(500) NOT NULL,
+    rec_company_id int4 NOT NULL,
+    rec_branch_id int4 NOT NULL,
+    CONSTRAINT pk_mast_logm_log_id PRIMARY KEY (log_id)
+);
+
+DO $$
+BEGIN
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'uq_mast_logm_log_id') THEN
+        CREATE UNIQUE INDEX uq_mast_logm_log_id ON mast_logm USING btree (log_id);
+    END IF;
+END $$;

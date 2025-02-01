@@ -1,0 +1,37 @@
+
+CREATE TABLE IF NOT EXISTS mast_companym (
+    comp_id int4 NOT NULL,
+    comp_code varchar(20) NOT NULL,
+    comp_name varchar(100) NOT NULL,
+    comp_address1 varchar(100) NOT NULL,
+    comp_address2 varchar(100) NOT NULL,
+    comp_address3 varchar(100) NOT NULL,
+    rec_version int4 DEFAULT 1 NOT NULL,
+    rec_locked bpchar(1) DEFAULT 'N'::bpchar NOT NULL,
+    rec_created_by varchar(20) NOT NULL,
+    rec_created_date timestamptz NOT NULL,
+    rec_edited_by varchar(20) NULL,
+    rec_edited_date timestamptz NULL,
+    CONSTRAINT pk_mast_companym_comp_id PRIMARY KEY (comp_id)
+);
+
+DO $$
+BEGIN
+IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_companym_comp_code') THEN
+    CREATE UNIQUE INDEX "IX_mast_companym_comp_code" ON mast_companym USING btree (comp_code);
+END IF;
+
+IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_companym_comp_name') THEN
+    CREATE UNIQUE INDEX "IX_mast_companym_comp_name" ON mast_companym USING btree (comp_name);
+END IF;
+END $$;
+
+
+INSERT INTO mast_companym
+(comp_id, comp_code, comp_name, comp_address1, comp_address2, comp_address3, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1, 'COMPANY1', 'COMPANY1', 'ADDRESS LINE 1', 'ADDRESS LINE 2', 'ADDRESS LINE 3', 1, 'N', 'ADMIN', '2025-01-29 10:50:35.487' WHERE NOT EXISTS (SELECT 1 FROM mast_companym WHERE comp_id = 1);
+
+INSERT INTO mast_companym
+(comp_id, comp_code, comp_name, comp_address1, comp_address2, comp_address3, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 2, 'COMPANY2', 'COMPANY2', 'ADDRESS LINE 1', 'ADDRESS LINE 2', 'ADDRESS LINE 3', 1, 'N', 'ADMIN', '2025-01-29 10:50:35.487'
+WHERE NOT EXISTS (SELECT 1 FROM mast_companym WHERE comp_id = 2);

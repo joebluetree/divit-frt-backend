@@ -1,0 +1,53 @@
+CREATE TABLE IF NOT EXISTS mast_wiretransd (
+	wtid_id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+	wtid_wtim_id int4 NOT NULL,
+	wtid_benef_id int4 NULL,
+	wtid_benef_ref varchar(100) NULL,
+	wtid_bank_id int4 NULL,
+	wtid_trns_amt numeric(15, 3) NOT NULL,
+	wtid_order int4 NOT NULL,
+	mast_wiretransmwtim_id int4 NULL,
+	rec_version int4 DEFAULT 1 NOT NULL,
+	rec_locked text NULL,
+	rec_created_by varchar(20) NOT NULL,
+	rec_created_date timestamptz NOT NULL,
+	rec_edited_by varchar(20) NULL,
+	rec_edited_date timestamptz NULL,
+	rec_company_id int4 NOT NULL,
+	rec_branch_id int4 NOT NULL,
+	CONSTRAINT pk_mast_wiretransd_wtid_id PRIMARY KEY (wtid_id)
+);
+
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_wiretransd_mast_wiretransmwtim_id') THEN
+	CREATE INDEX "IX_mast_wiretransd_mast_wiretransmwtim_id" ON mast_wiretransd USING btree (mast_wiretransmwtim_id);
+   END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_wiretransd_rec_branch_id') THEN
+	CREATE INDEX "IX_mast_wiretransd_rec_branch_id" ON mast_wiretransd USING btree (rec_branch_id);
+   END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_wiretransd_rec_company_id') THEN
+	CREATE INDEX "IX_mast_wiretransd_rec_company_id" ON mast_wiretransd USING btree (rec_company_id);
+   END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_wiretransd_wtid_bank_id') THEN
+	CREATE INDEX "IX_mast_wiretransd_wtid_bank_id" ON mast_wiretransd USING btree (wtid_bank_id);
+   END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_wiretransd_wtid_benef_id') THEN
+	CREATE INDEX "IX_mast_wiretransd_wtid_benef_id" ON mast_wiretransd USING btree (wtid_benef_id);
+   END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_wiretransd_wtid_wtim_id') THEN
+	CREATE INDEX "IX_mast_wiretransd_wtid_wtim_id" ON mast_wiretransd USING btree (wtid_wtim_id);
+   END IF;
+
+END $$;
+
+INSERT INTO mast_wiretransd 
+(wtid_id, wtid_wtim_id, wtid_benef_id, wtid_benef_ref, wtid_bank_id, wtid_trns_amt, wtid_order, mast_wiretransmwtim_id, rec_version, rec_created_by, rec_created_date, rec_company_id, rec_branch_id)
+SELECT 1, 1, 1, 'NA', 1, 0.00, 1, NULL, 1, 'ADMIN', now(), 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_wiretransd WHERE wtid_id = 1);
+

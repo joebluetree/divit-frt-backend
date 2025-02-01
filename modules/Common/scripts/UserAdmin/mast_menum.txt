@@ -1,0 +1,50 @@
+
+
+
+CREATE TABLE IF NOT EXISTS mast_menum (
+    menu_id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+    menu_code varchar(20) NOT NULL,
+    menu_name varchar(100) NOT NULL,
+    menu_route varchar(100) NOT NULL,
+    menu_param varchar(100) NULL,
+    menu_visible bpchar(1) NOT NULL,
+    menu_order int4 NOT NULL,
+    menu_module_id int4 NOT NULL,
+    rec_company_id int4 NOT NULL,
+    menu_submenu_id int4 NULL,
+    rec_version int4 DEFAULT 1 NOT NULL,
+    rec_locked bpchar(1) DEFAULT 'N'::bpchar NOT NULL,
+    rec_created_by varchar(20) NOT NULL,
+    rec_created_date timestamptz NOT NULL,
+    rec_edited_by varchar(20) NULL,
+    rec_edited_date timestamptz NULL,
+    CONSTRAINT pk_mast_menum_menu_id PRIMARY KEY (menu_id),
+    CONSTRAINT fk_mast_menum_rec_company_id FOREIGN KEY (rec_company_id) REFERENCES mast_companym(comp_id),
+    CONSTRAINT fk_mast_menum_menu_module_id FOREIGN KEY (menu_module_id) REFERENCES mast_modulem(module_id),
+    CONSTRAINT fk_mast_menum_menu_submenu_id FOREIGN KEY (menu_submenu_id) REFERENCES mast_modulem(module_id)
+);
+
+
+DO $$
+BEGIN
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_menum_menu_module_id') THEN
+        CREATE INDEX "IX_mast_menum_menu_module_id" ON mast_menum USING btree (menu_module_id);
+    END IF;
+
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_menum_menu_submenu_id') THEN
+        CREATE INDEX "IX_mast_menum_menu_submenu_id" ON mast_menum USING btree (menu_submenu_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_menum_rec_company_id') THEN
+        CREATE INDEX "IX_mast_menum_rec_company_id" ON mast_menum USING btree (rec_company_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'uq_mast_menum_menu_name') THEN
+        CREATE UNIQUE INDEX uq_mast_menum_menu_name ON mast_menum USING btree (menu_id, menu_name);
+    END IF;
+
+END $$;
+
+

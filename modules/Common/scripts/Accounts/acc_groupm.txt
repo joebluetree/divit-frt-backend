@@ -1,0 +1,43 @@
+
+CREATE TABLE IF NOT EXISTS acc_groupm (
+	grp_id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+	grp_name varchar(100) NOT NULL,
+	grp_order int4 NOT NULL,
+	grp_main_group varchar(50) NOT NULL,
+	rec_version int4 DEFAULT 1 NOT NULL,
+	rec_locked bpchar(1) DEFAULT 'N'::bpchar NOT NULL,
+	rec_created_by varchar(20) NOT NULL,
+	rec_created_date timestamptz NOT NULL,
+	rec_edited_by varchar(20) NULL,
+	rec_edited_date timestamptz NULL,
+	rec_company_id int4 NOT NULL,
+	CONSTRAINT pk_acc_groupm_grp_id PRIMARY KEY (grp_id)
+);
+
+DO $$  
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'uq_acc_groupm_grp_name') THEN
+	CREATE UNIQUE INDEX uq_acc_groupm_grp_name ON acc_groupm USING btree (rec_company_id, grp_name);
+    END IF;
+
+END $$;
+
+INSERT INTO acc_groupm 
+(grp_id, grp_name, grp_order, grp_main_group, rec_locked, rec_created_by, rec_created_date, rec_company_id)  
+SELECT 1, 'CURRENT ASSETS', 1, 'ASSET', 'N', 'ADMIN', now(), 1  
+WHERE NOT EXISTS (SELECT 1 FROM acc_groupm WHERE grp_id = 1);
+
+INSERT INTO acc_groupm 
+(grp_id, grp_name, grp_order, grp_main_group, rec_locked, rec_created_by, rec_created_date, rec_company_id)  
+SELECT 2, 'CURRENT LIABILITIES', 1, 'LIABILITIES', 'N', 'ADMIN', now(), 1  
+WHERE NOT EXISTS (SELECT 1 FROM acc_groupm WHERE grp_id = 2);
+
+INSERT INTO acc_groupm 
+(grp_id, grp_name, grp_order, grp_main_group, rec_locked, rec_created_by, rec_created_date, rec_company_id)  
+SELECT 3, 'DIRECT INCOME', 1, 'DIRECT INCOME', 'N', 'ADMIN', now(), 1  
+WHERE NOT EXISTS (SELECT 1 FROM acc_groupm WHERE grp_id = 3);
+
+INSERT INTO acc_groupm 
+(grp_id, grp_name, grp_order, grp_main_group, rec_locked, rec_created_by, rec_created_date, rec_company_id)  
+SELECT 4, 'DIRECT EXPENSE', 1, 'DIRECT EXPENSE', 'N', 'ADMIN', now(), 1  
+WHERE NOT EXISTS (SELECT 1 FROM acc_groupm WHERE grp_id = 4);

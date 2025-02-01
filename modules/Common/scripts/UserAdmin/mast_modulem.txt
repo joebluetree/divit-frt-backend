@@ -1,0 +1,57 @@
+CREATE TABLE IF NOT EXISTS mast_modulem (
+    module_id int4 NOT NULL,
+    module_name varchar(100) NOT NULL,
+    module_is_installed bpchar(1) NOT NULL,
+    module_order int4 NOT NULL,
+    module_parent_id int4 NULL,
+    rec_company_id int4 NOT NULL,
+    rec_version int4 DEFAULT 1 NOT NULL,
+    rec_locked bpchar(1) DEFAULT 'N'::bpchar NOT NULL,
+    rec_created_by varchar(20) NOT NULL,
+    rec_created_date timestamptz NOT NULL,
+    rec_edited_by varchar(20) NULL,
+    rec_edited_date timestamptz NULL,
+    CONSTRAINT pk_mast_modulem_module_id PRIMARY KEY (module_id),
+    CONSTRAINT fk_mast_modulem_rec_company_id FOREIGN KEY (rec_company_id) REFERENCES mast_companym(comp_id),
+    CONSTRAINT fk_mast_modulem_module_parent_id FOREIGN KEY (module_parent_id) REFERENCES mast_modulem(module_id)
+);
+
+
+DO $$
+BEGIN
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_modulem_module_parent_id') THEN
+        CREATE INDEX "IX_mast_modulem_module_parent_id" ON mast_modulem USING btree (module_parent_id);
+    END IF;
+
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'uq_mast_modulem_rec_company_id_module_name') THEN
+        CREATE UNIQUE INDEX uq_mast_modulem_rec_company_id_module_name ON mast_modulem USING btree (rec_company_id, module_name);
+    END IF;
+END $$;
+
+
+INSERT INTO mast_modulem
+(module_id, module_name, module_is_installed, module_order, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 20, 'Accounts', 'Y', 1, 1, 1, 'N', 'ADMIN', '2025-01-29 10:50:35.493'
+WHERE NOT EXISTS (SELECT 1 FROM mast_modulem WHERE module_id = 20);
+
+INSERT INTO mast_modulem
+(module_id, module_name, module_is_installed, module_order, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date, rec_edited_by, rec_edited_date)
+SELECT 21, 'Masters', 'Y', 3, 1, 1, 'N', 'ADMIN', '2025-01-29 10:50:35.493', NULL, NULL
+WHERE NOT EXISTS (SELECT 1 FROM mast_modulem WHERE module_id = 21);
+
+INSERT INTO mast_modulem
+(module_id, module_name, module_is_installed, module_order, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date, rec_edited_by, rec_edited_date)
+SELECT 22, 'Tracking', 'Y', 4, 1, 1, 'N', 'ADMIN', '2025-01-29 10:50:35.493', NULL, NULL
+WHERE NOT EXISTS (SELECT 1 FROM mast_modulem WHERE module_id = 22);
+
+INSERT INTO mast_modulem
+(module_id, module_name, module_is_installed, module_order, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date, rec_edited_by, rec_edited_date)
+SELECT 23, 'Marketing', 'Y', 2, 1, 1, 'N', 'ADMIN', '2025-01-29 10:50:35.493', NULL, NULL
+WHERE NOT EXISTS (SELECT 1 FROM mast_modulem WHERE module_id = 23);
+
+INSERT INTO mast_modulem
+(module_id, module_name, module_is_installed, module_order, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date, rec_edited_by, rec_edited_date)
+SELECT 24, 'Settings', 'Y', 5, 1, 1, 'N', 'ADMIN', '2025-01-29 10:50:35.493', NULL, NULL
+WHERE NOT EXISTS (SELECT 1 FROM mast_modulem WHERE module_id = 24);

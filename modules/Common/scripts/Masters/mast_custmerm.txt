@@ -1,0 +1,143 @@
+
+CREATE TABLE IF NOT EXISTS mast_customerm (
+	cust_id int4 NOT NULL,
+	cust_type varchar(25) NOT NULL,
+	cust_code varchar(15) NULL,
+	cust_short_name varchar(50) NULL,
+	cust_name varchar(100) NULL,
+	cust_address1 varchar(100) NOT NULL,
+	cust_address2 varchar(100) NULL,
+	cust_address3 varchar(100) NULL,
+	cust_row_type varchar(10) NOT NULL,
+	cust_is_parent varchar(1) NOT NULL,
+	cust_parent_id int4 NULL,
+	cust_credit_limit numeric(15, 3) NOT NULL,
+	cust_est_dt date NULL,
+	rec_version int4 DEFAULT 1 NOT NULL,
+	rec_locked bpchar(1) DEFAULT 'N'::bpchar NOT NULL,
+	rec_created_by varchar(20) NOT NULL,
+	rec_created_date timestamptz NOT NULL,
+	rec_edited_by varchar(20) NULL,
+	rec_edited_date timestamptz NULL,
+	rec_company_id int4 NOT NULL,
+	cust_bond_expdt date NULL,
+	cust_bond_no varchar(100) NULL,
+	cust_bond_yn varchar(100) NULL,
+	cust_branch varchar(100) NULL,
+	cust_brokers varchar(100) NULL,
+	cust_chb_address1 varchar(100) NULL,
+	cust_chb_address2 varchar(100) NULL,
+	cust_chb_address3 varchar(100) NULL,
+	cust_chb_code varchar(100) NULL,
+	cust_chb_contact varchar(100) NULL,
+	cust_chb_email varchar(100) NULL,
+	cust_chb_fax varchar(100) NULL,
+	cust_chb_group varchar(100) NULL,
+	cust_chb_id int4 NULL,
+	cust_chb_name varchar(100) NULL,
+	cust_chb_tel varchar(100) NULL,
+	cust_city varchar(60) NULL,
+	cust_contact varchar(100) NULL,
+	cust_country_id int4 NULL,
+	cust_country_name varchar(60) NULL,
+	cust_criteria varchar(100) NULL,
+	cust_ctpat_no varchar(100) NULL,
+	cust_cur_code varchar(100) NULL,
+	cust_days int4 NULL,
+	cust_designation varchar(60) NULL,
+	cust_einirsno varchar(100) NULL,
+	cust_email varchar(30) NULL,
+	cust_fax varchar(20) NULL,
+	cust_firm_code varchar(100) NULL,
+	cust_handled_id int4 NULL,
+	cust_handled_name varchar(100) NULL,
+	cust_is_acarrier varchar(1) NULL,
+	cust_is_actual_vendor varchar(1) NULL,
+	cust_is_aterminal varchar(1) NULL,
+	cust_is_bank varchar(1) NULL,
+	cust_is_blackacc varchar(1) NULL,
+	cust_is_cha varchar(1) NULL,
+	cust_is_consignee varchar(1) NULL,
+	cust_is_contract varchar(1) NULL,
+	cust_is_ctpat varchar(1) NULL,
+	cust_is_employee varchar(1) NULL,
+	cust_is_exporter varchar(1) NULL,
+	cust_is_forwarder varchar(1) NULL,
+	cust_is_gvendor varchar(1) NULL,
+	cust_is_importer varchar(1) NULL,
+	cust_is_miscell varchar(1) NULL,
+	cust_is_oagent varchar(1) NULL,
+	cust_is_scarrier varchar(1) NULL,
+	cust_is_shipper varchar(1) NULL,
+	cust_is_shipvendor varchar(1) NULL,
+	cust_is_splacc varchar(1) NULL,
+	cust_is_sterminal varchar(1) NULL,
+	cust_is_tbd varchar(1) NULL,
+	cust_is_trucker varchar(1) NULL,
+	cust_is_warehouse varchar(1) NULL,
+	cust_location varchar(100) NULL,
+	cust_marketing_mail varchar(100) NULL,
+	cust_min_profit numeric(15, 3) NULL,
+	cust_mobile varchar(20) NULL,
+	cust_nomination varchar(100) NULL,
+	cust_official_name varchar(100) NULL,
+	cust_poa_customs_yn varchar(100) NULL,
+	cust_poa_isf_yn varchar(100) NULL,
+	cust_priority varchar(100) NULL,
+	cust_protected varchar(100) NULL,
+	cust_punch_from varchar(100) NULL,
+	cust_refer_by varchar(60) NULL,
+	cust_salesman_id int4 NULL,
+	cust_salesman_name varchar(100) NULL,
+	cust_splacc_memo varchar(100) NULL,
+	cust_state_id int4 NULL,
+	cust_state_name varchar(60) NULL,
+	cust_tel varchar(20) NULL,
+	cust_title varchar(15) NULL,
+	cust_web varchar(30) NULL,
+	cust_zip_code varchar(20) NULL,
+	CONSTRAINT pk_mast_customerm_cust_id PRIMARY KEY (cust_id)
+);
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_customerm_cust_country_id') THEN
+        CREATE INDEX "IX_mast_customerm_cust_country_id" ON mast_customerm USING btree (cust_country_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_customerm_cust_handled_id') THEN
+        CREATE INDEX "IX_mast_customerm_cust_handled_id" ON mast_customerm USING btree (cust_handled_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_customerm_cust_parent_id') THEN
+        CREATE INDEX "IX_mast_customerm_cust_parent_id" ON mast_customerm USING btree (cust_parent_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_customerm_cust_salesman_id') THEN
+        CREATE INDEX "IX_mast_customerm_cust_salesman_id" ON mast_customerm USING btree (cust_salesman_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_customerm_cust_state_id') THEN
+        CREATE INDEX "IX_mast_customerm_cust_state_id" ON mast_customerm USING btree (cust_state_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'uq_cust_customerm_cust_code') THEN
+        CREATE UNIQUE INDEX uq_cust_customerm_cust_code ON mast_customerm USING btree (rec_company_id, cust_row_type, cust_code);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'uq_cust_customerm_cust_name') THEN
+        CREATE UNIQUE INDEX uq_cust_customerm_cust_name ON mast_customerm USING btree (rec_company_id, cust_row_type, cust_name);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'uq_cust_customerm_cust_short_name') THEN
+        CREATE UNIQUE INDEX uq_cust_customerm_cust_short_name ON mast_customerm USING btree (rec_company_id, cust_row_type, cust_short_name);
+    END IF;
+END $$;
+
+INSERT INTO mast_customerm 
+(cust_id, cust_type, cust_code, cust_short_name, cust_name, cust_address1, cust_address2, cust_address3, 
+cust_row_type, cust_is_parent, cust_parent_id, cust_credit_limit,rec_created_by, rec_created_date,rec_company_id)
+SELECT 100, '', 'ABC', 'ABC', 'ABC LTD KOCHI', 'PO BOX 12123', 'LMS BUILDING', 'MARADU', 'CUSTOMER', 'Y', 100, 0.000, 'ADMIN',
+now(), 1
+WHERE NOT EXISTS (
+    SELECT 1 FROM mast_customerm WHERE cust_id = 100
+);

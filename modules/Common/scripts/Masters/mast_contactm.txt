@@ -1,0 +1,55 @@
+CREATE TABLE IF NOT EXISTS mast_contactm (
+	cont_id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+	cont_parent_id int4 NOT NULL,
+	cont_title varchar(10) NOT NULL,
+	cont_name varchar(100) NOT NULL,
+	cont_designation varchar(100) NOT NULL,
+	cont_email varchar(100) NOT NULL,
+	cont_tel varchar(100) NULL,
+	cont_mobile varchar(100) NULL,
+	cont_remarks varchar(100) NULL,
+	cont_country_id int4 NOT NULL,
+	mast_customermcust_id int4 NULL,
+	rec_version int4 DEFAULT 1 NOT NULL,
+	rec_locked bpchar(1) DEFAULT 'N'::bpchar NOT NULL,
+	rec_created_by varchar(20) NOT NULL,
+	rec_created_date timestamptz NOT NULL,
+	rec_edited_by varchar(20) NULL,
+	rec_edited_date timestamptz NULL,
+	rec_company_id int4 NOT NULL,
+	cont_group_id int4 NULL,
+	CONSTRAINT pk_mast_contactm_cont_id PRIMARY KEY (cont_id)
+);
+
+DO $$  
+BEGIN
+IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_contactm_cont_country_id') THEN  
+	CREATE INDEX "IX_mast_contactm_cont_country_id" ON mast_contactm USING btree (cont_country_id);  
+END IF;  
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_contactm_cont_group_id') THEN  
+        CREATE INDEX "IX_mast_contactm_cont_group_id" ON mast_contactm USING btree (cont_group_id);  
+    END IF;  
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_contactm_cont_parent_id') THEN  
+        CREATE INDEX "IX_mast_contactm_cont_parent_id" ON mast_contactm USING btree (cont_parent_id);  
+    END IF;  
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_contactm_mast_customermcust_id') THEN  
+        CREATE INDEX "IX_mast_contactm_mast_customermcust_id" ON mast_contactm USING btree (mast_customermcust_id);  
+    END IF;  
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_contactm_rec_company_id') THEN  
+        CREATE INDEX "IX_mast_contactm_rec_company_id" ON mast_contactm USING btree (rec_company_id);  
+    END IF;  
+END $$;
+
+INSERT INTO mast_contactm  
+(cont_id, cont_parent_id, cont_title, cont_name, cont_designation, cont_email, cont_tel, cont_mobile, cont_country_id, rec_locked, rec_created_by, rec_created_date, rec_company_id)  
+SELECT 1, 100, 'MR', 'JOY', 'EXECUTIVE', 'JOY@CARGOMAR.IN', '0484-245678', '9947194307', 1, 'N', 'ADMIN', now(), 1  
+WHERE NOT EXISTS (SELECT 1 FROM mast_contactm WHERE cont_id = 1);  
+
+INSERT INTO mast_contactm  
+(cont_id, cont_parent_id, cont_title, cont_name, cont_designation, cont_email, cont_tel, cont_mobile, cont_country_id, rec_locked, rec_created_by, rec_created_date, rec_company_id)  
+SELECT 2, 100, 'MR', 'AJITH', 'EXECUTIVE', 'AJITH@CARGOMAR.IN', '0484-245678', '9917294107', 1, 'N', 'ADMIN', now(), 1  
+WHERE NOT EXISTS (SELECT 1 FROM mast_contactm WHERE cont_id = 2);  

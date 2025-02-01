@@ -1,0 +1,25 @@
+CREATE TABLE IF NOT EXISTS mast_remarkm (
+	rem_id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+	rem_name varchar(100) NULL,
+	rec_version int4 DEFAULT 1 NOT NULL,
+	rec_locked text NULL,
+	rec_created_by varchar(20) NOT NULL,
+	rec_created_date timestamptz NOT NULL,
+	rec_edited_by varchar(20) NULL,
+	rec_edited_date timestamptz NULL,
+	rec_company_id int4 NOT NULL,
+	CONSTRAINT pk_mast_remarkm_rem_id PRIMARY KEY (rem_id)
+);
+
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'uq_mast_remarkm_rem_name') THEN
+        CREATE UNIQUE INDEX uq_mast_remarkm_rem_name ON mast_remarkm USING btree (rec_company_id, rem_name);
+    END IF;
+
+END $$;
+
+INSERT INTO mast_remarkm  
+(rem_id, rem_name, rec_version, rec_locked, rec_created_by, rec_created_date, rec_company_id)  
+SELECT 1, 'QUOTATION FCL', 2, NULL, 'ADMIN', now(), 1  
+WHERE NOT EXISTS (SELECT 1 FROM mast_remarkm WHERE rem_id = 1);
