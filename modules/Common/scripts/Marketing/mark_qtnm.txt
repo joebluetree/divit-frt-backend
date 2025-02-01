@@ -1,0 +1,103 @@
+-- Create the table if it does not exist
+CREATE TABLE IF NOT EXISTS mark_qtnm (
+    qtnm_id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+    qtnm_cfno int4 NOT NULL,
+    qtnm_type varchar(15) NOT NULL,
+    qtnm_no varchar(15) NOT NULL,
+    qtnm_to_id int4 NOT NULL,
+    qtnm_to_name varchar(100) NOT NULL,
+    qtnm_to_addr1 varchar(100) NOT NULL,
+    qtnm_to_addr2 varchar(100) NULL,
+    qtnm_to_addr3 varchar(100) NULL,
+    qtnm_to_addr4 varchar(100) NULL,
+    qtnm_date date NOT NULL,
+    qtnm_quot_by varchar(50) NOT NULL,
+    qtnm_valid_date date NULL,
+    qtnm_salesman_id int4 NULL,
+    qtnm_move_type varchar(10) NOT NULL,
+    qtnm_commodity varchar(30) NULL,
+    qtnm_package varchar(10) NULL,
+    qtnm_kgs numeric(15, 3) NULL,
+    qtnm_lbs numeric(15, 3) NULL,
+    qtnm_cbm numeric(15, 3) NULL,
+    qtnm_cft numeric(15, 3) NULL,
+    qtnm_por_id int4 NULL,
+    qtnm_por_name varchar(100) NULL,
+    qtnm_pol_id int4 NULL,
+    qtnm_pol_name varchar(100) NULL,
+    qtnm_pod_id int4 NULL,
+    qtnm_pod_name varchar(100) NULL,
+    qtnm_pld_name varchar(100) NULL,
+    qtnm_plfd_name varchar(100) NULL,
+    qtnm_trans_time varchar(100) NULL,
+    qtnm_routing varchar(100) NULL,
+    qtnm_amt numeric(15, 3) NOT NULL,
+    rec_version int4 DEFAULT 1 NOT NULL,
+    rec_locked text NULL,
+    rec_created_by varchar(20) NOT NULL,
+    rec_created_date timestamptz NOT NULL,
+    rec_edited_by varchar(20) NULL,
+    rec_edited_date timestamptz NULL,
+    rec_company_id int4 NOT NULL,
+    rec_branch_id int4 NOT NULL,
+    CONSTRAINT pk_mark_qtnm_qtnm_id PRIMARY KEY (qtnm_id),
+    CONSTRAINT fk_mark_qtnm_rec_company_id FOREIGN KEY (rec_company_id) REFERENCES mast_companym(comp_id),
+    CONSTRAINT fk_mark_qtnm_rec_branch_id FOREIGN KEY (rec_branch_id) REFERENCES mast_branchm(branch_id),
+    CONSTRAINT fk_mark_qtnm_qtnm_to_id FOREIGN KEY (qtnm_to_id) REFERENCES mast_customerm(cust_id),
+    CONSTRAINT fk_mark_qtnm_qtnm_salesman_id FOREIGN KEY (qtnm_salesman_id) REFERENCES mast_param(param_id),
+    CONSTRAINT fk_mark_qtnm_qtnm_por_id FOREIGN KEY (qtnm_por_id) REFERENCES mast_param(param_id),
+    CONSTRAINT fk_mark_qtnm_qtnm_pol_id FOREIGN KEY (qtnm_pol_id) REFERENCES mast_param(param_id),
+    CONSTRAINT fk_mark_qtnm_qtnm_pod_id FOREIGN KEY (qtnm_pod_id) REFERENCES mast_param(param_id)
+);
+
+-- Use a DO block to check and create indexes if they do not exist
+DO $$
+BEGIN
+    -- Check and create index IX_mark_qtnm_qtnm_pod_id
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mark_qtnm_qtnm_pod_id') THEN
+        CREATE INDEX "IX_mark_qtnm_qtnm_pod_id" ON mark_qtnm USING btree (qtnm_pod_id);
+    END IF;
+
+    -- Check and create index IX_mark_qtnm_qtnm_pol_id
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mark_qtnm_qtnm_pol_id') THEN
+        CREATE INDEX "IX_mark_qtnm_qtnm_pol_id" ON mark_qtnm USING btree (qtnm_pol_id);
+    END IF;
+
+    -- Check and create index IX_mark_qtnm_qtnm_por_id
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mark_qtnm_qtnm_por_id') THEN
+        CREATE INDEX "IX_mark_qtnm_qtnm_por_id" ON mark_qtnm USING btree (qtnm_por_id);
+    END IF;
+
+    -- Check and create index IX_mark_qtnm_qtnm_salesman_id
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mark_qtnm_qtnm_salesman_id') THEN
+        CREATE INDEX "IX_mark_qtnm_qtnm_salesman_id" ON mark_qtnm USING btree (qtnm_salesman_id);
+    END IF;
+
+    -- Check and create index IX_mark_qtnm_qtnm_to_id
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mark_qtnm_qtnm_to_id') THEN
+        CREATE INDEX "IX_mark_qtnm_qtnm_to_id" ON mark_qtnm USING btree (qtnm_to_id);
+    END IF;
+
+    -- Check and create index IX_mark_qtnm_rec_branch_id
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mark_qtnm_rec_branch_id') THEN
+        CREATE INDEX "IX_mark_qtnm_rec_branch_id" ON mark_qtnm USING btree (rec_branch_id);
+    END IF;
+
+    -- Check and create index IX_mark_qtnm_rec_company_id
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mark_qtnm_rec_company_id') THEN
+        CREATE INDEX "IX_mark_qtnm_rec_company_id" ON mark_qtnm USING btree (rec_company_id);
+    END IF;
+END $$;
+
+
+INSERT INTO public.mark_qtnm (qtnm_id, qtnm_cfno, qtnm_type, qtnm_no, qtnm_to_id, qtnm_to_name, qtnm_to_addr1, qtnm_date, qtnm_quot_by, qtnm_valid_date, qtnm_move_type, qtnm_amt, rec_version, rec_created_by, rec_created_date, rec_company_id, rec_branch_id)
+SELECT 1, 1, 'LCL', 'QL-1', 100, 'ABC LTD KOCHI', 'KOCHI', '2025-01-29', 'ADMIN', '0001-01-01', 'TRUCKING', 5000.000, 1, 'ADMIN', NOW(), 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM mark_qtnm WHERE qtnm_id = 1);
+
+INSERT INTO public.mark_qtnm (qtnm_id, qtnm_cfno, qtnm_type, qtnm_no, qtnm_to_id, qtnm_to_name, qtnm_to_addr1, qtnm_date, qtnm_quot_by, qtnm_valid_date, qtnm_move_type, qtnm_amt, rec_version, rec_created_by, rec_created_date,  rec_company_id, rec_branch_id)
+SELECT 20, 20, 'AIR', 'QA-20', 100, 'ABC LTD KOCHI', 'KOCHI', '2025-01-29', 'ADMIN', '0001-01-01', 'TRUCKING', 0.000, 1, 'ADMIN', NOW(), 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM mark_qtnm WHERE qtnm_id = 20);
+
+INSERT INTO public.mark_qtnm (qtnm_id, qtnm_cfno, qtnm_type, qtnm_no, qtnm_to_id, qtnm_to_name, qtnm_to_addr1, qtnm_to_addr2, qtnm_to_addr3, qtnm_to_addr4, qtnm_date, qtnm_quot_by, qtnm_valid_date, qtnm_move_type, qtnm_commodity, qtnm_amt, rec_version, rec_created_by, rec_created_date, rec_company_id, rec_branch_id)
+SELECT 10, 10, 'FCL', 'QF-10', 100, 'ABC LTD KOCHI', 'PO BOX 12123', 'LMS BUILDING', 'KOCHI', '', '2025-01-13', 'ADMIN', '2001-01-01', 'TRUCKING', 'JHV', 5000.000, 1, 'ADMIN', NOW(), 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM mark_qtnm WHERE qtnm_id = 10);

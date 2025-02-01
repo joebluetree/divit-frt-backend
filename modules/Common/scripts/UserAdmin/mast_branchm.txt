@@ -1,0 +1,48 @@
+
+CREATE TABLE IF NOT EXISTS mast_branchm (
+    branch_id int4 NOT NULL,
+    branch_code varchar(20) NOT NULL,
+    branch_name varchar(100) NOT NULL,
+    branch_address1 varchar(100) NOT NULL,
+    branch_address2 varchar(100) NOT NULL,
+    branch_address3 varchar(100) NOT NULL,
+    rec_company_id int4 NOT NULL,
+    rec_version int4 DEFAULT 1 NOT NULL,
+    rec_locked bpchar(1) DEFAULT 'N'::bpchar NOT NULL,
+    rec_created_by varchar(20) NOT NULL,
+    rec_created_date timestamptz NOT NULL,
+    rec_edited_by varchar(20) NULL,
+    rec_edited_date timestamptz NULL,
+    CONSTRAINT pk_mast_branchm_branch_id PRIMARY KEY (branch_id),
+    CONSTRAINT fk_mast_branchm_rec_company_id FOREIGN KEY (rec_company_id) REFERENCES mast_companym(comp_id)
+);
+
+
+DO $$
+BEGIN
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_branchm_branch_code') THEN
+        CREATE UNIQUE INDEX "IX_mast_branchm_branch_code" ON mast_branchm USING btree (rec_company_id, branch_code);
+    END IF;
+
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_branchm_branch_name') THEN
+        CREATE UNIQUE INDEX "IX_mast_branchm_branch_name" ON mast_branchm USING btree (rec_company_id, branch_name);
+    END IF;
+END $$;
+
+
+INSERT INTO mast_branchm
+(branch_id, branch_code, branch_name, branch_address1, branch_address2, branch_address3, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1, 'BRANCH1', 'BRANCH1', 'ADDRESS LINE 1', 'ADDRESS LINE 2', 'ADDRESS LINE 3', 1, 1, 'N', 'ADMIN', '2025-01-29 10:50:35.492'
+WHERE NOT EXISTS (SELECT 1 FROM mast_branchm WHERE branch_id = 1);
+
+INSERT INTO mast_branchm
+(branch_id, branch_code, branch_name, branch_address1, branch_address2, branch_address3, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 2, 'BRANCH2', 'BRANCH2', 'ADDRESS LINE 1', 'ADDRESS LINE 2', 'ADDRESS LINE 3', 1, 1, 'N', 'ADMIN', '2025-01-29 10:50:35.492' 
+WHERE NOT EXISTS (SELECT 1 FROM mast_branchm WHERE branch_id = 2);
+
+INSERT INTO mast_branchm
+(branch_id, branch_code, branch_name, branch_address1, branch_address2, branch_address3, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 3, 'BRANCH3', 'BRANCH3', 'ADDRESS LINE 1', 'ADDRESS LINE 2', 'ADDRESS LINE 3', 1, 1, 'N', 'ADMIN', '2025-01-29 10:50:35.492'
+WHERE NOT EXISTS (SELECT 1 FROM mast_branchm WHERE branch_id = 3);

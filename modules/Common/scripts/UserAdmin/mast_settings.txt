@@ -1,0 +1,37 @@
+CREATE TABLE IF NOT EXISTS mast_settings (
+    id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+    category varchar(50) NOT NULL,
+    caption varchar(50) NOT NULL,
+    remarks varchar(100) NOT NULL,
+    "type" varchar(50) NOT NULL,
+    "table" varchar(100) NOT NULL,
+    value varchar(1500) NOT NULL,
+    code varchar(250) NULL,
+    "name" varchar(250) NULL,
+    "json" text NULL,
+    param_id int4 NULL,
+    "order" int4 NOT NULL,
+    rec_version int4 DEFAULT 1 NOT NULL,
+    rec_locked bpchar(1) DEFAULT 'N'::bpchar NOT NULL,
+    rec_created_by varchar(20) NOT NULL,
+    rec_created_date timestamptz NOT NULL,
+    rec_edited_by varchar(20) NULL,
+    rec_edited_date timestamptz NULL,
+    rec_company_id int4 NOT NULL,
+    rec_branch_id int4 NULL,
+    CONSTRAINT pk_mast_settigs_id PRIMARY KEY (id),
+    CONSTRAINT fk_mast_settings_rec_company_id FOREIGN KEY (rec_company_id) REFERENCES mast_companym(comp_id),
+    CONSTRAINT fk_mast_settings_rec_branch_id FOREIGN KEY (rec_branch_id) REFERENCES mast_branchm(branch_id)
+);
+
+DO $$
+BEGIN
+    
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_settings_rec_branch_id') THEN
+        CREATE INDEX "IX_mast_settings_rec_branch_id" ON mast_settings USING btree (rec_branch_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'uq_mast_settings_rec_company_id_branch_id_param_id_caption') THEN
+        CREATE UNIQUE INDEX uq_mast_settings_rec_company_id_branch_id_param_id_caption ON mast_settings USING btree (rec_company_id, rec_branch_id, param_id, caption);
+    END IF;
+END $$;

@@ -1,0 +1,36 @@
+CREATE TABLE IF NOT EXISTS mast_param (
+	param_id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+	param_type varchar(100) NOT NULL,
+	param_code varchar(20) NOT NULL,
+	param_name varchar(100) NOT NULL,
+	param_value1 varchar(100) NULL,
+	param_value2 varchar(100) NULL,
+	param_value3 varchar(100) NULL,
+	param_value4 varchar(100) NULL,
+	param_value5 varchar(100) NULL,
+	param_order int4 NOT NULL,
+	rec_version int4 DEFAULT 1 NOT NULL,
+	rec_locked bpchar(1) DEFAULT 'N'::bpchar NOT NULL,
+	rec_created_by varchar(20) NOT NULL,
+	rec_created_date timestamptz NOT NULL,
+	rec_edited_by varchar(20) NULL,
+	rec_edited_date timestamptz NULL,
+	rec_company_id int4 NOT NULL,
+	rec_branch_id int4 NULL,
+	CONSTRAINT pk_mast_param_param_id PRIMARY KEY (param_id)
+);
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_param_rec_branch_id') THEN
+	CREATE INDEX "IX_mast_param_rec_branch_id" ON mast_param USING btree (rec_branch_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'uq_mast_param_param_code') THEN
+        CREATE UNIQUE INDEX uq_mast_param_param_code ON mast_param USING btree (rec_company_id, param_type, param_code);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'uq_mast_param_param_name') THEN
+        CREATE UNIQUE INDEX uq_mast_param_param_name ON mast_param USING btree (rec_company_id, param_type, param_name);
+    END IF;
+END $$;
+

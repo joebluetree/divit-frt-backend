@@ -1,0 +1,52 @@
+CREATE TABLE IF NOT EXISTS mast_wiretransm (
+	wtim_id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+	wtim_slno int4 NOT NULL,
+	wtim_refno varchar(50) NULL,
+	wtim_to_name varchar(100) NULL,
+	wtim_cust_id int4 NOT NULL,
+	wtim_cust_name varchar(100) NULL,
+	wtim_cust_fax varchar(100) NULL,
+	wtim_cust_tel varchar(100) NULL,
+	wtim_acc_no varchar(100) NULL,
+	wtim_req_type varchar(100) NULL,
+	wtim_from_name varchar(100) NULL,
+	wtim_date date NOT NULL,
+	wtim_sender_ref varchar(100) NULL,
+	wtim_your_ref varchar(100) NULL,
+	wtim_is_urgent varchar(10) NULL,
+	wtim_is_review varchar(10) NULL,
+	wtim_is_comment varchar(10) NULL,
+	wtim_is_reply varchar(10) NULL,
+	wtim_is_recycle varchar(10) NULL,
+	wtim_remarks varchar(100) NULL,
+	rec_version int4 DEFAULT 1 NOT NULL,
+	rec_locked text NULL,
+	rec_created_by varchar(20) NOT NULL,
+	rec_created_date timestamptz NOT NULL,
+	rec_edited_by varchar(20) NULL,
+	rec_edited_date timestamptz NULL,
+	rec_company_id int4 NOT NULL,
+	rec_branch_id int4 NOT NULL,
+	CONSTRAINT pk_mast_wiretransm_wtim_id PRIMARY KEY (wtim_id)
+);
+
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_wiretransm_rec_branch_id') THEN
+	CREATE INDEX "IX_mast_wiretransm_rec_branch_id" ON mast_wiretransm USING btree (rec_branch_id);
+   END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_wiretransm_rec_company_id') THEN
+	CREATE INDEX "IX_mast_wiretransm_rec_company_id" ON mast_wiretransm USING btree (rec_company_id);
+   END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_wiretransm_wtim_cust_id') THEN
+	CREATE INDEX "IX_mast_wiretransm_wtim_cust_id" ON mast_wiretransm USING btree (wtim_cust_id);
+   END IF;
+END $$;
+
+INSERT INTO mast_wiretransm  
+(wtim_id, wtim_slno, wtim_refno, wtim_to_name, wtim_cust_id, wtim_date, rec_created_by, rec_created_date, rec_company_id, rec_branch_id)  
+SELECT 1, 1, 'WT-1', 'WT-1', 100, '2025-01-27','ADMIN', now(), 1, 1  
+WHERE NOT EXISTS (SELECT 1 FROM mast_wiretransm WHERE wtim_id = 1);
+

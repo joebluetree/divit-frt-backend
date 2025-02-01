@@ -1,0 +1,10 @@
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 1006, 'SEA-PORT', 'KCH', 'KOCHI SHIP', 1, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 1006);
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 1007, 'SEA-PORT', 'TNM', 'TAMIL NADU SHIP', 2, 'ADMIN', '2025-01-27 10:21:30.518', 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 1007);

@@ -1,0 +1,35 @@
+CREATE TABLE IF NOT EXISTS mast_mail_serverm (
+    mail_id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+    mail_name varchar(100) NULL,
+    mail_smtp_name varchar(100) NULL,
+    mail_smtp_port varchar(15) NULL,
+    mail_is_ssl varchar(10) NULL,
+    mail_is_auth varchar(10) NULL,
+    mail_is_spa varchar(10) NULL,
+    mail_bulk_tot int4 NULL,
+    mail_bulk_sub int4 NULL,
+    mail_smtp_username varchar(100) NULL,
+    mail_smtp_pwd varchar(100) NULL,
+    rec_version int4 DEFAULT 1 NOT NULL,
+    rec_locked text NULL,
+    rec_created_by varchar(20) NOT NULL,
+    rec_created_date timestamptz NOT NULL,
+    rec_edited_by varchar(20) NULL,
+    rec_edited_date timestamptz NULL,
+    rec_company_id int4 NOT NULL,
+    CONSTRAINT pk_mast_mail_serverm_mail_id PRIMARY KEY (mail_id),
+    CONSTRAINT fk_mast_mail_serverm_rec_company_id FOREIGN KEY (rec_company_id) REFERENCES mast_companym(comp_id)
+);
+
+DO $$
+BEGIN
+
+IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'uq_mast_mail_serverm_mail_name') THEN
+        CREATE UNIQUE INDEX uq_mast_mail_serverm_mail_name ON mast_mail_serverm USING btree (rec_company_id, mail_name);
+END IF;
+
+END $$;
+
+INSERT INTO mast_mail_serverm (mail_id, mail_name, mail_smtp_name, mail_smtp_port, mail_is_ssl, mail_is_auth, mail_is_spa, mail_bulk_tot, mail_bulk_sub, mail_smtp_username, mail_smtp_pwd, rec_version, rec_locked, rec_created_by, rec_created_date, rec_company_id)
+SELECT 1, 'Oracle', 'DB', '123', 'Y', 'Y', 'Y', 500, 10, 'Oracle', '123', 1, NULL, 'ADMIN', NOW(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_mail_serverm WHERE mail_id = 1);

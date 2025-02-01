@@ -1,0 +1,37 @@
+
+CREATE TABLE IF NOT EXISTS mark_qtnd_lcl (
+    qtnd_id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+    qtnd_qtnm_id int4 NOT NULL,
+    qtnd_acc_id int4 NOT NULL,
+    qtnd_acc_name varchar(50) NULL,
+    qtnd_amt numeric(15, 3) NULL,
+    qtnd_per varchar(100) NULL,
+    qtnd_order int4 NOT NULL,
+    mark_qtnmqtnm_id int4 NULL,
+    rec_version int4 DEFAULT 1 NOT NULL,
+    rec_locked text NULL,
+    rec_created_by varchar(20) NOT NULL,
+    rec_created_date timestamptz NOT NULL,
+    rec_edited_by varchar(20) NULL,
+    rec_edited_date timestamptz NULL,
+    rec_company_id int4 NOT NULL,
+    rec_branch_id int4 NOT NULL,
+    CONSTRAINT pk_mark_qtnd_lcl_qtnd_id PRIMARY KEY (qtnd_id),
+    CONSTRAINT fk_mark_qtnd_lcl_rec_company_id FOREIGN KEY (rec_company_id) REFERENCES mast_companym(comp_id),
+    CONSTRAINT fk_mark_qtnd_lcl_rec_branch_id FOREIGN KEY (rec_branch_id) REFERENCES mast_branchm(branch_id),
+    CONSTRAINT fk_mark_qtnd_lcl_qtnd_qtnm_id FOREIGN KEY (qtnd_qtnm_id) REFERENCES mark_qtnm(qtnm_id),
+    CONSTRAINT fk_mark_qtnd_lcl_qtnd_acc_id FOREIGN KEY (qtnd_acc_id) REFERENCES acc_acctm(acc_id),
+    CONSTRAINT "FK_mark_qtnd_lcl_mark_qtnm_mark_qtnmqtnm_id" FOREIGN KEY (mark_qtnmqtnm_id) REFERENCES mark_qtnm(qtnm_id)
+);
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mark_qtnd_lcl_mark_qtnmqtnm_id') THEN
+        CREATE INDEX "IX_mark_qtnd_lcl_mark_qtnmqtnm_id" ON mark_qtnd_lcl USING btree (mark_qtnmqtnm_id);
+    END IF;
+END $$;
+
+
+INSERT INTO mark_qtnd_lcl (qtnd_qtnm_id, qtnd_acc_id, qtnd_acc_name, qtnd_amt, qtnd_per, qtnd_order, rec_created_by, rec_created_date, rec_company_id, rec_branch_id)
+SELECT 1, 1, 'OCEAN IMPORT', 100.000, 'koc-mum', 1, 'ADMIN', NOW(), 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM mark_qtnd_lcl WHERE qtnd_id = 1);

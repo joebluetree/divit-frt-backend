@@ -1,0 +1,40 @@
+
+CREATE TABLE IF NOT EXISTS tnt_trackm (
+	track_id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+	track_book_no varchar(100) NULL,
+	track_cntr_no varchar(11) NOT NULL,
+	track_trackd_id int4 NOT NULL,
+	track_carrier_id int4 NOT NULL,
+	track_last_updated_on timestamp NULL,
+	track_api_type varchar(30) NOT NULL,
+	track_request_id varchar(60) NULL,
+	track_pol_code varchar(100) NULL,
+	track_pol_name varchar(100) NULL,
+	track_pol_etd date NULL,
+	track_pod_code varchar(100) NULL,
+	track_pod_name varchar(100) NULL,
+	track_pod_eta date NULL,
+	track_vessel_code varchar(100) NULL,
+	track_vessel_name varchar(100) NULL,
+	track_voyage varchar(100) NULL,
+	track_sent_on timestamptz NULL,
+	rec_version int4 DEFAULT 1 NOT NULL,
+	rec_locked bpchar(1) DEFAULT 'N'::bpchar NOT NULL,
+	rec_created_by varchar(20) NOT NULL,
+	rec_created_date timestamptz NOT NULL,
+	rec_edited_by varchar(20) NULL,
+	rec_edited_date timestamptz NULL,
+	rec_company_id int4 NOT NULL,
+	CONSTRAINT pk_tnt_trackm_track_id PRIMARY KEY (track_id)
+);
+
+DO $$  
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_tnt_trackm_rec_company_id') THEN
+	CREATE INDEX "IX_tnt_trackm_rec_company_id" ON tnt_trackm USING btree (rec_company_id);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_tnt_trackm_track_carrier_id') THEN
+	CREATE INDEX "IX_tnt_trackm_track_carrier_id" ON tnt_trackm USING btree (track_carrier_id);
+    END IF;
+
+END $$;

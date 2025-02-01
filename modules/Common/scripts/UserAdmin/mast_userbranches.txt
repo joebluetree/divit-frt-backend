@@ -1,0 +1,39 @@
+CREATE TABLE IF NOT EXISTS mast_userbranches (
+    ub_id int4 DEFAULT nextval('master_sequence'::regclass) NOT NULL,
+    ub_user_id int4 NOT NULL,
+    rec_version int4 DEFAULT 1 NOT NULL,
+    rec_locked bpchar(1) DEFAULT 'N'::bpchar NOT NULL,
+    rec_created_by varchar(20) NOT NULL,
+    rec_created_date timestamptz NOT NULL,
+    rec_edited_by varchar(20) NULL,
+    rec_edited_date timestamptz NULL,
+    rec_company_id int4 NOT NULL,
+    rec_branch_id int4 NOT NULL,
+    CONSTRAINT pk_mast_userbranches_ub_id PRIMARY KEY (ub_id),
+    CONSTRAINT fk_mast_userbranches_rec_company_id FOREIGN KEY (rec_company_id) REFERENCES mast_companym(comp_id),
+    CONSTRAINT fk_mast_userbranches_ub_user_id FOREIGN KEY (ub_user_id) REFERENCES mast_userm(user_id),
+    CONSTRAINT fk_mast_branchm_rec_branch_id FOREIGN KEY (rec_branch_id) REFERENCES mast_branchm(branch_id)
+);
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_userbranches_rec_branch_id') THEN
+        CREATE INDEX "IX_mast_userbranches_rec_branch_id" ON mast_userbranches USING btree (rec_branch_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_userbranches_ub_user_id') THEN
+        CREATE INDEX "IX_mast_userbranches_ub_user_id" ON mast_userbranches USING btree (ub_user_id);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'uq_mast_userbranches_branch') THEN
+        CREATE UNIQUE INDEX uq_mast_userbranches_branch ON mast_userbranches USING btree (rec_company_id, ub_user_id, rec_branch_id);
+    END IF;
+END $$;
+
+INSERT INTO mast_userbranches (ub_id, ub_user_id, rec_version, rec_locked, rec_created_by, rec_created_date, rec_company_id, rec_branch_id)
+SELECT 1, 2, 1, 'N', 'ADMIN', NOW(), 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_userbranches WHERE ub_id = 1);
+
+INSERT INTO mast_userbranches (ub_id, ub_user_id, rec_version, rec_locked, rec_created_by, rec_created_date, rec_company_id, rec_branch_id)
+SELECT 2, 2, 1, 'N', 'ADMIN', NOW(), 1, 2
+WHERE NOT EXISTS (SELECT 1 FROM mast_userbranches WHERE ub_id = 2);
