@@ -11,6 +11,7 @@ using Database.Models.Marketing;
 using Common.DTO.Marketing;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.VisualBasic;
+using Common.Lib;
 
 
 namespace Marketing.Repositories
@@ -25,7 +26,7 @@ namespace Marketing.Repositories
 
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
-     string qtnm_type = "FCL";
+        string qtnm_type = "FCL";
 
         public QtnmFclRepository(AppDbContext _context, IAuditLog _auditLog)
         {
@@ -323,20 +324,6 @@ namespace Marketing.Repositories
             return bRet;
         }
 
-        public Dictionary<string, string?> GetBranchSettings(int? company_id, int? branch_id, string? caption)
-        {
-            if (string.IsNullOrWhiteSpace(caption))
-            {
-                throw new ArgumentNullException(nameof(caption), "Caption cannot be null or empty.");
-            }
-            var settings = context.mast_settings
-                .Where(s => s.rec_company_id == company_id && s.rec_branch_id == branch_id && s.category == "BRANCH-SETTINGS")
-                .Where(s => s.caption != null && caption.Contains(s.caption))
-                .ToDictionary(s => s.caption!, s => s.value);
-            return settings;
-        }
-
-
         public async Task<mark_qtnm_dto> SaveParentAsync(int id, string mode, mark_qtnm_dto record_dto)
         {
             mark_qtnm? Record;
@@ -351,19 +338,30 @@ namespace Marketing.Repositories
 
                 if (mode == "add")
                 {
-                    var settingsdata = GetBranchSettings(record_dto.rec_company_id, record_dto.rec_branch_id, "'QUOTATION-FCL-PREFIX','QUOTATION-FCL-STARTING-NO'");
-                    var prefix = settingsdata.ContainsKey("QUOTATION-FCL-PREFIX") ? settingsdata["QUOTATION-FCL-PREFIX"] : "";
-                    var StartingNo = settingsdata.ContainsKey("QUOTATION-FCL-STARTING-NO") ? settingsdata["QUOTATION-FCL-STARTING-NO"] : "";
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "QUOTATION-FCL-PREFIX,QUOTATION-FCL-STARTING-NO");// 
 
-                    if (Lib.IsBlank(prefix))
-                        throw new Exception("QUOTATION-FCL-Prefix cannot be null or empty.");
+                    var DefaultCfNo = 0;
+                    var Defaultprefix = "";
 
-                    var iNextNo = GetFclCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, StartingNo);
+                    if (result.ContainsKey("QUOTATION-FCL-STARTING-NO"))
+                    {
+                        DefaultCfNo = Lib.StringToInteger(result["QUOTATION-FCL-STARTING-NO"]);
+                    }
+                    if (result.ContainsKey("QUOTATION-FCL-PREFIX"))
+                    {
+                        Defaultprefix = result["QUOTATION-FCL-PREFIX"].ToString();
+                    }
+                    if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
+                    {
+                        throw new Exception("Missing Quotation Prefix/Starting-Number in Branch Settings");
+                    }
 
+                    int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
                     if (Lib.IsZero(iNextNo))
-                        throw new Exception("QUOTATION-FCL-Starting number cannot be null or empty.");
-
-                    string sqtn_no = $"{prefix}{iNextNo}";
+                    {
+                        throw new Exception("Quotation Number Cannot Be Generated");
+                    }
+                    string sqtn_no = $"{Defaultprefix}{iNextNo}";
 
                     Record = new mark_qtnm();
                     Record.qtnm_cfno = iNextNo;
@@ -515,16 +513,16 @@ namespace Marketing.Repositories
                 throw;
             }
         }
-        public int GetFclCfNo(int company_id, int? branch_id, string? startingNo)
+        public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)
         {
-            var maxCfNo = context.mark_qtnm
+            var CfNo = context.mark_qtnm
                 .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == qtnm_type)
                 .Select(e => e.qtnm_cfno)
                 .DefaultIfEmpty()
                 .Max();
 
-                var StartingNo = int.Parse(startingNo?.ToString()!); 
-            return maxCfNo == 0 ? StartingNo : maxCfNo + 1; 
+            CfNo = CfNo == 0 ? DefaultCfNo : CfNo + 1; 
+            return CfNo;
         }
 
 
