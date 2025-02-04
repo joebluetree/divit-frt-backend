@@ -48,6 +48,3 @@ BEGIN
     END IF;
 END $$;
 
-INSERT INTO mark_qtnd_fcl (qtnd_qtnm_id, qtnd_cntr_type, qtnd_etd, qtnd_cutoff, qtnd_tot_amt, rec_created_by, rec_created_date, rec_company_id, rec_branch_id)
-SELECT 10, '40'' ft', 'QF-10', 'ABC', 5000, 'ADMIN', NOW(), 1, 1
-WHERE NOT EXISTS (SELECT 1 FROM mark_qtnd_fcl WHERE qtnd_id = 1);

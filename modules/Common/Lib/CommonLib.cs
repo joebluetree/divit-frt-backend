@@ -4,6 +4,9 @@ using Database.Models;
 using Database.Lib.Interfaces;
 using Database;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
+using Microsoft.VisualBasic;
+
 
 //Name : Sourav V
 //Created Date : 29/01/2025
@@ -14,15 +17,43 @@ namespace Common.Lib
     public static class CommonLib
     {
         private static AppDbContext? context;
-        public static Dictionary<string,string> GetBranchsettings( AppDbContext _context, int company_id, int? branch_id, string? caption)       
+        public static Dictionary<string, object> GetBranchsettings(AppDbContext _context, int company_id, int? branch_id, string? caption)
         {
             context = _context;
 
-            var result = context.mast_settings
-            .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.category == "BRANCH-SETTINGS" && caption!.Contains(i.caption!))
-            .ToDictionary( e => e.caption!,  e => e.value!);
+            Dictionary<string, object?> result = new Dictionary<string, object?>();
 
-            return result;
+            var captionKeys = caption!
+                .Split(',')
+                .ToList();
+
+            foreach (var key in captionKeys)
+            {
+                result[key] = null;  // Default value is null
+            }
+
+
+            var settings = context.mast_settings
+                .Where(i => i.rec_company_id == company_id &&
+                            i.rec_branch_id == branch_id &&
+                            i.category == "BRANCH-SETTINGS" &&
+                            captionKeys.Contains(i.caption!))  // Only fetch the settings that match the provided captions
+                .ToList();
+
+            foreach (var rec in settings)
+            {
+                if (rec.@type == "INT")
+                {
+                    result[rec.caption!] = Database.Lib.Lib.StringToInteger(rec.value!.ToString());
+                }
+                else if (rec.@type == "STRING")
+                {
+                    result[rec.caption!] = rec.value!.ToString();
+                }
+            }
+
+            return result!;
+        
         }
     }
 }

@@ -48,6 +48,3 @@ BEGIN
   END $$;
 
 
-INSERT INTO mark_qtnd_air (qtnd_qtnm_id, qtnd_45k, qtnd_order, rec_created_by, rec_created_date, rec_company_id, rec_branch_id)
-SELECT 20, '1.5/kg', 1, 'ADMIN', NOW(), 1, 1
-WHERE NOT EXISTS (SELECT 1 FROM mark_qtnd_air WHERE qtnd_id = 1);

@@ -344,27 +344,32 @@ namespace Marketing.Repositories
                 if (!AllValid(mode, record_dto, ref error))
                     throw new Exception(error);
 
+
                 if (mode == "add")
                 {
-                    
-                    var result = CommonLib.GetBranchsettings(this.context,record_dto.rec_company_id, record_dto.rec_branch_id, "'QUOTATION-AIR-STARTING-NO','QUOTATION-AIR-PREFIX'");
+                    var result = CommonLib.GetBranchsettings(this.context,record_dto.rec_company_id, record_dto.rec_branch_id, "QUOTATION-AIR-PREFIX,QUOTATION-AIR-STARTING-NO");
 
-                    // var a = result.ContainsKey["QUOTATION-AIR-PREFIX"];
-                    var DefaultCfNo = "";
-                    var sprefix = "";
+                    var DefaultCfNo = 0;
+                    var Defaultprefix = "";
                     if(result.ContainsKey("QUOTATION-AIR-STARTING-NO")){
-                        DefaultCfNo = result["QUOTATION-AIR-STARTING-NO"].ToString();
+                        DefaultCfNo = Lib.StringToInteger(result["QUOTATION-AIR-STARTING-NO"]);
                     }
                     if(result.ContainsKey("QUOTATION-AIR-PREFIX")){
-                        sprefix = result["QUOTATION-AIR-PREFIX"];
+                        Defaultprefix = result["QUOTATION-AIR-PREFIX"].ToString();
                     }
-                    if(Lib.IsBlank(DefaultCfNo)||Lib.IsBlank(sprefix)){
-                        throw new Exception("Prefix/Starting Number Not Found in Branch Settings ");
+                    if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
+                    {
+                        throw new Exception("Missing Quotation Prefix/Starting-Number in Branch Settings");
                     }
 
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id,DefaultCfNo);
+                    if (Lib.IsZero(iNextNo))
+                    {
+                        throw new Exception("Quotation Number Cannot Be Generated");
+                    }
 
-                    string sqtn_no = $"{sprefix}{iNextNo}";                               // for setting quote no by adding propper prefix (here QA - Quotation AIR)
+
+                    string sqtn_no = $"{Defaultprefix}{iNextNo}";                               // for setting quote no by adding propper prefix (here QA - Quotation AIR)
                     int amt = 0;
 
                     Record = new mark_qtnm();
@@ -509,18 +514,16 @@ namespace Marketing.Repositories
             }
         }
 
-        public int GetNextCfNo(int company_id, int? branch_id, string? DefaultCfNo)          
-        {   
-            int iDefaultCfNo = int.Parse(DefaultCfNo!);
-        
+        public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)          
+        {           
             var CfNo = context.mark_qtnm
             .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == sqtnm_type)
             .Select(e => e.qtnm_cfno)
             .DefaultIfEmpty()
             .Max();
      
-            int nCfNo = CfNo > 0 ? CfNo + 1 : iDefaultCfNo;
-            return nCfNo ;
+            CfNo = CfNo == 0 ? DefaultCfNo : CfNo + 1;
+            return CfNo ;
         }
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {

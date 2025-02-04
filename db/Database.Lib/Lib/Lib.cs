@@ -151,7 +151,19 @@ namespace Database.Lib
             }
             return sData;
         }
-
+        public static int StringToInteger(Object value)
+        {
+            int iValue = 0;
+            try
+            {
+                int.TryParse(value.ToString(), out iValue);
+            }
+            catch
+            {
+                iValue = 0;
+            }
+            return iValue;
+        }
 
     }
 }

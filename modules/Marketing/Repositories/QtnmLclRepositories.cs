@@ -344,7 +344,7 @@ namespace Marketing.Repositories
             {
                 str += " Qtnm total and Qtnd line item total does not match";
             }
-            
+
             if (code != "")
                 str += code;
             if (name != "")
@@ -374,28 +374,32 @@ namespace Marketing.Repositories
 
                 if (mode == "add")
                 {
-                    var result = CommonLib.GetBranchsettings(this.context,record_dto.rec_company_id, record_dto.rec_branch_id, "'QUOTATION-LCL-STARTING-NO','QUOTATION-LCL-PREFIX'");
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "QUOTATION-LCL-PREFIX,QUOTATION-LCL-STARTING-NO");// 
 
-                    var DefaultCfNo = "";
-                    var sprefix = "";
-                    
-                    if(result.ContainsKey("QUOTATION-LCL-STARTING-NO")){
-                        DefaultCfNo = result["QUOTATION-LCL-STARTING-NO"].ToString();
+                    var DefaultCfNo = 0;
+                    var Defaultprefix = "";
+
+                    if (result.ContainsKey("QUOTATION-LCL-STARTING-NO"))
+                    {
+                        DefaultCfNo = Lib.StringToInteger(result["QUOTATION-LCL-STARTING-NO"]);
                     }
-                    if(result.ContainsKey("QUOTATION-LCL-PREFIX")){
-                        sprefix = result["QUOTATION-LCL-PREFIX"];
+                    if (result.ContainsKey("QUOTATION-LCL-PREFIX"))
+                    {
+                        Defaultprefix = result["QUOTATION-LCL-PREFIX"].ToString();
                     }
-                    if(Lib.IsBlank(DefaultCfNo)||Lib.IsBlank(sprefix)){
-                        throw new Exception("Prefix/Starting Number Not Found in Branch Settings ");
+                    if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
+                    {
+                        throw new Exception("Missing Quotation Prefix/Starting-Number in Branch Settings");
                     }
 
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
-                    if(Lib.IsZero(iNextNo)){
+                    if (Lib.IsZero(iNextNo))
+                    {
                         throw new Exception("Quotation Number Cannot Be Generated");
                     }
 
 
-                    string sqtn_no = $"{sprefix}{iNextNo}";                                                             // for setting quote no by adding propper prefix (here QL - Quotation LCL)
+                    string sqtn_no = $"{Defaultprefix}{iNextNo}";  // for setting quote no by adding propper prefix (here QL - Quotation LCL)
                     string stype = sqtnm_type;
 
                     Record = new mark_qtnm();
@@ -541,18 +545,18 @@ namespace Marketing.Repositories
                 throw;
             }
         }
-        public int GetNextCfNo(int company_id, int? branch_id, string? DefaultCfNo)          
-        {   
-            int iDefaultCfNo = int.Parse(DefaultCfNo!);
-        
+        public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)
+        {
+            // int iDefaultCfNo = int.Parse(DefaultCfNo!);
+
             var CfNo = context.mark_qtnm
             .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == sqtnm_type)
             .Select(e => e.qtnm_cfno)
             .DefaultIfEmpty()
             .Max();
-     
-            int nCfNo = CfNo > 0 ? CfNo + 1 : iDefaultCfNo;
-            return nCfNo ;
+
+            CfNo = CfNo == 0 ? DefaultCfNo : CfNo + 1;
+            return CfNo;
         }
         public decimal? FindTotal(mark_qtnm_dto record_dto)   // used to find total amount from each records
         {
