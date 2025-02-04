@@ -372,35 +372,24 @@ namespace Marketing.Repositories
                 if (!AllValid(mode, record_dto, ref error))
                     throw new Exception(error);
 
-                var caption = new Dictionary<string, object?>
-                {
-
-                { "QUOTATION-LCL-STARTING-NO", "" },
-
-                { "QUOTATION-LCL-PREFIX", "" }
-
-                };
-
-
-
                 if (mode == "add")
                 {
-                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, caption);
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "QUOTATION-LCL-PREFIX,QUOTATION-LCL-STARTING-NO");// 
 
                     var DefaultCfNo = 0;
-                    var sprefix = "";
+                    var Defaultprefix = "";
 
                     if (result.ContainsKey("QUOTATION-LCL-STARTING-NO"))
                     {
-                        DefaultCfNo = (int)result["QUOTATION-LCL-STARTING-NO"];
+                        DefaultCfNo = Lib.StringToInteger(result["QUOTATION-LCL-STARTING-NO"]);
                     }
                     if (result.ContainsKey("QUOTATION-LCL-PREFIX"))
                     {
-                        sprefix = result["QUOTATION-LCL-PREFIX"].ToString();
+                        Defaultprefix = result["QUOTATION-LCL-PREFIX"].ToString();
                     }
-                    if (Lib.IsZero(DefaultCfNo) || Lib.IsBlank(sprefix))
+                    if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
                     {
-                        throw new Exception("Prefix/Starting Number Not Found in Branch Settings ");
+                        throw new Exception("Missing Quotation Prefix/Starting-Number in Branch Settings");
                     }
 
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
@@ -410,7 +399,7 @@ namespace Marketing.Repositories
                     }
 
 
-                    string sqtn_no = $"{sprefix}{iNextNo}";                                                             // for setting quote no by adding propper prefix (here QL - Quotation LCL)
+                    string sqtn_no = $"{Defaultprefix}{iNextNo}";  // for setting quote no by adding propper prefix (here QL - Quotation LCL)
                     string stype = sqtnm_type;
 
                     Record = new mark_qtnm();
@@ -566,8 +555,8 @@ namespace Marketing.Repositories
             .DefaultIfEmpty()
             .Max();
 
-            int nCfNo = CfNo == 0 ? DefaultCfNo : CfNo + 1;
-            return nCfNo;
+            CfNo = CfNo == 0 ? DefaultCfNo : CfNo + 1;
+            return CfNo;
         }
         public decimal? FindTotal(mark_qtnm_dto record_dto)   // used to find total amount from each records
         {
