@@ -34,7 +34,6 @@ namespace Marketing.Repositories
             this.auditLog = _auditLog;
         }
         
-
         public async Task<Dictionary<string, object>> GetListAsync(Dictionary<string, object> data)
         {
             try
@@ -158,6 +157,7 @@ namespace Marketing.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+
         public async Task<mark_qtnm_dto?> GetRecordAsync(int id)
         {
             try
@@ -252,7 +252,6 @@ namespace Marketing.Repositories
             return records;
         }
 
-
         public async Task<mark_qtnm_dto> SaveAsync(int id, string mode, mark_qtnm_dto record_dto)
         {
             try
@@ -276,7 +275,6 @@ namespace Marketing.Repositories
                 throw;
             }
         }
-
 
         private Boolean AllValid(string mode, mark_qtnm_dto record_dto, ref string error)
         {
@@ -456,7 +454,6 @@ namespace Marketing.Repositories
                         context.mark_qtnd_fcl.Remove(existing_record);
                 }
 
-                //Add or Edit Records 
                 foreach (var rec in records_dto)
                 {
                     var tot_amt = GetTotalAmount(rec);
@@ -524,7 +521,6 @@ namespace Marketing.Repositories
             CfNo = CfNo == 0 ? DefaultCfNo : CfNo + 1; 
             return CfNo;
         }
-
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
