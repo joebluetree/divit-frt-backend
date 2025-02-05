@@ -10,19 +10,19 @@ namespace Database.table_config.UserAdmin
         {
             //Table
             modelBuilder.ToTable("mast_userbranches");
-            //Parimary Key
-            modelBuilder.HasKey(e => e.ub_id)
-                .HasName("pk_mast_userbranches_ub_id");
+            modelBuilder.HasKey(e => e.ub_id);
+                // .HasName("pk_mast_userbranches_ub_id");
             //Sequence
             modelBuilder.Property(u => u.ub_id)
                 //.HasDefaultValueSql("next value for MasterSequence")
-                .HasDefaultValueSql("nextval('\"master_sequence\"')")
+                // .HasDefaultValueSql("nextval('\"master_sequence\"')")
                 .ValueGeneratedOnAdd();
             //rec_version
             modelBuilder.Property(p => p.rec_version)
                 .HasDefaultValue(1)
                 .IsConcurrencyToken();
             //Columns
+            /*
             modelBuilder.Property(u => u.ub_user_id)
                 .IsRequired();
             modelBuilder.Property(u => u.rec_company_id)
@@ -75,6 +75,7 @@ namespace Database.table_config.UserAdmin
                 .HasConstraintName("fk_mast_branchm_rec_branch_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
+                */
             // insertdata(modelBuilder);
         }
         public void insertdata(EntityTypeBuilder<mast_userbranches> modelBuilder)

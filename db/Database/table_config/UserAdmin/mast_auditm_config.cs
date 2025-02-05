@@ -10,18 +10,17 @@ namespace Database.table_config.UserAdmin
         {
             //Table
             modelBuilder.ToTable("mast_logm");
-            //Parimary Key
-            modelBuilder.HasKey(e => e.log_id)
-                .HasName("pk_mast_logm_log_id");
+            modelBuilder.HasKey(e => e.log_id);
+                // .HasName("pk_mast_logm_log_id");
 
             //Sequence
             modelBuilder.Property(u => u.log_id)
                 //.HasDefaultValueSql("next value for MasterSequence")
-                .HasDefaultValueSql("nextval('\"master_sequence\"')")
+                // .HasDefaultValueSql("nextval('\"master_sequence\"')")
                 .ValueGeneratedOnAdd();
             //rec_version
             //Columns
-
+            /*
             modelBuilder.Property(u => u.log_date)
                 .IsRequired();
 
@@ -50,6 +49,7 @@ namespace Database.table_config.UserAdmin
             modelBuilder.HasIndex(e => new { e.log_id })
                 .HasDatabaseName("uq_mast_logm_log_id")
                 .IsUnique(false);
+                */
         }
 
     }
