@@ -21,7 +21,7 @@ public class mark_qtnd_fcl_config : IEntityTypeConfiguration<mark_qtnd_fcl>
         //Sequence
         modelBuilder.Property(u => u.qtnd_id)
             //.HasDefaultValueSql("next value for MasterSequence")
-            .HasDefaultValueSql("nextval('\"master_sequence\"')")
+            // .HasDefaultValueSql("nextval('\"master_sequence\"')")
             .ValueGeneratedOnAdd();
         //rec_version
         modelBuilder.Property(p => p.rec_version)
