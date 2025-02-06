@@ -10,15 +10,16 @@ namespace Database.table_config.Masters
         {
             //table and primary key
             modelBuilder.ToTable("mast_customerm");
-            modelBuilder.HasKey(u => u.cust_id)
-                .HasName("pk_mast_customerm_cust_id");
+            modelBuilder.HasKey(u => u.cust_id);
+                // .HasName("pk_mast_customerm_cust_id");
             //Sequence
             modelBuilder.Property(u => u.cust_id)
-                .ValueGeneratedNever();
+                .ValueGeneratedOnAdd();
             //Columns
             modelBuilder.Property(p => p.rec_version)
                 .HasDefaultValue(1)
                 .IsConcurrencyToken();
+                /*
             modelBuilder.Property(u => u.cust_type)
                 .HasMaxLength(25)
                 .IsRequired();
@@ -352,6 +353,7 @@ namespace Database.table_config.Masters
                 .HasConstraintName("fk_mast_customerm_rec_company_id")
                 .OnDelete(DeleteBehavior.NoAction)
                .IsRequired();
+               */
             // insertdata(modelBuilder);
         }
 

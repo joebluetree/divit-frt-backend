@@ -10,18 +10,19 @@ namespace Database.table_config.UserAdmin
         {
             //table and primary key
             modelBuilder.ToTable("mast_companym");
-            modelBuilder.HasKey(u => u.comp_id)
-                .HasName("pk_mast_companym_comp_id");
+            modelBuilder.HasKey(u => u.comp_id);
+                // .HasName("pk_mast_companym_comp_id");
             //Sequence
             modelBuilder.Property(u => u.comp_id)
                 //.HasDefaultValueSql("next value for MasterSequence")
-                .HasDefaultValueSql("nextval('\"master_sequence\"')")
+                // .HasDefaultValueSql("nextval('\"master_sequence\"')")
                 .ValueGeneratedOnAdd();
             //rec_version
             modelBuilder.Property(p => p.rec_version)
                 .HasDefaultValue(1)
                 .IsConcurrencyToken();
             //columns
+            /*
             modelBuilder.Property(u => u.comp_code)
                 .HasMaxLength(20)
                 .IsRequired();
@@ -61,6 +62,7 @@ namespace Database.table_config.UserAdmin
             modelBuilder.HasIndex(e => new { e.comp_id, e.comp_name })
                 .HasDatabaseName("uq_mast_companym_comp_name")
                 .IsUnique();
+                */
 
             // insertdata(modelBuilder);
         }

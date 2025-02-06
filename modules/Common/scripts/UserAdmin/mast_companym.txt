@@ -26,10 +26,6 @@ IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_companym_comp
 END IF;
 END $$;
 
-SELECT setval(pg_get_serial_sequence('mast_companym', 'comp_id'), 
-              COALESCE(MAX(comp_id), 1), 
-              true) 
-FROM mast_companym;
 
 INSERT INTO mast_companym
 (comp_id, comp_code, comp_name, comp_address1, comp_address2, comp_address3, rec_version, rec_locked, rec_created_by, rec_created_date)
@@ -39,3 +35,8 @@ INSERT INTO mast_companym
 (comp_id, comp_code, comp_name, comp_address1, comp_address2, comp_address3, rec_version, rec_locked, rec_created_by, rec_created_date)
 SELECT 2, 'COMPANY2', 'COMPANY2', 'ADDRESS LINE 1', 'ADDRESS LINE 2', 'ADDRESS LINE 3', 1, 'N', 'ADMIN', '2025-01-29 10:50:35.487'
 WHERE NOT EXISTS (SELECT 1 FROM mast_companym WHERE comp_id = 2);
+
+SELECT setval(pg_get_serial_sequence('mast_companym', 'comp_id'), 
+              COALESCE(MAX(comp_id), 1), 
+              true) 
+FROM mast_companym;

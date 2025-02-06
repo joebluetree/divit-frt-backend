@@ -1,0 +1,5 @@
+
+SELECT setval(pg_get_serial_sequence('mast_param', 'param_id'), 
+              COALESCE(MAX(param_id), 1), 
+              true) 
+FROM mast_param;

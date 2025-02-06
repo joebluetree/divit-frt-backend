@@ -11,12 +11,12 @@ namespace Database.table_config.Tnt
             //Table Name
             modelBuilder.ToTable("tnt_trackd");
             //Primary Key
-            modelBuilder.HasKey(e => e.trackd_id)
-                .HasName("pk_tnt_trackd_trackd_id");
+            modelBuilder.HasKey(e => e.trackd_id);
+                // .HasName("pk_tnt_trackd_trackd_id");
             //Sequence
             modelBuilder.Property(u => u.trackd_id)
                 //.HasDefaultValueSql("next value for MasterSequence")
-                .HasDefaultValueSql("nextval('\"master_sequence\"')")
+                // .HasDefaultValueSql("nextval('\"master_sequence\"')")
                 .ValueGeneratedOnAdd();
 
             //trackd_last_updated_on
@@ -31,6 +31,7 @@ namespace Database.table_config.Tnt
                 .HasDefaultValue(1)
                 .IsConcurrencyToken();
             //Columns
+            /*
             modelBuilder.Property(u => u.rec_locked)
                 .HasColumnType("char")
                 .HasMaxLength(1)
@@ -62,7 +63,7 @@ namespace Database.table_config.Tnt
                 .HasConstraintName("fk_mast_trackd_rec_company_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
-
+                */
             //unique key
         }
 

@@ -11,18 +11,19 @@ namespace Database.table_config.UserAdmin
         {
             //table and primary key
             modelBuilder.ToTable("mast_branchm");
-            modelBuilder.HasKey(u => u.branch_id)
-                .HasName("pk_mast_branchm_branch_id");
+            modelBuilder.HasKey(u => u.branch_id);
+                // .HasName("pk_mast_branchm_branch_id");
             //Sequence
             modelBuilder.Property(u => u.branch_id)
                 //.HasDefaultValueSql("next value for MasterSequence")
-                .HasDefaultValueSql("nextval('\"master_sequence\"')")
+                // .HasDefaultValueSql("nextval('\"master_sequence\"')")
                 .ValueGeneratedOnAdd();
             //rec_version
             modelBuilder.Property(p => p.rec_version)
                 .HasDefaultValue(1)
                 .IsConcurrencyToken();
             //columns
+            /*
             modelBuilder.Property(u => u.branch_code)
                 .HasMaxLength(20)
                 .IsRequired();
@@ -71,7 +72,7 @@ namespace Database.table_config.UserAdmin
                 .HasConstraintName("fk_mast_branchm_rec_company_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
-
+                */
             // insertdata(modelBuilder);
 
         }

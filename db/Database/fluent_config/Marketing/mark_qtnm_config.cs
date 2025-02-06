@@ -147,7 +147,7 @@ namespace Database.fluent_config.Marketing
                 .HasPrincipalKey(e => e.param_id)
                 .HasConstraintName("fk_mark_qtnm_qtnm_salesman_id")
                 .OnDelete(DeleteBehavior.NoAction)
-                .IsRequired();
+                .IsRequired(false);
             modelBuilder
                 .HasOne(e => e.por)
                 .WithMany()
