@@ -11,15 +11,16 @@ namespace Database.table_config.UserAdmin
             //Table
             modelBuilder.ToTable("mast_userm");
             //Parimary Key
-            modelBuilder.HasKey(e => e.user_id)
-                .HasName("pk_mast_userm_user_id");
+            modelBuilder.HasKey(e => e.user_id);
+                // .HasName("pk_mast_userm_user_id");
             //Sequence
             modelBuilder.Property(u => u.user_id)
-                .ValueGeneratedNever();
+                .ValueGeneratedOnAdd();
             //Columns
             modelBuilder.Property(p => p.rec_version)
                 .HasDefaultValue(1)
                 .IsConcurrencyToken();
+                /*
             modelBuilder.Property(u => u.user_code)
                 .HasMaxLength(20)
                 .IsRequired();
@@ -78,6 +79,7 @@ namespace Database.table_config.UserAdmin
                 .HasConstraintName("fk_mast_userm_rec_branch_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
+                */
             // insertdata(modelBuilder);
         }
         public void insertdata(EntityTypeBuilder<mast_userm> modelBuilder)

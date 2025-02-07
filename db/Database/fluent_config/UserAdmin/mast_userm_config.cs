@@ -15,7 +15,7 @@ namespace Database.fluent_config.UserAdmin
                 .HasName("pk_mast_userm_user_id");
             //Sequence
             modelBuilder.Property(u => u.user_id)
-                .ValueGeneratedNever();
+                .ValueGeneratedOnAdd();
             //Columns
             modelBuilder.Property(p => p.rec_version)
                 .HasDefaultValue(1)
