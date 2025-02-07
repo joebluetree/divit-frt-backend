@@ -22,7 +22,7 @@ namespace Database.Models.Marketing
         public DateTime? qtnm_date { get; set; }
         public string? qtnm_quot_by { get; set; }
         public DateTime? qtnm_valid_date { get; set; }
-        public int qtnm_salesman_id { get; set; }
+        public int? qtnm_salesman_id { get; set; }
         public string? qtnm_move_type { get; set; }
         public string? qtnm_commodity { get; set; }
 

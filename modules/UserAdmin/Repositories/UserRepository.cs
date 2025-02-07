@@ -262,7 +262,7 @@ namespace UserAdmin.Repositories
                     await context.mast_userm.AddAsync(Record);
 
                 context.SaveChanges();
-                //Record_DTO.user_id = Record.user_id;
+                record_dto.user_id = Record.user_id;
                 record_dto.rec_version = Record.rec_version;
                 Lib.AssignDates2DTO(id, mode, Record, record_dto);
                 return record_dto;

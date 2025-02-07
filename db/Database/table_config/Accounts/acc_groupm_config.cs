@@ -11,18 +11,19 @@ namespace Database.table_config.Accounts
         {
             //table and primary key
             modelBuilder.ToTable("acc_groupm");
-            modelBuilder.HasKey(u => u.grp_id)
-                .HasName("pk_acc_groupm_grp_id");
+            modelBuilder.HasKey(u => u.grp_id);
+                // .HasName("pk_acc_groupm_grp_id");
             //sequence
             modelBuilder.Property(u => u.grp_id)
                 //.HasDefaultValueSql("next value for MasterSequence")
-                .HasDefaultValueSql("nextval('\"master_sequence\"')")
+                // .HasDefaultValueSql("nextval('\"master_sequence\"')")
                 .ValueGeneratedOnAdd();
             //rec_version
             modelBuilder.Property(p => p.rec_version)
                 .HasDefaultValue(1)
                 .IsConcurrencyToken();
             //columns
+            /*
             modelBuilder.Property(u => u.grp_name)
                 .HasMaxLength(100)
                 .IsRequired();
@@ -59,6 +60,7 @@ namespace Database.table_config.Accounts
                 .HasConstraintName("fk_acc_groupm_rec_company_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
+                */
             // insertdata(modelBuilder);
         }
 

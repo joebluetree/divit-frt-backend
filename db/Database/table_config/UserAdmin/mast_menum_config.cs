@@ -10,13 +10,12 @@ namespace Database.table_config.UserAdmin
         {
             //Table
             modelBuilder.ToTable("mast_menum");
-            //Primary Key
-            modelBuilder.HasKey(e => e.menu_id)
-                .HasName("pk_mast_menum_menu_id");
+            modelBuilder.HasKey(e => e.menu_id);
+                // .HasName("pk_mast_menum_menu_id");
             //Sequence
             modelBuilder.Property(u => u.menu_id)
                 //.HasDefaultValueSql("next value for MasterSequence")
-                .HasDefaultValueSql("nextval('\"master_sequence\"')")
+                // .HasDefaultValueSql("nextval('\"master_sequence\"')")
                 .ValueGeneratedOnAdd();
 
 
@@ -25,6 +24,7 @@ namespace Database.table_config.UserAdmin
                 .HasDefaultValue(1)
                 .IsConcurrencyToken();
             //Column
+            /*
             modelBuilder.Property(e => e.menu_code)
                 .HasMaxLength(20)
                 .IsRequired();
@@ -92,7 +92,7 @@ namespace Database.table_config.UserAdmin
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
 
-
+                */
             // insertdata_Accounts(modelBuilder);
             // insertdata_Masters(modelBuilder);
             // insertdata_Marketing(modelBuilder);

@@ -13,18 +13,19 @@ namespace Database.table_config.UserAdmin
             //Table Name
             modelBuilder.ToTable("mast_settings");
             //Primary Key
-            modelBuilder.HasKey(e => e.id)
-                .HasName("pk_mast_settigs_id");
+            modelBuilder.HasKey(e => e.id);
+                // .HasName("pk_mast_settigs_id");
             //Sequence
             modelBuilder.Property(e => e.id)
                 //.HasDefaultValueSql("next value for MasterSequence")
-                .HasDefaultValueSql("nextval('\"master_sequence\"')")
+                // .HasDefaultValueSql("nextval('\"master_sequence\"')")
                 .ValueGeneratedOnAdd();
             //rec_version
             modelBuilder.Property(p => p.rec_version)
                 .HasDefaultValue(1)
                 .IsConcurrencyToken();
             //Columns
+            /*
             modelBuilder.Property(e => e.caption)
                 .HasMaxLength(50)
                 .IsRequired();
@@ -92,6 +93,7 @@ namespace Database.table_config.UserAdmin
                 .HasConstraintName("fk_mast_settings_rec_branch_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);
+                */
 
         }
 

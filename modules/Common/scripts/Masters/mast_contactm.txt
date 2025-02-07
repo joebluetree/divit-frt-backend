@@ -23,9 +23,9 @@ CREATE TABLE IF NOT EXISTS mast_contactm (
 
 DO $$  
 BEGIN
-IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_contactm_cont_country_id') THEN  
-	CREATE INDEX "IX_mast_contactm_cont_country_id" ON mast_contactm USING btree (cont_country_id);  
-END IF;  
+	IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_contactm_cont_country_id') THEN  
+		CREATE INDEX "IX_mast_contactm_cont_country_id" ON mast_contactm USING btree (cont_country_id);  
+	END IF;  
 
     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_contactm_cont_group_id') THEN  
         CREATE INDEX "IX_mast_contactm_cont_group_id" ON mast_contactm USING btree (cont_group_id);  

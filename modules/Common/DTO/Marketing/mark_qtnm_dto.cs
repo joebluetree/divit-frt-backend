@@ -33,7 +33,7 @@ namespace Common.DTO.Marketing
 
         public string? qtnm_quot_by { get; set; } = "";
         public string? qtnm_valid_date { get; set; } = "";
-        public int qtnm_salesman_id { get; set; } = 0;
+        public int? qtnm_salesman_id { get; set; } = 0;
         public string? qtnm_salesman_code { get; set;}= ""; 
         public string? qtnm_salesman_name { get; set; } = ""; 
         public string? qtnm_move_type { get; set; } = "";

@@ -42,10 +42,10 @@ CREATE TABLE IF NOT EXISTS mark_qtnd_air (
 
 DO $$
 BEGIN
-       IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mark_qtnd_air_mark_qtnmqtnm_id') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mark_qtnd_air_mark_qtnmqtnm_id') THEN
         CREATE INDEX "IX_mark_qtnd_air_mark_qtnmqtnm_id" ON mark_qtnd_air USING btree (mark_qtnmqtnm_id);
     END IF;
-  END $$;
+END $$;
 
 INSERT INTO mark_qtnd_air (qtnd_id, qtnd_qtnm_id, qtnd_45k, qtnd_order, rec_created_by, rec_created_date, rec_company_id, rec_branch_id)
 SELECT 1, 2, '1.5/kg', 1, 'ADMIN', NOW(), 1, 1

@@ -10,16 +10,16 @@ namespace Database.table_config.UserAdmin
         {
             //Table
             modelBuilder.ToTable("mast_rightsm");
-            //Parimary Key
-            modelBuilder.HasKey(e => e.rights_id)
-                .HasName("pk_mast_rightsm_rights_id");
+            modelBuilder.HasKey(e => e.rights_id);
+                // .HasName("pk_mast_rightsm_rights_id");
             //Sequence
             modelBuilder.Property(u => u.rights_id)
                 //.HasDefaultValueSql("next value for MasterSequence")
-                .HasDefaultValueSql("nextval('\"master_sequence\"')")
+                // .HasDefaultValueSql("nextval('\"master_sequence\"')")
                 .ValueGeneratedOnAdd();
             //rec_version
             //Columns
+            /*
             modelBuilder.Property(u => u.rights_company)
                 .HasColumnType("char")
                 .HasMaxLength(1)
@@ -130,6 +130,7 @@ namespace Database.table_config.UserAdmin
                 .HasPrincipalKey(e => e.menu_id)
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
+                */
         }
     }
 

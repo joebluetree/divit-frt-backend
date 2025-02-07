@@ -558,7 +558,7 @@ namespace Masters.Repositories
                 if (mode == "add")
                 {
                     Record = new mast_customerm();
-                    Record.cust_id = record_dto.cust_id;
+                    // Record.cust_id = record_dto.cust_id;
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_created_by = record_dto.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();

@@ -11,18 +11,19 @@ namespace Database.table_config.Tnt
             //Table Name
             modelBuilder.ToTable("tnt_trackm");
             //Primary Key
-            modelBuilder.HasKey(e => e.track_id)
-                .HasName("pk_tnt_trackm_track_id");
+            modelBuilder.HasKey(e => e.track_id);
+                // .HasName("pk_tnt_trackm_track_id");
             //Sequence
             modelBuilder.Property(u => u.track_id)
                 //.HasDefaultValueSql("next value for MasterSequence")
-                .HasDefaultValueSql("nextval('\"master_sequence\"')")
+                // .HasDefaultValueSql("nextval('\"master_sequence\"')")
                 .ValueGeneratedOnAdd();
             //rec_version
             modelBuilder.Property(p => p.rec_version)
                 .HasDefaultValue(1)
                 .IsConcurrencyToken();
             //Columns
+            /*
             modelBuilder.Property(e => e.track_book_no)
                 .HasMaxLength(100)
                 .IsRequired(false);
@@ -115,6 +116,7 @@ namespace Database.table_config.Tnt
                 .HasPrincipalKey(e => e.param_id)
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
+                */
             //unique key
             // insertdata(modelBuilder);
 

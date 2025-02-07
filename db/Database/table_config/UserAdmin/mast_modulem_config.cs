@@ -14,16 +14,17 @@ namespace Database.table_config.UserAdmin
             //Table Name
             modelBuilder.ToTable("mast_modulem");
             //Primary Key
-            modelBuilder.HasKey(e => e.module_id)
-                .HasName("pk_mast_modulem_module_id");
+            modelBuilder.HasKey(e => e.module_id);
+                // .HasName("pk_mast_modulem_module_id");
             //Sequence
             modelBuilder.Property(u => u.module_id)
-                .ValueGeneratedNever();
+                .ValueGeneratedOnAdd();
             //rec_version
             modelBuilder.Property(p => p.rec_version)
                 .HasDefaultValue(1)
                 .IsConcurrencyToken();
             //Columns
+            /*
             modelBuilder.Property(e => e.module_name)
                 .HasMaxLength(100)
                 .IsRequired();
@@ -71,6 +72,7 @@ namespace Database.table_config.UserAdmin
                 .HasConstraintName("fk_mast_modulem_rec_company_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
+                */
             // insertdata(modelBuilder);
         }
 
