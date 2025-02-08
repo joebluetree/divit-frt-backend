@@ -362,10 +362,10 @@ namespace Masters.Repositories
                 Lib.AssignDates2DTO(id, mode, Record, record_dto);
                 return record_dto;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
                 //Lib.getErrorMessage(Ex, "uq", "cust_code", "Code Duplication");
-                throw new Exception(Ex.Message.ToString());
+                throw;
             }
 
         }
@@ -461,9 +461,9 @@ namespace Masters.Repositories
                 }
                 return RetData;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
-                throw new Exception(Ex.Message.ToString());
+                throw;
             }
         }
     }

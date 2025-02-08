@@ -153,9 +153,9 @@ namespace UserAdmin.Repositories
             try
             {
                 context.Database.BeginTransaction();
-                mast_mail_serverm_dto _Record = await SaveParentAsync(id, mode, record_dto);
+                record_dto = await SaveParentAsync(id, mode, record_dto);
                 context.Database.CommitTransaction();
-                return _Record;
+                return record_dto;
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -213,7 +213,7 @@ namespace UserAdmin.Repositories
                 else
                 {
                     Record = await context.mast_mail_serverm
-                        .Where(f => f.mail_id == record_dto.mail_id)
+                        .Where(f => f.mail_id == id)
                         .FirstOrDefaultAsync();
 
                     if (Record == null)
@@ -245,7 +245,7 @@ namespace UserAdmin.Repositories
             catch (Exception Ex)
             {
                 Lib.getErrorMessage(Ex, "uq", "mail_name", "Name Duplication");
-                throw new Exception(Ex.Message.ToString());
+                throw;
             }
         }
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
@@ -272,9 +272,9 @@ namespace UserAdmin.Repositories
                 }
                 return RetData;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
-                throw new Exception(Ex.Message.ToString());
+                throw;
             }
         }
 
