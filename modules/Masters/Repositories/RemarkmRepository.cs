@@ -244,7 +244,7 @@ namespace Masters.Repositories
             catch (Exception Ex)
             {
                 Lib.getErrorMessage(Ex, "uq", "rem_name", "Name Duplication");
-                throw new Exception(Ex.Message.ToString());
+                throw;
             }
 
         }
@@ -331,9 +331,9 @@ namespace Masters.Repositories
                 }
                 return RetData;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
-                throw new Exception(Ex.Message.ToString());
+                throw;
             }
         }
     }

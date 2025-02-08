@@ -408,9 +408,9 @@ namespace Marketing.Repositories
                 Lib.AssignDates2DTO(id, mode, Record, record_dto);
                 return record_dto;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
-                throw new Exception(Ex.Message.ToString());
+                throw;
             }
 
         }
@@ -553,9 +553,9 @@ namespace Marketing.Repositories
                 }
                 return RetData;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
-                throw new Exception(Ex.Message.ToString());
+                throw;
             }
         }
 
