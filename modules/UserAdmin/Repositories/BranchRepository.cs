@@ -6,7 +6,7 @@ using UserAdmin.Interfaces;
 using Database.Lib.Interfaces;
 using Database.Models.BaseTables;
 using Database.Models.UserAdmin;
-
+using Common.Lib;
 
 
 namespace UserAdmin.Repositories
@@ -15,6 +15,8 @@ namespace UserAdmin.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
+        private DateTime log_date;
+
         public BranchRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -130,6 +132,8 @@ namespace UserAdmin.Repositories
         {
             try
             {
+                log_date = DateTime.UtcNow;
+
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);
                 context.Database.CommitTransaction();
@@ -204,6 +208,9 @@ namespace UserAdmin.Repositories
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+                if (mode == "edit")
+                    await logHistory(Record, record_dto);
+
                 Record.branch_code = record_dto.branch_code;
                 Record.branch_name = record_dto.branch_name;
                 Record.branch_address1 = record_dto.branch_address1;
@@ -226,6 +233,30 @@ namespace UserAdmin.Repositories
                 Lib.getErrorMessage(Ex, "fk", "rec_company_id", "Invalid Company ID");
                 throw;
             }
+        }
+        public async Task logHistory(mast_branchm old_record, mast_branchm_dto record_dto)
+        {
+            var new_record = new mast_branchm
+            {
+                branch_id = record_dto.branch_id,
+                branch_code = record_dto.branch_code,
+                branch_name = record_dto.branch_name,
+                branch_address1 = record_dto.branch_address1,
+                branch_address2 = record_dto.branch_address2,
+                branch_address3 = record_dto.branch_address3,
+            };
+
+            await new LogHistory<mast_branchm>(context)
+                .Table("mast_branchm", log_date)
+                .PrimaryKey("branch_id", record_dto.branch_id)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.branch_id, record_dto.rec_created_by!)
+                .TrackColumn("branch_code", "code")
+                .TrackColumn("branch_name", "name")
+                .TrackColumn("branch_address1", "address1")
+                .TrackColumn("branch_address2", "address2")
+                .TrackColumn("branch_address3", "address3")
+                .SetRecord(old_record, new_record)
+                .LogChangesAsync();
         }
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
