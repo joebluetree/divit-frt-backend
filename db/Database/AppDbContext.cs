@@ -63,7 +63,7 @@ namespace Database
         public DbSet<mast_menum> mast_menum { get; set; } = null!;
         public DbSet<mast_auditm> mast_auditm { get; set; } = null!;
 
-        public DbSet<mast_auditm> mast_history { get; set; } = null!;
+        public DbSet<mast_history> mast_history { get; set; } = null!;
 
         public DbSet<mast_companym> mast_companym { get; set; } = null!;
         public DbSet<mast_branchm> mast_branchm { get; set; } = null!;
