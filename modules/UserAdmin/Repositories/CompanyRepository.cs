@@ -11,7 +11,7 @@ using Database.Lib.Interfaces;
 using Database.Models.BaseTables;
 using Database.Models.UserAdmin;
 
-
+using Common.Lib;
 
 namespace UserAdmin.Repositories
 {
@@ -19,6 +19,11 @@ namespace UserAdmin.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
+
+        private DateTime log_date;
+
+
+
         public CompanyRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -135,6 +140,8 @@ namespace UserAdmin.Repositories
         {
             try
             {
+                log_date = DateTime.UtcNow;
+
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);
                 context.Database.CommitTransaction();
@@ -210,6 +217,12 @@ namespace UserAdmin.Repositories
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+
+                if (mode == "edit")
+                    await logHistory(Record, record_dto);
+
+
+
                 Record.comp_code = record_dto.comp_code;
                 Record.comp_name = record_dto.comp_name;
                 Record.comp_address1 = record_dto.comp_address1;
@@ -232,6 +245,34 @@ namespace UserAdmin.Repositories
                 throw;
             }
         }
+
+        public async Task logHistory(mast_companym old_record, mast_companym_dto record_dto)
+        {
+            var new_record = new mast_companym
+            {
+                comp_id = record_dto.comp_id,
+                comp_code = record_dto.comp_code,
+                comp_name = record_dto.comp_name,
+                comp_address1 = record_dto.comp_address1,
+                comp_address2 = record_dto.comp_address2,
+                comp_address3 = record_dto.comp_address3,
+            };
+
+            await new LogHistory<mast_companym>(context)
+                .Table("mast_companym", log_date)
+                .PrimaryKey("comp_id", record_dto.comp_id)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.comp_id, 0, record_dto.rec_created_by!)
+                .TrackColumn("comp_code", "company-code")
+                .TrackColumn("comp_name", "company-name")
+                .TrackColumn("comp_address1", "company-address1")
+                .TrackColumn("comp_address2", "company-address2")
+                .TrackColumn("comp_address3", "company-address3")
+                .SetRecord(old_record, new_record)
+                .LogChangesAsync();
+        }
+
+
+
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
