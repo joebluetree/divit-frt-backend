@@ -1,4 +1,4 @@
-﻿using Database;
+﻿//using Database;
 using Database.Lib;
 using Microsoft.EntityFrameworkCore;
 using Common.UserAdmin.DTO;
@@ -7,6 +7,7 @@ using Database.Lib.Interfaces;
 
 using Database.Models.BaseTables;
 using Database.Models.UserAdmin;
+using Database;
 
 namespace UserAdmin.Repositories
 {
@@ -156,7 +157,7 @@ namespace UserAdmin.Repositories
                              ub_id = b.ub_id,
                              ub_user_id = id,
                              ub_user_name = "",
-                             ub_selected = b.ub_id != 0 ? "Y" : "N",
+                             ub_selected = b.ub_id == null ? "N" : "Y",
                              rec_branch_id = a.branch_id,
                              rec_company_id = a.rec_company_id,
                              rec_branch_name = a.branch_name,
@@ -178,9 +179,9 @@ namespace UserAdmin.Repositories
             try
             {
                 context.Database.BeginTransaction();
-                record_dto = await SaveParentAsync(id, mode, record_dto);
-                record_dto = await SaveDetAsync(id, record_dto);
-                record_dto.userbranches = await GetUserBranchesAsync(record_dto.rec_company_id, id);
+                mast_userm_dto _Record = await SaveParentAsync(id, mode, record_dto);
+                _Record = await SaveDetAsync(_Record.user_id, _Record);
+                _Record.userbranches = await GetUserBranchesAsync(_Record.rec_company_id, id);
                 context.Database.CommitTransaction();
                 return record_dto;
             }
@@ -278,10 +279,10 @@ namespace UserAdmin.Repositories
         }
         public async Task<mast_userm_dto> SaveDetAsync(int id, mast_userm_dto Record_DTO)
         {
-            mast_userbranches Record;
+            // mast_userbranches Record;
             List<mast_userbranches_dto> RecordDet_DTO;
             List<mast_userbranches> RecordDet;
-            //int ub_id = 0;
+            // int ub_id = 0;
             Boolean bDelete = false;
             try
             {
@@ -307,20 +308,30 @@ namespace UserAdmin.Repositories
                 }
                 foreach (var Record_New in RecordDet_DTO)
                 {
+                    if (Record_New.ub_selected == "N")
+                    {
+                        Record_New.ub_id = 0;
+                        // continue; 
+                    }
                     if (Record_New.ub_id == 0 && Record_New.ub_selected == "Y")
                     {
-                        Record = new mast_userbranches();
-                        Record.ub_id = 0;
-                        Record.ub_user_id = id;
-                        Record.rec_branch_id = Record_New.rec_branch_id;
-                        Record.rec_company_id = Record_DTO.rec_company_id;
-                        Record.rec_created_by = Record_DTO.rec_created_by;
-                        Record.rec_created_date = DbLib.GetDateTime();
-                        await context.mast_userBranches.AddAsync(Record);
+                        var Record = new mast_userbranches
+                        {
+                            // ub_id = 0,
+                            ub_user_id = id,
+                            rec_branch_id = Record_New.rec_branch_id,
+                            rec_company_id = Record_DTO.rec_company_id,
+                            rec_created_by = Record_DTO.rec_created_by,
+                            rec_created_date = DbLib.GetDateTime()
+                        };
+                        context.mast_userBranches.Add(Record);
+
+                        await context.SaveChangesAsync();
+                        Record_New.ub_id = Record.ub_id;
                     }
-                }
                 context.SaveChanges();
-                //Record_DTO.user_id = Record.user_id;
+                }
+                // RecordDet_DTO.ub_id = Record.ub_id;
                 //Lib.AssignDates2DTO(id, Record, Record_DTO);
                 return Record_DTO;
             }
@@ -357,6 +368,13 @@ namespace UserAdmin.Repositories
                 }
                 else
                 {
+                    var _Contact = context.mast_userBranches
+                    .Where(c => c.ub_user_id == id);
+                    if (_Contact.Any())
+                    {
+                        context.mast_userBranches.RemoveRange(_Contact);
+
+                    }
 
                     context.Remove(_Record);
                     context.SaveChanges();
