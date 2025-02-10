@@ -47,7 +47,7 @@ namespace Database
     //dotnet tool list --global
 
     // testing - joy-branch
-    
+
     //dotnet ef migrations add qtn --project db/database --startup-project webapicore
 
 
@@ -62,6 +62,9 @@ namespace Database
         public DbSet<mast_modulem> mast_modulem { get; set; } = null!;
         public DbSet<mast_menum> mast_menum { get; set; } = null!;
         public DbSet<mast_auditm> mast_auditm { get; set; } = null!;
+
+        public DbSet<mast_auditm> mast_history { get; set; } = null!;
+
         public DbSet<mast_companym> mast_companym { get; set; } = null!;
         public DbSet<mast_branchm> mast_branchm { get; set; } = null!;
         public DbSet<mast_userbranches> mast_userBranches { get; set; } = null!;
@@ -77,7 +80,7 @@ namespace Database
         public DbSet<mast_remarkd> mast_remarkd { get; set; } = null!;
         public DbSet<mast_wiretransm> mast_wiretransm { get; set; } = null!;
         public DbSet<mast_wiretransd> mast_wiretransd { get; set; } = null!;
-        
+
 
         //Marketing
         public DbSet<mark_qtnm> mark_qtnm { get; set; } = null!;
@@ -458,7 +461,7 @@ namespace Database
             modelBuilder.ApplyConfiguration(new mast_param_config());
             modelBuilder.ApplyConfiguration(new mast_mail_serverm_config());
         }
- 
+
         private void CreateMasterTables(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new mast_custmerm_config());
@@ -467,7 +470,7 @@ namespace Database
             modelBuilder.ApplyConfiguration(new mast_remarkd_config());
             modelBuilder.ApplyConfiguration(new mast_wiretransm_config());
             modelBuilder.ApplyConfiguration(new mast_wiretransd_config());
-            
+
         }
         private void CreateMarketingTables(ModelBuilder modelBuilder)
         {
@@ -493,5 +496,5 @@ namespace Database
 
     }
 
-    
+
 }
