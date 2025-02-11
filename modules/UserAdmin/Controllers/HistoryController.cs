@@ -47,37 +47,7 @@ public class HistoryController : Controller
                 return BadRequest(Lib.getErrorMessage(Ex));
             }
         }
-
-        [HttpPost]
-        [Route("SaveAsync")]
-        public async Task<IActionResult> SaveAsync(int id, string mode, [FromBody] mast_history_dto rec)
-        {
-            try
-            {
-                var record = await mRepository.SaveAsync(id, mode, rec);
-                return Ok(record);
-            }
-            catch (Exception Ex)
-            {
-                return BadRequest(Lib.getErrorMessage(Ex));
-            }
-        }
-
-        [HttpGet]
-        [Route("DeleteAsync")]
-        public async Task<IActionResult> DeleteAsync(int id)
-        {
-            try
-            {
-                var RetData = await mRepository.DeleteAsync(id);
-                return Ok(RetData);
-            }
-            catch (Exception Ex)
-            {
-                return BadRequest(Lib.getErrorMessage(Ex));
-            }
-        }
-
+        
 }
 
 

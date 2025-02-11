@@ -1,5 +1,6 @@
 using System;
 using Common.DTO.UserAdmin;
+using Common.Lib;
 using Database;
 using Database.Lib;
 using Database.Lib.Interfaces;
@@ -64,22 +65,22 @@ public class HistoryRepository : IHistoryRepository
 
             IQueryable<mast_history> query = context.mast_history;
 
-            query = query.Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id);
-
+            query = query.Where(i => i.rec_company_id == company_id);
+            
             if (!Lib.IsBlank(log_from_date))
             {
-                from_date = Lib.ParseDate(log_from_date!);
+                from_date = CommonLib.ParseDateTimestamp(log_from_date!);
                 query = query.Where(w => w.log_date >= from_date);
             }
+
             if (!Lib.IsBlank(log_to_date))
             {
-                to_date = Lib.ParseDate(log_to_date!);
+                to_date = CommonLib.ParseDateTimestamp(log_to_date!);
                 query = query.Where(w => w.log_date <= to_date);
             }
+
             if (!Lib.IsBlank(log_table))
-                query = query.Where(w => w.log_table!.Contains(log_table!));
-
-
+                query = query.Where(w => w.log_table!.ToUpper().Contains(log_table!));
 
             if (action == "SEARCH")
             {
@@ -102,7 +103,7 @@ public class HistoryRepository : IHistoryRepository
             var Records = await query.Select(e => new mast_history_dto
             {
                 log_id = e.log_id,
-                log_date = Lib.FormatDate(e.log_date, Lib.outputDateFormat),
+                log_date = Lib.FormatDate(e.log_date, Lib.outputDateTimeFormat),
                 log_user_code = e.log_user_code,
                 log_table = e.log_table,
                 log_table_row_id = e.log_table_row_id,
@@ -113,7 +114,10 @@ public class HistoryRepository : IHistoryRepository
                 log_new_value = e.log_new_value,
                 log_status = e.log_status,
 
-
+                rec_version = e.rec_version,
+                rec_order = e.rec_order,
+                rec_company_id = e.rec_company_id,
+                rec_branch_id = e.rec_branch_id,
             }).ToListAsync();
 
             RetData.Add("records", Records);
@@ -149,6 +153,8 @@ public class HistoryRepository : IHistoryRepository
 
                 rec_version = e.rec_version,
                 rec_order = e.rec_order,
+                rec_company_id = e.rec_company_id,
+                rec_branch_id = e.rec_branch_id,
             }).FirstOrDefaultAsync();
 
             if (Record == null)
@@ -162,55 +168,5 @@ public class HistoryRepository : IHistoryRepository
         }
     }
 
-            public async Task<mast_history_dto> SaveAsync(int id, string mode, mast_history_dto record_dto)
-        {
-            try
-            {
-                context.Database.BeginTransaction();
-                // record_dto = await SaveParentAsync(id, mode, record_dto);
-                context.Database.CommitTransaction();
-                return record_dto;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                context.Database.RollbackTransaction();
-                throw new Exception("Kindly reload the record, Another User May have modified the same record");
-            }
-            catch (Exception)
-            {
-                context.Database.RollbackTransaction();
-                throw;
-            }
-        }
-
-        public async Task<Dictionary<string, object>> DeleteAsync(int id)
-        {
-            try
-            {
-                Dictionary<string, object> RetData = new Dictionary<string, object>();
-                RetData.Add("id", id);
-                // var _Record = await context.mast_mail_serverm
-                //     .Where(f => f.mail_id == id)
-                //     .FirstOrDefaultAsync();
-
-                // if (_Record == null)
-                // {
-                //     RetData.Add("status", false);
-                //     RetData.Add("message", "No Record Found");
-                // }
-                // else
-                // {
-                //     context.Remove(_Record);
-                //     context.SaveChanges();
-                //     RetData.Add("status", true);
-                //     RetData.Add("message", "");
-                // }
-                return RetData;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
 }
+

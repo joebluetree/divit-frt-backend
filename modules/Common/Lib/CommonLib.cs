@@ -53,7 +53,16 @@ namespace Common.Lib
             }
 
             return result!;
-        
+
         }
+
+        public static DateTime? ParseDateTimestamp(string dateString)
+        {
+            if (string.IsNullOrEmpty(dateString))
+                return null;
+            DateTime parsedDate = DateTime.Parse(dateString);
+            return DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
+        }
+
     }
 }

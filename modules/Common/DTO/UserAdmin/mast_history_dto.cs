@@ -15,8 +15,8 @@ public class mast_history_dto
         public string? log_old_value { get; set; }
         public string? log_new_value { get; set; }
         public string? log_status { get; set; }
-        public string? log_from_date { get; set; } = "";
-        public string? log_to_date { get; set; } = "";
+        public string? log_from_date { get; set; }
+        public string? log_to_date { get; set; }
         public int rec_company_id { get; set; }
         public int? rec_branch_id { get; set; }
         public int? rec_version { get; set; }
