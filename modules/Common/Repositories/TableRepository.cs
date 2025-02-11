@@ -62,7 +62,6 @@ namespace Common.Repositories
             files.Add("UserAdmin\\mast_userbranches.txt");
             files.Add("UserAdmin\\mast_rightsm.txt");
             files.Add("UserAdmin\\mast_settings.txt");
-            files.Add("UserAdmin\\mast_mail_serverm.txt");
             files.Add("UserAdmin\\mast_history.txt");
 
             files.Add("Masters\\mast_param.txt");
@@ -92,6 +91,7 @@ namespace Common.Repositories
             files.Add("Masters\\mast_param_state.txt");
             files.Add("Masters\\mast_param_unit-master.txt");
             files.Add("Masters\\mast_param_newid.txt");
+            files.Add("UserAdmin\\mast_mail_serverm.txt");
 
             files.Add("Masters\\mast_custmerm.txt");
             files.Add("Masters\\mast_contactm.txt");
