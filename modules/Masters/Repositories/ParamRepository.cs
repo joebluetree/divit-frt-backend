@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Database.Lib.Interfaces;
 using Database.Models.Masters;
 using Database.Models.BaseTables;
-
+using Common.Lib;
 
 namespace Masters.Repositories
 {
@@ -15,6 +15,8 @@ namespace Masters.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
+        private DateTime log_date;
+
         public ParamRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -140,6 +142,7 @@ namespace Masters.Repositories
         {
             try
             {
+                log_date = DateTime.UtcNow;
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);
                 context.Database.CommitTransaction();
@@ -210,6 +213,8 @@ namespace Masters.Repositories
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+                if (mode == "edit")
+                    await logHistory(Record, record_dto);
 
                 Record.param_id = record_dto.param_id;
                 Record.param_type = record_dto.param_type;
@@ -239,6 +244,36 @@ namespace Masters.Repositories
                 throw;
             }
 
+        }
+        	public async Task logHistory(mast_param old_record, mast_param_dto record_dto)
+        {
+            var new_record = new mast_param
+            {
+                param_id = record_dto.param_id,
+                param_type = record_dto.param_type,
+                param_code = record_dto.param_code,
+                param_name = record_dto.param_name,
+                
+                param_value1 = record_dto.param_value1,
+                param_value2 = record_dto.param_value2,
+                param_value3 = record_dto.param_value3,
+                param_value4 = record_dto.param_value4,
+                param_value5 = record_dto.param_value5,
+
+            };
+
+            await new LogHistory<mast_param>(context)
+                .Table("mast_param", log_date)
+                .PrimaryKey("param_id", record_dto.param_id)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
+                .TrackColumn("param_code", "code")
+                .TrackColumn("param_name", "name")
+                .TrackColumn("param_route", "routes")
+                .TrackColumn("param_param", "param-param")
+                .TrackColumn("param_module_id", "module")
+                .TrackColumn("param_subparam_id", "sub-param")
+                .SetRecord(old_record, new_record)
+                .LogChangesAsync();
         }
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)

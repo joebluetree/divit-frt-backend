@@ -14,6 +14,7 @@
     <ProjectReference Include="..\..\db\Database.Lib\Database.Lib.csproj" />
     <ProjectReference Include="..\..\db\Database.Models\Database.Models.csproj" />
     <ProjectReference Include="..\..\db\database\database.csproj" />
+    <!-- <ProjectReference Include="..\Accounts\Accounts.csproj" /> -->
   </ItemGroup>
 
   <ItemGroup>

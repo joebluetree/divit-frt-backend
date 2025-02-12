@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Database.Lib.Interfaces;
 using Database.Models.Masters;
 using Database.Models.BaseTables;
+using Common.Lib;
 
 namespace Masters.Repositories
 {
@@ -14,6 +15,7 @@ namespace Masters.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
+        private DateTime log_date;
         public CustomermRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -33,14 +35,14 @@ namespace Masters.Repositories
                     action = "search";
                 var cust_row_type = "";
                 var company_id = 0;
-                var cust_date_type ="";
-                var cust_from_date ="";
-                var cust_to_date ="";
-                var cust_created_by ="";
-                var cust_edited_by ="";
-                var cust_code ="";
+                var cust_date_type = "";
+                var cust_from_date = "";
+                var cust_to_date = "";
+                var cust_created_by = "";
+                var cust_edited_by = "";
+                var cust_code = "";
                 var cust_name = "";
-                var cust_firm_code ="";
+                var cust_firm_code = "";
                 var cust_is_blackacc = "";
                 DateTime? from_date = null;
                 DateTime? to_date = null;
@@ -405,9 +407,11 @@ namespace Masters.Repositories
         {
             try
             {
+                log_date = DateTime.UtcNow;
+
                 context.Database.BeginTransaction();
                 mast_customerm_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record = await saveContactAsync(_Record.cust_id, _Record);
+                _Record = await saveContactAsync(_Record.cust_id, mode ,_Record);
                 _Record.cust_contacts = await GetContactsAsync(_Record.cust_id);
                 context.Database.CommitTransaction();
                 return record_dto;
@@ -459,7 +463,7 @@ namespace Masters.Repositories
                 str += "Country Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.cust_zip_code))
                 str += "Zip Code Cannot Be Blank!";
-            
+
 
             foreach (mast_contactm_dto rec in record_dto.cust_contacts!)
             {
@@ -577,6 +581,10 @@ namespace Masters.Repositories
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+
+                if (mode == "edit")
+                    await logHistory(Record, record_dto);
+
                 string cust_type = GetCustomerType(record_dto);
                 Record.cust_type = cust_type;
                 Record.cust_code = record_dto.cust_code;
@@ -709,7 +717,7 @@ namespace Masters.Repositories
 
         }
 
-        public async Task<mast_customerm_dto> saveContactAsync(int id, mast_customerm_dto record_dto)
+        public async Task<mast_customerm_dto> saveContactAsync(int id,string mode, mast_customerm_dto record_dto)
         {
             mast_contactm? record;
             List<mast_contactm_dto> records_dto;
@@ -723,7 +731,10 @@ namespace Masters.Repositories
                 records = await context.mast_contactm
                     .Where(w => w.cont_parent_id == id)
                     .ToListAsync();
-
+                
+                // if(mode == "edit")
+                //     await logHistoryDetail(records, record_dto);
+                
                 // Remove Deleted Records
                 foreach (var existing_record in records)
                 {
@@ -735,7 +746,7 @@ namespace Masters.Repositories
                 //Add or Edit Records 
                 foreach (var rec in records_dto)
                 {
-                    
+
                     if (rec.cont_id == 0)
                     {
                         record = new mast_contactm();
@@ -749,9 +760,11 @@ namespace Masters.Repositories
                         record = records.Find(f => f.cont_id == rec.cont_id);
                         if (record == null)
                             throw new Exception("Detail Record Not Found " + rec.cont_id.ToString());
+
                         record.rec_edited_by = record_dto.rec_created_by;
                         record.rec_edited_date = DbLib.GetDateTime();
                     }
+
                     record.cont_parent_id = id;
                     record.cont_title = rec.cont_title;
                     record.cont_name = rec.cont_name;
@@ -766,15 +779,16 @@ namespace Masters.Repositories
                     if (rec.cont_id == 0)
                         await context.mast_contactm.AddAsync(record);
                 }
+                
+
                 context.SaveChanges();
                 return record_dto;
             }
-            catch (Exception)
+            catch (Exception Ex)
             {
-                throw;
+                throw new Exception(Ex.Message.ToString());
             }
         }
-
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
             try
@@ -810,6 +824,223 @@ namespace Masters.Repositories
                 throw;
             }
         }
+        public async Task logHistory(mast_customerm old_record, mast_customerm_dto record_dto)
+        {
+            var new_record = new mast_customerm
+            {
+                cust_code = record_dto.cust_code,
+                cust_short_name = record_dto.cust_short_name,
+                cust_name = record_dto.cust_name,
+                cust_official_name = record_dto.cust_official_name,
+                cust_address1 = record_dto.cust_address1,
+                cust_address2 = record_dto.cust_address2,
+                cust_address3 = record_dto.cust_address3,
+                cust_city = record_dto.cust_city,
+                cust_state_name = record_dto.cust_state_name,
+                cust_country_name = record_dto.cust_country_name,
+                cust_zip_code = record_dto.cust_zip_code,
+                cust_title = record_dto.cust_title,
+                cust_contact = record_dto.cust_contact,
+                cust_designation = record_dto.cust_designation,
+                cust_tel = record_dto.cust_tel,
+                cust_fax = record_dto.cust_fax,
+                cust_mobile = record_dto.cust_mobile,
+                cust_web = record_dto.cust_web,
+                cust_email = record_dto.cust_email,
+                cust_refer_by = record_dto.cust_refer_by,
+                cust_salesman_name = record_dto.cust_salesman_name,
+                cust_handled_name = record_dto.cust_handled_name,
+                cust_location = record_dto.cust_location,
+                cust_credit_limit = record_dto.cust_credit_limit ?? 0,
+                cust_is_shipper = record_dto.cust_is_shipper,
+                cust_is_consignee = record_dto.cust_is_consignee,
+                cust_is_importer = record_dto.cust_is_importer,
+                cust_is_exporter = record_dto.cust_is_exporter,
+                cust_is_cha = record_dto.cust_is_cha,
+                cust_is_forwarder = record_dto.cust_is_forwarder,
+                cust_is_oagent = record_dto.cust_is_oagent,
+                cust_is_acarrier = record_dto.cust_is_acarrier,
+                cust_is_scarrier = record_dto.cust_is_scarrier,
+                cust_is_trucker = record_dto.cust_is_trucker,
+                cust_is_warehouse = record_dto.cust_is_warehouse,
+                cust_is_sterminal = record_dto.cust_is_sterminal,
+                cust_is_aterminal = record_dto.cust_is_aterminal,
+                cust_is_shipvendor = record_dto.cust_is_shipvendor,
+                cust_is_gvendor = record_dto.cust_is_gvendor,
+                cust_is_employee = record_dto.cust_is_employee,
+                cust_is_contract = record_dto.cust_is_contract,
+                cust_is_miscell = record_dto.cust_is_miscell,
+                cust_is_tbd = record_dto.cust_is_tbd,
+                cust_is_bank = record_dto.cust_is_bank,
+                cust_nomination = record_dto.cust_nomination,
+                cust_priority = record_dto.cust_priority,
+                cust_criteria = record_dto.cust_criteria,
+                cust_min_profit = record_dto.cust_min_profit ?? 0,
+                cust_firm_code = record_dto.cust_firm_code,
+                cust_einirsno = record_dto.cust_einirsno,
+                cust_days = record_dto.cust_days,
+                cust_is_splacc = record_dto.cust_is_splacc,
+                cust_is_actual_vendor = record_dto.cust_is_actual_vendor,
+                cust_is_blackacc = record_dto.cust_is_blackacc,
+                cust_splacc_memo = record_dto.cust_splacc_memo,
+                cust_is_ctpat = record_dto.cust_is_ctpat,
+                cust_ctpat_no = record_dto.cust_ctpat_no,
+                cust_marketing_mail = record_dto.cust_marketing_mail,
+                cust_chb_id = record_dto.cust_chb_id,
+                cust_chb_code = record_dto.cust_chb_code,
+                cust_chb_name = record_dto.cust_chb_name,
+                cust_chb_address1 = record_dto.cust_chb_address1,
+                cust_chb_address2 = record_dto.cust_chb_address2,
+                cust_chb_address3 = record_dto.cust_chb_address3,
+                cust_chb_group = record_dto.cust_chb_group,
+                cust_chb_contact = record_dto.cust_chb_contact,
+                cust_chb_tel = record_dto.cust_chb_tel,
+                cust_chb_fax = record_dto.cust_chb_fax,
+                cust_chb_email = record_dto.cust_chb_email,
+                cust_poa_customs_yn = record_dto.cust_poa_customs_yn,
+                cust_brokers = record_dto.cust_brokers,
+                cust_poa_isf_yn = record_dto.cust_poa_isf_yn,
+                cust_bond_yn = record_dto.cust_bond_yn,
+                cust_punch_from = record_dto.cust_punch_from,
+                cust_bond_no = record_dto.cust_bond_no,
+                cust_bond_expdt = Lib.ParseDate(record_dto.cust_bond_expdt!),
+                cust_branch = record_dto.cust_branch,
+                cust_protected = record_dto.cust_protected,
+                cust_cur_code = record_dto.cust_cur_code,
+                cust_row_type = record_dto.cust_row_type,
+                cust_est_dt = Lib.ParseDate(record_dto.cust_est_dt!),
+                cust_parent_id = record_dto.cust_parent_id
+            };
+
+            await new LogHistory<mast_customerm>(context)
+                .Table("mast_customerm", log_date)
+                .PrimaryKey("cust_id", record_dto.cust_id)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id ?? 0, record_dto.rec_created_by!)
+                .TrackColumn("cust_code", "Customer Code")
+                .TrackColumn("cust_short_name", "Short Name")
+                .TrackColumn("cust_name", "Customer Name")
+                .TrackColumn("cust_official_name", "Official Name")
+                .TrackColumn("cust_address1", "Address Line 1")
+                .TrackColumn("cust_address2", "Address Line 2")
+                .TrackColumn("cust_address3", "Address Line 3")
+                .TrackColumn("cust_city", "City")
+                .TrackColumn("cust_state_name", "State Name")
+                .TrackColumn("cust_country_name", "Country Name")
+                .TrackColumn("cust_zip_code", "ZIP Code")
+                .TrackColumn("cust_title", "Title")
+                .TrackColumn("cust_contact", "Contact Person")
+                .TrackColumn("cust_designation", "Designation")
+                .TrackColumn("cust_tel", "Telephone")
+                .TrackColumn("cust_fax", "Fax")
+                .TrackColumn("cust_mobile", "Mobile")
+                .TrackColumn("cust_web", "Website")
+                .TrackColumn("cust_email", "Email")
+                .TrackColumn("cust_refer_by", "Referred By")
+                .TrackColumn("cust_salesman_name", "Salesman Name")
+                .TrackColumn("cust_handled_name", "Handled By Name")
+                .TrackColumn("cust_location", "Location")
+                .TrackColumn("cust_is_shipper", "Is Shipper")
+                .TrackColumn("cust_is_consignee", "Is Consignee")
+                .TrackColumn("cust_is_importer", "Is Importer")
+                .TrackColumn("cust_is_exporter", "Is Exporter")
+                .TrackColumn("cust_is_cha", "Is CHA")
+                .TrackColumn("cust_is_forwarder", "Is Forwarder")
+                .TrackColumn("cust_is_oagent", "Is OAgent")
+                .TrackColumn("cust_is_acarrier", "Is ACarrier")
+                .TrackColumn("cust_is_scarrier", "Is SCarrier")
+                .TrackColumn("cust_is_trucker", "Is Trucker")
+                .TrackColumn("cust_is_warehouse", "Is Warehouse")
+                .TrackColumn("cust_is_sterminal", "Is STerminal")
+                .TrackColumn("cust_is_aterminal", "Is ATerminal")
+                .TrackColumn("cust_is_shipvendor", "Is Ship Vendor")
+                .TrackColumn("cust_is_gvendor", "Is G Vendor")
+                .TrackColumn("cust_is_employee", "Is Employee")
+                .TrackColumn("cust_is_contract", "Is Contract")
+                .TrackColumn("cust_is_miscell", "Is Miscellaneous")
+                .TrackColumn("cust_is_tbd", "Is TBD")
+                .TrackColumn("cust_is_bank", "Is Bank")
+                .TrackColumn("cust_nomination", "Nomination")
+                .TrackColumn("cust_priority", "Priority")
+                .TrackColumn("cust_criteria", "Criteria")
+                .TrackColumn("cust_min_profit", "Minimum Profit")
+                .TrackColumn("cust_firm_code", "Firm Code")
+                .TrackColumn("cust_einirsno", "EIN/IRS No")
+                .TrackColumn("cust_days", "Days")
+                .TrackColumn("cust_is_splacc", "Is Special Account")
+                .TrackColumn("cust_is_actual_vendor", "Is Actual Vendor")
+                .TrackColumn("cust_is_blackacc", "Is Blacklisted Account")
+                .TrackColumn("cust_splacc_memo", "Special Account Memo")
+                .TrackColumn("cust_is_ctpat", "Is CTPAT")
+                .TrackColumn("cust_ctpat_no", "CTPAT No")
+                .TrackColumn("cust_marketing_mail", "Marketing Mail")
+                .TrackColumn("cust_chb_id", "CHB ID")
+                .TrackColumn("cust_chb_code", "CHB Code")
+                .TrackColumn("cust_chb_name", "CHB Name")
+                .TrackColumn("cust_chb_address1", "CHB Address Line 1")
+                .TrackColumn("cust_chb_address2", "CHB Address Line 2")
+                .TrackColumn("cust_chb_address3", "CHB Address Line 3")
+                .TrackColumn("cust_chb_group", "CHB Group")
+                .TrackColumn("cust_chb_contact", "CHB Contact")
+                .TrackColumn("cust_chb_tel", "CHB Telephone")
+                .TrackColumn("cust_chb_fax", "CHB Fax")
+                .TrackColumn("cust_chb_email", "CHB Email")
+                .TrackColumn("cust_poa_customs_yn", "POA Customs Y/N")
+                .TrackColumn("cust_brokers", "Brokers")
+                .TrackColumn("cust_poa_isf_yn", "POA ISF Y/N")
+                .TrackColumn("cust_bond_yn", "Bond Y/N")
+                .TrackColumn("cust_punch_from", "Punch From")
+                .TrackColumn("cust_bond_no", "Bond No")
+                .TrackColumn("cust_bond_expdt", "Bond Expiry Date")
+                .TrackColumn("cust_branch", "Branch")
+                .TrackColumn("cust_protected", "Protected")
+                .TrackColumn("cust_cur_code", "Currency Code")
+                .TrackColumn("cust_row_type", "Row Type")
+                .TrackColumn("cust_credit_limit", "Credit Limit")
+                .TrackColumn("cust_est_dt", "Establishment Date")
+                .TrackColumn("cust_parent_id", "Parent ID")
+                .SetRecord(old_record, new_record)
+                .LogChangesAsync();
+
+        }
+        public async Task logHistoryDetail(List<mast_contactm> old_records, mast_customerm_dto record_dto)
+        {
+            
+            var new_records = record_dto.cust_contacts!.Select(record_dto => new mast_contactm
+            {
+                cont_id = record_dto.cont_id,
+                cont_title = record_dto.cont_title,
+                cont_name = record_dto.cont_name,
+                cont_group_id = record_dto.cont_group_id,
+                cont_designation = record_dto.cont_designation,
+                cont_email = record_dto.cont_email,
+                cont_tel = record_dto.cont_tel,
+                cont_mobile = record_dto.cont_mobile,
+                cont_remarks = record_dto.cont_remarks,
+                cont_country_id = record_dto.cont_country_id,
+            }).ToList();
+
+            await new LogHistory<mast_contactm>(context)
+                .Table("mast_customerm", log_date)
+                .PrimaryKey("cont_id",  record_dto.cust_id)
+                .SetCompanyInfo(
+                    record_dto.rec_version,
+                    record_dto.rec_company_id,
+                    0,
+                    record_dto.rec_created_by!)
+                .TrackColumn("cont_title", "Title")
+                .TrackColumn("cont_name", "Contact Name")
+                .TrackColumn("cont_group_id", "Group ID")
+                .TrackColumn("cont_designation", "Designation")
+                .TrackColumn("cont_email", "Email")
+                .TrackColumn("cont_tel", "Telephone")
+                .TrackColumn("cont_mobile", "Mobile")
+                .TrackColumn("cont_remarks", "Remarks")
+                .TrackColumn("cont_country_id", "Country ID")
+                .SetRecords(old_records, new_records)
+                .LogChangesAsync();
+
+        }
+        
 
     }
 }

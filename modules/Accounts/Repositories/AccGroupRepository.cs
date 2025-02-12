@@ -7,7 +7,7 @@ using Accounts.Interfaces;
 using Database.Models.Accounts;
 using Database.Models.BaseTables;
 using Common.DTO.Accounts;
-
+using Common.Lib;
 
 namespace Accounts.Repositories
 {
@@ -17,6 +17,8 @@ namespace Accounts.Repositories
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
         private readonly IHeaderRepository _headerRepository;
+        private DateTime log_date;
+
         public AccGroupRepository(AppDbContext _context, IAuditLog _auditLog, IHeaderRepository headerRepository)
         {
             context = _context;
@@ -131,6 +133,7 @@ namespace Accounts.Repositories
         {
             try
             {
+                log_date = DateTime.UtcNow;
                 context.Database.BeginTransaction();
                 acc_groupm_dto _Record = await SaveParentAsync(id, mode, Record);
                 context.Database.CommitTransaction();
@@ -198,6 +201,9 @@ namespace Accounts.Repositories
                     Record.rec_edited_by = Record_DTO.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+                if (mode == "edit")
+                    await logHistory(Record, Record_DTO);
+
                 Record.grp_name = Record_DTO.grp_name;
                 Record.grp_main_group = Record_DTO.grp_main_group;
                 Record.grp_order = Record_DTO.grp_order;
@@ -248,6 +254,26 @@ namespace Accounts.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+
+        public async Task logHistory(acc_groupm old_record, acc_groupm_dto record_dto)
+        {
+            var new_record = new acc_groupm
+            {
+                grp_id = record_dto.grp_id,
+                grp_name = record_dto.grp_name,
+                grp_main_group = record_dto.grp_main_group,
+            };
+
+            await new LogHistory<acc_groupm>(context)
+                .Table("acc_groupm", log_date)
+                .PrimaryKey("grp_id", record_dto.grp_id)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
+                .TrackColumn("grp_name", "name")
+                .TrackColumn("grp_main_group", "main-group")
+                .SetRecord(old_record, new_record)
+                .LogChangesAsync();
+        }
+
 
     }
 }

@@ -4,6 +4,7 @@ using Database.Models.Accounts;
 using Database.Lib.Interfaces;
 using Database;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.Replication;
 
 namespace Common.Lib.Accounts
 {
@@ -11,14 +12,12 @@ namespace Common.Lib.Accounts
     {
         private static AppDbContext? context;
 
-
         public static async Task<acc_acctm_dto> SaveAsync(AppDbContext _context, string mode, acc_acctm_dto Record_DTO)
         {
             acc_acctm Record;
             try
             {
                 context = _context;
-
 
                 if (Record_DTO == null)
                     throw new Exception("No Data Found To Save");
@@ -42,7 +41,8 @@ namespace Common.Lib.Accounts
                     Record.rec_edited_by = Record_DTO.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
-
+                // if (mode == "edit")
+                //     await logHistory(Record, Record_DTO);
 
                 Record.acc_code = Record_DTO.acc_code;
                 Record.acc_short_name = Record_DTO.acc_short_name;
@@ -101,6 +101,7 @@ namespace Common.Lib.Accounts
             }
             return bRet;
         }
+
 
 
     }
