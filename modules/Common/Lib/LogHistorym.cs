@@ -1,5 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Database.Models.UserAdmin;
+using System.ComponentModel.DataAnnotations;
+
+using Database.Lib;
+using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 
 
 namespace Common.Lib
@@ -12,7 +17,8 @@ namespace Common.Lib
         private int _version = 0;
 
         private DateTime _log_date;
-        private readonly Dictionary<string, string> _columnsToTrack;
+        private readonly Dictionary<string, (string Description, string DataType)> _columnsToTrack;
+
         private readonly List<T> _oldEntities;
         private readonly List<T> _newEntities;
 
@@ -25,7 +31,8 @@ namespace Common.Lib
         {
             _context = context;
             pkey = "";
-            _columnsToTrack = new Dictionary<string, string>();
+            _columnsToTrack = new Dictionary<string, (string Description, string DataType)>();
+
             _oldEntities = new List<T>();
             _newEntities = new List<T>();
         }
@@ -53,18 +60,9 @@ namespace Common.Lib
             return this;
         }
 
-        public LogHistorym<T> TrackColumn(string column, string description)
+        public LogHistorym<T> TrackColumn(string column, string description, string dataType = "string")
         {
-            _columnsToTrack[column] = description;
-            return this;
-        }
-
-        public LogHistorym<T> TrackColumns(Dictionary<string, string> columns)
-        {
-            foreach (var column in columns)
-            {
-                _columnsToTrack[column.Key] = column.Value;
-            }
+            _columnsToTrack[column] = (description, dataType.ToLower()); // Default to string if not provided
             return this;
         }
 
@@ -82,28 +80,34 @@ namespace Common.Lib
             return this;
         }
 
+
         public async Task<LogHistorym<T>> LogChangesAsync()
         {
-
-
             try
             {
-
                 var historyLogs = new List<mast_history>();
-                var oldEntitiesDict = _oldEntities.ToDictionary(e => pkey);
-                var newEntitiesDict = _newEntities.ToDictionary(e => pkey);
-
+                var oldEntitiesDict = _oldEntities.ToLookup(e => pkey);
+                var newEntitiesDict = _newEntities.ToLookup(e => pkey);
                 // Check for modified and deleted records
+                Boolean bFound = false;
                 foreach (var oldEntity in _oldEntities)
                 {
-                    var key = pkey;
-                    if (newEntitiesDict.TryGetValue(key, out var newEntity))
+                    var oldpkValue = oldEntity.GetType().GetProperty(pkey)?.GetValue(oldEntity)?.ToString();
+                    bFound = false;
+                    foreach (var newEntity in _newEntities)
                     {
+                        var newpkValue = newEntity.GetType().GetProperty(pkey)?.GetValue(newEntity)?.ToString();
+                        if (oldpkValue != newpkValue)
+                            continue;
+                        bFound = true;
                         foreach (var column in _columnsToTrack.Keys)
                         {
+                            var (description, dataType) = _columnsToTrack[column];
+
                             var oldValue = oldEntity.GetType().GetProperty(column)?.GetValue(oldEntity)?.ToString();
                             var newValue = newEntity.GetType().GetProperty(column)?.GetValue(newEntity)?.ToString();
-                            if (oldValue != newValue)
+
+                            if (compareValues(oldValue!, newValue!, dataType))
                             {
                                 historyLogs.Add(new mast_history
                                 {
@@ -112,10 +116,9 @@ namespace Common.Lib
                                     rec_company_id = _company_id,
                                     rec_branch_id = _branch_id == 0 ? null : _branch_id,
                                     log_user_code = _user_code,
-
                                     log_refno = "",
                                     log_column = column,
-                                    log_desc = _columnsToTrack[column],
+                                    log_desc = description,
                                     log_old_value = oldValue,
                                     log_new_value = newValue,
                                     log_status = "Edited",
@@ -126,11 +129,12 @@ namespace Common.Lib
                             }
                         }
                     }
-                    else
+                    if (!bFound)
                     {
                         // Deleted record
                         foreach (var column in _columnsToTrack.Keys)
                         {
+                            var (description, dataType) = _columnsToTrack[column];
                             var oldValue = oldEntity.GetType().GetProperty(column)?.GetValue(oldEntity)?.ToString();
                             historyLogs.Add(new mast_history
                             {
@@ -141,7 +145,7 @@ namespace Common.Lib
                                 log_user_code = _user_code,
                                 log_refno = "",
                                 log_column = column,
-                                log_desc = _columnsToTrack[column],
+                                log_desc = description,
                                 log_old_value = oldValue,
                                 log_new_value = "",
                                 log_status = "Deleted",
@@ -157,10 +161,12 @@ namespace Common.Lib
                 foreach (var newEntity in _newEntities)
                 {
                     var key = pkey;
-                    if (!oldEntitiesDict.ContainsKey(key))
+
+                    if (!oldEntitiesDict.Contains(key))
                     {
                         foreach (var column in _columnsToTrack.Keys)
                         {
+                            var (description, dataType) = _columnsToTrack[column];
                             var newValue = newEntity.GetType().GetProperty(column)?.GetValue(newEntity)?.ToString();
                             historyLogs.Add(new mast_history
                             {
@@ -171,7 +177,7 @@ namespace Common.Lib
                                 log_user_code = _user_code,
                                 log_refno = "",
                                 log_column = column,
-                                log_desc = _columnsToTrack[column],
+                                log_desc = description,
                                 log_old_value = "",
                                 log_new_value = newValue,
                                 log_status = "New",
@@ -183,27 +189,58 @@ namespace Common.Lib
                     }
                 }
 
+                // Save logs asynchronously
                 await _context.Set<mast_history>().AddRangeAsync(historyLogs);
-                Console.WriteLine(historyLogs);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
+                // Debugging Output (Optional)
+                // foreach (var log in historyLogs)
+                // {
+                //     Console.WriteLine($"{log.log_column}: {log.log_old_value} -> {log.log_new_value} ({log.log_status})");
+                // }
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error logging changes: {ex.Message}");
                 throw;
             }
 
             return this;
-
         }
 
 
-        /*
-        private string _GetPrimaryKeyValue(T entity)
+        Boolean compareValues(string oldValue, string newValue, string data_type)
         {
-            return string.Join("-", _keyColumns.Select(key => entity.GetType().GetProperty(key)?.GetValue(entity)?.ToString()));
+            Boolean bRet = false;
+            if (data_type.ToLower() == "string")
+            {
+                if (oldValue == null)
+                    oldValue = "";
+                if (newValue == null)
+                    newValue = "";
+
+                if (oldValue != newValue)
+                    bRet = true;
+            }
+            if (data_type.ToLower() == "int")
+            {
+                if (Database.Lib.Lib.StringToInteger(oldValue) != Database.Lib.Lib.StringToInteger(newValue))
+                {
+                    bRet = true;
+                }
+            }
+            if (data_type.ToLower() == "decimal")
+            {
+                if (Database.Lib.Lib.StringToInteger(oldValue) != Database.Lib.Lib.StringToInteger(newValue))
+                {
+                    bRet = true;
+                }
+            }
+
+            return bRet;
         }
-        */
+
+
     }
 
 }
