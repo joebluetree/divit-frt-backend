@@ -138,7 +138,7 @@ namespace Database.Lib
             return date.HasValue ? date.Value.ToString(format) : null;
         }
 
-         public static string StringToDate(Object Data)
+        public static string StringToDate(Object Data)
         {
             string sData = "";
             DateTime Dt;
@@ -163,6 +163,13 @@ namespace Database.Lib
                 iValue = 0;
             }
             return iValue;
+        }
+
+        public static decimal StringToDecimal(object value)
+        {
+            if (value == null)
+                return 0m;
+            return decimal.TryParse(value.ToString(), out decimal result) ? result : 0m;
         }
 
     }
