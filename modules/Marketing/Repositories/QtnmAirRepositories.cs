@@ -24,6 +24,8 @@ namespace Marketing.Repositories
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
         private string sqtnm_type = "AIR";
+        private DateTime log_date;
+
         public QtnmAirRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -253,9 +255,11 @@ namespace Marketing.Repositories
         {
             try
             {
+                log_date = DateTime.UtcNow;
+
                 context.Database.BeginTransaction();
                 mark_qtnm_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record = await SaveDetailsAsync(_Record.qtnm_id, _Record);
+                _Record = await SaveDetailsAsync(_Record.qtnm_id, mode, _Record);
                 _Record.qtnd_air = await GetDetailsAsync(_Record.qtnm_id);
                 context.Database.CommitTransaction();
                 return _Record;
@@ -347,14 +351,16 @@ namespace Marketing.Repositories
 
                 if (mode == "add")
                 {
-                    var result = CommonLib.GetBranchsettings(this.context,record_dto.rec_company_id, record_dto.rec_branch_id, "QUOTATION-AIR-PREFIX,QUOTATION-AIR-STARTING-NO");
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "QUOTATION-AIR-PREFIX,QUOTATION-AIR-STARTING-NO");
 
                     var DefaultCfNo = 0;
                     var Defaultprefix = "";
-                    if(result.ContainsKey("QUOTATION-AIR-STARTING-NO")){
+                    if (result.ContainsKey("QUOTATION-AIR-STARTING-NO"))
+                    {
                         DefaultCfNo = Lib.StringToInteger(result["QUOTATION-AIR-STARTING-NO"]);
                     }
-                    if(result.ContainsKey("QUOTATION-AIR-PREFIX")){
+                    if (result.ContainsKey("QUOTATION-AIR-PREFIX"))
+                    {
                         Defaultprefix = result["QUOTATION-AIR-PREFIX"].ToString();
                     }
                     if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
@@ -362,7 +368,7 @@ namespace Marketing.Repositories
                         throw new Exception("Missing Quotation Prefix/Starting-Number in Branch Settings");
                     }
 
-                    int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id,DefaultCfNo);
+                    int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
                     if (Lib.IsZero(iNextNo))
                     {
                         throw new Exception("Quotation Number Cannot Be Generated");
@@ -397,6 +403,9 @@ namespace Marketing.Repositories
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+                if (mode == "edit")
+                    await logHistory(Record, record_dto);
+
                 Record.qtnm_to_id = record_dto.qtnm_to_id;
                 Record.qtnm_to_name = record_dto.qtnm_to_name;
                 Record.qtnm_to_addr1 = record_dto.qtnm_to_addr1;
@@ -429,7 +438,7 @@ namespace Marketing.Repositories
 
         }
 
-        public async Task<mark_qtnm_dto> SaveDetailsAsync(int id, mark_qtnm_dto record_dto)
+        public async Task<mark_qtnm_dto> SaveDetailsAsync(int id, string mode,mark_qtnm_dto record_dto)
         {
             mark_qtnd_air? record;
             List<mark_qtnd_air_dto> records_dto;
@@ -444,6 +453,8 @@ namespace Marketing.Repositories
                     .ToListAsync();
 
                 int nextorder = 1;
+                // if(mode == "edit")
+                //     await logHistoryDetail(records, record_dto);
 
                 foreach (var existing_record in records)
                 {
@@ -485,7 +496,7 @@ namespace Marketing.Repositories
                     if (Lib.IsZero(rec.qtnd_carrier_id))
                         record.qtnd_carrier_id = null;
                     else
-                    record.qtnd_carrier_id = rec.qtnd_carrier_id;
+                        record.qtnd_carrier_id = rec.qtnd_carrier_id;
                     record.qtnd_carrier_name = rec.qtnd_carrier_name;
                     record.qtnd_trans_time = rec.qtnd_trans_time;
                     record.qtnd_routing = rec.qtnd_routing;
@@ -514,16 +525,16 @@ namespace Marketing.Repositories
             }
         }
 
-        public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)          
-        {           
+        public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)
+        {
             var CfNo = context.mark_qtnm
             .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.qtnm_type == sqtnm_type)
             .Select(e => e.qtnm_cfno)
             .DefaultIfEmpty()
             .Max();
-     
+
             CfNo = CfNo == 0 ? DefaultCfNo : CfNo + 1;
-            return CfNo ;
+            return CfNo;
         }
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
@@ -561,6 +572,93 @@ namespace Marketing.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+        public async Task logHistory(mark_qtnm old_record, mark_qtnm_dto record_dto)
+        {
+            var new_record = new mark_qtnm
+            {
+                qtnm_id = record_dto.qtnm_id,
+                qtnm_cfno = record_dto.qtnm_cfno,
+                qtnm_type = record_dto.qtnm_type,
+                qtnm_no = record_dto.qtnm_no,
+                qtnm_to_name = record_dto.qtnm_to_name,
+                qtnm_to_addr1 = record_dto.qtnm_to_addr1,
+                qtnm_to_addr2 = record_dto.qtnm_to_addr2,
+                qtnm_to_addr3 = record_dto.qtnm_to_addr3,
+                qtnm_to_addr4 = record_dto.qtnm_to_addr4,
+                qtnm_date = Lib.ParseDate(record_dto.qtnm_date!),
+                qtnm_quot_by = record_dto.qtnm_quot_by,
+                qtnm_valid_date = Lib.ParseDate(record_dto.qtnm_valid_date!),
+                qtnm_move_type = record_dto.qtnm_move_type,
+                qtnm_commodity = record_dto.qtnm_commodity
+            };
+
+            await new LogHistory<mark_qtnm>(context)
+                .Table("mark_qtnm", log_date)
+                .PrimaryKey("qtnm_id", record_dto.qtnm_id)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .TrackColumn("qtnm_cfno", "CF No")
+                .TrackColumn("qtnm_type", "Type")
+                .TrackColumn("qtnm_no", "Quotation No")
+                .TrackColumn("qtnm_to_name", "To Name")
+                .TrackColumn("qtnm_to_addr1", "To Address 1")
+                .TrackColumn("qtnm_to_addr2", "To Address 2")
+                .TrackColumn("qtnm_to_addr3", "To Address 3")
+                .TrackColumn("qtnm_to_addr4", "To Address 4")
+                .TrackColumn("qtnm_date", "Quotation Date")
+                .TrackColumn("qtnm_quot_by", "Quoted By")
+                .TrackColumn("qtnm_valid_date", "Valid Until")
+                .TrackColumn("qtnm_move_type", "Move Type")
+                .TrackColumn("qtnm_commodity", "Commodity")
+                .SetRecord(old_record, new_record)
+                .LogChangesAsync();
+        }
+        public async Task logHistoryDetail(List<mark_qtnd_air> old_records, mark_qtnm_dto record_dto)
+        {
+            var new_records = record_dto.qtnd_air!.Select(record_dto => new mark_qtnd_air
+            {
+                qtnd_id = record_dto.qtnd_id,
+                qtnd_pol_name = record_dto.qtnd_pol_name,
+                qtnd_pod_name = record_dto.qtnd_pod_name,
+                qtnd_carrier_name = record_dto.qtnd_carrier_name,
+                qtnd_trans_time = record_dto.qtnd_trans_time,
+                qtnd_routing = record_dto.qtnd_routing,
+                qtnd_etd = record_dto.qtnd_etd,
+                qtnd_min = record_dto.qtnd_min,
+                qtnd_45k = record_dto.qtnd_45k,
+                qtnd_100k = record_dto.qtnd_100k,
+                qtnd_300k = record_dto.qtnd_300k,
+                qtnd_500k = record_dto.qtnd_500k,
+                qtnd_1000k = record_dto.qtnd_1000k,
+                qtnd_fsc = record_dto.qtnd_fsc,
+                qtnd_war = record_dto.qtnd_war,
+                qtnd_sfc = record_dto.qtnd_sfc,
+                qtnd_hac = record_dto.qtnd_hac,
+            }).ToList();
+
+            await new LogHistory<mark_qtnd_air>(context)
+                .Table("mark_qtnm", log_date)
+                .PrimaryKey("qtnd_id", record_dto.qtnm_id)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .TrackColumn("qtnd_pol_name", "POL Name")
+                .TrackColumn("qtnd_pod_name", "POD Name")
+                .TrackColumn("qtnd_carrier_name", "Carrier Name")
+                .TrackColumn("qtnd_trans_time", "Transit Time")
+                .TrackColumn("qtnd_routing", "Routing")
+                .TrackColumn("qtnd_etd", "ETD")
+                .TrackColumn("qtnd_min", "Min")
+                .TrackColumn("qtnd_45k", "45K")
+                .TrackColumn("qtnd_100k", "100K")
+                .TrackColumn("qtnd_300k", "300K")
+                .TrackColumn("qtnd_500k", "500K")
+                .TrackColumn("qtnd_1000k", "1000K")
+                .TrackColumn("qtnd_fsc", "FSC")
+                .TrackColumn("qtnd_war", "War Risk")
+                .TrackColumn("qtnd_sfc", "SFC")
+                .TrackColumn("qtnd_hac", "HAC")
+                .SetRecords(old_records, new_records)
+                .LogChangesAsync();
+        }
+
 
     }
 }

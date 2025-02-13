@@ -8,7 +8,7 @@ using Database;
 using Database.Models.TnT;
 using System.Data;
 using Database.Lib.Interfaces;
-
+using Common.Lib;
 
 namespace TnT.Repositories
 {
@@ -17,6 +17,7 @@ namespace TnT.Repositories
         private readonly AppDbContext context;
         private readonly HttpClient httpClient;
         private readonly ICommonRepository CommonRepository;
+        private DateTime log_date;
 
         public TrackingRepository(AppDbContext _context, HttpClient _httpClient, ICommonRepository _commonRepository)
         {
@@ -164,6 +165,8 @@ namespace TnT.Repositories
         {
             try
             {
+                log_date = DateTime.UtcNow;
+
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);
                 context.Database.CommitTransaction();
@@ -209,6 +212,9 @@ namespace TnT.Repositories
                     Record.rec_edited_by = Record_DTO.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+                if (mode == "edit")
+                    await logHistory(Record, Record_DTO);
+
                 Record.track_cntr_no = Record_DTO.track_cntr_no;
                 Record.track_book_no = Record_DTO.track_book_no;
                 Record.track_carrier_id = Record_DTO.track_carrier_id;
@@ -1166,6 +1172,25 @@ namespace TnT.Repositories
             {
                 throw new Exception(Ex.Message.ToString());
             }
+        }
+        public async Task logHistory(tnt_trackm old_record, tnt_trackm_dto record_dto)
+        {
+            var new_record = new tnt_trackm
+            {
+                track_id = record_dto.track_id,
+                track_book_no = record_dto.track_book_no,
+                track_cntr_no = record_dto.track_cntr_no,
+                // track_carrier_id = record_dto.track_carrier_name,
+            };
+
+            await new LogHistory<tnt_trackm>(context)
+                .Table("tnt_trackm", log_date)
+                .PrimaryKey("track_id", record_dto.track_id)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
+                .TrackColumn("track_book_no", "booking-no")
+                .TrackColumn("track_cntr_no", "container-no")
+                .SetRecord(old_record, new_record)
+                .LogChangesAsync();
         }
 
     }

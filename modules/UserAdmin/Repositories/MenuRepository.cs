@@ -8,6 +8,8 @@ using Database.Lib.Interfaces;
 using Database.Models.BaseTables;
 using Database.Models.UserAdmin;
 
+using Common.Lib;
+
 
 
 namespace UserAdmin.Repositories
@@ -16,6 +18,8 @@ namespace UserAdmin.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
+        private DateTime log_date;
+
         public MenuRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -161,6 +165,7 @@ namespace UserAdmin.Repositories
         {
             try
             {
+                log_date = DateTime.UtcNow;
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);
                 context.Database.CommitTransaction();
@@ -232,6 +237,9 @@ namespace UserAdmin.Repositories
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+                if (mode == "edit")
+                    await logHistory(Record, record_dto);
+
                 Record.menu_code = record_dto.menu_code;
                 Record.menu_name = record_dto.menu_name;
                 Record.menu_route = record_dto.menu_route;
@@ -260,6 +268,33 @@ namespace UserAdmin.Repositories
                 Lib.getErrorMessage(Ex, "fk", "rec_company_id", "Invalid Company");
                 throw;
             }
+        }
+        public async Task logHistory(mast_menum old_record, mast_menum_dto record_dto)
+        {
+            var new_record = new mast_menum
+            {
+                menu_id = record_dto.menu_id,
+                menu_code = record_dto.menu_code,
+                menu_name = record_dto.menu_name,
+                menu_route = record_dto.menu_route,
+                menu_param = record_dto.menu_param,
+                menu_module_id = record_dto.menu_module_id,
+                menu_submenu_id = record_dto.menu_submenu_id,
+
+            };
+
+            await new LogHistory<mast_menum>(context)
+                .Table("mast_menum", log_date)
+                .PrimaryKey("menu_id", record_dto.menu_id)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
+                .TrackColumn("menu_code", "code")
+                .TrackColumn("menu_name", "name")
+                .TrackColumn("menu_route", "routes")
+                .TrackColumn("menu_param", "menu-param")
+                .TrackColumn("menu_module_id", "module")
+                .TrackColumn("menu_submenu_id", "sub-menu")
+                .SetRecord(old_record, new_record)
+                .LogChangesAsync();
         }
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)

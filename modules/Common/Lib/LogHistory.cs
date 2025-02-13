@@ -84,12 +84,14 @@ namespace Common.Lib
 
         public async Task<LogHistory<T>> LogChangesAsync()
         {
-            var historyLogs = new List<mast_history>();
-            var oldEntitiesDict = _oldEntities.ToDictionary(e => GetPrimaryKeyValue());
-            var newEntitiesDict = _newEntities.ToDictionary(e => GetPrimaryKeyValue());
+
 
             try
             {
+
+                var historyLogs = new List<mast_history>();
+                var oldEntitiesDict = _oldEntities.ToDictionary(e => GetPrimaryKeyValue());
+                var newEntitiesDict = _newEntities.ToDictionary(e => GetPrimaryKeyValue());
 
                 // Check for modified and deleted records
                 foreach (var oldEntity in _oldEntities)

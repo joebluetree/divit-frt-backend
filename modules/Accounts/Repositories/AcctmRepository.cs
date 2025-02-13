@@ -9,12 +9,14 @@ using Database.Models.Accounts;
 using Database.Models.BaseTables;
 using Common.DTO.Accounts;
 using Common.Lib.Accounts;
+using Common.Lib;
 
 namespace Accounts.Repositories
 {
     public class AcctmRepository : IAcctmRepository
     {
         private readonly AppDbContext context;
+        private DateTime log_date;
 
         public AcctmRepository(AppDbContext _context)
         {
@@ -138,6 +140,7 @@ namespace Accounts.Repositories
         {
             try
             {
+                log_date = DateTime.UtcNow;
                 context.Database.BeginTransaction();
                 acc_acctm_dto _Record = await AcctmLib.SaveAsync(this.context, mode, Record);
                 context.Database.CommitTransaction();
@@ -181,6 +184,26 @@ namespace Accounts.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+        // public async Task logHistory(acc_acctm old_record, acc_acctm_dto record_dto)
+        // {
+        //     var new_record = new acc_acctm
+        //     {
+        //         acc_id = record_dto.acc_id,
+        //         acc_code = record_dto.acc_code,
+        //         acc_name = record_dto.acc_name,
+        //         acc_short_name = record_dto.acc_short_name
+        //     };
+
+        //     await new LogHistory<acc_acctm>(context)
+        //         .Table("acc_acctm", log_date)
+        //         .PrimaryKey("acc_id", record_dto.acc_id)
+        //         .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
+        //         .TrackColumn("acc_code", "code")
+        //         .TrackColumn("acc_name", "name")
+        //         .TrackColumn("acc_short_name", "short-name")
+        //         .SetRecord(old_record, new_record)
+        //         .LogChangesAsync();
+        // }
 
     }
 }

@@ -7,7 +7,7 @@ using Database.Lib.Interfaces;
 using Database.Models.BaseTables;
 using Database.Models.UserAdmin;
 
-
+using Common.Lib;
 
 namespace UserAdmin.Repositories
 {
@@ -15,6 +15,7 @@ namespace UserAdmin.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
+        private DateTime log_date;
         public ModuleRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -140,6 +141,8 @@ namespace UserAdmin.Repositories
         {
             try
             {
+                log_date = DateTime.UtcNow;
+
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);
                 context.Database.CommitTransaction();
@@ -211,6 +214,9 @@ namespace UserAdmin.Repositories
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+                if (mode == "edit")
+                    await logHistory(Record, record_dto);
+
                 Record.module_name = record_dto.module_name;
                 Record.module_is_installed = record_dto.module_is_installed;
 
@@ -234,6 +240,26 @@ namespace UserAdmin.Repositories
                 Lib.getErrorMessage(Ex, "fk", "rec_company_id", "Invalid Company ID");
                 throw;
             }
+        }
+    	public async Task logHistory(mast_modulem old_record, mast_modulem_dto record_dto)
+        {
+            var new_record = new mast_modulem
+            {
+                module_id = record_dto.module_id,
+                module_name = record_dto.module_name,
+                module_parent_id = record_dto.module_parent_id,
+                module_is_installed = record_dto.module_is_installed
+            };
+
+            await new LogHistory<mast_modulem>(context)
+                .Table("mast_modulem", log_date)
+                .PrimaryKey("module_id", record_dto.module_id)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
+                .TrackColumn("module_parent_id", "Parent")
+                .TrackColumn("module_name", "Name")
+                .TrackColumn("module_is_installed", "Visible")
+                .SetRecord(old_record, new_record)
+                .LogChangesAsync();
         }
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)

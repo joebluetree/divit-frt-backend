@@ -9,12 +9,16 @@ using Database.Models.BaseTables;
 using Database.Models.UserAdmin;
 using Database;
 
+using Common.Lib;
+
 namespace UserAdmin.Repositories
 {
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
+        private DateTime log_date;
+
         public UserRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -178,6 +182,8 @@ namespace UserAdmin.Repositories
         {
             try
             {
+                log_date = DateTime.UtcNow;
+
                 context.Database.BeginTransaction();
                 mast_userm_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await SaveDetAsync(_Record.user_id, _Record);
@@ -252,6 +258,9 @@ namespace UserAdmin.Repositories
                     context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
                     Record.rec_version++;
                 }
+                if (mode == "edit")
+                    await logHistory(Record, record_dto);
+
                 Record.user_code = record_dto.user_code;
                 Record.user_name = record_dto.user_name;
                 Record.user_email = record_dto.user_email;
@@ -276,6 +285,32 @@ namespace UserAdmin.Repositories
                 Lib.getErrorMessage(Ex, "fk", "rec_branch_id", "Default Branch Not Selected");
                 throw;
             }
+        }
+    	public async Task logHistory(mast_userm old_record, mast_userm_dto record_dto)
+        {
+            var new_record = new mast_userm
+            {
+                user_id = record_dto.user_id,
+                user_code = record_dto.user_code,
+                user_name = record_dto.user_name,
+                user_email = record_dto.user_email,
+                user_password = record_dto.user_password,
+                user_is_admin = record_dto.user_is_admin,
+                rec_branch_id = record_dto.rec_branch_id
+            };
+
+            await new LogHistory<mast_userm>(context)
+                .Table("mast_userm", log_date)
+                .PrimaryKey("user_id", record_dto.user_id)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
+                .TrackColumn("user_code", "code")
+                .TrackColumn("user_name", "name")
+                .TrackColumn("user_email", "email")
+                .TrackColumn("user_password", "password")
+                .TrackColumn("user_is_admin", "admin")
+                .TrackColumn("rec_branch_id", "branch-id")
+                .SetRecord(old_record, new_record)
+                .LogChangesAsync();
         }
         public async Task<mast_userm_dto> SaveDetAsync(int id, mast_userm_dto Record_DTO)
         {
@@ -339,7 +374,7 @@ namespace UserAdmin.Repositories
             {
                 Lib.getErrorMessage(Ex, "uq", "user_code", "Name Duplication");
                 Lib.getErrorMessage(Ex, "uq", "user_name", "Name Duplication");
-
+                
                 Lib.getErrorMessage(Ex, "fk", "rec_company_code", "Invalid Company ID");
 
                 throw;
