@@ -241,26 +241,6 @@ namespace UserAdmin.Repositories
                 throw;
             }
         }
-    	public async Task logHistory(mast_modulem old_record, mast_modulem_dto record_dto)
-        {
-            var new_record = new mast_modulem
-            {
-                module_id = record_dto.module_id,
-                module_name = record_dto.module_name,
-                module_parent_id = record_dto.module_parent_id,
-                module_is_installed = record_dto.module_is_installed
-            };
-
-            await new LogHistory<mast_modulem>(context)
-                .Table("mast_modulem", log_date)
-                .PrimaryKey("module_id", record_dto.module_id)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
-                .TrackColumn("module_parent_id", "Parent")
-                .TrackColumn("module_name", "Name")
-                .TrackColumn("module_is_installed", "Visible")
-                .SetRecord(old_record, new_record)
-                .LogChangesAsync();
-        }
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
@@ -292,6 +272,25 @@ namespace UserAdmin.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+        public async Task logHistory(mast_modulem old_record, mast_modulem_dto record_dto)
+        {
+            var new_record = new mast_modulem
+            {
+                module_id = record_dto.module_id,
+                module_name = record_dto.module_name,
+                module_parent_id = record_dto.module_parent_id,
+                module_is_installed = record_dto.module_is_installed
+            };
 
+            await new LogHistory<mast_modulem>(context)
+                .Table("mast_modulem", log_date)
+                .PrimaryKey("module_id", record_dto.module_id)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
+                .TrackColumn("module_parent_id", "Parent")
+                .TrackColumn("module_name", "Name")
+                .TrackColumn("module_is_installed", "Visible")
+                .SetRecord(old_record, new_record)
+                .LogChangesAsync();
+        }
     }
 }

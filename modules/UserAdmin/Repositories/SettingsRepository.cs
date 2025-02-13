@@ -228,36 +228,6 @@ namespace UserAdmin.Repositories
                 throw;
             }
         }
-    	// public async Task logHistory(mast_settings old_record, mast_settings_dto record_dto)
-        // {
-        //     var new_record = new mast_settings
-        //     {
-        //         category = record_dto.category,
-        //         caption = record_dto.caption,
-        //         remarks = record_dto.remarks,
-        //         type = record_dto.type,
-        //         table = record_dto.table,
-        //         value = record_dto.value,
-        //         code = record_dto.code,
-        //         name = record_dto.name
-
-        //     };
-
-        //     await new LogHistory<mast_settings>(context)
-        //         .Table("mast_settings", log_date)
-        //         .PrimaryKey("id", record_dto.id)
-        //         .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id ?? 0, record_dto.rec_created_by!)
-        //         .TrackColumn("category", "category")
-        //         .TrackColumn("caption", "caption")
-        //         .TrackColumn("remarks", "remarks")
-        //         .TrackColumn("type", "type")
-        //         .TrackColumn("table", "table")
-        //         .TrackColumn("value", "value")
-        //         .TrackColumn("code", "code")
-        //         .TrackColumn("name", "name")
-        //         .SetRecord(old_record, new_record)
-        //         .LogChangesAsync();
-        // }
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {

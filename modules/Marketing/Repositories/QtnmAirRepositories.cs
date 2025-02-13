@@ -578,7 +578,6 @@ namespace Marketing.Repositories
             {
                 qtnm_id = record_dto.qtnm_id,
                 qtnm_cfno = record_dto.qtnm_cfno,
-                qtnm_type = record_dto.qtnm_type,
                 qtnm_no = record_dto.qtnm_no,
                 qtnm_to_name = record_dto.qtnm_to_name,
                 qtnm_to_addr1 = record_dto.qtnm_to_addr1,
@@ -595,9 +594,8 @@ namespace Marketing.Repositories
             await new LogHistory<mark_qtnm>(context)
                 .Table("mark_qtnm", log_date)
                 .PrimaryKey("qtnm_id", record_dto.qtnm_id)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id?? 0, record_dto.rec_created_by!)
                 .TrackColumn("qtnm_cfno", "CF No")
-                .TrackColumn("qtnm_type", "Type")
                 .TrackColumn("qtnm_no", "Quotation No")
                 .TrackColumn("qtnm_to_name", "To Name")
                 .TrackColumn("qtnm_to_addr1", "To Address 1")
