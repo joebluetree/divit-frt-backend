@@ -34,6 +34,8 @@ public class HistoryRepository : IHistoryRepository
                 action = "search";
 
             var log_table = "";
+            var log_table_row_id = 0;
+            var log_desc = "";
             var company_id = 0;
             var branch_id = 0;
             var log_from_date = "";
@@ -43,11 +45,20 @@ public class HistoryRepository : IHistoryRepository
 
 
             if (data.ContainsKey("log_table"))
-                log_table = data["log_table"].ToString();
+                log_table = data["log_table"].ToString().ToUpper();
+
+            if (data.ContainsKey("log_table_row_id"))
+                log_table_row_id = int.Parse(data["log_table_row_id"].ToString()!);
+
+            if (data.ContainsKey("log_desc"))
+                log_desc = data["log_desc"].ToString();
+
             if (data.ContainsKey("log_from_date"))
                 log_from_date = data["log_from_date"].ToString();
             if (data.ContainsKey("log_to_date"))
                 log_to_date = data["log_to_date"].ToString();
+
+
 
             if (data.ContainsKey("rec_company_id"))
                 company_id = int.Parse(data["rec_company_id"].ToString()!);
@@ -66,7 +77,7 @@ public class HistoryRepository : IHistoryRepository
             IQueryable<mast_history> query = context.mast_history;
 
             query = query.Where(i => i.rec_company_id == company_id);
-            
+
             if (!Lib.IsBlank(log_from_date))
             {
                 from_date = CommonLib.ParseDateTimestamp(log_from_date!);
@@ -81,6 +92,12 @@ public class HistoryRepository : IHistoryRepository
 
             if (!Lib.IsBlank(log_table))
                 query = query.Where(w => w.log_table!.ToUpper().Contains(log_table!));
+
+            if (!Lib.IsBlank(log_desc))
+                query = query.Where(w => w.log_desc!.ToUpper().Contains(log_desc!));
+
+            if (!Lib.IsZero(log_table_row_id))
+                query = query.Where(w => w.log_table_row_id == log_table_row_id);
 
             if (action == "SEARCH")
             {
