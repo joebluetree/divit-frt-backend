@@ -390,8 +390,7 @@ namespace Masters.Repositories
                             cont_mobile = e.cont_mobile,
                             cont_remarks = e.cont_remarks,
                             cont_country_id = e.cont_country_id,
-                            cont_country_code = e.country!.param_code,
-                            cont_country_name = e.country.param_name,
+                            cont_country_name = e.country!.param_name,
                             rec_created_by = e.rec_created_by,
                             rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                             rec_edited_by = e.rec_edited_by,
@@ -599,12 +598,10 @@ namespace Masters.Repositories
                     Record.cust_state_id = null;
                 else
                     Record.cust_state_id = record_dto.cust_state_id;
-                Record.cust_state_name = record_dto.cust_state_name;
                 if (Lib.IsZero(record_dto.cust_country_id))
                     Record.cust_country_id = null;
                 else
                     Record.cust_country_id = record_dto.cust_country_id;
-                Record.cust_country_name = record_dto.cust_country_name;
                 Record.cust_zip_code = record_dto.cust_zip_code;
                 Record.cust_title = record_dto.cust_title;
                 Record.cust_contact = record_dto.cust_contact;
@@ -619,12 +616,10 @@ namespace Masters.Repositories
                     Record.cust_salesman_id = null;
                 else
                     Record.cust_salesman_id = record_dto.cust_salesman_id;
-                Record.cust_salesman_name = record_dto.cust_salesman_name;
                 if (Lib.IsZero(record_dto.cust_handled_id))
                     Record.cust_handled_id = null;
                 else
                     Record.cust_handled_id = record_dto.cust_handled_id;
-                Record.cust_handled_name = record_dto.cust_handled_name;
                 Record.cust_location = record_dto.cust_location;
                 Record.cust_is_shipper = record_dto.cust_is_shipper;
                 Record.cust_is_consignee = record_dto.cust_is_consignee;
@@ -732,8 +727,8 @@ namespace Masters.Repositories
                     .Where(w => w.cont_parent_id == id)
                     .ToListAsync();
 
-                //if (mode == "edit")
-                //  await logHistoryDetail(records, record_dto);
+                if (mode == "edit")
+                    await logHistoryDetail(records, record_dto);
 
                 // Remove Deleted Records
                 foreach (var existing_record in records)
@@ -837,8 +832,8 @@ namespace Masters.Repositories
                 cust_address2 = old_record.cust_address2,
                 cust_address3 = old_record.cust_address3,
                 cust_city = old_record.cust_city,
-                cust_state_name = old_record.cust_state_name,
-                cust_country_name = old_record.cust_country_name,
+                cust_state_name = old_record.state!.param_name,
+                cust_country_name = old_record.country!.param_name,
                 cust_zip_code = old_record.cust_zip_code,
                 cust_title = old_record.cust_title,
                 cust_contact = old_record.cust_contact,
@@ -849,8 +844,8 @@ namespace Masters.Repositories
                 cust_web = old_record.cust_web,
                 cust_email = old_record.cust_email,
                 cust_refer_by = old_record.cust_refer_by,
-                cust_salesman_name = old_record.cust_salesman_name,
-                cust_handled_name = old_record.cust_handled_name,
+                cust_salesman_name = old_record.salesman!.param_name,
+                cust_handled_name = old_record.handled!.param_name,
                 cust_location = old_record.cust_location,
                 cust_credit_limit = old_record.cust_credit_limit,
                 cust_is_shipper = old_record.cust_is_shipper,
@@ -917,7 +912,7 @@ namespace Masters.Repositories
             await new LogHistorym<mast_customerm_dto>(context)
                 .Table("mast_customerm", log_date)
                 .PrimaryKey("cust_id", record_dto.cust_id)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id ?? 0, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
                 .TrackColumn("cust_code", "Customer Code")
                 .TrackColumn("cust_short_name", "Short Name")
                 .TrackColumn("cust_name", "Customer Name")
