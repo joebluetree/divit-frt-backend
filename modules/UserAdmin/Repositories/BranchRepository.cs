@@ -234,31 +234,6 @@ namespace UserAdmin.Repositories
                 throw;
             }
         }
-        public async Task logHistory(mast_branchm old_record, mast_branchm_dto record_dto)
-        {
-            var new_record = new mast_branchm
-            {
-                branch_id = record_dto.branch_id,
-                branch_code = record_dto.branch_code,
-                branch_name = record_dto.branch_name,
-                branch_address1 = record_dto.branch_address1,
-                branch_address2 = record_dto.branch_address2,
-                branch_address3 = record_dto.branch_address3,
-            };
-
-            await new LogHistory<mast_branchm>(context)
-                .Table("mast_branchm", log_date)
-                .PrimaryKey("branch_id", record_dto.branch_id)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.branch_id, record_dto.rec_created_by!)
-                .TrackColumn("branch_code", "code")
-                .TrackColumn("branch_name", "name")
-                .TrackColumn("branch_address1", "address1")
-                .TrackColumn("branch_address2", "address2")
-                .TrackColumn("branch_address3", "address3")
-                .SetRecord(old_record, new_record)
-                .LogChangesAsync();
-        }
-
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
             try
@@ -286,6 +261,30 @@ namespace UserAdmin.Repositories
             {
                 throw new Exception(Ex.Message.ToString());
             }
+        }
+        public async Task logHistory(mast_branchm old_record, mast_branchm_dto record_dto)
+        {
+            var old_record_dto = new mast_branchm_dto
+            {
+                branch_id = old_record.branch_id,
+                branch_code = old_record.branch_code,
+                branch_name = old_record.branch_name,
+                branch_address1 = old_record.branch_address1,
+                branch_address2 = old_record.branch_address2,
+                branch_address3 = old_record.branch_address3,
+            };
+
+            await new LogHistorym<mast_branchm_dto>(context)
+                .Table("mast_branchm", log_date)
+                .PrimaryKey("branch_id", record_dto.branch_id)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.branch_id, record_dto.rec_created_by!)
+                .TrackColumn("branch_code", "code")
+                .TrackColumn("branch_name", "name")
+                .TrackColumn("branch_address1", "address1")
+                .TrackColumn("branch_address2", "address2")
+                .TrackColumn("branch_address3", "address3")
+                .SetRecord(old_record_dto, record_dto)
+                .LogChangesAsync();
         }
 
     }

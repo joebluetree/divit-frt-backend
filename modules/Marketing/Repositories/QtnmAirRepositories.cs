@@ -453,8 +453,8 @@ namespace Marketing.Repositories
                     .ToListAsync();
 
                 int nextorder = 1;
-                // if(mode == "edit")
-                //     await logHistoryDetail(records, record_dto);
+                if(mode == "edit")
+                    await logHistoryDetail(records, record_dto);
 
                 foreach (var existing_record in records)
                 {
@@ -574,28 +574,28 @@ namespace Marketing.Repositories
         }
         public async Task logHistory(mark_qtnm old_record, mark_qtnm_dto record_dto)
         {
-            var new_record = new mark_qtnm
+            var old_record_dto = new mark_qtnm_dto
             {
-                qtnm_id = record_dto.qtnm_id,
-                qtnm_cfno = record_dto.qtnm_cfno,
-                qtnm_no = record_dto.qtnm_no,
-                qtnm_to_name = record_dto.qtnm_to_name,
-                qtnm_to_addr1 = record_dto.qtnm_to_addr1,
-                qtnm_to_addr2 = record_dto.qtnm_to_addr2,
-                qtnm_to_addr3 = record_dto.qtnm_to_addr3,
-                qtnm_to_addr4 = record_dto.qtnm_to_addr4,
-                qtnm_date = Lib.ParseDate(record_dto.qtnm_date!),
-                qtnm_quot_by = record_dto.qtnm_quot_by,
-                qtnm_valid_date = Lib.ParseDate(record_dto.qtnm_valid_date!),
-                qtnm_move_type = record_dto.qtnm_move_type,
-                qtnm_commodity = record_dto.qtnm_commodity
+                qtnm_id = old_record.qtnm_id,
+                qtnm_cfno = old_record.qtnm_cfno,
+                qtnm_no = old_record.qtnm_no,
+                qtnm_to_name = old_record.qtnm_to_name,
+                qtnm_to_addr1 = old_record.qtnm_to_addr1,
+                qtnm_to_addr2 = old_record.qtnm_to_addr2,
+                qtnm_to_addr3 = old_record.qtnm_to_addr3,
+                qtnm_to_addr4 = old_record.qtnm_to_addr4,
+                // qtnm_date = Lib.ParseDate(old_record.qtnm_date!),
+                qtnm_quot_by = old_record.qtnm_quot_by,
+                // qtnm_valid_date = Lib.ParseDate(old_record.qtnm_valid_date!),
+                qtnm_move_type = old_record.qtnm_move_type,
+                qtnm_commodity = old_record.qtnm_commodity
             };
 
-            await new LogHistory<mark_qtnm>(context)
+            await new LogHistorym<mark_qtnm_dto>(context)
                 .Table("mark_qtnm", log_date)
                 .PrimaryKey("qtnm_id", record_dto.qtnm_id)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id?? 0, record_dto.rec_created_by!)
-                .TrackColumn("qtnm_cfno", "CF No")
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id,0 , record_dto.rec_created_by!)
+                .TrackColumn("qtnm_cfno", "CF No", "integer")
                 .TrackColumn("qtnm_no", "Quotation No")
                 .TrackColumn("qtnm_to_name", "To Name")
                 .TrackColumn("qtnm_to_addr1", "To Address 1")
@@ -607,36 +607,36 @@ namespace Marketing.Repositories
                 .TrackColumn("qtnm_valid_date", "Valid Until")
                 .TrackColumn("qtnm_move_type", "Move Type")
                 .TrackColumn("qtnm_commodity", "Commodity")
-                .SetRecord(old_record, new_record)
+                .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
         }
         public async Task logHistoryDetail(List<mark_qtnd_air> old_records, mark_qtnm_dto record_dto)
         {
-            var new_records = record_dto.qtnd_air!.Select(record_dto => new mark_qtnd_air
+            var old_records_dto = old_records.Select(record => new mark_qtnd_air_dto
             {
-                qtnd_id = record_dto.qtnd_id,
-                qtnd_pol_name = record_dto.qtnd_pol_name,
-                qtnd_pod_name = record_dto.qtnd_pod_name,
-                qtnd_carrier_name = record_dto.qtnd_carrier_name,
-                qtnd_trans_time = record_dto.qtnd_trans_time,
-                qtnd_routing = record_dto.qtnd_routing,
-                qtnd_etd = record_dto.qtnd_etd,
-                qtnd_min = record_dto.qtnd_min,
-                qtnd_45k = record_dto.qtnd_45k,
-                qtnd_100k = record_dto.qtnd_100k,
-                qtnd_300k = record_dto.qtnd_300k,
-                qtnd_500k = record_dto.qtnd_500k,
-                qtnd_1000k = record_dto.qtnd_1000k,
-                qtnd_fsc = record_dto.qtnd_fsc,
-                qtnd_war = record_dto.qtnd_war,
-                qtnd_sfc = record_dto.qtnd_sfc,
-                qtnd_hac = record_dto.qtnd_hac,
+                qtnd_id = record.qtnd_id,
+                qtnd_pol_name = record.qtnd_pol_name,
+                qtnd_pod_name = record.qtnd_pod_name,
+                qtnd_carrier_name = record.qtnd_carrier_name,
+                qtnd_trans_time = record.qtnd_trans_time,
+                qtnd_routing = record.qtnd_routing,
+                qtnd_etd = record.qtnd_etd,
+                qtnd_min = record.qtnd_min,
+                qtnd_45k = record.qtnd_45k,
+                qtnd_100k = record.qtnd_100k,
+                qtnd_300k = record.qtnd_300k,
+                qtnd_500k = record.qtnd_500k,
+                qtnd_1000k = record.qtnd_1000k,
+                qtnd_fsc = record.qtnd_fsc,
+                qtnd_war = record.qtnd_war,
+                qtnd_sfc = record.qtnd_sfc,
+                qtnd_hac = record.qtnd_hac,
             }).ToList();
 
-            await new LogHistory<mark_qtnd_air>(context)
+            await new LogHistorym<mark_qtnd_air_dto>(context)
                 .Table("mark_qtnm", log_date)
                 .PrimaryKey("qtnd_id", record_dto.qtnm_id)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id??0, record_dto.rec_created_by!)
                 .TrackColumn("qtnd_pol_name", "POL Name")
                 .TrackColumn("qtnd_pod_name", "POD Name")
                 .TrackColumn("qtnd_carrier_name", "Carrier Name")
@@ -653,7 +653,7 @@ namespace Marketing.Repositories
                 .TrackColumn("qtnd_war", "War Risk")
                 .TrackColumn("qtnd_sfc", "SFC")
                 .TrackColumn("qtnd_hac", "HAC")
-                .SetRecords(old_records, new_records)
+                .SetRecords(old_records_dto, record_dto.qtnd_air!)
                 .LogChangesAsync();
         }
 

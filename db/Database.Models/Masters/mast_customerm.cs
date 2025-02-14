@@ -15,9 +15,7 @@ namespace Database.Models.Masters
         public string? cust_address3 { get; set; }
         public string? cust_city { get; set; }
         public int? cust_state_id { get; set; }
-        public string? cust_state_name { get; set; }
         public int? cust_country_id { get; set; }
-        public string? cust_country_name { get; set; }
         public string? cust_zip_code {get; set; }
         public string? cust_title { get; set; }
         public string? cust_contact { get; set; }
@@ -29,9 +27,7 @@ namespace Database.Models.Masters
         public string? cust_email { get; set; }
         public string? cust_refer_by { get; set; }
         public int? cust_salesman_id { get; set; }
-        public string? cust_salesman_name { get; set; }
         public int? cust_handled_id { get; set; }
-        public string? cust_handled_name { get; set; }
         public string? cust_location { get; set; }
         public decimal cust_credit_limit { get; set; }
         public DateTime? cust_est_dt { get; set; }

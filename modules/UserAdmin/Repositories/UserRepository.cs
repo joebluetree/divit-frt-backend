@@ -286,32 +286,7 @@ namespace UserAdmin.Repositories
                 throw;
             }
         }
-    	public async Task logHistory(mast_userm old_record, mast_userm_dto record_dto)
-        {
-            var new_record = new mast_userm
-            {
-                user_id = record_dto.user_id,
-                user_code = record_dto.user_code,
-                user_name = record_dto.user_name,
-                user_email = record_dto.user_email,
-                user_password = record_dto.user_password,
-                user_is_admin = record_dto.user_is_admin,
-                rec_branch_id = record_dto.rec_branch_id
-            };
 
-            await new LogHistory<mast_userm>(context)
-                .Table("mast_userm", log_date)
-                .PrimaryKey("user_id", record_dto.user_id)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
-                .TrackColumn("user_code", "code")
-                .TrackColumn("user_name", "name")
-                .TrackColumn("user_email", "email")
-                .TrackColumn("user_password", "password")
-                .TrackColumn("user_is_admin", "admin")
-                .TrackColumn("rec_branch_id", "branch-id")
-                .SetRecord(old_record, new_record)
-                .LogChangesAsync();
-        }
         public async Task<mast_userm_dto> SaveDetAsync(int id, mast_userm_dto Record_DTO)
         {
             // mast_userbranches Record;
@@ -422,6 +397,32 @@ namespace UserAdmin.Repositories
             {
                 throw new Exception(Ex.Message.ToString());
             }
+        }
+        public async Task logHistory(mast_userm old_record, mast_userm_dto record_dto)
+        {
+            var old_record_dto = new mast_userm_dto
+            {
+                user_id = old_record.user_id,
+                user_code = old_record.user_code,
+                user_name = old_record.user_name,
+                user_email = old_record.user_email,
+                user_password = old_record.user_password,
+                user_is_admin = old_record.user_is_admin,
+                rec_branch_id = old_record.rec_branch_id
+            };
+
+            await new LogHistorym<mast_userm_dto>(context)
+                .Table("mast_userm", log_date)
+                .PrimaryKey("user_id", record_dto.user_id)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
+                .TrackColumn("user_code", "code")
+                .TrackColumn("user_name", "name")
+                .TrackColumn("user_email", "email")
+                .TrackColumn("user_password", "password")
+                .TrackColumn("user_is_admin", "admin")
+                .TrackColumn("rec_branch_id", "branch-id")
+                .SetRecord(old_record_dto, record_dto)
+                .LogChangesAsync();
         }
 
     }

@@ -46,12 +46,6 @@ namespace Database.fluent_config.Masters
             modelBuilder.Property(u => u.cust_city)
                 .HasMaxLength(60)
                 .IsRequired(false);
-            modelBuilder.Property(u => u.cust_state_name)
-                .HasMaxLength(60)
-                .IsRequired(false);
-            modelBuilder.Property(u => u.cust_country_name)
-                .HasMaxLength(60)
-                .IsRequired(false);
             modelBuilder.Property(u => u.cust_zip_code)
                 .HasMaxLength(20)
                 .IsRequired(false);
@@ -81,12 +75,6 @@ namespace Database.fluent_config.Masters
                 .IsRequired(false);
             modelBuilder.Property(u => u.cust_refer_by)
                 .HasMaxLength(60)
-                .IsRequired(false);
-            modelBuilder.Property(u => u.cust_salesman_name)
-                .HasMaxLength(100)
-                .IsRequired(false);
-            modelBuilder.Property(u => u.cust_handled_name)
-                .HasMaxLength(100)
                 .IsRequired(false);
             modelBuilder.Property(u => u.cust_location)
                 .HasMaxLength(100)

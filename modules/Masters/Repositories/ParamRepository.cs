@@ -245,34 +245,36 @@ namespace Masters.Repositories
             }
 
         }
-        	public async Task logHistory(mast_param old_record, mast_param_dto record_dto)
+        public async Task logHistory(mast_param old_record, mast_param_dto record_dto)
         {
-            var new_record = new mast_param
+            var old_record_dto = new mast_param_dto
             {
-                param_id = record_dto.param_id,
-                param_type = record_dto.param_type,
-                param_code = record_dto.param_code,
-                param_name = record_dto.param_name,
+                param_id = old_record.param_id,
+                param_type = old_record.param_type,
+                param_code = old_record.param_code,
+                param_name = old_record.param_name,
                 
-                param_value1 = record_dto.param_value1,
-                param_value2 = record_dto.param_value2,
-                param_value3 = record_dto.param_value3,
-                param_value4 = record_dto.param_value4,
-                param_value5 = record_dto.param_value5,
+                param_value1 = old_record.param_value1,
+                param_value2 = old_record.param_value2,
+                param_value3 = old_record.param_value3,
+                param_value4 = old_record.param_value4,
+                param_value5 = old_record.param_value5,
 
             };
 
-            await new LogHistory<mast_param>(context)
+            await new LogHistorym<mast_param_dto>(context)
                 .Table("mast_param", log_date)
                 .PrimaryKey("param_id", record_dto.param_id)
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
+                .TrackColumn("param_type", "type")
                 .TrackColumn("param_code", "code")
                 .TrackColumn("param_name", "name")
-                .TrackColumn("param_route", "routes")
-                .TrackColumn("param_param", "param-param")
-                .TrackColumn("param_module_id", "module")
-                .TrackColumn("param_subparam_id", "sub-param")
-                .SetRecord(old_record, new_record)
+                .TrackColumn("param_value1", "value 1")
+                .TrackColumn("param_value2", "value 2")
+                .TrackColumn("param_value3", "value 3")
+                .TrackColumn("param_value4", "value 4")
+                .TrackColumn("param_value5", "value 5")
+                .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
         }
 
