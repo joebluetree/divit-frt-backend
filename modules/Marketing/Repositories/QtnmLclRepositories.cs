@@ -655,7 +655,7 @@ namespace Marketing.Repositories
                 // .TrackColumn("qtnm_date", "Quotation Date")
                 .TrackColumn("qtnm_quot_by", "Quoted By")
                 // .TrackColumn("qtnm_valid_date", "Valid Until")
-                .TrackColumn("qtnm_saleman_name", "Salesman Name")
+                .TrackColumn("qtnm_salesman_name", "Salesman Name")
                 .TrackColumn("qtnm_move_type", "Move Type")
                 .TrackColumn("qtnm_commodity", "Commodity")
                 .TrackColumn("qtnm_package", "Package")

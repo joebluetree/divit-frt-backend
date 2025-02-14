@@ -76,9 +76,6 @@ namespace Database.fluent_config.Masters
             modelBuilder.Property(u => u.cust_refer_by)
                 .HasMaxLength(60)
                 .IsRequired(false);
-            modelBuilder.Property(u => u.cust_location)
-                .HasMaxLength(100)
-                .IsRequired(false);
 
             modelBuilder.Property(u => u.cust_row_type)
                 .HasMaxLength(10)
@@ -252,15 +249,14 @@ namespace Database.fluent_config.Masters
                 modelBuilder.Property(u => u.cust_bond_expdt)
                 .HasColumnType("date")
                 .IsRequired(false);
-            modelBuilder.Property(u => u.cust_branch)
-                .HasMaxLength(100)
-                .IsRequired(false);
+            // modelBuilder.Property(u => u.cust_branch_id)
+            //     .IsRequired(false);
             modelBuilder.Property(u => u.cust_protected)
                 .HasMaxLength(100)
                 .IsRequired(false);
-            modelBuilder.Property(u => u.cust_cur_code)
-                .HasMaxLength(100)
-                .IsRequired(false);
+            // modelBuilder.Property(u => u.cust_cur_code)
+            //     .HasMaxLength(100)
+            //     .IsRequired(false);
 
         
 
@@ -330,6 +326,30 @@ namespace Database.fluent_config.Masters
                 .HasForeignKey(e => e.cust_handled_id)
                 .HasPrincipalKey(e => e.param_id)
                 .HasConstraintName("fk_cust_customerm_cust_handled_id")
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+            modelBuilder
+                .HasOne(e => e.branch)
+                .WithMany()
+                .HasForeignKey(e => e.cust_location_id)
+                .HasPrincipalKey(e => e.branch_id)
+                .HasConstraintName("fk_cust_customerm_cust_location_id")
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+            modelBuilder
+                .HasOne(e => e.branch)
+                .WithMany()
+                .HasForeignKey(e => e.cust_branch_id)
+                .HasPrincipalKey(e => e.branch_id)
+                .HasConstraintName("fk_cust_customerm_cust_branch_id")
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+            modelBuilder
+                .HasOne(e => e.currency)
+                .WithMany()
+                .HasForeignKey(e => e.cust_cur_id)
+                .HasPrincipalKey(e => e.param_id)
+                .HasConstraintName("fk_cust_customerm_cust_cur_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);
             modelBuilder
