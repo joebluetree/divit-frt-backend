@@ -1,10 +1,13 @@
-﻿using Database.Models.BaseTables;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Database.Models.UserAdmin;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Database.Models.Masters
 {
-    public class mast_customerm : baseTable_company
+    public class mast_customerm
     {
+        [Key]
         public int cust_id { get; set; }
         public string? cust_type { get; set; }
         public string? cust_code { get; set; }
@@ -17,7 +20,7 @@ namespace Database.Models.Masters
         public string? cust_city { get; set; }
         public int? cust_state_id { get; set; }
         public int? cust_country_id { get; set; }
-        public string? cust_zip_code {get; set; }
+        public string? cust_zip_code { get; set; }
         public string? cust_title { get; set; }
         public string? cust_contact { get; set; }
         public string? cust_designation { get; set; }
@@ -95,14 +98,44 @@ namespace Database.Models.Masters
         public int? cust_cur_id { get; set; }
 
         public Nullable<int> cust_parent_id { get; set; }
+
+        [ForeignKey("cust_parent_id")]
         public mast_customerm? customer { get; set; }
+
+        [ForeignKey("cust_state_id")]
         public mast_param? state { get; set; }
+
+        [ForeignKey("cust_country_id")]
         public mast_param? country { get; set; }
+
+        [ForeignKey("cust_salesman_id")]
         public mast_param? salesman { get; set; }
+
+        [ForeignKey("cust_handled_id")]
         public mast_param? handled { get; set; }
+
+        [ForeignKey("cust_location_id")]
+        public mast_branchm? location { get; set; }
+
+        [ForeignKey("cust_branch_id")]
         public mast_branchm? branch { get; set; }
+
+        [ForeignKey("cust_cur_id")]
         public mast_param? currency { get; set; }
         public List<mast_contactm>? cust_contacts { get; set; }
+
+        //Common Columns - Company Wise
+        [ConcurrencyCheck]
+        public int rec_version { get; set; }
+        public string? rec_locked { get; set; }
+        public string? rec_created_by { get; set; }
+        public DateTime rec_created_date { get; set; }
+        public string? rec_edited_by { get; set; }
+        public DateTime? rec_edited_date { get; set; }
+        public int rec_company_id { get; set; }
+
+        [ForeignKey("rec_company_id")]
+        public mast_companym? company { get; set; }
 
     }
 }

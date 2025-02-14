@@ -16,6 +16,7 @@ namespace Database.Models.BaseTables
     }
     public class baseTable : baseTable_tracking
     {
+
         public int rec_company_id { get; set; }
         public mast_companym? company { get; set; }
         public int? rec_branch_id { get; set; }

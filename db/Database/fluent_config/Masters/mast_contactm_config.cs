@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Database.fluent_config.Masters
 {
-   public class mast_contactm_config : IEntityTypeConfiguration<mast_contactm>
-    { 
+    public class mast_contactm_config : IEntityTypeConfiguration<mast_contactm>
+    {
         public void Configure(EntityTypeBuilder<mast_contactm> modelBuilder)
         {
             //table and primary key

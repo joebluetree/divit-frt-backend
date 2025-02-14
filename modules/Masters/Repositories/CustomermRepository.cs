@@ -245,8 +245,8 @@ namespace Masters.Repositories
         {
             try
             {
-                IQueryable<mast_customerm> query = context.mast_customerm
-                    .Include(e => e.customer);
+                IQueryable<mast_customerm> query = context.mast_customerm;
+                //.Include(e => e.customer);
 
                 query = query.Where(f => f.cust_id == id);
 
@@ -283,7 +283,10 @@ namespace Masters.Repositories
                     cust_handled_id = e.cust_handled_id,
                     cust_handled_name = e.handled!.param_name,
                     cust_location_id = e.cust_location_id,
-                    cust_location_name = e.branch!.branch_name,
+                    //location
+                    cust_location_name = e.location!.branch_name,
+
+
                     cust_credit_limit = e.cust_credit_limit,
                     cust_days = e.cust_days,
                     cust_est_dt = Lib.FormatDate(e.cust_est_dt, Lib.outputDateFormat),
@@ -343,8 +346,9 @@ namespace Masters.Repositories
                     cust_bond_no = e.cust_bond_no,
                     cust_bond_expdt = Lib.FormatDate(e.cust_bond_expdt, Lib.outputDateFormat),
 
+                    //branch
                     cust_branch_id = e.cust_branch_id,
-                    cust_branch_name = e.branch.branch_name,
+                    cust_branch_name = e.branch!.branch_name,
                     cust_protected = e.cust_protected,
                     cust_cur_id = e.cust_cur_id,
                     cust_cur_name = e.currency!.param_name,
@@ -567,6 +571,7 @@ namespace Masters.Repositories
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_created_by = record_dto.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
+                    Record.rec_locked = "N";
                 }
                 else
                 {
@@ -582,6 +587,7 @@ namespace Masters.Repositories
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+
 
                 if (mode == "edit")
                     await logHistory(Record, record_dto);
@@ -701,7 +707,16 @@ namespace Masters.Repositories
 
                 record_dto.cust_id = Record.cust_id;
                 record_dto.rec_version = Record.rec_version;
-                Lib.AssignDates2DTO(record_dto.cust_id, mode, Record, record_dto);
+                //Lib.AssignDates2DTO(record_dto.cust_id, mode, Record, record_dto);
+
+                record_dto.rec_created_by = Record.rec_created_by;
+                record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                if (record_dto.cust_id != 0)
+                {
+                    record_dto.rec_edited_by = Record.rec_edited_by;
+                    record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                }
+
                 return record_dto;
             }
             catch (Exception Ex)
@@ -729,8 +744,11 @@ namespace Masters.Repositories
                     .Where(w => w.cont_parent_id == id)
                     .ToListAsync();
 
-                if (mode == "edit")
-                    await logHistoryDetail(records, record_dto);
+                /*
+                                if (mode == "edit")
+                                    await logHistoryDetail(records, record_dto);
+                */
+
 
                 // Remove Deleted Records
                 foreach (var existing_record in records)
@@ -823,6 +841,7 @@ namespace Masters.Repositories
         }
         public async Task logHistory(mast_customerm old_record, mast_customerm_dto record_dto)
         {
+
             var old_record_dto = new mast_customerm_dto
             {
                 cust_id = old_record.cust_id,
@@ -846,7 +865,7 @@ namespace Masters.Repositories
                 cust_web = old_record.cust_web,
                 cust_email = old_record.cust_email,
                 cust_refer_by = old_record.cust_refer_by,
-                // cust_salesman_name = old_record.salesman!.param_name,
+                cust_salesman_name = old_record.salesman?.param_name,
                 // cust_handled_name = old_record.handled!.param_name,
                 // cust_location_name = old_record.branch!.branch_name,
                 cust_credit_limit = old_record.cust_credit_limit,
@@ -935,7 +954,7 @@ namespace Masters.Repositories
                 .TrackColumn("cust_web", "Website")
                 .TrackColumn("cust_email", "Email")
                 .TrackColumn("cust_refer_by", "Referred By")
-                // .TrackColumn("cust_salesman_name", "Salesman Name")
+                .TrackColumn("cust_salesman_name", "Salesman Name")
                 // .TrackColumn("cust_handled_name", "Handled By Name")
                 // .TrackColumn("cust_location_name", "Location")
                 .TrackColumn("cust_is_shipper", "Is Shipper")
