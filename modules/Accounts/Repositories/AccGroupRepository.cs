@@ -257,20 +257,20 @@ namespace Accounts.Repositories
 
         public async Task logHistory(acc_groupm old_record, acc_groupm_dto record_dto)
         {
-            var new_record = new acc_groupm
+            var old_record_dto = new acc_groupm_dto
             {
-                grp_id = record_dto.grp_id,
-                grp_name = record_dto.grp_name,
-                grp_main_group = record_dto.grp_main_group,
+                grp_id = old_record.grp_id,
+                grp_name = old_record.grp_name,
+                grp_main_group = old_record.grp_main_group,
             };
 
-            await new LogHistory<acc_groupm>(context)
+            await new LogHistorym<acc_groupm_dto>(context)
                 .Table("acc_groupm", log_date)
                 .PrimaryKey("grp_id", record_dto.grp_id)
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
                 .TrackColumn("grp_name", "name")
                 .TrackColumn("grp_main_group", "main-group")
-                .SetRecord(old_record, new_record)
+                .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
         }
 

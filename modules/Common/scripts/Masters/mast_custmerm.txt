@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS mast_customerm (
 	cust_bond_expdt date NULL,
 	cust_bond_no varchar(100) NULL,
 	cust_bond_yn varchar(100) NULL,
-	cust_branch varchar(100) NULL,
+	cust_branch_id int4 NULL,
 	cust_brokers varchar(100) NULL,
 	cust_chb_address1 varchar(100) NULL,
 	cust_chb_address2 varchar(100) NULL,
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS mast_customerm (
 	cust_country_id int4 NULL,
 	cust_criteria varchar(100) NULL,
 	cust_ctpat_no varchar(100) NULL,
-	cust_cur_code varchar(100) NULL,
+	cust_cur_id int4 NULL,
 	cust_days int4 NULL,
 	cust_designation varchar(60) NULL,
 	cust_einirsno varchar(100) NULL,
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS mast_customerm (
 	cust_is_tbd varchar(1) NULL,
 	cust_is_trucker varchar(1) NULL,
 	cust_is_warehouse varchar(1) NULL,
-	cust_location varchar(100) NULL,
+	cust_location_id int4 NULL,
 	cust_marketing_mail varchar(100) NULL,
 	cust_min_profit numeric(15, 3) NULL,
 	cust_mobile varchar(20) NULL,
@@ -114,6 +114,18 @@ BEGIN
 
     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_customerm_cust_state_id') THEN
         CREATE INDEX "IX_mast_customerm_cust_state_id" ON mast_customerm USING btree (cust_state_id);
+    END IF;
+
+	IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_customerm_cust_location_id') THEN
+        CREATE INDEX "IX_mast_customerm_cust_location_id" ON mast_customerm USING btree (cust_location_id);
+    END IF;
+
+	IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_customerm_cust_cur_id') THEN
+        CREATE INDEX "IX_mast_customerm_cust_cur_id" ON mast_customerm USING btree (cust_cur_id);
+    END IF;
+	
+	IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_mast_customerm_cust_branch_id') THEN
+        CREATE INDEX "IX_mast_customerm_cust_branch_id" ON mast_customerm USING btree (cust_branch_id);
     END IF;
 
     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'uq_cust_customerm_cust_code') THEN

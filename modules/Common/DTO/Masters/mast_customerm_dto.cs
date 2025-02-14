@@ -34,7 +34,8 @@ namespace Common.DTO.Masters
         public string? cust_salesman_name { get; set; } = ""; 
         public int? cust_handled_id { get; set; } = 0;
         public string? cust_handled_name { get; set; } = ""; 
-        public string? cust_location { get; set; } = "";
+        public int? cust_location_id { get; set; } = 0;
+        public string? cust_location_name { get; set; } = "";
 
         public string? cust_row_type { get; set; } = "";
 
@@ -97,9 +98,11 @@ namespace Common.DTO.Masters
         public string? cust_bond_no { get; set; } = "";
         public string? cust_bond_expdt { get; set; } = ""; 
 
-        public string? cust_branch { get; set; } = "";
+        public int? cust_branch_id { get; set; } = 0;
+        public string? cust_branch_name { get; set; } = "";
         public string? cust_protected { get; set; } = "";
-        public string? cust_cur_code { get; set; } = "";
+        public int? cust_cur_id { get; set; } = 0;
+        public string? cust_cur_name { get; set; } = "";
 
 
         public Nullable<int> cust_parent_id { get; set; }

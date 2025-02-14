@@ -1,4 +1,5 @@
 ﻿using Database.Models.BaseTables;
+using Database.Models.UserAdmin;
 
 namespace Database.Models.Masters
 {
@@ -28,7 +29,7 @@ namespace Database.Models.Masters
         public string? cust_refer_by { get; set; }
         public int? cust_salesman_id { get; set; }
         public int? cust_handled_id { get; set; }
-        public string? cust_location { get; set; }
+        public int? cust_location_id { get; set; }
         public decimal cust_credit_limit { get; set; }
         public DateTime? cust_est_dt { get; set; }
         public string? cust_row_type { get; set; }
@@ -89,9 +90,9 @@ namespace Database.Models.Masters
         public string? cust_bond_no { get; set; }
         public DateTime? cust_bond_expdt { get; set; }
 
-        public string? cust_branch { get; set; }
+        public int? cust_branch_id { get; set; }
         public string? cust_protected { get; set; }
-        public string? cust_cur_code { get; set; }
+        public int? cust_cur_id { get; set; }
 
         public Nullable<int> cust_parent_id { get; set; }
         public mast_customerm? customer { get; set; }
@@ -99,6 +100,8 @@ namespace Database.Models.Masters
         public mast_param? country { get; set; }
         public mast_param? salesman { get; set; }
         public mast_param? handled { get; set; }
+        public mast_branchm? branch { get; set; }
+        public mast_param? currency { get; set; }
         public List<mast_contactm>? cust_contacts { get; set; }
 
     }
