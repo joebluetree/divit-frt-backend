@@ -18,6 +18,8 @@ namespace UserAdmin.Repositories
         }
         public async Task<mast_userm?> AuthenticateAsync(string username, string password)
         {
+
+            try {
             var user = await context.mast_userm
                 .Where(x => x.user_code == username.ToUpper() && x.user_password == password.ToUpper())
                 .FirstOrDefaultAsync();
@@ -44,6 +46,10 @@ namespace UserAdmin.Repositories
             */
             user.user_password = string.Empty;
             return user;
+            }
+            catch ( Exception ex ){
+                throw new Exception(ex.Message.ToString());
+            }
         }
 
         public async Task<Dictionary<string, object>> GetBranchListAsync(Dictionary<string, object> data)

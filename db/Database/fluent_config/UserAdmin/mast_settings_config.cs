@@ -9,7 +9,7 @@ namespace Database.fluent_config.UserAdmin
     {
         public void Configure(EntityTypeBuilder<mast_settings> modelBuilder)
         {
-
+/*
             //Table Name
             modelBuilder.ToTable("mast_settings");
             //Primary Key
@@ -92,7 +92,7 @@ namespace Database.fluent_config.UserAdmin
                 .HasConstraintName("fk_mast_settings_rec_branch_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);
-
+*/
         }
 
     }

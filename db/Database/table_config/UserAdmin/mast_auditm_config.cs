@@ -7,7 +7,7 @@ namespace Database.table_config.UserAdmin
     public class mast_auditm_config : IEntityTypeConfiguration<mast_auditm>
     {
         public void Configure(EntityTypeBuilder<mast_auditm> modelBuilder)
-        {
+        {/*
             //Table
             modelBuilder.ToTable("mast_logm");
             modelBuilder.HasKey(e => e.log_id);

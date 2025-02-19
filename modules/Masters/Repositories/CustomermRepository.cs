@@ -132,98 +132,10 @@ namespace Masters.Repositories
                 var Records = await query.Select(e => new mast_customerm_dto
                 {
                     cust_id = e.cust_id,
-                    // cust_type = e.cust_type,
                     cust_code = e.cust_code,
                     cust_short_name = e.cust_short_name,
                     cust_name = e.cust_name,
-                    // cust_official_name = e.cust_official_name,
-                    // cust_address1 = e.cust_address1,
-                    // cust_address2 = e.cust_address2,
-                    // cust_address3 = e.cust_address3,
-                    // cust_city = e.cust_city,
-                    // cust_state_id = e.cust_state_id,
-                    // cust_state_name = e.state!.param_name,
-                    // cust_country_id = e.cust_country_id,
-                    // cust_country_name = e.country!.param_name,
-                    // cust_zip_code = e.cust_zip_code,
-                    // cust_title = e.cust_title,
-                    // cust_contact = e.cust_contact,
-                    // cust_designation = e.cust_designation,
-                    // cust_tel = e.cust_tel,
-                    // cust_fax = e.cust_fax,
-                    // cust_mobile = e.cust_mobile,
-                    // cust_web = e.cust_web,
-                    // cust_email = e.cust_email,
-                    // cust_refer_by = e.cust_refer_by,
-                    // cust_salesman_id = e.cust_salesman_id,
-                    // cust_salesman_name = e.salesman!.param_name,
-                    // cust_handled_id = e.cust_handled_id,
-                    // cust_handled_name = e.handled!.param_name,
-                    // cust_location_id = e.cust_location_id,
-                    // cust_row_type = e.customer!.cust_row_type,
-                    // cust_is_parent = e.cust_is_parent,
                     cust_parent_name = e.customer!.cust_name,
-
-                    // cust_is_shipper = e.cust_is_shipper,
-                    // cust_is_consignee = e.cust_is_consignee,
-                    // cust_is_importer = e.cust_is_importer,
-                    // cust_is_exporter = e.cust_is_exporter,
-                    // cust_is_cha = e.cust_is_cha,
-                    // cust_is_forwarder = e.cust_is_forwarder,
-                    // cust_is_oagent = e.cust_is_oagent,
-                    // cust_is_acarrier = e.cust_is_acarrier,
-                    // cust_is_scarrier = e.cust_is_scarrier,
-                    // cust_is_trucker = e.cust_is_trucker,
-                    // cust_is_warehouse = e.cust_is_warehouse,
-                    // cust_is_sterminal = e.cust_is_sterminal,
-                    // cust_is_aterminal = e.cust_is_aterminal,
-                    // cust_is_shipvendor = e.cust_is_shipvendor,
-                    // cust_is_gvendor = e.cust_is_gvendor,
-                    // cust_is_employee = e.cust_is_employee,
-                    // cust_is_contract = e.cust_is_contract,
-                    // cust_is_miscell = e.cust_is_miscell,
-                    // cust_is_tbd = e.cust_is_tbd,
-                    // cust_is_bank = e.cust_is_bank,
-
-                    // cust_nomination = e.cust_nomination,
-                    // cust_priority = e.cust_priority,
-                    // cust_criteria = e.cust_criteria,
-                    // cust_min_profit = e.cust_min_profit,
-                    // cust_firm_code = e.cust_firm_code,
-                    // cust_einirsno = e.cust_einirsno,
-                    // cust_days = e.cust_days,
-                    // cust_is_splacc = e.cust_is_splacc,
-                    // cust_is_actual_vendor = e.cust_is_actual_vendor,
-                    // cust_is_blackacc = e.cust_is_blackacc,
-                    // cust_splacc_memo = e.cust_splacc_memo,
-                    // cust_is_ctpat = e.cust_is_ctpat,
-                    // cust_ctpat_no = e.cust_ctpat_no,
-                    // cust_marketing_mail = e.cust_marketing_mail,
-
-                    // cust_chb_id = e.cust_chb_id,
-                    // cust_chb_code = e.cust_chb_code,
-                    // cust_chb_name = e.cust_chb_name,
-                    // cust_chb_address1 = e.cust_chb_address1,
-                    // cust_chb_address2 = e.cust_chb_address2,
-                    // cust_chb_address3 = e.cust_chb_address3,
-                    // cust_chb_group = e.cust_chb_group,
-                    // cust_chb_contact = e.cust_chb_contact,
-                    // cust_chb_tel = e.cust_chb_tel,
-                    // cust_chb_fax = e.cust_chb_fax,
-                    // cust_chb_email = e.cust_chb_email,
-
-                    // cust_poa_customs_yn = e.cust_poa_customs_yn,
-                    // cust_brokers = e.cust_brokers,
-                    // cust_poa_isf_yn = e.cust_poa_isf_yn,
-                    // cust_bond_yn = e.cust_bond_yn,
-                    // cust_punch_from = e.cust_punch_from,
-                    // cust_bond_no = e.cust_bond_no,
-                    // cust_bond_expdt = Lib.FormatDate(e.cust_bond_expdt, Lib.outputDateFormat),
-                    // cust_branch_id = e.cust_branch_id,
-                    // cust_branch_name = e.branch!.branch_name,
-                    // cust_protected = e.cust_protected,
-                    // cust_cur_id = e.cust_cur_id,
-
 
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
@@ -327,7 +239,7 @@ namespace Masters.Repositories
                     cust_marketing_mail = e.cust_marketing_mail,
 
                     cust_chb_id = e.cust_chb_id,
-                    cust_chb_code = e.cust_chb_code,
+                    cust_chb_code = e.chb!.cust_code,
                     cust_chb_name = e.cust_chb_name,
                     cust_chb_address1 = e.cust_chb_address1,
                     cust_chb_address2 = e.cust_chb_address2,
@@ -367,7 +279,7 @@ namespace Masters.Repositories
                 if (Record == null)
                     throw new Exception("No Data Found");
 
-                Record.cust_contacts = await GetContactsAsync(Record.cust_id);
+                Record.cust_contacts = await GetDetAsync(Record.cust_id);
 
                 return Record;
             }
@@ -377,7 +289,7 @@ namespace Masters.Repositories
             }
         }
 
-        public async Task<List<mast_contactm_dto>> GetContactsAsync(int id)
+        public async Task<List<mast_contactm_dto>> GetDetAsync(int id)
         {
             var query = from e in context.mast_contactm
                         .Where(a => a.cont_parent_id == id)
@@ -412,12 +324,12 @@ namespace Masters.Repositories
         {
             try
             {
-                log_date = DateTime.UtcNow;
+                log_date = DbLib.GetDateTime();
 
                 context.Database.BeginTransaction();
                 mast_customerm_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record = await saveContactAsync(_Record.cust_id, mode, _Record);
-                _Record.cust_contacts = await GetContactsAsync(_Record.cust_id);
+                _Record = await saveDetAsync(_Record.cust_id, mode, _Record);
+                _Record.cust_contacts = await GetDetAsync(_Record.cust_id);
                 context.Database.CommitTransaction();
                 return record_dto;
             }
@@ -576,6 +488,13 @@ namespace Masters.Repositories
                 else
                 {
                     Record = await context.mast_customerm
+                        .Include(c => c.country)
+                        .Include(c => c.state)
+                        .Include(c => c.salesman)
+                        .Include(c => c.location)
+                        .Include(c => c.handled)
+                        .Include(c => c.branch)
+                        .Include(c => c.chb)
                         .Where(f => f.cust_id == id)
                         .FirstOrDefaultAsync();
 
@@ -590,7 +509,7 @@ namespace Masters.Repositories
 
 
                 if (mode == "edit")
-                    await logHistory(Record, record_dto);
+                   await logHistory(Record, record_dto);
 
                 string cust_type = GetCustomerType(record_dto);
                 Record.cust_type = cust_type;
@@ -666,7 +585,6 @@ namespace Masters.Repositories
                 Record.cust_marketing_mail = record_dto.cust_marketing_mail;
 
                 Record.cust_chb_id = record_dto.cust_chb_id;
-                Record.cust_chb_code = record_dto.cust_chb_code;
                 Record.cust_chb_name = record_dto.cust_chb_name;
                 Record.cust_chb_address1 = record_dto.cust_chb_address1;
                 Record.cust_chb_address2 = record_dto.cust_chb_address2;
@@ -729,7 +647,7 @@ namespace Masters.Repositories
 
         }
 
-        public async Task<mast_customerm_dto> saveContactAsync(int id, string mode, mast_customerm_dto record_dto)
+        public async Task<mast_customerm_dto> saveDetAsync(int id, string mode, mast_customerm_dto record_dto)
         {
             mast_contactm? record;
             List<mast_contactm_dto> records_dto;
@@ -741,13 +659,15 @@ namespace Masters.Repositories
                 records_dto = record_dto.cust_contacts!;
                 // read the contact details from database
                 records = await context.mast_contactm
+                    .Include(c => c.country)
+                    .Include(c => c.contgroup)
                     .Where(w => w.cont_parent_id == id)
                     .ToListAsync();
 
-                /*
-                                if (mode == "edit")
-                                    await logHistoryDetail(records, record_dto);
-                */
+            
+                if (mode == "edit")
+                    await logHistoryDetail(records, record_dto);
+                
 
 
                 // Remove Deleted Records
@@ -853,8 +773,8 @@ namespace Masters.Repositories
                 cust_address2 = old_record.cust_address2,
                 cust_address3 = old_record.cust_address3,
                 cust_city = old_record.cust_city,
-                // cust_state_name = old_record.state!.param_name,
-                // cust_country_name = old_record.country!.param_name,
+                cust_state_name = old_record.state?.param_name,
+                cust_country_name = old_record.country?.param_name,
                 cust_zip_code = old_record.cust_zip_code,
                 cust_title = old_record.cust_title,
                 cust_contact = old_record.cust_contact,
@@ -866,8 +786,8 @@ namespace Masters.Repositories
                 cust_email = old_record.cust_email,
                 cust_refer_by = old_record.cust_refer_by,
                 cust_salesman_name = old_record.salesman?.param_name,
-                // cust_handled_name = old_record.handled!.param_name,
-                // cust_location_name = old_record.branch!.branch_name,
+                cust_handled_name = old_record.handled?.param_name,
+                cust_location_name = old_record.location?.branch_name,
                 cust_credit_limit = old_record.cust_credit_limit,
                 cust_is_shipper = old_record.cust_is_shipper,
                 cust_is_consignee = old_record.cust_is_consignee,
@@ -903,8 +823,7 @@ namespace Masters.Repositories
                 cust_is_ctpat = old_record.cust_is_ctpat,
                 cust_ctpat_no = old_record.cust_ctpat_no,
                 cust_marketing_mail = old_record.cust_marketing_mail,
-                cust_chb_id = old_record.cust_chb_id,
-                cust_chb_code = old_record.cust_chb_code,
+                cust_chb_code = old_record.chb?.cust_code,
                 cust_chb_name = old_record.cust_chb_name,
                 cust_chb_address1 = old_record.cust_chb_address1,
                 cust_chb_address2 = old_record.cust_chb_address2,
@@ -920,12 +839,12 @@ namespace Masters.Repositories
                 cust_bond_yn = old_record.cust_bond_yn,
                 cust_punch_from = old_record.cust_punch_from,
                 cust_bond_no = old_record.cust_bond_no,
-                //cust_bond_expdt = Lib.ParseDate(old_record.cust_bond_expdt),
-                // cust_branch_name = old_record.branch.branch_name,
+                cust_bond_expdt = Lib.FormatDate(old_record.cust_bond_expdt,Lib.outputDateFormat),
+                cust_branch_name = old_record.branch?.branch_name,
                 cust_protected = old_record.cust_protected,
-                // cust_cur_name = old_record.currency!.param_name,
+                cust_cur_name = old_record.currency?.param_name,
                 cust_row_type = old_record.cust_row_type,
-                //cust_est_dt = Lib.ParseDate(old_record.cust_est_dt!),
+                cust_est_dt = Lib.FormatDate(old_record.cust_est_dt,Lib.outputDateFormat),
                 cust_parent_id = old_record.cust_parent_id
 
             };
@@ -933,6 +852,7 @@ namespace Masters.Repositories
             await new LogHistorym<mast_customerm_dto>(context)
                 .Table("mast_customerm", log_date)
                 .PrimaryKey("cust_id", record_dto.cust_id)
+                .RefNo(record_dto.cust_name!)              
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
                 .TrackColumn("cust_code", "Customer Code")
                 .TrackColumn("cust_short_name", "Short Name")
@@ -942,8 +862,8 @@ namespace Masters.Repositories
                 .TrackColumn("cust_address2", "Address Line 2")
                 .TrackColumn("cust_address3", "Address Line 3")
                 .TrackColumn("cust_city", "City")
-                // .TrackColumn("cust_state_name", "State Name")
-                // .TrackColumn("cust_country_name", "Country Name")
+                .TrackColumn("cust_state_name", "State Name")
+                .TrackColumn("cust_country_name", "Country Name")
                 .TrackColumn("cust_zip_code", "ZIP Code")
                 .TrackColumn("cust_title", "Title")
                 .TrackColumn("cust_contact", "Contact Person")
@@ -955,8 +875,8 @@ namespace Masters.Repositories
                 .TrackColumn("cust_email", "Email")
                 .TrackColumn("cust_refer_by", "Referred By")
                 .TrackColumn("cust_salesman_name", "Salesman Name")
-                // .TrackColumn("cust_handled_name", "Handled By Name")
-                // .TrackColumn("cust_location_name", "Location")
+                .TrackColumn("cust_handled_name", "Handled By Name")
+                .TrackColumn("cust_location_name", "Location")
                 .TrackColumn("cust_is_shipper", "Is Shipper")
                 .TrackColumn("cust_is_consignee", "Is Consignee")
                 .TrackColumn("cust_is_importer", "Is Importer")
@@ -991,7 +911,6 @@ namespace Masters.Repositories
                 .TrackColumn("cust_is_ctpat", "Is CTPAT")
                 .TrackColumn("cust_ctpat_no", "CTPAT No")
                 .TrackColumn("cust_marketing_mail", "Marketing Mail")
-                .TrackColumn("cust_chb_id", "CHB ID")
                 .TrackColumn("cust_chb_code", "CHB Code")
                 .TrackColumn("cust_chb_name", "CHB Name")
                 .TrackColumn("cust_chb_address1", "CHB Address Line 1")
@@ -1008,13 +927,13 @@ namespace Masters.Repositories
                 .TrackColumn("cust_bond_yn", "Bond Y/N")
                 .TrackColumn("cust_punch_from", "Punch From")
                 .TrackColumn("cust_bond_no", "Bond No")
-                .TrackColumn("cust_bond_expdt", "Bond Expiry Date")
-                // .TrackColumn("cust_branch_name", "Branch")
+                .TrackColumn("cust_bond_expdt", "Bond Expiry Date","date")//bond
+                .TrackColumn("cust_branch_name", "Branch")
                 .TrackColumn("cust_protected", "Protected")
-                // .TrackColumn("cust_cur_name", "Currency Name")
+                .TrackColumn("cust_cur_name", "Currency Name")
                 .TrackColumn("cust_row_type", "Row Type")
                 .TrackColumn("cust_credit_limit", "Credit Limit", "decimal")
-                .TrackColumn("cust_est_dt", "Establishment Date")
+                .TrackColumn("cust_est_dt", "Establishment Date", "date")
                 .TrackColumn("cust_parent_id", "Parent ID")
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
@@ -1028,33 +947,32 @@ namespace Masters.Repositories
                 cont_id = record.cont_id,
                 cont_title = record.cont_title,
                 cont_name = record.cont_name,
-                // cont_group_name = record.contgroup!.param_name,
+                cont_group_name = record.contgroup?.param_name,
                 cont_designation = record.cont_designation,
                 cont_email = record.cont_email,
                 cont_tel = record.cont_tel,
                 cont_mobile = record.cont_mobile,
                 cont_remarks = record.cont_remarks,
-                // cont_country_name = record.country!.param_name,
+                cont_country_name = record.country?.param_name,
             }).ToList();
 
             await new LogHistorym<mast_contactm_dto>(context)
                 .Table("mast_customerm", log_date)
                 .PrimaryKey("cont_id", record_dto.cust_id)
+                .RefNo(record_dto.cust_name!)
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
                 .TrackColumn("cont_title", "Title")
                 .TrackColumn("cont_name", "Contact Name")
-                // .TrackColumn("cont_group_name", "Group Name")
+                .TrackColumn("cont_group_name", "Group Name")
                 .TrackColumn("cont_designation", "Designation")
                 .TrackColumn("cont_email", "Email")
                 .TrackColumn("cont_tel", "Telephone")
                 .TrackColumn("cont_mobile", "Mobile")
                 .TrackColumn("cont_remarks", "Remarks")
-                // .TrackColumn("cont_country_name", "Country Name")
+                .TrackColumn("cont_country_name", "Country Name")
                 .SetRecords(old_records_dto, record_dto.cust_contacts!)
                 .LogChangesAsync();
 
         }
-
-
     }
 }

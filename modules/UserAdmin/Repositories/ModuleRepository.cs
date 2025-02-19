@@ -202,6 +202,7 @@ namespace UserAdmin.Repositories
                 else
                 {
                     Record = await context.mast_modulem
+                        .Include(c => c.module)
                         .Where(f => f.module_id == id)
                         .FirstOrDefaultAsync();
 
@@ -231,7 +232,14 @@ namespace UserAdmin.Repositories
                 context.SaveChanges();
                 record_dto.module_id = Record.module_id;
                 record_dto.rec_version = Record.rec_version;
-                Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                // Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                record_dto.rec_created_by = Record.rec_created_by;
+                record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                if (record_dto.module_id != 0)
+                {
+                    record_dto.rec_edited_by = Record.rec_edited_by;
+                    record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                }
                 return record_dto;
             }
             catch (Exception Ex)
@@ -278,15 +286,16 @@ namespace UserAdmin.Repositories
             {
                 module_id = old_record.module_id,
                 module_name = old_record.module_name,
-                module_parent_id = old_record.module_parent_id,
+                module_parent_name = old_record.module?.module_name,
                 module_is_installed = old_record.module_is_installed
             };
 
             await new LogHistorym<mast_modulem_dto>(context)
                 .Table("mast_modulem", log_date)
                 .PrimaryKey("module_id", record_dto.module_id)
+                .RefNo(record_dto.module_name!)
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
-                .TrackColumn("module_parent_id", "Parent")
+                .TrackColumn("module_parent_name", "Parent")
                 .TrackColumn("module_name", "Name")
                 .TrackColumn("module_is_installed", "Visible")
                 .SetRecord(old_record_dto, record_dto)

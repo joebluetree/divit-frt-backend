@@ -201,6 +201,7 @@ namespace UserAdmin.Repositories
                     Record = new mast_companym();
                     Record.rec_created_by = record_dto.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
+                    Record.rec_locked = "N";
                 }
                 else
                 {
@@ -235,7 +236,14 @@ namespace UserAdmin.Repositories
                 context.SaveChanges();
                 record_dto.comp_id = Record.comp_id;
                 record_dto.rec_version = Record.rec_version;
-                Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                // Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                record_dto.rec_created_by = Record.rec_created_by;
+                record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                if (record_dto.comp_id != 0)
+                {
+                    record_dto.rec_edited_by = Record.rec_edited_by;
+                    record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                }
                 return record_dto;
             }
             catch (Exception Ex)
@@ -245,35 +253,6 @@ namespace UserAdmin.Repositories
                 throw;
             }
         }
-
-        public async Task logHistory(mast_companym old_record, mast_companym_dto record_dto)
-        {
-
-            var old_record_dto = new mast_companym_dto
-            {
-                comp_id = old_record.comp_id,
-                comp_code = old_record.comp_code,
-                comp_name = old_record.comp_name,
-                comp_address1 = old_record.comp_address1,
-                comp_address2 = old_record.comp_address2,
-                comp_address3 = old_record.comp_address3,
-            };
-
-            await new LogHistorym<mast_companym_dto>(context)
-                .Table("mast_companym", log_date)
-                .PrimaryKey("comp_id", record_dto.comp_id)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.comp_id, 0, record_dto.rec_created_by!)
-                .TrackColumn("comp_code", "company-code")
-                .TrackColumn("comp_name", "company-name")
-                .TrackColumn("comp_address1", "company-address1")
-                .TrackColumn("comp_address2", "company-address2")
-                .TrackColumn("comp_address3", "company-address3")
-                .SetRecord(old_record_dto, record_dto)
-                .LogChangesAsync();
-        }
-
-
-
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
@@ -302,6 +281,32 @@ namespace UserAdmin.Repositories
             {
                 throw new Exception(Ex.Message.ToString());
             }
+        }
+        public async Task logHistory(mast_companym old_record, mast_companym_dto record_dto)
+        {
+
+            var old_record_dto = new mast_companym_dto
+            {
+                comp_id = old_record.comp_id,
+                comp_code = old_record.comp_code,
+                comp_name = old_record.comp_name,
+                comp_address1 = old_record.comp_address1,
+                comp_address2 = old_record.comp_address2,
+                comp_address3 = old_record.comp_address3,
+            };
+
+            await new LogHistorym<mast_companym_dto>(context)
+                .Table("mast_companym", log_date)
+                .PrimaryKey("comp_id", record_dto.comp_id)
+                .RefNo(record_dto.comp_name!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.comp_id, 0, record_dto.rec_created_by!)
+                .TrackColumn("comp_code", "company-code")
+                .TrackColumn("comp_name", "company-name")
+                .TrackColumn("comp_address1", "company-address1")
+                .TrackColumn("comp_address2", "company-address2")
+                .TrackColumn("comp_address3", "company-address3")
+                .SetRecord(old_record_dto, record_dto)
+                .LogChangesAsync();
         }
 
     }

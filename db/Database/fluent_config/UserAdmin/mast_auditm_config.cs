@@ -7,7 +7,7 @@ namespace Database.fluent_config.UserAdmin
     public class mast_auditm_config : IEntityTypeConfiguration<mast_auditm>
     {
         public void Configure(EntityTypeBuilder<mast_auditm> modelBuilder)
-        {
+        {/*
             //Table
             modelBuilder.ToTable("mast_logm");
             //Parimary Key
@@ -50,6 +50,7 @@ namespace Database.fluent_config.UserAdmin
             modelBuilder.HasIndex(e => new { e.log_id })
                 .HasDatabaseName("uq_mast_logm_log_id")
                 .IsUnique(false);
+                */
         }
 
     }

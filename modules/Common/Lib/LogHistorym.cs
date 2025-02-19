@@ -16,6 +16,8 @@ namespace Common.Lib
         private string pkey = "";
         private int _version = 0;
 
+        private string _refno = "";
+
         private DateTime _log_date;
         private readonly Dictionary<string, (string Description, string DataType)> _columnsToTrack;
 
@@ -50,6 +52,12 @@ namespace Common.Lib
             return this;
         }
 
+        public LogHistorym<T> RefNo(string refno)
+        {
+            _refno = refno;
+            return this;
+        }
+
 
         public LogHistorym<T> SetCompanyInfo(int version, int company_id, int branch_id, string user_code)
         {
@@ -62,7 +70,7 @@ namespace Common.Lib
 
         public LogHistorym<T> TrackColumn(string column, string description, string dataType = "string")
         {
-            _columnsToTrack[column] = (description, dataType.ToLower()); // Default to string if not provided
+            _columnsToTrack[column] = (description, dataType.ToLower()); // Default to string if not provided     
             return this;
         }
 
@@ -107,6 +115,11 @@ namespace Common.Lib
                             var oldValue = oldEntity.GetType().GetProperty(column)?.GetValue(oldEntity)?.ToString();
                             var newValue = newEntity.GetType().GetProperty(column)?.GetValue(newEntity)?.ToString();
 
+                            if (oldValue == null)
+                                oldValue = "";
+                            if (newValue == null)
+                                newValue = "";
+
                             if (compareValues(oldValue!, newValue!, dataType))
                             {
                                 historyLogs.Add(new mast_history
@@ -116,7 +129,7 @@ namespace Common.Lib
                                     rec_company_id = _company_id,
                                     rec_branch_id = _branch_id == 0 ? null : _branch_id,
                                     log_user_code = _user_code,
-                                    log_refno = "",
+                                    log_refno = _refno,
                                     log_column = column,
                                     log_desc = description,
                                     log_old_value = oldValue,
@@ -136,6 +149,8 @@ namespace Common.Lib
                         {
                             var (description, dataType) = _columnsToTrack[column];
                             var oldValue = oldEntity.GetType().GetProperty(column)?.GetValue(oldEntity)?.ToString();
+                            if (oldValue == null)
+                                oldValue = "";
                             historyLogs.Add(new mast_history
                             {
                                 log_table = _table_name,
@@ -143,7 +158,7 @@ namespace Common.Lib
                                 rec_company_id = _company_id,
                                 rec_branch_id = _branch_id == 0 ? null : _branch_id,
                                 log_user_code = _user_code,
-                                log_refno = "",
+                                log_refno = _refno,
                                 log_column = column,
                                 log_desc = description,
                                 log_old_value = oldValue,
@@ -168,6 +183,8 @@ namespace Common.Lib
                         {
                             var (description, dataType) = _columnsToTrack[column];
                             var newValue = newEntity.GetType().GetProperty(column)?.GetValue(newEntity)?.ToString();
+                            if (newValue == null)
+                                newValue = "";
                             historyLogs.Add(new mast_history
                             {
                                 log_table = _table_name,
@@ -175,7 +192,7 @@ namespace Common.Lib
                                 rec_company_id = _company_id,
                                 rec_branch_id = _branch_id == 0 ? null : _branch_id,
                                 log_user_code = _user_code,
-                                log_refno = "",
+                                log_refno = _refno,
                                 log_column = column,
                                 log_desc = description,
                                 log_old_value = "",
@@ -214,11 +231,11 @@ namespace Common.Lib
             Boolean bRet = false;
             if (data_type.ToLower() == "string")
             {
-                if (oldValue == null)
-                    oldValue = "";
-                if (newValue == null)
-                    newValue = "";
-
+                if (oldValue != newValue)
+                    bRet = true;
+            }
+            if (data_type.ToLower() == "date")
+            {
                 if (oldValue != newValue)
                     bRet = true;
             }

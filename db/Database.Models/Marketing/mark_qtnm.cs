@@ -1,4 +1,8 @@
-﻿using Database.Models.BaseTables;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Database.Models.UserAdmin;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Database.Models.BaseTables;
 using Database.Models.Masters;
 
 //Name : Sourav V
@@ -7,8 +11,9 @@ using Database.Models.Masters;
 
 namespace Database.Models.Marketing
 {
-    public class mark_qtnm : baseTable
+    public class mark_qtnm
     {
+        [Key]
         public int qtnm_id { get; set; }
         public int qtnm_cfno { get; set; }
         public string? qtnm_type { get; set; }
@@ -42,16 +47,44 @@ namespace Database.Models.Marketing
         public string? qtnm_trans_time { get; set; }
         public string? qtnm_routing { get; set; }
         public decimal qtnm_amt { get; set; }        
+        
+        [ForeignKey("qtnm_to_id")]
         public mast_customerm? customer { get; set; } 
+        
+        [ForeignKey("qtnm_salesman_id")]
         public mast_param? salesman { get; set; }
+
+        [ForeignKey("qtnm_por_id")]
         public mast_param? por { get; set; }
+        
+        [ForeignKey("qtnm_pol_id")]
         public mast_param? pol { get; set; }
+
+        [ForeignKey("qtnm_pod_id")]
         public mast_param? pod { get; set; }
+
+        
         public List <mark_qtnd_lcl>? qtnd_lcl { get; set; } 
 
-        public List <mark_qtnd_fcl>? qtnm_fcl { get; set; } 
+        public List <mark_qtnd_fcl>? qtnd_fcl { get; set; } 
 
         public List <mark_qtnd_air>? qtnd_air { get; set; } 
+        
+        [ConcurrencyCheck]
+        public int rec_version { get; set; }
+        public string? rec_locked { get; set; }
+        public string? rec_created_by { get; set; }
+        public DateTime rec_created_date { get; set; }
+        public string? rec_edited_by { get; set; }
+        public DateTime? rec_edited_date { get; set; }
+        public int rec_company_id { get; set; }
+        public int rec_branch_id { get; set; }
+
+        [ForeignKey("rec_company_id")]
+        public mast_companym? company { get; set; }
+                
+        [ForeignKey("rec_branch_id")]
+        public mast_branchm? branch { get; set; }
 
         
     }

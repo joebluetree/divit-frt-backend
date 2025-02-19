@@ -280,6 +280,13 @@ namespace UserAdmin.Repositories
                 context.SaveChanges();
                 //Record_DTO.user_id = Record.user_id;
                 //Lib.AssignDates2DTO(id, Record, Record_DTO);
+                // record_dto.rec_created_by = Record.rec_created_by;
+                // record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                // if (record_dto.rights_id != 0)
+                // {
+                //     record_dto.rec_edited_by = Record.rec_edited_by;
+                //     record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                // }
                 return record_dto;
             }
             catch (Exception Ex)

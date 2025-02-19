@@ -7,7 +7,7 @@ namespace Database.fluent_config.UserAdmin
     public class mast_menum_config : IEntityTypeConfiguration<mast_menum>
     {
         public void Configure(EntityTypeBuilder<mast_menum> modelBuilder)
-        {
+        {/*
             //Table
             modelBuilder.ToTable("mast_menum");
             //Primary Key
@@ -753,7 +753,7 @@ namespace Database.fluent_config.UserAdmin
                 rec_created_date = DbLib.GetDateTime(),
                 rec_created_by = "ADMIN"
             }
-            );
+            );*/
         }
 
     }

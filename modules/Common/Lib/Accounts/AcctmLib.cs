@@ -5,6 +5,7 @@ using Database.Lib.Interfaces;
 using Database;
 using Microsoft.EntityFrameworkCore;
 using Npgsql.Replication;
+using Database.Lib;
 
 namespace Common.Lib.Accounts
 {
@@ -30,6 +31,7 @@ namespace Common.Lib.Accounts
                     Record.rec_company_id = Record_DTO.rec_company_id;
                     Record.rec_created_by = Record_DTO.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
+                    Record.rec_locked = "N";
                 }
                 else
                 {
@@ -80,7 +82,14 @@ namespace Common.Lib.Accounts
                 await context.SaveChangesAsync();
                 Record_DTO.acc_id = Record.acc_id;
                 Record_DTO.rec_version = Record.rec_version;
-                Database.Lib.Lib.AssignDates2DTO(Record_DTO.acc_id, mode, Record, Record_DTO);
+                // Database.Lib.Lib.AssignDates2DTO(Record_DTO.acc_id, mode, Record, Record_DTO);
+                Record_DTO.rec_created_by = Record.rec_created_by;
+                Record_DTO.rec_created_date = Database.Lib.Lib.FormatDate(Record.rec_created_date, Database.Lib.Lib.outputDateTimeFormat);
+                if (Record_DTO.acc_id != 0)
+                {
+                    Record_DTO.rec_edited_by = Record.rec_edited_by;
+                    Record_DTO.rec_edited_date = Database.Lib.Lib.FormatDate(Record.rec_edited_date, Database.Lib.Lib.outputDateTimeFormat);
+                }
 
                 return Record_DTO;
             }

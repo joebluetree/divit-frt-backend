@@ -74,7 +74,6 @@ namespace Database.Models.Masters
         public string? cust_marketing_mail { get; set; }
 
         public int? cust_chb_id { get; set; }
-        public string? cust_chb_code { get; set; }
         public string? cust_chb_name { get; set; }
         public string? cust_chb_address1 { get; set; }
         public string? cust_chb_address2 { get; set; }
@@ -122,6 +121,10 @@ namespace Database.Models.Masters
 
         [ForeignKey("cust_cur_id")]
         public mast_param? currency { get; set; }
+
+        [ForeignKey("cust_chb_id")]
+        public mast_customerm? chb { get; set; }
+
         public List<mast_contactm>? cust_contacts { get; set; }
 
         //Common Columns - Company Wise

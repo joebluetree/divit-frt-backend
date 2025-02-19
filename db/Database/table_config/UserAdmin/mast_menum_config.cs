@@ -7,7 +7,7 @@ namespace Database.table_config.UserAdmin
     public class mast_menum_config : IEntityTypeConfiguration<mast_menum>
     {
         public void Configure(EntityTypeBuilder<mast_menum> modelBuilder)
-        {
+        {/*
             //Table
             modelBuilder.ToTable("mast_menum");
             modelBuilder.HasKey(e => e.menu_id);

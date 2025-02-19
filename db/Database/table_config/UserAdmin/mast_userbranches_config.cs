@@ -7,7 +7,7 @@ namespace Database.table_config.UserAdmin
     public class mast_userbranches_config : IEntityTypeConfiguration<mast_userbranches>
     {
         public void Configure(EntityTypeBuilder<mast_userbranches> modelBuilder)
-        {
+        {/*
             //Table
             modelBuilder.ToTable("mast_userbranches");
             modelBuilder.HasKey(e => e.ub_id);
@@ -75,7 +75,7 @@ namespace Database.table_config.UserAdmin
                 .HasConstraintName("fk_mast_branchm_rec_branch_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
-                */
+            
             // insertdata(modelBuilder);
         }
         public void insertdata(EntityTypeBuilder<mast_userbranches> modelBuilder)
@@ -98,7 +98,7 @@ namespace Database.table_config.UserAdmin
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1,
             }
-            );
+            );*/
         }
     }
 

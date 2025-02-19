@@ -7,7 +7,7 @@ namespace Database.table_config.Masters
     public class mast_param_config : IEntityTypeConfiguration<mast_param>
     {
         public void Configure(EntityTypeBuilder<mast_param> modelBuilder)
-        {
+        {/*
             //Table
             modelBuilder.ToTable("mast_param");
             //Primary Key
@@ -1091,6 +1091,7 @@ namespace Database.table_config.Masters
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1
             });
+            */
         }
 
 

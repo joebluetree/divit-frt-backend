@@ -186,6 +186,7 @@ namespace Accounts.Repositories
                     Record.rec_company_id = Record_DTO.rec_company_id;
                     Record.rec_created_by = Record_DTO.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
+                    // Record.rec_locked = "N";
                 }
                 else
                 {
@@ -216,7 +217,14 @@ namespace Accounts.Repositories
                 context.SaveChanges();
                 Record_DTO.grp_id = Record.grp_id;
                 Record_DTO.rec_version = Record.rec_version;
-                Lib.AssignDates2DTO(id, mode, Record, Record_DTO);
+                // Lib.AssignDates2DTO(id, mode, Record, Record_DTO);
+                Record_DTO.rec_created_by = Record.rec_created_by;
+                Record_DTO.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                if (Record_DTO.grp_id != 0)
+                {
+                    Record_DTO.rec_edited_by = Record.rec_edited_by;
+                    Record_DTO.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                }
                 return Record_DTO;
             }
             catch (Exception Ex)
@@ -267,6 +275,7 @@ namespace Accounts.Repositories
             await new LogHistorym<acc_groupm_dto>(context)
                 .Table("acc_groupm", log_date)
                 .PrimaryKey("grp_id", record_dto.grp_id)
+                .RefNo(record_dto.grp_name!)
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
                 .TrackColumn("grp_name", "name")
                 .TrackColumn("grp_main_group", "main-group")

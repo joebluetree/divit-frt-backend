@@ -7,7 +7,7 @@ namespace Database.fluent_config.UserAdmin
     public class mast_rightsm_config : IEntityTypeConfiguration<mast_rightsm>
     {
         public void Configure(EntityTypeBuilder<mast_rightsm> modelBuilder)
-        {
+        {/*
             //Table
             modelBuilder.ToTable("mast_rightsm");
             //Parimary Key
@@ -130,7 +130,9 @@ namespace Database.fluent_config.UserAdmin
                 .HasPrincipalKey(e => e.menu_id)
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
+        */
         }
+
     }
 
 }

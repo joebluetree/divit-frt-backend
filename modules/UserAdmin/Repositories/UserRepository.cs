@@ -243,6 +243,7 @@ namespace UserAdmin.Repositories
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_created_by = record_dto.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
+                    Record.rec_locked = "N";
                 }
                 else
                 {
@@ -274,7 +275,14 @@ namespace UserAdmin.Repositories
                 context.SaveChanges();
                 record_dto.user_id = Record.user_id;
                 record_dto.rec_version = Record.rec_version;
-                Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                // Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                record_dto.rec_created_by = Record.rec_created_by;
+                record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                if (record_dto.user_id != 0)
+                {
+                    record_dto.rec_edited_by = Record.rec_edited_by;
+                    record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                }
                 return record_dto;
             }
 
@@ -332,7 +340,8 @@ namespace UserAdmin.Repositories
                             rec_branch_id = Record_New.rec_branch_id,
                             rec_company_id = Record_DTO.rec_company_id,
                             rec_created_by = Record_DTO.rec_created_by,
-                            rec_created_date = DbLib.GetDateTime()
+                            rec_created_date = DbLib.GetDateTime(),
+                            rec_locked = "N"
                         };
                         context.mast_userBranches.Add(Record);
 
@@ -414,6 +423,7 @@ namespace UserAdmin.Repositories
             await new LogHistorym<mast_userm_dto>(context)
                 .Table("mast_userm", log_date)
                 .PrimaryKey("user_id", record_dto.user_id)
+                .RefNo(record_dto.user_name!)
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
                 .TrackColumn("user_code", "code")
                 .TrackColumn("user_name", "name")

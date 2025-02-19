@@ -10,7 +10,7 @@ namespace Database.fluent_config.UserAdmin
     public class module_config : IEntityTypeConfiguration<mast_modulem>
     {
         public void Configure(EntityTypeBuilder<mast_modulem> modelBuilder)
-        {
+        {/*
             //Table Name
             modelBuilder.ToTable("mast_modulem");
             //Primary Key
@@ -72,6 +72,7 @@ namespace Database.fluent_config.UserAdmin
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             insertdata(modelBuilder);
+            */
         }
 
         void insertdata(EntityTypeBuilder<mast_modulem> modelBuilder)

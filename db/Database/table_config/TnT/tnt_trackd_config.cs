@@ -7,7 +7,7 @@ namespace Database.table_config.Tnt
     public class tnt_trackd_config : IEntityTypeConfiguration<tnt_trackd>
     {
         public void Configure(EntityTypeBuilder<tnt_trackd> modelBuilder)
-        {
+        {/*
             //Table Name
             modelBuilder.ToTable("tnt_trackd");
             //Primary Key

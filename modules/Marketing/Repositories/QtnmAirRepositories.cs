@@ -388,10 +388,12 @@ namespace Marketing.Repositories
                     Record.rec_branch_id = record_dto.rec_branch_id;
                     Record.rec_created_by = record_dto.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
+                    Record.rec_locked = "N";
                 }
                 else
                 {
                     Record = await context.mark_qtnm
+                        .Include(c => c.salesman)
                         .Where(f => f.qtnm_id == id)
                         .FirstOrDefaultAsync();
 
@@ -428,7 +430,14 @@ namespace Marketing.Repositories
                 record_dto.qtnm_no = Record.qtnm_no;
 
                 record_dto.rec_version = Record.rec_version;
-                Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                // Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                record_dto.rec_created_by = Record.rec_created_by;
+                record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                if (record_dto.qtnm_id != 0)
+                {
+                    record_dto.rec_edited_by = Record.rec_edited_by;
+                    record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                }
                 return record_dto;
             }
             catch (Exception Ex)
@@ -584,9 +593,10 @@ namespace Marketing.Repositories
                 qtnm_to_addr2 = old_record.qtnm_to_addr2,
                 qtnm_to_addr3 = old_record.qtnm_to_addr3,
                 qtnm_to_addr4 = old_record.qtnm_to_addr4,
-                // qtnm_date = Lib.ParseDate(old_record.qtnm_date!),
+                qtnm_date = Lib.FormatDate(old_record.qtnm_date,Lib.outputDateFormat),
                 qtnm_quot_by = old_record.qtnm_quot_by,
-                // qtnm_valid_date = Lib.ParseDate(old_record.qtnm_valid_date!),
+                qtnm_valid_date = Lib.FormatDate(old_record.qtnm_valid_date,Lib.outputDateFormat),
+                qtnm_salesman_name = old_record.salesman!.param_name,
                 qtnm_move_type = old_record.qtnm_move_type,
                 qtnm_commodity = old_record.qtnm_commodity
             };
@@ -602,9 +612,10 @@ namespace Marketing.Repositories
                 .TrackColumn("qtnm_to_addr2", "To Address 2")
                 .TrackColumn("qtnm_to_addr3", "To Address 3")
                 .TrackColumn("qtnm_to_addr4", "To Address 4")
-                .TrackColumn("qtnm_date", "Quotation Date")
+                .TrackColumn("qtnm_date", "Quotation Date", "date")
                 .TrackColumn("qtnm_quot_by", "Quoted By")
-                .TrackColumn("qtnm_valid_date", "Valid Until")
+                .TrackColumn("qtnm_valid_date", "Valid Until", "date")
+                .TrackColumn("qtnm_salesman_name", "Salesman name")
                 .TrackColumn("qtnm_move_type", "Move Type")
                 .TrackColumn("qtnm_commodity", "Commodity")
                 .SetRecord(old_record_dto, record_dto)
@@ -636,7 +647,7 @@ namespace Marketing.Repositories
             await new LogHistorym<mark_qtnd_air_dto>(context)
                 .Table("mark_qtnm", log_date)
                 .PrimaryKey("qtnd_id", record_dto.qtnm_id)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id??0, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
                 .TrackColumn("qtnd_pol_name", "POL Name")
                 .TrackColumn("qtnd_pod_name", "POD Name")
                 .TrackColumn("qtnd_carrier_name", "Carrier Name")
