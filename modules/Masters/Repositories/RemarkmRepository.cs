@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Database.Lib.Interfaces;
 using Database.Models.Masters;
 using Database.Models.BaseTables;
+using Common.Lib;
 
 namespace Masters.Repositories
 {
@@ -14,6 +15,7 @@ namespace Masters.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
+        private DateTime log_date;
         public RemarkmRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -147,9 +149,11 @@ namespace Masters.Repositories
         {
             try
             {
+                log_date = DbLib.GetDateTime();
+
                 context.Database.BeginTransaction();
                 mast_remarkm_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record = await SaveDetailsAsync(_Record.rem_id, record_dto);
+                _Record = await SaveDetailsAsync(_Record.rem_id, mode, record_dto);
                 _Record.rem_remarks = await GetDetailsAsync(_Record.rem_id);
                 context.Database.CommitTransaction();
                 return _Record;
@@ -232,13 +236,24 @@ namespace Masters.Repositories
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+                if (mode == "edit")
+                    await logHistory(Record, record_dto);
+
                 Record.rem_name = record_dto.rem_name;
                 if (mode == "add")
                     await context.mast_remarkm.AddAsync(Record);
                 context.SaveChanges();
                 record_dto.rem_id = Record.rem_id;
                 record_dto.rec_version = Record.rec_version;
-                Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                // Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                record_dto.rec_created_by = Record.rec_created_by;
+                record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                if (record_dto.rem_id != 0)
+                {
+                    record_dto.rec_edited_by = Record.rec_edited_by;
+                    record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                }
+
                 return record_dto;
             }
             catch (Exception Ex)
@@ -249,7 +264,7 @@ namespace Masters.Repositories
 
         }
 
-        public async Task<mast_remarkm_dto> SaveDetailsAsync(int? id, mast_remarkm_dto record_dto)
+        public async Task<mast_remarkm_dto> SaveDetailsAsync(int? id, string mode, mast_remarkm_dto record_dto)
         {
             mast_remarkd? record;
             List<mast_remarkd_dto> records_dto;
@@ -261,6 +276,11 @@ namespace Masters.Repositories
                     .Where(w => w.remd_remarkm_id == id)
                     .ToListAsync();
                 int nextorder = 1;
+
+                if (mode == "edit")
+                    await logHistoryDetail(records, record_dto);
+
+
                 foreach (var existing_record in records)
                 {
                     var rec = records_dto.Find(f => f.remd_id == existing_record.remd_id);
@@ -335,6 +355,48 @@ namespace Masters.Repositories
             {
                 throw;
             }
+        }
+
+        public async Task logHistory(mast_remarkm old_record, mast_remarkm_dto record_dto)
+        {
+
+            var old_record_dto = new mast_remarkm_dto
+            {
+                rem_id = old_record.rem_id,
+                rem_name = old_record.rem_name,
+
+            };
+
+            await new LogHistorym<mast_remarkm_dto>(context)
+                .Table("mast_remarkm", log_date)
+                .PrimaryKey("rem_id", record_dto.rem_id)
+                .RefNo(record_dto.rem_name!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .TrackColumn("rem_name", "Name")
+
+                .SetRecord(old_record_dto, record_dto)
+                .LogChangesAsync();
+
+        }
+
+        public async Task logHistoryDetail(List<mast_remarkd> old_records, mast_remarkm_dto record_dto)
+        {
+
+            var old_records_dto = old_records.Select(record => new mast_remarkd_dto
+            {
+                remd_id = record.remd_id,
+                remd_desc1 = record.remd_desc1,
+            }).ToList();
+
+            await new LogHistorym<mast_remarkd_dto>(context)
+                .Table("mast_remarkm", log_date)
+                .PrimaryKey("remd_id", record_dto.rem_id)
+                .RefNo(record_dto.rem_name!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .TrackColumn("remd_desc1", "Description")
+                .SetRecords(old_records_dto, record_dto.rem_remarks!)
+                .LogChangesAsync();
+
         }
     }
 }

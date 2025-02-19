@@ -27,6 +27,7 @@ namespace Marketing.Repositories
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
         string qtnm_type = "FCL";
+        private DateTime log_date;
 
         public QtnmFclRepository(AppDbContext _context, IAuditLog _auditLog)
         {
@@ -256,9 +257,11 @@ namespace Marketing.Repositories
         {
             try
             {
+                log_date = DbLib.GetDateTime();
+
                 context.Database.BeginTransaction();
                 mark_qtnm_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record = await SaveDetailsAsync(_Record.qtnm_id, record_dto);
+                _Record = await SaveDetailsAsync(_Record.qtnm_id, mode, record_dto);
                 _Record.qtnd_fcl = await GetDetailsAsync(_Record.qtnm_id);
                 context.Database.CommitTransaction();
                 return _Record;
@@ -375,6 +378,7 @@ namespace Marketing.Repositories
                 else
                 {
                     Record = await context.mark_qtnm
+                        .Include(c => c.salesman)
                         .Where(f => f.qtnm_id == id)
                         .FirstOrDefaultAsync();
 
@@ -386,6 +390,9 @@ namespace Marketing.Repositories
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+                if (mode == "edit")
+                    await logHistory(Record, record_dto);
+
                 Record.qtnm_to_id = record_dto.qtnm_to_id;
                 Record.qtnm_to_name = record_dto.qtnm_to_name;
                 Record.qtnm_to_addr1 = record_dto.qtnm_to_addr1;
@@ -438,7 +445,7 @@ namespace Marketing.Repositories
             return totcost.Sum();
         }
 
-        public async Task<mark_qtnm_dto> SaveDetailsAsync(int id, mark_qtnm_dto record_dto)
+        public async Task<mark_qtnm_dto> SaveDetailsAsync(int id, string mode, mark_qtnm_dto record_dto)
         {
             mark_qtnd_fcl? record;
             List<mark_qtnd_fcl_dto> records_dto;
@@ -449,8 +456,14 @@ namespace Marketing.Repositories
                 records_dto = record_dto.qtnd_fcl!;
 
                 records = await context.mark_qtnd_fcl
+                    .Include(c => c.pol)
+                    .Include(c => c.pod)
+                    .Include(c => c.carrier)
                     .Where(w => w.qtnd_qtnm_id == id)
                     .ToListAsync();
+
+                if(mode == "edit")
+                    await logHistoryDetail(records, record_dto);
 
                 int nextorder = 1;
 
@@ -565,6 +578,100 @@ namespace Marketing.Repositories
             {
                 throw;
             }
+        }
+
+        public async Task logHistory(mark_qtnm old_record, mark_qtnm_dto record_dto)
+        {
+
+            var old_record_dto = new mark_qtnm_dto
+            {
+                qtnm_id = old_record.qtnm_id,
+                qtnm_cfno = old_record.qtnm_cfno,
+                qtnm_no = old_record.qtnm_no,
+                qtnm_to_name = old_record.qtnm_to_name,
+                qtnm_to_addr1 = old_record.qtnm_to_addr1,
+                qtnm_to_addr2 = old_record.qtnm_to_addr2,
+                qtnm_to_addr3 = old_record.qtnm_to_addr3,
+                qtnm_to_addr4 = old_record.qtnm_to_addr4,
+                qtnm_date = Lib.FormatDate(old_record.qtnm_date, Lib.outputDateFormat),
+                qtnm_quot_by = old_record.qtnm_quot_by,
+                qtnm_valid_date = Lib.FormatDate(old_record.qtnm_valid_date, Lib.outputDateFormat),
+                qtnm_salesman_name = old_record.salesman?.param_name,
+                qtnm_move_type = old_record.qtnm_move_type,
+                qtnm_commodity = old_record.qtnm_commodity
+
+            };
+
+            await new LogHistorym<mark_qtnm_dto>(context)
+                .Table("mark_qtnm", log_date)
+                .PrimaryKey("qtnm_id", record_dto.qtnm_id)
+                .RefNo(record_dto.qtnm_no!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .TrackColumn("qtnm_cfno", "CF-No", "integer")
+                .TrackColumn("qtnm_no", "Quotation-No")
+                .TrackColumn("qtnm_to_name", "To Name")
+                .TrackColumn("qtnm_to_addr1", "To Address 1")
+                .TrackColumn("qtnm_to_addr2", "To Address 2")
+                .TrackColumn("qtnm_to_addr3", "To Address 3")
+                .TrackColumn("qtnm_to_addr4", "To Address 4")
+                .TrackColumn("qtnm_date", "Quotation Date")
+                .TrackColumn("qtnm_quot_by", "Quoted By")
+                .TrackColumn("qtnm_valid_date", "Valid Until")
+                .TrackColumn("qtnm_salesman_name", "Salesman Name")
+                .TrackColumn("qtnm_move_type", "Move Type")
+                .TrackColumn("qtnm_commodity", "Commodity")
+
+                .SetRecord(old_record_dto, record_dto)
+                .LogChangesAsync();
+
+        }
+
+        public async Task logHistoryDetail(List<mark_qtnd_fcl> old_records, mark_qtnm_dto record_dto)
+        {
+
+            var old_records_dto = old_records.Select(record => new mark_qtnd_fcl_dto
+            {
+                qtnd_id = record.qtnd_id,
+                qtnd_pol_name = record.qtnd_pol_name,
+                qtnd_pod_name = record.qtnd_pod_name,
+                qtnd_carrier_name = record.qtnd_carrier_name,
+                qtnd_trans_time = record.qtnd_trans_time,
+                qtnd_routing = record.qtnd_routing,
+                qtnd_cntr_type = record.qtnd_cntr_type,
+                qtnd_etd = record.qtnd_etd,
+                qtnd_cutoff = record.qtnd_cutoff,
+                qtnd_of = record.qtnd_of,
+                qtnd_pss = record.qtnd_pss,
+                qtnd_baf = record.qtnd_baf,
+                qtnd_isps = record.qtnd_isps,
+                qtnd_haulage = record.qtnd_haulage,
+                qtnd_ifs = record.qtnd_ifs,
+                qtnd_tot_amt = record.qtnd_tot_amt
+            }).ToList();
+
+            await new LogHistorym<mark_qtnd_fcl_dto>(context)
+                .Table("mark_qtnm_dto", log_date)
+                .PrimaryKey("qtnd_id", record_dto.qtnm_id)
+                .RefNo(record_dto.qtnm_no!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
+                .TrackColumn("qtnd_pol_name", "POL Name")
+                .TrackColumn("qtnd_pod_name", "POD Name")
+                .TrackColumn("qtnd_carrier_name", "Carrier Name")
+                .TrackColumn("qtnd_trans_time", "Transit Time")
+                .TrackColumn("qtnd_routing", "Routing")
+                .TrackColumn("qtnd_cntr_type", "Container Type")
+                .TrackColumn("qtnd_etd", "ETD")
+                .TrackColumn("qtnd_cutoff", "Cutoff")
+                .TrackColumn("qtnd_of", "OF","decimal")
+                .TrackColumn("qtnd_pss", "PSS","decimal")
+                .TrackColumn("qtnd_baf", "BAF","decimal")
+                .TrackColumn("qtnd_isps", "ISPS","decimal")
+                .TrackColumn("qtnd_haulage", "Haulage","decimal")
+                .TrackColumn("qtnd_ifs", "IFS","decimal")
+                .TrackColumn("qtnd_tot_amt", "Total Amount", "decimal")
+                .SetRecords(old_records_dto, record_dto.qtnd_fcl!)
+                .LogChangesAsync();
+
         }
 
     }
