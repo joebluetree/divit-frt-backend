@@ -194,6 +194,7 @@ namespace UserAdmin.Repositories
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_created_by = record_dto.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
+                    Record.rec_locked = "N";
                 }
                 else
                 {
@@ -223,7 +224,14 @@ namespace UserAdmin.Repositories
                 context.SaveChanges();
                 record_dto.branch_id = Record.branch_id;
                 record_dto.rec_version = Record.rec_version;
-                Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                // Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                record_dto.rec_created_by = Record.rec_created_by;
+                record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                if (record_dto.branch_id != 0)
+                {
+                    record_dto.rec_edited_by = Record.rec_edited_by;
+                    record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                }
                 return record_dto;
             }
             catch (Exception Ex)
@@ -277,12 +285,13 @@ namespace UserAdmin.Repositories
             await new LogHistorym<mast_branchm_dto>(context)
                 .Table("mast_branchm", log_date)
                 .PrimaryKey("branch_id", record_dto.branch_id)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.branch_id, record_dto.rec_created_by!)
+                .RefNo(record_dto.branch_name!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
                 .TrackColumn("branch_code", "code")
                 .TrackColumn("branch_name", "name")
-                .TrackColumn("branch_address1", "address1")
-                .TrackColumn("branch_address2", "address2")
-                .TrackColumn("branch_address3", "address3")
+                .TrackColumn("branch_address1", "address 1")
+                .TrackColumn("branch_address2", "address 2")
+                .TrackColumn("branch_address3", "address 3")
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
         }

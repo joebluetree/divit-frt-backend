@@ -232,7 +232,14 @@ namespace TnT.Repositories
                 Record_DTO.track_api_type = Record.track_api_type;
                 Record_DTO.track_request_id = Record.track_request_id;
                 Record_DTO.rec_version = Record.rec_version;
-                Lib.AssignDates2DTO(id, mode, Record, Record_DTO);
+                // Lib.AssignDates2DTO(id, mode, Record, Record_DTO);
+                Record_DTO.rec_created_by = Record.rec_created_by;
+                Record_DTO.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                if (Record_DTO.track_id != 0)
+                {
+                    Record_DTO.rec_edited_by = Record.rec_edited_by;
+                    Record_DTO.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                }
                 return Record_DTO;
             }
             catch (Exception Ex)

@@ -7,7 +7,7 @@ namespace Database.fluent_config.UserAdmin
     public class mast_userm_config : IEntityTypeConfiguration<mast_userm>
     {
         public void Configure(EntityTypeBuilder<mast_userm> modelBuilder)
-        {
+        {/*
             //Table
             modelBuilder.ToTable("mast_userm");
             //Parimary Key
@@ -120,7 +120,7 @@ namespace Database.fluent_config.UserAdmin
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1,
                 rec_branch_id = 1,
-            });
+            });*/
         }
     }
 

@@ -10,7 +10,7 @@ namespace Database.table_config.UserAdmin
     public class module_config : IEntityTypeConfiguration<mast_modulem>
     {
         public void Configure(EntityTypeBuilder<mast_modulem> modelBuilder)
-        {
+        {/*
             //Table Name
             modelBuilder.ToTable("mast_modulem");
             //Primary Key

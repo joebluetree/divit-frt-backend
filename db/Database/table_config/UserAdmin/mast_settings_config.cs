@@ -9,7 +9,7 @@ namespace Database.table_config.UserAdmin
     {
         public void Configure(EntityTypeBuilder<mast_settings> modelBuilder)
         {
-
+/*
             //Table Name
             modelBuilder.ToTable("mast_settings");
             //Primary Key
@@ -94,7 +94,6 @@ namespace Database.table_config.UserAdmin
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);
                 */
-
         }
 
     }

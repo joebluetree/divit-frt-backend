@@ -7,7 +7,7 @@ namespace Database.table_config.UserAdmin
     public class mast_rightsm_config : IEntityTypeConfiguration<mast_rightsm>
     {
         public void Configure(EntityTypeBuilder<mast_rightsm> modelBuilder)
-        {
+        {/*
             //Table
             modelBuilder.ToTable("mast_rightsm");
             modelBuilder.HasKey(e => e.rights_id);

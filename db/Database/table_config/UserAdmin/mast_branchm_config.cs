@@ -8,7 +8,7 @@ namespace Database.table_config.UserAdmin
     public class mast_branchm_config : IEntityTypeConfiguration<mast_branchm>
     {
         public void Configure(EntityTypeBuilder<mast_branchm> modelBuilder)
-        {
+        {/*
             //table and primary key
             modelBuilder.ToTable("mast_branchm");
             modelBuilder.HasKey(u => u.branch_id);
@@ -72,7 +72,7 @@ namespace Database.table_config.UserAdmin
                 .HasConstraintName("fk_mast_branchm_rec_company_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
-                */
+                
             // insertdata(modelBuilder);
 
         }
@@ -119,6 +119,7 @@ namespace Database.table_config.UserAdmin
                 rec_company_id = 1,
             }
             );
+            */
         }
     }
 

@@ -7,7 +7,7 @@ namespace Database.fluent_config.UserAdmin
     public class mast_userbranches_config : IEntityTypeConfiguration<mast_userbranches>
     {
         public void Configure(EntityTypeBuilder<mast_userbranches> modelBuilder)
-        {
+        {/*
             //Table
             modelBuilder.ToTable("mast_userbranches");
             //Parimary Key
@@ -98,6 +98,7 @@ namespace Database.fluent_config.UserAdmin
                 rec_company_id = 1,
             }
             );
+            */
         }
     }
 

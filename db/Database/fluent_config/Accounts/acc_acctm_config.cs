@@ -8,7 +8,7 @@ namespace Database.fluent_config.Accounts
     public class acc_acctm_config : IEntityTypeConfiguration<acc_acctm>
     { 
         public void Configure(EntityTypeBuilder<acc_acctm> modelBuilder)
-        {
+        {/*
             //table and primary key
             modelBuilder.ToTable("acc_acctm");
             modelBuilder.HasKey(u => u.acc_id)
@@ -174,7 +174,7 @@ namespace Database.fluent_config.Accounts
                 rec_company_id = 1
             }
 
-            );
+            );*/
         }
     }
 

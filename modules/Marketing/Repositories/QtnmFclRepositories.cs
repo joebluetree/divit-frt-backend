@@ -198,7 +198,7 @@ namespace Marketing.Repositories
                 if (Record == null)
                     throw new Exception("No Qtn Found");
 
-                Record.qtnm_fcl = await GetDetailsAsync(Record.qtnm_id);
+                Record.qtnd_fcl = await GetDetailsAsync(Record.qtnm_id);
 
                 return Record;
             }
@@ -259,7 +259,7 @@ namespace Marketing.Repositories
                 context.Database.BeginTransaction();
                 mark_qtnm_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await SaveDetailsAsync(_Record.qtnm_id, record_dto);
-                _Record.qtnm_fcl = await GetDetailsAsync(_Record.qtnm_id);
+                _Record.qtnd_fcl = await GetDetailsAsync(_Record.qtnm_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -296,7 +296,7 @@ namespace Marketing.Repositories
             if (Lib.IsBlank(record_dto.qtnm_move_type))
                 str += "Move Type Cannot Be Blank!";
 
-            foreach (mark_qtnd_fcl_dto rec in record_dto.qtnm_fcl!)
+            foreach (mark_qtnd_fcl_dto rec in record_dto.qtnd_fcl!)
             {
                 if (Lib.IsZero(rec.qtnd_pod_id))
                     code = "POD Cannot Be Blank!";
@@ -304,7 +304,7 @@ namespace Marketing.Repositories
                     name = "POL Cannot Be Blank!";
             }
 
-            if(record_dto.qtnm_fcl == null || record_dto.qtnm_fcl.Count == 0)
+            if(record_dto.qtnd_fcl == null || record_dto.qtnd_fcl.Count == 0)
             {
                 str += "No data found in FCL Details";
             }
@@ -370,6 +370,7 @@ namespace Marketing.Repositories
                     Record.rec_branch_id = record_dto.rec_branch_id;
                     Record.rec_created_by = record_dto.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
+                    Record.rec_locked = "N";
                 }
                 else
                 {
@@ -405,7 +406,14 @@ namespace Marketing.Repositories
                 record_dto.qtnm_amt = Record.qtnm_amt;
 
                 record_dto.rec_version = Record.rec_version;
-                Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                // Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                record_dto.rec_created_by = Record.rec_created_by;
+                record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                if (record_dto.qtnm_id != 0)
+                {
+                    record_dto.rec_edited_by = Record.rec_edited_by;
+                    record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                }
                 return record_dto;
             }
             catch (Exception)
@@ -438,7 +446,7 @@ namespace Marketing.Repositories
             try
             {
 
-                records_dto = record_dto.qtnm_fcl!;
+                records_dto = record_dto.qtnd_fcl!;
 
                 records = await context.mark_qtnd_fcl
                     .Where(w => w.qtnd_qtnm_id == id)

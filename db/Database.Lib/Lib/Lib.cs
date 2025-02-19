@@ -1,4 +1,5 @@
-﻿using Database.Models.BaseTables;
+﻿using System.Globalization;
+using Database.Models.BaseTables;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Database.Lib
@@ -114,7 +115,11 @@ namespace Database.Lib
         {
             if (string.IsNullOrEmpty(dateString))
                 return null;
-            return DateTime.Parse(dateString);
+            DateTime parsedDate;
+            bool success = DateTime.TryParseExact(dateString,BACK_END_DATE_FORMAT,CultureInfo.InvariantCulture, DateTimeStyles.None,out parsedDate);
+            if ( !success)
+                return null;
+            return DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc); // to set kind = utc
         }
 
 

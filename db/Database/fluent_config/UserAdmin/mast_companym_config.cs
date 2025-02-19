@@ -7,7 +7,7 @@ namespace Database.fluent_config.UserAdmin
     public class mast_companym_config : IEntityTypeConfiguration<mast_companym>
     {
         public void Configure(EntityTypeBuilder<mast_companym> modelBuilder)
-        {
+        {/*
             //table and primary key
             modelBuilder.ToTable("mast_companym");
             modelBuilder.HasKey(u => u.comp_id)
@@ -88,7 +88,7 @@ namespace Database.fluent_config.UserAdmin
                 rec_created_date = DbLib.GetDateTime(),
                 rec_created_by = "ADMIN"
             });
-
+*/
         }
 
 

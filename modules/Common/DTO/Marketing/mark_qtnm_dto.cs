@@ -34,7 +34,6 @@ namespace Common.DTO.Marketing
         public string? qtnm_quot_by { get; set; } = "";
         public string? qtnm_valid_date { get; set; } = "";
         public int? qtnm_salesman_id { get; set; } = 0;
-        public string? qtnm_salesman_code { get; set;}= ""; 
         public string? qtnm_salesman_name { get; set; } = ""; 
         public string? qtnm_move_type { get; set; } = "";
         public string? qtnm_commodity { get; set; } = "";
@@ -59,7 +58,7 @@ namespace Common.DTO.Marketing
         public string? qtnm_routing { get; set; } = "";
         public decimal? qtnm_amt { get; set; } = 0;   
 
-        public List<mark_qtnd_fcl_dto>? qtnm_fcl {get; set;}             
+        public List<mark_qtnd_fcl_dto>? qtnd_fcl {get; set;}             
 
         public List<mark_qtnd_lcl_dto>? qtnd_lcl {get; set;} 
         public List<mark_qtnd_air_dto>? qtnd_air {get; set;} 

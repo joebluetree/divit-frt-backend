@@ -7,7 +7,7 @@ namespace Database.fluent_config.Tnt
     public class tnt_trackm_config : IEntityTypeConfiguration<tnt_trackm>
     {
         public void Configure(EntityTypeBuilder<tnt_trackm> modelBuilder)
-        {
+        {/*
             //Table Name
             modelBuilder.ToTable("tnt_trackm");
             //Primary Key
@@ -188,7 +188,7 @@ namespace Database.fluent_config.Tnt
                 rec_created_by = "admin"
             }
 
-            );
+            );*/
         }
 
     }

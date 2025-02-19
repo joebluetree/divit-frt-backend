@@ -235,7 +235,14 @@ namespace Masters.Repositories
                 context.SaveChanges();
                 record_dto.param_id = Record.param_id;
                 record_dto.rec_version = Record.rec_version;
-                Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                // Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                record_dto.rec_created_by = Record.rec_created_by;
+                record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                if (record_dto.param_id != 0)
+                {
+                    record_dto.rec_edited_by = Record.rec_edited_by;
+                    record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                }
                 return record_dto;
             }
             catch (Exception Ex)

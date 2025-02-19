@@ -4,6 +4,7 @@ namespace Database.Models.UserAdmin
 {
     public class mast_auditm
     {
+        [Key]
         public int log_id { get; set; }
         public DateTime? log_date { get; set; }
         public string? log_user_code { get; set; }

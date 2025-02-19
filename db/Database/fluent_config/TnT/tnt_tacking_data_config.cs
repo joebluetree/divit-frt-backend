@@ -7,7 +7,7 @@ namespace Database.fluent_config.Tnt
     public class tnt_tracking_data_config : IEntityTypeConfiguration<tnt_tracking_data>
     {
         public void Configure(EntityTypeBuilder<tnt_tracking_data> modelBuilder)
-        {
+        {/*
             //Table Name
             modelBuilder.ToTable("tnt_tracking_data");
             //Primary Key
@@ -121,6 +121,7 @@ namespace Database.fluent_config.Tnt
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             //unique key
+            */
         }
 
     }

@@ -7,7 +7,7 @@ namespace Database.table_config.Masters
    public class mast_contactm_config : IEntityTypeConfiguration<mast_contactm>
     { 
         public void Configure(EntityTypeBuilder<mast_contactm> modelBuilder)
-        {
+        {/*
             //table and primary key
             modelBuilder.ToTable("mast_contactm");
             modelBuilder.HasKey(u => u.cont_id);
@@ -140,7 +140,7 @@ namespace Database.table_config.Masters
                 rec_company_id = 1
             }
             );
-
+*/
         }
     }
 }

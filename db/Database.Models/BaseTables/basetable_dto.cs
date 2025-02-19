@@ -13,7 +13,7 @@ namespace Database.Models.BaseTables
         public string? rec_locked { get; set; }
         public int rec_company_id { get; set; } = 0;
         public string? rec_company_name { get; set; }
-        public int? rec_branch_id { get; set; } = 0;
+        public int rec_branch_id { get; set; } = 0;
         public string? rec_branch_name { get; set; }
         public string? rec_created_by { get; set; }
         public string? rec_created_date { get; set; }

@@ -7,7 +7,7 @@ namespace Database.table_config.UserAdmin
     public class mast_userm_config : IEntityTypeConfiguration<mast_userm>
     {
         public void Configure(EntityTypeBuilder<mast_userm> modelBuilder)
-        {
+        {/*
             //Table
             modelBuilder.ToTable("mast_userm");
             //Parimary Key
@@ -79,7 +79,7 @@ namespace Database.table_config.UserAdmin
                 .HasConstraintName("fk_mast_userm_rec_branch_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
-                */
+            
             // insertdata(modelBuilder);
         }
         public void insertdata(EntityTypeBuilder<mast_userm> modelBuilder)
@@ -123,6 +123,7 @@ namespace Database.table_config.UserAdmin
                 rec_company_id = 1,
                 rec_branch_id = 1,
             });
+            */
         }
     }
 

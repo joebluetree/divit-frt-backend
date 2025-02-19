@@ -171,7 +171,6 @@ namespace UserAdmin.Repositories
         {
             try
             {
-                // log_date = DateTime.UtcNow;
 
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);
@@ -373,7 +372,7 @@ namespace UserAdmin.Repositories
                     Record.json = "";
                     Record.order = order;
                     Record.rec_company_id = comp_id;
-                    Record.rec_branch_id = branch_id == 0 ? null : branch_id;
+                    Record.rec_branch_id = branch_id == 0 ? 0 : branch_id; // changed null to 0
                     Record.param_id = param_id == 0 ? null : param_id;
                     Record.value = value;
                     Record.code = code;

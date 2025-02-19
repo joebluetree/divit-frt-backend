@@ -7,7 +7,7 @@ namespace Database.table_config.UserAdmin
     public class mast_companym_config : IEntityTypeConfiguration<mast_companym>
     {
         public void Configure(EntityTypeBuilder<mast_companym> modelBuilder)
-        {
+        {/*
             //table and primary key
             modelBuilder.ToTable("mast_companym");
             modelBuilder.HasKey(u => u.comp_id);
@@ -62,7 +62,7 @@ namespace Database.table_config.UserAdmin
             modelBuilder.HasIndex(e => new { e.comp_id, e.comp_name })
                 .HasDatabaseName("uq_mast_companym_comp_name")
                 .IsUnique();
-                */
+                
 
             // insertdata(modelBuilder);
         }
@@ -90,6 +90,7 @@ namespace Database.table_config.UserAdmin
                 rec_created_date = DbLib.GetDateTime(),
                 rec_created_by = "ADMIN"
             });
+            */
 
         }
 

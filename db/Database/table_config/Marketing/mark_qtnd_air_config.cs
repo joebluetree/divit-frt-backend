@@ -13,7 +13,7 @@ namespace Database.table_config.Marketing
     public class mark_qtnd_air_config : IEntityTypeConfiguration<mark_qtnd_air>
     { 
         public void Configure(EntityTypeBuilder<mark_qtnd_air> modelBuilder)
-        {
+        {/*
             //table and primary key
             modelBuilder.ToTable("mark_qtnd_air");
             modelBuilder.HasKey(u => u.qtnd_id);
@@ -139,7 +139,7 @@ namespace Database.table_config.Marketing
                 .HasConstraintName("fk_mark_qtnd_air_rec_branch_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
-            */
+            
             // insertdata(modelBuilder);
         }
 
@@ -158,6 +158,7 @@ namespace Database.table_config.Marketing
                 rec_company_id = 1,
                 rec_branch_id =1,
             });
+            */
         }
     }
 }

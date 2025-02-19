@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Database.Models.BaseTables;
-
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace Database.Models.UserAdmin
 {
-    public class mast_rightsm : baseTable
+    public class mast_rightsm 
     {
+        [Key]
         public int rights_id { get; set; }
         public int rights_parent_id { get; set; }
         public int rights_user_id { get; set; }
@@ -21,10 +22,14 @@ namespace Database.Models.UserAdmin
         public string? rights_approver { get; set; }
 
         public string? rights_value { get; set; }
-
+        
+        [ForeignKey("rights_parent_id")]
         public mast_userbranches? userbranches { get; set; }
 
+        [ForeignKey("rights_user_id")]
         public mast_userm? user { get; set; }
+        
+        [ForeignKey("rights_menu_id")]
         public mast_menum? menu { get; set; }
 
         /*
@@ -38,6 +43,21 @@ namespace Database.Models.UserAdmin
         public string? rec_edited_by { get; set; }
         public DateTime? rec_edited_date { get; set; }
         */
+        [ConcurrencyCheck]
+        public int rec_version { get; set; }
+        public string? rec_locked { get; set; }
+        public string? rec_created_by { get; set; }
+        public DateTime rec_created_date { get; set; }
+        public string? rec_edited_by { get; set; }
+        public DateTime? rec_edited_date { get; set; }
+        public int? rec_company_id { get; set; }
+        public int? rec_branch_id { get; set; }
+
+        [ForeignKey("rec_company_id")]
+        public mast_companym? company { get; set; }
+        
+        [ForeignKey("rec_branch_id")]
+        public mast_branchm? branch { get; set; }
     }
 
 }

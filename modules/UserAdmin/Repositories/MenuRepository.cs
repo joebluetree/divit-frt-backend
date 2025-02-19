@@ -166,6 +166,7 @@ namespace UserAdmin.Repositories
             try
             {
                 log_date = DateTime.UtcNow;
+                
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);
                 context.Database.CommitTransaction();
@@ -225,7 +226,9 @@ namespace UserAdmin.Repositories
                 else
                 {
 
-                    Record = await context.mast_menum.Include(c => c.module)
+                    Record = await context.mast_menum
+                        .Include(c => c.module)
+                        .Include(c => c.submenu)
                         .Where(f => f.menu_id == id)
                         .FirstOrDefaultAsync();
                     if (Record == null)
@@ -258,7 +261,14 @@ namespace UserAdmin.Repositories
                 context.SaveChanges();
                 record_dto.menu_id = Record.menu_id;
                 record_dto.rec_version = Record.rec_version;
-                Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                // Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                record_dto.rec_created_by = Record.rec_created_by;
+                record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                if (record_dto.menu_id != 0)
+                {
+                    record_dto.rec_edited_by = Record.rec_edited_by;
+                    record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                }
                 return record_dto;
             }
             catch (Exception Ex)
@@ -307,8 +317,10 @@ namespace UserAdmin.Repositories
                 menu_name = old_record.menu_name,
                 menu_route = old_record.menu_route,
                 menu_param = old_record.menu_param,
-                menu_module_id = old_record.menu_module_id,
-                menu_submenu_id = old_record.menu_submenu_id,
+                // menu_module_id = old_record.menu_module_id,
+                menu_module_name = old_record.module?.module_name,
+                // menu_submenu_id = old_record.menu_submenu_id,
+                menu_submenu_name = old_record.submenu?.module_name
             };
 
             await new LogHistorym<mast_menum_dto>(context)
@@ -319,8 +331,10 @@ namespace UserAdmin.Repositories
                 .TrackColumn("menu_name", "name")
                 .TrackColumn("menu_route", "routes")
                 .TrackColumn("menu_param", "menu-param")
-                .TrackColumn("menu_module_id", "module")
-                .TrackColumn("menu_submenu_id", "sub-menu")
+                // .TrackColumn("menu_module_id", "module")
+                // .TrackColumn("menu_submenu_id", "sub-menu")
+                .TrackColumn("menu_module_name", "module")
+                .TrackColumn("menu_submenu_name", "sub-menu")
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
         }

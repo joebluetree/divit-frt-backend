@@ -13,7 +13,7 @@ namespace Database.fluent_config.Marketing
     public class mark_qtnd_lcl_config : IEntityTypeConfiguration<mark_qtnd_lcl>
     { 
         public void Configure(EntityTypeBuilder<mark_qtnd_lcl> modelBuilder)
-        {
+        {/*
             //table and primary key
             modelBuilder.ToTable("mark_qtnd_lcl");
             modelBuilder.HasKey(u => u.qtnd_id)
@@ -104,7 +104,7 @@ namespace Database.fluent_config.Marketing
                 rec_created_date = DbLib.GetDateTime(),
                 rec_company_id = 1,
                 rec_branch_id =1,
-            });
+            });*/
         }
     }
 }

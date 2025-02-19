@@ -8,7 +8,7 @@ namespace Database.table_config.Accounts
     public class acc_acctm_config : IEntityTypeConfiguration<acc_acctm>
     { 
         public void Configure(EntityTypeBuilder<acc_acctm> modelBuilder)
-        {
+        {/*
             //table and primary key
             modelBuilder.ToTable("acc_acctm");
             modelBuilder.HasKey(u => u.acc_id);
@@ -93,7 +93,7 @@ namespace Database.table_config.Accounts
                 .HasConstraintName("fk_mast_acctm_rec_company_id")
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
-                */
+            
             //insertdata(modelBuilder);
         }
 
@@ -176,7 +176,7 @@ namespace Database.table_config.Accounts
                 rec_company_id = 1
             }
 
-            );
+            );*/
         }
     }
 

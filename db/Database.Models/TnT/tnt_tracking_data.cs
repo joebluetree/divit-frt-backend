@@ -2,14 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
+using Database.Models.UserAdmin;
+
 
 namespace Database.Models.TnT
 {
-    public class tnt_tracking_data : baseTable_company
+    public class tnt_tracking_data //: baseTable_company
     {
+        [Key]
         public int track_id { get; set; }
 
         public int tnt_trackm_id { get; set; }
@@ -34,8 +39,24 @@ namespace Database.Models.TnT
 
         public string? tnt_row_type { get; set; }
 
+        [ForeignKey("tnt_trackm_id")]
         public tnt_trackm? trackm { get; set; }
+        
+        [ForeignKey("tnt_trackd_id")]
         public tnt_trackd? trackd { get; set; }
+
+
+        [ConcurrencyCheck]
+        public int rec_version { get; set; }
+        public string? rec_locked { get; set; }
+        public string? rec_created_by { get; set; }
+        public DateTime rec_created_date { get; set; }
+        public string? rec_edited_by { get; set; }
+        public DateTime? rec_edited_date { get; set; }
+        public int rec_company_id { get; set; }
+
+        [ForeignKey("rec_company_id")]
+        public mast_companym? company { get; set; }
 
     }
 
