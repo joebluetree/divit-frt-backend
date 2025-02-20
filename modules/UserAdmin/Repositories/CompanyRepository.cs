@@ -299,7 +299,7 @@ namespace UserAdmin.Repositories
                 .Table("mast_companym", log_date)
                 .PrimaryKey("comp_id", record_dto.comp_id)
                 .RefNo(record_dto.comp_name!)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.comp_id, 0, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
                 .TrackColumn("comp_code", "company-code")
                 .TrackColumn("comp_name", "company-name")
                 .TrackColumn("comp_address1", "company-address1")
