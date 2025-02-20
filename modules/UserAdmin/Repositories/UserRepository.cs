@@ -136,7 +136,7 @@ namespace UserAdmin.Repositories
                 if (Record == null)
                     throw new Exception("No Data Found");
 
-                var records = await this.GetUserBranchesAsync(comp_id, id);
+                var records = await this.GetuserBranchesAsync(comp_id, id);
 
                 Record.userbranches = records;
 
@@ -148,10 +148,14 @@ namespace UserAdmin.Repositories
             }
         }
 
-        public async Task<List<mast_userbranches_dto>> GetUserBranchesAsync(int comp_id, int id)
+        public async Task<List<mast_userbranches_dto>> GetuserBranchesAsync(int comp_id, int id)
         {
+
+            try {
             var query = (from a in context.mast_branchm
-                         from b in context.mast_userBranches.Where(b =>
+                         from b in context.mast_userbranches
+                         .Include(c => c.user)
+                         .Where(b =>
                                a.rec_company_id == b.rec_company_id
                                && a.branch_id == b.rec_branch_id
                                && b.ub_user_id == id).DefaultIfEmpty()
@@ -177,6 +181,11 @@ namespace UserAdmin.Repositories
             //var sql = query.ToQueryString();
 
             return Record;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message.ToString());
+            }
         }
         public async Task<mast_userm_dto> SaveAsync(int id, string mode, mast_userm_dto record_dto)
         {
@@ -187,7 +196,7 @@ namespace UserAdmin.Repositories
                 context.Database.BeginTransaction();
                 mast_userm_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await SaveDetAsync(_Record.user_id, _Record);
-                _Record.userbranches = await GetUserBranchesAsync(_Record.rec_company_id, id);
+                _Record.userbranches = await GetuserBranchesAsync(_Record.rec_company_id, id);
                 context.Database.CommitTransaction();
                 return record_dto;
             }
@@ -309,9 +318,9 @@ namespace UserAdmin.Repositories
 
                 RecordDet_DTO = Record_DTO.userbranches!;
 
-                RecordDet = await context.mast_userBranches
-                .Where(f => f.ub_user_id == id)
-                .ToListAsync();
+                RecordDet = await context.mast_userbranches
+                    .Where(f => f.ub_user_id == id)
+                    .ToListAsync();
 
                 foreach (var Record_Old in RecordDet)
                 {
@@ -322,7 +331,7 @@ namespace UserAdmin.Repositories
                     else if (Rec.ub_selected == "N")
                         bDelete = true;
                     if (bDelete)
-                        context.mast_userBranches.Remove(Record_Old);
+                        context.mast_userbranches.Remove(Record_Old);
                 }
                 foreach (var Record_New in RecordDet_DTO)
                 {
@@ -343,7 +352,7 @@ namespace UserAdmin.Repositories
                             rec_created_date = DbLib.GetDateTime(),
                             rec_locked = "N"
                         };
-                        context.mast_userBranches.Add(Record);
+                        context.mast_userbranches.Add(Record);
 
                         await context.SaveChangesAsync();
                         Record_New.ub_id = Record.ub_id;
@@ -387,11 +396,11 @@ namespace UserAdmin.Repositories
                 }
                 else
                 {
-                    var _Contact = context.mast_userBranches
+                    var _Contact = context.mast_userbranches
                     .Where(c => c.ub_user_id == id);
                     if (_Contact.Any())
                     {
-                        context.mast_userBranches.RemoveRange(_Contact);
+                        context.mast_userbranches.RemoveRange(_Contact);
 
                     }
 

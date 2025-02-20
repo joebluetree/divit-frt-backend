@@ -17,7 +17,7 @@ namespace Database.Models.UserAdmin
 
 
         [ConcurrencyCheck]
-        public int rec_version { get; set; }
+        // public int rec_version { get; set; }
         public string? rec_locked { get; set; }
         public string? rec_created_by { get; set; }
         public DateTime rec_created_date { get; set; }

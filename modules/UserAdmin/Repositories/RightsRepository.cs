@@ -40,7 +40,7 @@ namespace UserAdmin.Repositories
                 _page.rows = int.Parse(data["rows"].ToString()!);
                 _page.pageSize = int.Parse(data["pageSize"].ToString()!);
 
-                IQueryable<mast_userbranches> query = context.mast_userBranches
+                IQueryable<mast_userbranches> query = context.mast_userbranches
                     .Include(e => e.branch)
                     .Include(e => e.user);
 
@@ -100,7 +100,7 @@ namespace UserAdmin.Repositories
             try
             {
 
-                var userbranch = await context.mast_userBranches.
+                var userbranch = await context.mast_userbranches.
                                 Where(a => a.ub_id == id).
                                 Select(a => new rights_header_dto
                                 {
@@ -279,7 +279,7 @@ namespace UserAdmin.Repositories
                 }
                 context.SaveChanges();
                 //Record_DTO.user_id = Record.user_id;
-                //Lib.AssignDates2DTO(id, Record, Record_DTO);
+                // Lib.AssignDates2DTO(id, Record, Record_DTO);
                 // record_dto.rec_created_by = Record.rec_created_by;
                 // record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
                 // if (record_dto.rights_id != 0)
