@@ -133,7 +133,7 @@ namespace Accounts.Repositories
         {
             try
             {
-                log_date = DateTime.UtcNow;
+                log_date = DbLib.GetDateTime();
                 context.Database.BeginTransaction();
                 acc_groupm_dto _Record = await SaveParentAsync(id, mode, Record);
                 context.Database.CommitTransaction();

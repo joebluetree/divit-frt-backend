@@ -281,7 +281,7 @@ namespace Marketing.Repositories
         {
             try
             {
-                log_date = DateTime.UtcNow;
+                log_date = DbLib.GetDateTime();
 
                 context.Database.BeginTransaction();
                 mark_qtnm_dto _Record = await SaveParentAsync(id, mode, record_dto);

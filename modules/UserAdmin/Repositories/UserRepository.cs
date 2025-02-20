@@ -182,7 +182,7 @@ namespace UserAdmin.Repositories
         {
             try
             {
-                log_date = DateTime.UtcNow;
+                log_date = DbLib.GetDateTime();
 
                 context.Database.BeginTransaction();
                 mast_userm_dto _Record = await SaveParentAsync(id, mode, record_dto);

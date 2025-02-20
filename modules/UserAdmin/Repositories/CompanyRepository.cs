@@ -140,7 +140,7 @@ namespace UserAdmin.Repositories
         {
             try
             {
-                log_date = DateTime.UtcNow;
+                log_date = DbLib.GetDateTime();
 
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);

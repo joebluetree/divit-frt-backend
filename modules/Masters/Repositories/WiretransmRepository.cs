@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Database.Lib.Interfaces;
 using Database.Models.Masters;
 using Database.Models.BaseTables;
+using Common.Lib;
 
 namespace Masters.Repositories
 {
@@ -14,6 +15,7 @@ namespace Masters.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
+        private DateTime log_date;
         public WiretransmRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -212,9 +214,11 @@ namespace Masters.Repositories
         {
             try
             {
+                log_date = DbLib.GetDateTime();
+
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);
-                record_dto = await saveDetailsAsync(record_dto.wtim_id, record_dto);
+                record_dto = await saveDetailsAsync(record_dto.wtim_id, mode, record_dto);
                 record_dto.wtim_details = await GetDetailsAsync(record_dto.wtim_id);
                 context.Database.CommitTransaction();
                 return record_dto;
@@ -252,7 +256,7 @@ namespace Masters.Repositories
 
             foreach (mast_wiretransd_dto rec in record_dto.wtim_details!)
             {
-                
+
                 if (Lib.IsZero(rec.wtid_benef_id))
                     name = "Beneficiary Name Cannot Be Blank!";
                 if (Lib.IsZero(rec.wtid_bank_id))
@@ -274,7 +278,7 @@ namespace Masters.Repositories
                 str += benef;
             if (reference != "")
                 str += reference;
-            
+
             if (str != "")
             {
                 error = error + str;
@@ -308,12 +312,12 @@ namespace Masters.Repositories
                 if (mode == "add")
                 {
                     int iNextNo = GetNextRefNo(record_dto.rec_company_id, record_dto.rec_branch_id);
-                    string sqtn_no = $"WT-{iNextNo}";               
+                    string sqtn_no = $"WT-{iNextNo}";
 
                     Record = new mast_wiretransm();
                     Record.wtim_slno = iNextNo;
                     Record.wtim_refno = sqtn_no;
-                    
+
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_branch_id = record_dto.rec_branch_id;
                     Record.rec_created_by = record_dto.rec_created_by;
@@ -322,6 +326,7 @@ namespace Masters.Repositories
                 else
                 {
                     Record = await context.mast_wiretransm
+                        .Include(c => c.customer)
                         .Where(f => f.wtim_id == id)
                         .FirstOrDefaultAsync();
 
@@ -334,6 +339,9 @@ namespace Masters.Repositories
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+                if (mode == "edit")
+                    await logHistory(Record, record_dto);
+
                 Record.wtim_to_name = record_dto.wtim_to_name;
                 Record.wtim_cust_id = record_dto.wtim_cust_id;
                 Record.wtim_cust_name = record_dto.wtim_cust_name;
@@ -359,7 +367,15 @@ namespace Masters.Repositories
                 record_dto.wtim_id = Record.wtim_id;
                 record_dto.wtim_refno = Record.wtim_refno;
                 record_dto.rec_version = Record.rec_version;
-                Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                // Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                record_dto.rec_created_by = Record.rec_created_by;
+                record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                if (record_dto.wtim_id != 0)
+                {
+                    record_dto.rec_edited_by = Record.rec_edited_by;
+                    record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                }
+
                 return record_dto;
             }
             catch (Exception)
@@ -370,7 +386,7 @@ namespace Masters.Repositories
 
         }
 
-        public async Task<mast_wiretransm_dto> saveDetailsAsync(int id, mast_wiretransm_dto record_dto)
+        public async Task<mast_wiretransm_dto> saveDetailsAsync(int id, string mode, mast_wiretransm_dto record_dto)
         {
             mast_wiretransd? record;
             List<mast_wiretransd_dto> records_dto;
@@ -382,10 +398,16 @@ namespace Masters.Repositories
 
                 records_dto = record_dto.wtim_details!;
                 records = await context.mast_wiretransd
+                    .Include(c => c.bank)
+                    .Include(c => c.benef)
+                    .Include(c => c.branch)
                     .Where(w => w.wtid_wtim_id == id)
                     .ToListAsync();
 
                 int nextorder = 1;
+
+                if (mode == "edit")
+                    await logHistoryDetail(records, record_dto);
 
                 foreach (var existing_record in records)
                 {
@@ -465,6 +487,88 @@ namespace Masters.Repositories
             {
                 throw;
             }
+        }
+
+        public async Task logHistory(mast_wiretransm old_record, mast_wiretransm_dto record_dto)
+        {
+
+            var old_record_dto = new mast_wiretransm_dto
+            {
+                wtim_id = old_record.wtim_id,
+                wtim_slno = old_record.wtim_slno,
+                wtim_refno = old_record.wtim_refno,
+                wtim_to_name = old_record.wtim_to_name,
+                wtim_cust_name = old_record.wtim_cust_name,
+                wtim_cust_fax = old_record.wtim_cust_fax,
+                wtim_cust_tel = old_record.wtim_cust_tel,
+                wtim_acc_no = old_record.wtim_acc_no,
+                wtim_req_type = old_record.wtim_req_type,
+                wtim_from_name = old_record.wtim_from_name,
+                wtim_date = Lib.FormatDate(old_record.wtim_date, Lib.outputDateFormat),
+                wtim_sender_ref = old_record.wtim_sender_ref,
+                wtim_your_ref = old_record.wtim_your_ref,
+                wtim_is_urgent = old_record.wtim_is_urgent,
+                wtim_is_review = old_record.wtim_is_review,
+                wtim_is_comment = old_record.wtim_is_comment,
+                wtim_is_reply = old_record.wtim_is_reply,
+                wtim_is_recycle = old_record.wtim_is_recycle,
+                wtim_remarks = old_record.wtim_remarks,
+
+            };
+
+            await new LogHistorym<mast_wiretransm_dto>(context)
+                .Table("mast_wiretransm", log_date)
+                .PrimaryKey("wtim_id", record_dto.wtim_id)
+                .RefNo(record_dto.wtim_refno!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id,0, record_dto.rec_created_by!)
+                .TrackColumn("wtim_slno", "sl no")
+                .TrackColumn("wtim_refno", "refno")
+                .TrackColumn("wtim_to_name", "To Name")
+                .TrackColumn("wtim_cust_name", "Customer Name")
+                .TrackColumn("wtim_cust_fax", "Customer Fax")
+                .TrackColumn("wtim_cust_tel", "Customer Telephone")
+                .TrackColumn("wtim_acc_no", "Account Number")
+                .TrackColumn("wtim_req_type", "Request Type")
+                .TrackColumn("wtim_from_name", "From Name")
+                .TrackColumn("wtim_date", "Date","Date")
+                .TrackColumn("wtim_sender_ref", "Sender Reference")
+                .TrackColumn("wtim_your_ref", "Your Reference")
+                .TrackColumn("wtim_is_urgent", "Is Urgent")
+                .TrackColumn("wtim_is_review", "Is Review")
+                .TrackColumn("wtim_is_comment", "Is Comment")
+                .TrackColumn("wtim_is_reply", "Is Reply")
+                .TrackColumn("wtim_is_recycle", "Is Recycle")
+                .TrackColumn("wtim_remarks", "Remarks")
+
+                .SetRecord(old_record_dto, record_dto)
+                .LogChangesAsync();
+
+        }
+
+        public async Task logHistoryDetail(List<mast_wiretransd> old_records, mast_wiretransm_dto record_dto)
+        {
+
+            var old_records_dto = old_records.Select(record => new mast_wiretransd_dto
+            {
+                wtid_id = record.wtid_id,
+                wtid_bank_name =record.bank?.cust_name,
+                wtid_benef_name=record.benef?.cust_name,
+                wtid_benef_ref = record.wtid_benef_ref,
+                wtid_trns_amt = record.wtid_trns_amt,
+            }).ToList();
+
+            await new LogHistorym<mast_wiretransd_dto>(context)
+                .Table("mast_wiretransm", log_date)
+                .PrimaryKey("wtid_id", record_dto.wtim_id)
+                .RefNo(record_dto.wtim_refno!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
+                .TrackColumn("wtid_bank_name", "Bank name")
+                 .TrackColumn("wtid_benef_name", "Beneficiary name")
+                .TrackColumn("wtid_benef_ref", "Reference")
+                .TrackColumn("wtid_trns_amt", "Transaction Amount","decimal")
+                .SetRecords(old_records_dto, record_dto.wtim_details!)
+                .LogChangesAsync();
+
         }
     }
 }

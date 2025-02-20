@@ -6,6 +6,7 @@ using Database.Models.BaseTables;
 using UserAdmin.Interfaces;
 using Database.Models.UserAdmin;
 using Common.DTO.UserAdmin;
+using Common.Lib;
 
 
 namespace UserAdmin.Repositories
@@ -19,6 +20,7 @@ namespace UserAdmin.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
+        private DateTime log_date;
         public MailServermRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -152,6 +154,8 @@ namespace UserAdmin.Repositories
         {
             try
             {
+                log_date = DbLib.GetDateTime();
+
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);
                 context.Database.CommitTransaction();
@@ -224,6 +228,9 @@ namespace UserAdmin.Repositories
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+                if (mode == "edit")
+                    await logHistory(Record, record_dto);
+
                 Record.mail_name = record_dto.mail_name;
                 Record.mail_smtp_name = record_dto.mail_smtp_name;
                 Record.mail_smtp_port = record_dto.mail_smtp_port;
@@ -239,7 +246,15 @@ namespace UserAdmin.Repositories
                 context.SaveChanges();
                 record_dto.mail_id = Record.mail_id;
                 record_dto.rec_version = Record.rec_version;
-                Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                //Lib.AssignDates2DTO(id, mode, Record, record_dto);
+                record_dto.rec_created_by = Record.rec_created_by;
+                record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                if (record_dto.mail_id != 0)
+                {
+                    record_dto.rec_edited_by = Record.rec_edited_by;
+                    record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
+                }
+
                 return record_dto;
             }
             catch (Exception Ex)
@@ -276,6 +291,47 @@ namespace UserAdmin.Repositories
             {
                 throw;
             }
+        }
+
+        public async Task logHistory(mast_mail_serverm old_record, mast_mail_serverm_dto record_dto)
+        {
+
+            var old_record_dto = new mast_mail_serverm_dto
+            {
+                mail_id = old_record.mail_id,
+                mail_name = old_record.mail_name,
+                mail_smtp_name = old_record.mail_smtp_name,
+                mail_smtp_port = old_record.mail_smtp_port,
+                mail_is_ssl = old_record.mail_is_ssl,
+                mail_is_auth = old_record.mail_is_auth,
+                mail_is_spa = old_record.mail_is_spa,
+                mail_bulk_tot = old_record.mail_bulk_tot,
+                mail_bulk_sub = old_record.mail_bulk_sub,
+                mail_smtp_username = old_record.mail_smtp_username,
+                mail_smtp_pwd = old_record.mail_smtp_pwd,
+
+            };
+
+            await new LogHistorym<mast_mail_serverm_dto>(context)
+                .Table("mast_mail_serverm", log_date)
+                .PrimaryKey("mail_id", record_dto.mail_id)
+                .RefNo(record_dto.mail_name!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .TrackColumn("mail_name", "Name")
+                .TrackColumn("mail_smtp_name", "SMTP Name")
+                .TrackColumn("mail_smtp_port", "Smtp Port ")
+                .TrackColumn("mail_is_ssl", "Require SSL")
+                .TrackColumn("mail_is_auth", "Mail Authorization")
+                .TrackColumn("mail_is_spa", "Secured Pwd Authentication")
+                .TrackColumn("mail_bulk_tot", "Bulkmail Batch Total")
+                .TrackColumn("mail_bulk_sub", "Batch Split Count")
+                .TrackColumn("mail_smtp_username", "Smtp User")
+                .TrackColumn("mail_smtp_pwd", "Smtp Password")
+
+
+                .SetRecord(old_record_dto, record_dto)
+                .LogChangesAsync();
+
         }
 
     }

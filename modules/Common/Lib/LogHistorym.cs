@@ -248,7 +248,7 @@ namespace Common.Lib
             }
             if (data_type.ToLower() == "decimal")
             {
-                if (Database.Lib.Lib.StringToInteger(oldValue) != Database.Lib.Lib.StringToInteger(newValue))
+                if (Database.Lib.Lib.StringToDecimal(oldValue) != Database.Lib.Lib.StringToDecimal(newValue))
                 {
                     bRet = true;
                 }
