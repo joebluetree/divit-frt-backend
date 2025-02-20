@@ -45,7 +45,7 @@ public class HistoryRepository : IHistoryRepository
 
 
             if (data.ContainsKey("log_table"))
-                log_table = data["log_table"].ToString().ToUpper();
+                log_table = data["log_table"].ToString()!.ToUpper();
 
             if (data.ContainsKey("log_table_row_id"))
                 log_table_row_id = int.Parse(data["log_table_row_id"].ToString()!);

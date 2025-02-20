@@ -140,7 +140,7 @@ namespace Accounts.Repositories
         {
             try
             {
-                log_date = DateTime.UtcNow;
+                log_date = DbLib.GetDateTime();
                 context.Database.BeginTransaction();
                 acc_acctm_dto _Record = await AcctmLib.SaveAsync(this.context, mode, Record);
                 context.Database.CommitTransaction();

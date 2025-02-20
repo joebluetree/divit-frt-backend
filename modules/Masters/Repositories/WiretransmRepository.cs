@@ -520,7 +520,7 @@ namespace Masters.Repositories
                 .Table("mast_wiretransm", log_date)
                 .PrimaryKey("wtim_id", record_dto.wtim_id)
                 .RefNo(record_dto.wtim_refno!)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id,record_dto.rec_branch_id, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id,0, record_dto.rec_created_by!)
                 .TrackColumn("wtim_slno", "sl no")
                 .TrackColumn("wtim_refno", "refno")
                 .TrackColumn("wtim_to_name", "To Name")
