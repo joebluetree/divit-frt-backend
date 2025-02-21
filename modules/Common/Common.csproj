@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <Folder Include="DTO\Marketing\" />
-    <Folder Include="scripts\" />
     <Folder Include="scripts\test\" />
   </ItemGroup>
 

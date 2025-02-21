@@ -4,6 +4,7 @@ using Database.Models.Masters;
 using Database.Models.Accounts;
 using Database.Models.TnT;
 using Database.Models.Marketing;
+using Database.Models.Cargo;
 
 namespace Database
 {
@@ -42,6 +43,9 @@ namespace Database
         public DbSet<mark_qtnd_fcl> mark_qtnd_fcl { get; set; } = null!;
         public DbSet<mark_qtnd_air> mark_qtnd_air { get; set; } = null!;
 
+        //Accounts
+        public DbSet<cargo_masterm> cargo_masterm { get; set; } = null!;
+        public DbSet<cargo_housem> cargo_housem { get; set; } = null!;
 
         //Accounts
         public DbSet<acc_groupm> acc_groupm { get; set; } = null!;
