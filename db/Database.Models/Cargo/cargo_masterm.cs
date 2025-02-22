@@ -10,7 +10,7 @@ public class cargo_masterm
 {
     [Key]
     public int mbl_id { get; set; }
-    public int? mbl_cfno { get; set; }
+    public int mbl_cfno { get; set; }
     public string? mbl_refno { get; set; }
     public DateTime? mbl_ref_date { get; set; }
     public string? mbl_mode { get; set; }
@@ -183,7 +183,7 @@ public class cargo_masterm
     public mast_param? salesman { get; set; }
 
     [ConcurrencyCheck]
-    
+    public int? rec_year { get; set; }
     public int rec_version { get; set; }
     public string? rec_locked { get; set; }
     public string? rec_created_by { get; set; }
@@ -192,7 +192,6 @@ public class cargo_masterm
     public DateTime? rec_edited_date { get; set; }
     public int? rec_company_id { get; set; }
     public int? rec_branch_id { get; set; }
-    public int? rec_year { get; set; }
 
     [ForeignKey("rec_company_id")]
     public mast_companym? company { get; set; }
