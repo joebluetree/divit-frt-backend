@@ -4,6 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Database.Models.Masters;
 using Database.Models.UserAdmin;
 
+    //Name : Alen Cherian
+    //Created Date : 21/02/2025
+    //Remark : Version 1.0 , 22/02/2025
+
 namespace Database.Models.Cargo;
 
 public class cargo_housem
