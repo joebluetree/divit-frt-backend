@@ -108,6 +108,9 @@ namespace Common.Repositories
             files.Add("Marketing\\mark_qtnd_fcl.txt");
             files.Add("Marketing\\mark_qtnd_air.txt");
 
+            files.Add("Cargo\\cargo_masterm.txt");
+            files.Add("Cargo\\cargo_housem.txt");
+
             files.Add("TnT\\tnt_trackm.txt");
             files.Add("TnT\\tnt_trackd.txt");
             files.Add("TnT\\tnt_tracking_data.txt");

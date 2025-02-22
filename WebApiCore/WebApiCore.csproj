@@ -31,6 +31,7 @@
     <ProjectReference Include="..\db\Database.Lib\Database.Lib.csproj" />
     <ProjectReference Include="..\db\database\database.csproj" />
     <ProjectReference Include="..\modules\Accounts\Accounts.csproj" />
+    <ProjectReference Include="..\modules\AirExport\AirExport.csproj" />
     <ProjectReference Include="..\modules\Common\Common.csproj" />
     <ProjectReference Include="..\modules\Marketing\Marketing.csproj" />
     <ProjectReference Include="..\modules\Masters\Masters.csproj" />
