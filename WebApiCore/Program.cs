@@ -26,6 +26,7 @@ using TnT.Interfaces;
 using TnT.Repositories;
 using Marketing.Interfaces;
 using Marketing.Repositories;
+using AirExport.Interfaces;
 
 
 
@@ -88,6 +89,9 @@ builder.Services.AddScoped<IAccGroupRepository, AccGroupRepository>();
 builder.Services.AddScoped<IAcctmRepository, AcctmRepository>();
 
 //Tnt
+builder.Services.AddScoped<IAirExportRepository, AirExportRepository>();
+
+//AirExport
 builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
