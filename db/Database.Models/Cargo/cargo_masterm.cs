@@ -23,7 +23,7 @@ public class cargo_masterm
     public int? mbl_liner_id { get; set; }
     public string? mbl_liner_bookingno { get; set; }
     public int? mbl_country_id { get; set; }
-    public char? mbl_direct { get; set; }
+    public string? mbl_direct { get; set; }
     public int? mbl_pol_id { get; set; }
     public DateTime? mbl_pol_etd { get; set; }
     public int? mbl_pod_id { get; set; }
@@ -31,8 +31,8 @@ public class cargo_masterm
     public string? mbl_place_delivery { get; set; }
     public int? mbl_pofd_id { get; set; }
     public DateTime? mbl_pofd_eta { get; set; }
-    public string? mbl_vessel { get; set; }
-    public int? mbl_frt_status_id { get; set; }
+    // public string? mbl_vessel { get; set; }
+    public string? mbl_frt_status_name { get; set; }
     public int? mbl_ship_term_id { get; set; }
     public string? mbl_cntr_type { get; set; }
     public DateTime? mbl_it_date { get; set; }
@@ -42,7 +42,7 @@ public class cargo_masterm
     public int? mbl_devan_loc_id { get; set; }
     public string? mbl_devan_loc_name { get; set; }
     public int? mbl_handled_id { get; set; }
-    public char? mbl_is_held { get; set; }
+    public string? mbl_is_held { get; set; }
     public int? mbl_shipper_id { get; set; }
     public int? mbl_consignee_id { get; set; }
     public int? mbl_house_tot { get; set; }
@@ -56,13 +56,13 @@ public class cargo_masterm
     public int? mbl_salesman_id { get; set; }
     public string? mbl_rotation_no { get; set; }
     public string? mbl_status { get; set; }
-    public char? mbl_is_sea_waybill { get; set; }
+    public string? mbl_is_sea_waybill { get; set; }
     public DateTime? mbl_ombl_sent_on { get; set; }
-    public char? mbl_pending_status { get; set; }
+    public string? mbl_pending_status { get; set; }
     public DateTime? mbl_unlock_date { get; set; }
     public string? mbl_ombl_sent_ampm { get; set; }
     public int? mbl_book_slno { get; set; }
-    public char? mbl_3rdparty { get; set; }
+    public string? mbl_3rdparty { get; set; }
     public string? mbl_isfadjust { get; set; }
     public string? mbl_ulcode { get; set; }
     public string? mbl_inv_stage { get; set; }
@@ -87,8 +87,8 @@ public class cargo_masterm
     public int? mbl_vessel_id { get; set; }
     public string? mbl_vessel_name { get; set; }
     public string? mbl_voyage { get; set; }
-    public int? mbl_cntr_type_id { get; set; }
-    public char? mbl_telex_released { get; set; }
+    // public int? mbl_cntr_type_id { get; set; }
+    public string? mbl_telex_released { get; set; }
     public string? mbl_it_no { get; set; }
     public string? mbl_cargo_loc_add1 { get; set; }
     public string? mbl_cargo_loc_add2 { get; set; }
@@ -124,13 +124,13 @@ public class cargo_masterm
     public decimal? mbl_revenue { get; set; }
     public string? mbl_type { get; set; }
     public string? mbl_sub_houseno { get; set; }
-    public char? rec_files_attached { get; set; }
+    public string? rec_files_attached { get; set; }
     public decimal? mbl_per { get; set; }
-    public char? mbl_lock { get; set; }
+    public string? mbl_lock { get; set; }
     public int? mbl_zero_cbm { get; set; }
     public int? mbl_zero_chwt { get; set; }
     public int? mbl_zero_wt { get; set; }
-    public char? mbl_loss_approved { get; set; }
+    public string? mbl_loss_approved { get; set; }
     
     [ForeignKey("mbl_agent_id")]
     public mast_customerm? agent { get; set; }
@@ -153,14 +153,17 @@ public class cargo_masterm
     [ForeignKey("mbl_vessel_id")]
     public mast_param? vessel { get; set; }
     
-    [ForeignKey("mbl_frt_status_id")]
-    public mast_param? frtstatus { get; set; }
+    // [ForeignKey("mbl_frt_status_id")]
+    // public mast_param? frtstatus { get; set; }
     
+    [ForeignKey("mbl_shipment_stage_id")]
+    public mast_param? shipstage { get; set; }
+
     [ForeignKey("mbl_ship_term_id")]
     public mast_param? shipterm { get; set; }
     
-    [ForeignKey("mbl_cntr_type_id")]
-    public mast_param? cntrtype { get; set; }
+    // [ForeignKey("mbl_cntr_type_id")]
+    // public mast_param? cntrtype { get; set; }
     
     [ForeignKey("mbl_cargo_loc_id")]
     public mast_param? cargoloc { get; set; }

@@ -310,6 +310,8 @@ namespace UserAdmin.Repositories
 
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-FCL-PREFIX", "", "STRING", "", "", "", "", 9);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-FCL-STARTING-NO", "", "INT", "", "", "", "",10);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXPORT-PREFIX", "", "STRING", "", "", "", "", 13);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXPORT-STARTING-NO", "", "INT", "", "", "", "",14);
 
             return retValue;
         }

@@ -222,6 +222,7 @@ namespace UserAdmin.Repositories
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_created_by = record_dto.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
+                    Record.rec_locked = "N";
                 }
                 else
                 {

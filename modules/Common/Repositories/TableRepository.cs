@@ -86,6 +86,9 @@ namespace Common.Repositories
             files.Add("Masters\\mast_param_nomination.txt");
             files.Add("Masters\\mast_param_salesman.txt");
             files.Add("Masters\\mast_param_sea-carrier.txt");
+            files.Add("Masters\\mast_param_vessel.txt");
+            files.Add("Masters\\mast_param_shipterms.txt");
+            files.Add("Masters\\mast_param_shipstage-oe.txt");
             files.Add("Masters\\mast_param_sea-port.txt");
             files.Add("Masters\\mast_param_ship-move-status.txt");
             files.Add("Masters\\mast_param_state.txt");
@@ -110,6 +113,7 @@ namespace Common.Repositories
 
             files.Add("Cargo\\cargo_masterm.txt");
             files.Add("Cargo\\cargo_housem.txt");
+            files.Add("Cargo\\cargo_container.txt");
 
             files.Add("TnT\\tnt_trackm.txt");
             files.Add("TnT\\tnt_trackd.txt");
