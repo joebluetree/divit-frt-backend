@@ -118,8 +118,8 @@ namespace Marketing.Repositories
                     mbl_refno = e.mbl_refno,
                     mbl_ref_date = Lib.FormatDate(e.mbl_ref_date, Lib.outputDateFormat),
                     mbl_no = e.mbl_no,
-                    mbl_agent_id = e.customer!.cust_id,
-                    mbl_agent_name = e.customer!.cust_name,
+                    mbl_agent_id = e.agent!.cust_id,
+                    mbl_agent_name = e.agent!.cust_name,
                     mbl_liner_id = e.liner!.param_id,
                     mbl_liner_name = e.liner!.param_name,
                     mbl_pol_id = e.pol!.param_id,
@@ -161,20 +161,20 @@ namespace Marketing.Repositories
                     mbl_id = e.mbl_id,
                     mbl_cfno = e.mbl_cfno,
                     mbl_refno = e.mbl_refno,
-                    mbl_ref_date = Lib.FormatDate(e.mbl_ref_date, Lib.outputDateFormat),
+                    mbl_ref_date = Lib.FormatDate(e.mbl_ref_date, Lib.outputDateTimeFormat),
                     mbl_shipment_stage_id = e.shipstage!.param_id,
                     mbl_shipment_stage_name = e.shipstage!.param_name,
                     mbl_mode = e.mbl_mode,
                     mbl_no = e.mbl_no,
-                    mbl_agent_id = e.customer!.cust_id,
-                    mbl_agent_name = e.customer!.cust_name,
+                    mbl_agent_id = e.agent!.cust_id,
+                    mbl_agent_name = e.agent!.cust_name,
                     mbl_frt_status_name = e.mbl_frt_status_name,
                     mbl_pol_id = e.pol!.param_id,
                     mbl_pol_name = e.pol!.param_name,
-                    mbl_pol_etd = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateFormat),
+                    mbl_pol_etd = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateTimeFormat),
                     mbl_pod_id = e.pod!.param_id,
                     mbl_pod_name = e.pod!.param_name,
-                    mbl_pod_eta = Lib.FormatDate(e.mbl_pod_eta, Lib.outputDateFormat),
+                    mbl_pod_eta = Lib.FormatDate(e.mbl_pod_eta, Lib.outputDateTimeFormat),
                     mbl_country_id = e.country!.param_id,
                     mbl_country_name = e.country!.param_name,
                     mbl_liner_id = e.liner!.param_id,
@@ -284,18 +284,18 @@ namespace Marketing.Repositories
 
                 if (mode == "add")
                 {
-                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "QUOTATION-FCL-PREFIX,QUOTATION-FCL-STARTING-NO");// 
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "AIREXPORT-MASTER-PREFIX,AIREXPORT-MASTER-STARTING-NO");// 
 
                     var DefaultCfNo = 0;
                     var Defaultprefix = "";
 
-                    if (result.ContainsKey("QUOTATION-FCL-STARTING-NO"))
+                    if (result.ContainsKey("AIREXPORT-MASTER-STARTING-NO"))
                     {
-                        DefaultCfNo = Lib.StringToInteger(result["QUOTATION-FCL-STARTING-NO"]);
+                        DefaultCfNo = Lib.StringToInteger(result["AIREXPORT-MASTER-STARTING-NO"]);
                     }
-                    if (result.ContainsKey("QUOTATION-FCL-PREFIX"))
+                    if (result.ContainsKey("AIREXPORT-MASTER-PREFIX"))
                     {
-                        Defaultprefix = result["QUOTATION-FCL-PREFIX"].ToString();
+                        Defaultprefix = result["AIREXPORT-MASTER-PREFIX"].ToString();
                     }
                     if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
                     {
@@ -442,8 +442,8 @@ namespace Marketing.Repositories
                 mbl_shipment_stage_name = old_record.shipstage?.param_name,
                 mbl_mode = old_record.mbl_mode,
                 mbl_no = old_record.mbl_no,
-                mbl_agent_name = old_record.customer?.cust_name,
-                mbl_frt_status_name = old_record.frtstatus?.param_name,
+                mbl_agent_name = old_record.agent?.cust_name,
+                mbl_frt_status_name = old_record.mbl_frt_status_name,
                 mbl_pol_name = old_record.pol?.param_name,
                 mbl_pol_etd = Lib.FormatDate(old_record.mbl_pol_etd, Lib.outputDateFormat),
                 mbl_pod_name = old_record.pod?.param_name,

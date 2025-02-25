@@ -88,10 +88,10 @@ builder.Services.AddScoped<IQtnmAirRepository, QtnmAirRepository>();
 builder.Services.AddScoped<IAccGroupRepository, AccGroupRepository>();
 builder.Services.AddScoped<IAcctmRepository, AcctmRepository>();
 
-//Tnt
+//AirExport
 builder.Services.AddScoped<IAirExportRepository, AirExportRepository>();
 
-//AirExport
+//Tnt
 builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
