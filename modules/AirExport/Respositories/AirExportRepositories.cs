@@ -10,7 +10,7 @@ using Common.DTO.AirExport;
 using AirExport.Interfaces;
 
 
-namespace Marketing.Repositories
+namespace AirExport.Repositories
 {
 
     //Name : Alen Cherian

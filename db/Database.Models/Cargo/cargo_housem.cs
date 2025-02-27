@@ -14,6 +14,7 @@ public class cargo_housem
 {
     [Key]
     public int hbl_id { get; set; }
+     public int hbl_cfno { get; set; }
     public int hbl_mbl_id { get; set; }
     public string? hbl_houseno { get; set; }
     public DateTime? hbl_date { get; set; }
@@ -80,7 +81,7 @@ public class cargo_housem
     public string? hbl_place_final { get; set; }
     public DateTime? hbl_pld_eta { get; set; }
     public DateTime? hbl_plf_eta { get; set; }
-    public int? hbl_frt_status_id { get; set; }
+    public string? hbl_frt_status_name { get; set; }
     public int? hbl_ship_term_id { get; set; }
     public string? hbl_uom { get; set; }
     public int? hbl_pcs { get; set; }
@@ -234,9 +235,7 @@ public class cargo_housem
     [ForeignKey("hbl_handled_id")]
     public mast_param? handledby { get; set; }
 
-    [ForeignKey("hbl_frt_status_id")]
-    public mast_param? frtstatus { get; set; }
-    
+        
     [ForeignKey("hbl_shipment_stage_id")]
     public mast_param? shipstage { get; set; }
 

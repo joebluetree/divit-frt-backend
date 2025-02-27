@@ -27,6 +27,7 @@ using TnT.Repositories;
 using Marketing.Interfaces;
 using Marketing.Repositories;
 using AirExport.Interfaces;
+using AirExport.Repositories;
 
 
 
@@ -90,6 +91,7 @@ builder.Services.AddScoped<IAcctmRepository, AcctmRepository>();
 
 //AirExport
 builder.Services.AddScoped<IAirExportRepository, AirExportRepository>();
+builder.Services.AddScoped<IAirExportHouRepository, AirExportHouRepository>();
 
 //Tnt
 builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();
