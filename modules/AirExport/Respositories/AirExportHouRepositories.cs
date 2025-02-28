@@ -263,7 +263,17 @@ namespace AirExport.Repositories
                     hbl_asarranged_consignee = e.hbl_asarranged_consignee,
                     hbl_asarranged_shipper = e.hbl_asarranged_shipper,
 
+                    hbl_packages = e.hbl_packages,
+                    hbl_weight = e.hbl_weight,
+                    hbl_weight_unit = e.hbl_weight_unit,
+                    hbl_class = e.hbl_class,
+                    hbl_comm = e.hbl_comm,
+                    hbl_chwt = e.hbl_chwt,
+                    hbl_rate = e.hbl_rate,
+                    hbl_total = e.hbl_total,
+
                     rec_version = e.rec_version,
+                    rec_company_id = e.rec_company_id,
                     rec_branch_id = e.rec_branch_id,
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
@@ -451,6 +461,16 @@ namespace AirExport.Repositories
                 Record.hbl_pod_name = record_dto.hbl_pod_name;
                 Record.hbl_asarranged_consignee = record_dto.hbl_asarranged_consignee;
                 Record.hbl_asarranged_shipper = record_dto.hbl_asarranged_shipper;
+
+                Record.hbl_packages = record_dto.hbl_packages;
+                Record.hbl_weight = record_dto.hbl_weight;
+                Record.hbl_weight_unit = record_dto.hbl_weight_unit;
+                Record.hbl_class = record_dto.hbl_class;
+                Record.hbl_comm = record_dto.hbl_comm;
+                Record.hbl_chwt = record_dto.hbl_chwt;
+                Record.hbl_rate = record_dto.hbl_rate;
+                Record.hbl_total = record_dto.hbl_total;
+
 
                 if (mode == "add")
                     await context.cargo_housem.AddAsync(Record);

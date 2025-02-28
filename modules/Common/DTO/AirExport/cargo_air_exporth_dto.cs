@@ -73,4 +73,24 @@ public class cargo_air_exporth_dto : basetable_dto
     public string? hbl_asarranged_consignee { get; set; }
     public string? hbl_asarranged_shipper { get; set; }
 
+    public int? hbl_packages { get; set; }
+    public decimal? hbl_weight { get; set; }
+    public string? hbl_weight_unit { get; set; }
+    public string? hbl_class { get; set; }
+    public string? hbl_comm { get; set; }
+    public decimal? hbl_chwt { get; set; }
+    public decimal? hbl_rate { get; set; }
+    public decimal? hbl_total { get; set; }
+
+
+    public string? hbl_charges1 { get; set; }
+    public string? hbl_charges2 { get; set; }
+    public string? hbl_charges3 { get; set; }
+    public string? hbl_charges4 { get; set; }
+    public string? hbl_charges5 { get; set; }
+    public string? hbl_charges1_carrier { get; set; }
+    public string? hbl_charges2_carrier { get; set; }
+    public string? hbl_charges3_carrier { get; set; }
+
+
 }

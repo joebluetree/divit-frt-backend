@@ -14,7 +14,7 @@ public class cargo_housem
 {
     [Key]
     public int hbl_id { get; set; }
-     public int hbl_cfno { get; set; }
+    public int hbl_cfno { get; set; }
     public int hbl_mbl_id { get; set; }
     public string? hbl_houseno { get; set; }
     public DateTime? hbl_date { get; set; }
@@ -83,7 +83,7 @@ public class cargo_housem
     public DateTime? hbl_plf_eta { get; set; }
     public string? hbl_frt_status_name { get; set; }
     public int? hbl_ship_term_id { get; set; }
-    public string? hbl_uom { get; set; }
+    public int? hbl_uom_id { get; set; }
     public int? hbl_pcs { get; set; }
     public int? hbl_packages { get; set; }
     public decimal? hbl_cbm { get; set; }
