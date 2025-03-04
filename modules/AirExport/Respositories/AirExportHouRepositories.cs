@@ -272,6 +272,20 @@ namespace AirExport.Repositories
                     hbl_rate = e.hbl_rate,
                     hbl_total = e.hbl_total,
 
+                    hbl_group = e.hbl_charges1,
+
+                    hbl_remark1 = e.hbl_remark1,
+                    hbl_remark2 = e.hbl_remark2,
+                    hbl_remark3 = e.hbl_remark3,
+                    hbl_by1 = e.hbl_by1,
+                    hbl_by1_carrier = e.hbl_by1_carrier,
+                    hbl_by2 = e.hbl_by2,
+                    hbl_by2_carrier = e.hbl_by2_carrier,
+                    hbl_issued_date =Lib.FormatDate(e.hbl_issued_date, Lib.outputDateTimeFormat),
+                    hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateTimeFormat),
+                    hbl_issued_by = e.hbl_issued_by,
+
+
                     rec_version = e.rec_version,
                     rec_company_id = e.rec_company_id,
                     rec_branch_id = e.rec_branch_id,
@@ -470,6 +484,29 @@ namespace AirExport.Repositories
                 Record.hbl_chwt = record_dto.hbl_chwt;
                 Record.hbl_rate = record_dto.hbl_rate;
                 Record.hbl_total = record_dto.hbl_total;
+
+                Record.hbl_charges1 = record_dto.hbl_group;
+
+                Record.hbl_remark1 = record_dto.hbl_remark1;
+                Record.hbl_remark2 = record_dto.hbl_remark2;
+                Record.hbl_remark3 = record_dto.hbl_remark3;
+                Record.hbl_by1 = record_dto.hbl_by1;
+                Record.hbl_by1_carrier = record_dto.hbl_by1_carrier;
+                Record.hbl_by2 = record_dto.hbl_by2;
+                Record.hbl_by2_carrier = record_dto.hbl_by2_carrier;
+                Record.hbl_issued_date = Lib.ParseDate(record_dto.hbl_issued_date!);
+                Record.hbl_delivery_date = Lib.ParseDate(record_dto.hbl_delivery_date!);
+                Record.hbl_issued_by = record_dto.hbl_issued_by;
+
+
+                // Record.hbl_charges1 = record_dto.hbl_charges1;
+                // Record.hbl_charges2 = record_dto.hbl_charges2;
+                // Record.hbl_charges3 = record_dto.hbl_charges3;
+                // Record.hbl_charges4 = record_dto.hbl_charges4;
+                // Record.hbl_charges5 = record_dto.hbl_charges5;
+                // Record.hbl_charges1_carrier = record_dto.hbl_charges1_carrier;
+                // Record.hbl_charges2_carrier = record_dto.hbl_charges2_carrier;
+                // Record.hbl_charges3_carrier = record_dto.hbl_charges3_carrier;
 
 
                 if (mode == "add")

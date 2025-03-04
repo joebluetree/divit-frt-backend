@@ -91,6 +91,20 @@ public class cargo_air_exporth_dto : basetable_dto
     public string? hbl_charges1_carrier { get; set; }
     public string? hbl_charges2_carrier { get; set; }
     public string? hbl_charges3_carrier { get; set; }
+    public string? hbl_group { get; set; }
+
+
+
+    public string? hbl_remark1 { get; set; }
+    public string? hbl_remark2 { get; set; }
+    public string? hbl_remark3 { get; set; }
+    public string? hbl_by1 { get; set; }
+    public string? hbl_by1_carrier { get; set; }
+    public string? hbl_by2 { get; set; }
+    public string? hbl_by2_carrier { get; set; }
+    public string? hbl_issued_date { get; set; }
+    public string? hbl_delivery_date { get; set; }
+    public string? hbl_issued_by { get; set; }
 
 
 }
