@@ -199,8 +199,10 @@ namespace AirExport.Repositories
 
                 query = query.Where(f => f.hbl_id == id && f.hbl_mode == hbl_mode);
 
+
                 var Record = await query.Select(e => new cargo_air_exporth_dto
                 {
+
                     hbl_id = e.hbl_id,
                     hbl_mbl_id = e.hbl_mbl_id,
                     hbl_houseno = e.hbl_houseno,
@@ -272,7 +274,16 @@ namespace AirExport.Repositories
                     hbl_rate = e.hbl_rate,
                     hbl_total = e.hbl_total,
 
-                    hbl_group = e.hbl_charges1,
+
+                    hbl_charges1 = e.hbl_charges1,
+                    hbl_charges2 = e.hbl_charges2,
+                    hbl_charges3 = e.hbl_charges3,
+                    hbl_charges4 = e.hbl_charges4,
+                    hbl_charges5 = e.hbl_charges5,
+
+                    hbl_charges1_carrier = e.hbl_charges1_carrier,
+                    hbl_charges2_carrier = e.hbl_charges2_carrier,
+                    hbl_charges3_carrier = e.hbl_charges3_carrier,
 
                     hbl_remark1 = e.hbl_remark1,
                     hbl_remark2 = e.hbl_remark2,
@@ -281,7 +292,7 @@ namespace AirExport.Repositories
                     hbl_by1_carrier = e.hbl_by1_carrier,
                     hbl_by2 = e.hbl_by2,
                     hbl_by2_carrier = e.hbl_by2_carrier,
-                    hbl_issued_date =Lib.FormatDate(e.hbl_issued_date, Lib.outputDateTimeFormat),
+                    hbl_issued_date = Lib.FormatDate(e.hbl_issued_date, Lib.outputDateTimeFormat),
                     hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateTimeFormat),
                     hbl_issued_by = e.hbl_issued_by,
 
@@ -297,6 +308,67 @@ namespace AirExport.Repositories
 
                 if (Record == null)
                     throw new Exception("No Qtn Found");
+
+
+                //Record.hbl_toagent1 = SplitCharges(Record.hbl_charges1!, 0);
+                Record.hbl_toagent1 = !Lib.IsBlank(Record.hbl_charges1) ? SplitCharges(Record.hbl_charges1, 0) : "";
+                Record.hbl_rate1 = !Lib.IsBlank(Record.hbl_charges1) && !Lib.IsBlank(SplitCharges(Record.hbl_charges1, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges1, 1)) : 0;
+                Record.hbl_total1 = !Lib.IsBlank(Record.hbl_charges1) && !Lib.IsBlank(SplitCharges(Record.hbl_charges1, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges1, 2)) : 0;
+                Record.hbl_printsc1 = !Lib.IsBlank(Record.hbl_charges1) ? SplitCharges(Record.hbl_charges1, 3) : "";
+                Record.hbl_printsc2 = !Lib.IsBlank(Record.hbl_charges1) ? SplitCharges(Record.hbl_charges1, 4) : "";
+
+                Record.hbl_toagent2 = !Lib.IsBlank(Record.hbl_charges2) ? SplitCharges(Record.hbl_charges2, 0) : "";
+                Record.hbl_rate2 = !Lib.IsBlank(Record.hbl_charges2) && !Lib.IsBlank(SplitCharges(Record.hbl_charges2, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges2, 1)) : 0;
+                Record.hbl_total2 = !Lib.IsBlank(Record.hbl_charges2) && !Lib.IsBlank(SplitCharges(Record.hbl_charges2, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges2, 2)) : 0;
+                Record.hbl_printsc3 = !Lib.IsBlank(Record.hbl_charges2) ? SplitCharges(Record.hbl_charges2, 3) : "";
+                Record.hbl_printsc4 = !Lib.IsBlank(Record.hbl_charges2) ? SplitCharges(Record.hbl_charges2, 4) : "";
+
+                Record.hbl_toagent3 = !Lib.IsBlank(Record.hbl_charges3) ? SplitCharges(Record.hbl_charges3, 0) : "";
+                Record.hbl_rate3 = !Lib.IsBlank(Record.hbl_charges3) && !Lib.IsBlank(SplitCharges(Record.hbl_charges3, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges3, 1)) : 0;
+                Record.hbl_total3 = !Lib.IsBlank(Record.hbl_charges3) && !Lib.IsBlank(SplitCharges(Record.hbl_charges3, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges3, 2)) : 0;
+                Record.hbl_printsc5 = !Lib.IsBlank(Record.hbl_charges3) ? SplitCharges(Record.hbl_charges3, 3) : "";
+                Record.hbl_printsc6 = !Lib.IsBlank(Record.hbl_charges3) ? SplitCharges(Record.hbl_charges3, 4) : "";
+
+                Record.hbl_toagent4 = !Lib.IsBlank(Record.hbl_charges4) ? SplitCharges(Record.hbl_charges4, 0) : "";
+                Record.hbl_rate4 = !Lib.IsBlank(Record.hbl_charges4) && !Lib.IsBlank(SplitCharges(Record.hbl_charges4, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges4, 1)) : 0;
+                Record.hbl_total4 = !Lib.IsBlank(Record.hbl_charges4) && !Lib.IsBlank(SplitCharges(Record.hbl_charges4, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges4, 2)) : 0;
+                Record.hbl_printsc7 = !Lib.IsBlank(Record.hbl_charges4) ? SplitCharges(Record.hbl_charges4, 3) : "";
+                Record.hbl_printsc8 = !Lib.IsBlank(Record.hbl_charges4) ? SplitCharges(Record.hbl_charges4, 4) : "";
+
+                Record.hbl_toagent5 = !Lib.IsBlank(Record.hbl_charges5) ? SplitCharges(Record.hbl_charges5, 0) : "";
+                Record.hbl_rate5 = !Lib.IsBlank(Record.hbl_charges5) && !Lib.IsBlank(SplitCharges(Record.hbl_charges5, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges5, 1)) : 0;
+                Record.hbl_total5 = !Lib.IsBlank(Record.hbl_charges5) && !Lib.IsBlank(SplitCharges(Record.hbl_charges5, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges5, 2)) : 0;
+                Record.hbl_printsc9 = !Lib.IsBlank(Record.hbl_charges5) ? SplitCharges(Record.hbl_charges5, 3) : "";
+                Record.hbl_printsc10 = !Lib.IsBlank(Record.hbl_charges5) ? SplitCharges(Record.hbl_charges5, 4) : "";
+
+                //Charges to carrier details
+
+                Record.hbl_tocarrier1 = !Lib.IsBlank(Record.hbl_charges1_carrier) ? SplitCharges(Record.hbl_charges1_carrier, 0) : "";
+                Record.hbl_carrate1 = !Lib.IsBlank(Record.hbl_charges1_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges1_carrier, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges1_carrier, 1)) : 0;
+                Record.hbl_cartotal1 = !Lib.IsBlank(Record.hbl_charges1_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges1_carrier, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges1_carrier, 2)) : 0;
+                Record.hbl_carprintsc1 = !Lib.IsBlank(Record.hbl_charges1_carrier) ? SplitCharges(Record.hbl_charges1_carrier, 3) : "";
+                Record.hbl_carprintsc2 = !Lib.IsBlank(Record.hbl_charges1_carrier) ? SplitCharges(Record.hbl_charges1_carrier, 4) : "";
+
+                Record.hbl_tocarrier1 = !Lib.IsBlank(Record.hbl_charges1_carrier) ? SplitCharges(Record.hbl_charges1_carrier, 0) : "";
+                Record.hbl_carrate1 = !Lib.IsBlank(Record.hbl_charges1_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges1_carrier, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges1_carrier, 1)) : 0;
+                Record.hbl_cartotal1 = !Lib.IsBlank(Record.hbl_charges1_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges1_carrier, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges1_carrier, 2)) : 0;
+                Record.hbl_carprintsc1 = !Lib.IsBlank(Record.hbl_charges1_carrier) ? SplitCharges(Record.hbl_charges1_carrier, 3) : "";
+                Record.hbl_carprintsc2 = !Lib.IsBlank(Record.hbl_charges1_carrier) ? SplitCharges(Record.hbl_charges1_carrier, 4) : "";
+
+                Record.hbl_tocarrier2 = !Lib.IsBlank(Record.hbl_charges2_carrier) ? SplitCharges(Record.hbl_charges2_carrier, 0) : "";
+                Record.hbl_carrate2 = !Lib.IsBlank(Record.hbl_charges2_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges2_carrier, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges2_carrier, 1)) : 0;
+                Record.hbl_cartotal2 = !Lib.IsBlank(Record.hbl_charges2_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges2_carrier, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges2_carrier, 2)) : 0;
+                Record.hbl_carprintsc3 = !Lib.IsBlank(Record.hbl_charges2_carrier) ? SplitCharges(Record.hbl_charges2_carrier, 3) : "";
+                Record.hbl_carprintsc4 = !Lib.IsBlank(Record.hbl_charges2_carrier) ? SplitCharges(Record.hbl_charges2_carrier, 4) : "";
+
+                Record.hbl_tocarrier3 = !Lib.IsBlank(Record.hbl_charges3_carrier) ? SplitCharges(Record.hbl_charges3_carrier, 0) : "";
+                Record.hbl_carrate3 = !Lib.IsBlank(Record.hbl_charges3_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges3_carrier, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges3_carrier, 1)) : 0;
+                Record.hbl_cartotal3 = !Lib.IsBlank(Record.hbl_charges3_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges3_carrier, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges3_carrier, 2)) : 0;
+                Record.hbl_carprintsc5 = !Lib.IsBlank(Record.hbl_charges3_carrier) ? SplitCharges(Record.hbl_charges3_carrier, 3) : "";
+                Record.hbl_carprintsc6 = !Lib.IsBlank(Record.hbl_charges3_carrier) ? SplitCharges(Record.hbl_charges3_carrier, 4) : "";
+
+                 await GetCargoDesc(Record); //Get Record
+
                 return Record;
             }
             catch (Exception Ex)
@@ -314,6 +386,7 @@ namespace AirExport.Repositories
 
                 context.Database.BeginTransaction();
                 cargo_air_exporth_dto _Record = await SaveParentAsync(id, mode, record_dto);
+                _Record = await SaveCargoDesc(_Record.hbl_id, record_dto);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -368,6 +441,19 @@ namespace AirExport.Repositories
 
                 if (!AllValid(mode, record_dto, ref error))
                     throw new Exception(error);
+
+                //Other Charges To Agent Details
+
+                var hbl_charges1 = $"{record_dto.hbl_toagent1},{record_dto.hbl_rate1},{record_dto.hbl_total1},{record_dto.hbl_printsc1},{record_dto.hbl_printsc2}";
+                var hbl_charges2 = $"{record_dto.hbl_toagent2},{record_dto.hbl_rate2},{record_dto.hbl_total2},{record_dto.hbl_printsc3},{record_dto.hbl_printsc4}";
+                var hbl_charges3 = $"{record_dto.hbl_toagent3},{record_dto.hbl_rate3},{record_dto.hbl_total3},{record_dto.hbl_printsc5},{record_dto.hbl_printsc6}";
+                var hbl_charges4 = $"{record_dto.hbl_toagent4},{record_dto.hbl_rate4},{record_dto.hbl_total4},{record_dto.hbl_printsc7},{record_dto.hbl_printsc8}";
+                var hbl_charges5 = $"{record_dto.hbl_toagent5},{record_dto.hbl_rate5},{record_dto.hbl_total5},{record_dto.hbl_printsc9},{record_dto.hbl_printsc10}";
+
+                //Other Charges To Carrier Details
+                var hbl_charges1_carrier = $"{record_dto.hbl_tocarrier1},{record_dto.hbl_carrate1},{record_dto.hbl_cartotal1},{record_dto.hbl_carprintsc1},{record_dto.hbl_carprintsc2}";
+                var hbl_charges2_carrier = $"{record_dto.hbl_tocarrier2},{record_dto.hbl_carrate2},{record_dto.hbl_cartotal2},{record_dto.hbl_carprintsc3},{record_dto.hbl_carprintsc4}";
+                var hbl_charges3_carrier = $"{record_dto.hbl_tocarrier3},{record_dto.hbl_carrate3},{record_dto.hbl_cartotal3},{record_dto.hbl_carprintsc5},{record_dto.hbl_carprintsc6}";
 
                 if (mode == "add")
                 {
@@ -485,7 +571,15 @@ namespace AirExport.Repositories
                 Record.hbl_rate = record_dto.hbl_rate;
                 Record.hbl_total = record_dto.hbl_total;
 
-                Record.hbl_charges1 = record_dto.hbl_group;
+                Record.hbl_charges1 = hbl_charges1;
+                Record.hbl_charges2 = hbl_charges2;
+                Record.hbl_charges3 = hbl_charges3;
+                Record.hbl_charges4 = hbl_charges4;
+                Record.hbl_charges5 = hbl_charges5;
+
+                Record.hbl_charges1_carrier = hbl_charges1_carrier;
+                Record.hbl_charges2_carrier = hbl_charges2_carrier;
+                Record.hbl_charges3_carrier = hbl_charges3_carrier;
 
                 Record.hbl_remark1 = record_dto.hbl_remark1;
                 Record.hbl_remark2 = record_dto.hbl_remark2;
@@ -497,16 +591,6 @@ namespace AirExport.Repositories
                 Record.hbl_issued_date = Lib.ParseDate(record_dto.hbl_issued_date!);
                 Record.hbl_delivery_date = Lib.ParseDate(record_dto.hbl_delivery_date!);
                 Record.hbl_issued_by = record_dto.hbl_issued_by;
-
-
-                // Record.hbl_charges1 = record_dto.hbl_charges1;
-                // Record.hbl_charges2 = record_dto.hbl_charges2;
-                // Record.hbl_charges3 = record_dto.hbl_charges3;
-                // Record.hbl_charges4 = record_dto.hbl_charges4;
-                // Record.hbl_charges5 = record_dto.hbl_charges5;
-                // Record.hbl_charges1_carrier = record_dto.hbl_charges1_carrier;
-                // Record.hbl_charges2_carrier = record_dto.hbl_charges2_carrier;
-                // Record.hbl_charges3_carrier = record_dto.hbl_charges3_carrier;
 
 
                 if (mode == "add")
@@ -531,6 +615,149 @@ namespace AirExport.Repositories
             }
 
         }
+
+        //function for split the charges
+        private string SplitCharges(string? data, int iPos)
+        {
+            string[] words = data!.Split(',');
+            string str = "";
+            if (words.Length >= iPos)
+                str = words[iPos].ToString();
+            return str;
+        }
+
+        //function for get description
+        public async Task GetCargoDesc(cargo_air_exporth_dto Record) 
+        {
+            for (int i = 1; i <= 17; i++)
+            {
+                Record.GetType().GetProperty($"desc_id{i}")?.SetValue(Record, 0);
+                Record.GetType().GetProperty($"desc_mark{i}")?.SetValue(Record, "");
+                Record.GetType().GetProperty($"desc_description{i}")?.SetValue(Record, "");
+            }
+
+            var records = await context.cargo_desc
+                .Where(a => a.desc_parent_id == Record.hbl_id)
+                .ToListAsync();
+
+            foreach (var desc in records)
+            {
+                int? ctr = desc.desc_ctr;
+
+                Record.GetType().GetProperty($"desc_id{ctr}")?.SetValue(Record, desc.desc_id);
+                Record.GetType().GetProperty($"desc_mark{ctr}")?.SetValue(Record, desc.desc_mark);
+                Record.GetType().GetProperty($"desc_description{ctr}")?.SetValue(Record, desc.desc_description);
+            }
+        }
+
+        //function for save description
+        public async Task<cargo_air_exporth_dto> SaveCargoDesc(int id, cargo_air_exporth_dto record_dto)
+        {
+            try
+            {
+
+                record_dto.desc_id1 = await SaveMarksandDesc(id, record_dto.desc_id1, record_dto.desc_mark1!, record_dto.desc_description1!, 1, record_dto);
+                record_dto.desc_id2 = await SaveMarksandDesc(id, record_dto.desc_id2, record_dto.desc_mark2!, record_dto.desc_description2!, 2, record_dto);
+                record_dto.desc_id3 = await SaveMarksandDesc(id, record_dto.desc_id3, record_dto.desc_mark3!, record_dto.desc_description3!, 3, record_dto);
+                record_dto.desc_id4 = await SaveMarksandDesc(id, record_dto.desc_id4, record_dto.desc_mark4!, record_dto.desc_description4!, 4, record_dto);
+                record_dto.desc_id5 = await SaveMarksandDesc(id, record_dto.desc_id5, record_dto.desc_mark5!, record_dto.desc_description5!, 5, record_dto);
+                record_dto.desc_id6 = await SaveMarksandDesc(id, record_dto.desc_id6, record_dto.desc_mark6!, record_dto.desc_description6!, 6, record_dto);
+                record_dto.desc_id7 = await SaveMarksandDesc(id, record_dto.desc_id7, record_dto.desc_mark7!, record_dto.desc_description7!, 7, record_dto);
+                record_dto.desc_id8 = await SaveMarksandDesc(id, record_dto.desc_id8, record_dto.desc_mark8!, record_dto.desc_description8!, 8, record_dto);
+                record_dto.desc_id9 = await SaveMarksandDesc(id, record_dto.desc_id9, record_dto.desc_mark9!, record_dto.desc_description9!, 9, record_dto);
+                record_dto.desc_id10 = await SaveMarksandDesc(id, record_dto.desc_id10, record_dto.desc_mark10!, record_dto.desc_description10!, 10, record_dto);
+                record_dto.desc_id11 = await SaveMarksandDesc(id, record_dto.desc_id11, null!, record_dto.desc_description11!, 11, record_dto);
+                record_dto.desc_id12 = await SaveMarksandDesc(id, record_dto.desc_id12, null!, record_dto.desc_description12!, 12, record_dto);
+                record_dto.desc_id13 = await SaveMarksandDesc(id, record_dto.desc_id13, null!, record_dto.desc_description13!, 13, record_dto);
+                record_dto.desc_id14 = await SaveMarksandDesc(id, record_dto.desc_id14, null!, record_dto.desc_description14!, 14, record_dto);
+                record_dto.desc_id15 = await SaveMarksandDesc(id, record_dto.desc_id15, null!, record_dto.desc_description15!, 15, record_dto);
+                record_dto.desc_id16 = await SaveMarksandDesc(id, record_dto.desc_id16, null!, record_dto.desc_description16!, 16, record_dto);
+                record_dto.desc_id17 = await SaveMarksandDesc(id, record_dto.desc_id17, null!, record_dto.desc_description17!, 17, record_dto);
+
+                return record_dto;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        //function for save description
+        public async Task<int> SaveMarksandDesc(int id, int desc_id, string mark, string description, int ctr, cargo_air_exporth_dto record_dto)
+        {
+            cargo_desc? Record;
+            Boolean bOk = true;
+            string mode = "";
+            try
+            {
+                if (Lib.IsBlank(mark) && Lib.IsBlank(description))
+                    bOk = false;
+                if (bOk == false && desc_id == 0)
+                    return 0;
+
+                if (bOk && desc_id == 0)  // new record
+                    mode = "add";
+                if (bOk && desc_id != 0)  // edit record                  
+                    mode = "edit";
+                if (bOk == false && desc_id != 0)  // delete record                 
+                    mode = "delete";
+
+                if (mode == "add")
+                {
+                    Record = new cargo_desc();
+
+                    Record.rec_company_id = record_dto.rec_company_id;
+                    Record.rec_branch_id = record_dto.rec_branch_id;
+                    Record.rec_created_by = record_dto.rec_created_by;
+                    Record.rec_created_date = DbLib.GetDateTime();
+                    Record.rec_locked = "N";
+
+                    Record.desc_parent_id = id;
+                    Record.desc_ctr = ctr;
+
+                    Record.desc_mark = mark;
+                    Record.desc_description = description;
+                }
+                else
+                {
+                    Record = await context.cargo_desc
+                        .Where(f => f.desc_parent_id == id && f.desc_id == desc_id)
+                        .FirstOrDefaultAsync();
+                    var records = await context.cargo_desc
+                        .Where(a => a.desc_parent_id == record_dto.hbl_id)
+                        .ToListAsync();
+
+                    if (Record == null)
+                        throw new Exception("record Not Found");
+
+                
+                // if (mode == "edit")
+                // {
+                Record.desc_mark = mark;
+                Record.desc_description = description;
+                // context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
+                Record.rec_version++;
+                Record.rec_edited_by = record_dto.rec_created_by;
+                Record.rec_edited_date = DbLib.GetDateTime();
+                // }
+                }
+
+                if (mode == "add")
+                    await context.cargo_desc.AddAsync(Record);
+                if (mode == "delete")
+                    context.cargo_desc.Remove(Record);
+
+                await context.SaveChangesAsync();
+
+                return Record.desc_id;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
 
         public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)
         {
@@ -577,7 +804,7 @@ namespace AirExport.Repositories
         public async Task logHistory(cargo_housem old_record, cargo_air_exporth_dto record_dto)
         {
 
-            var old_record_dto =  new cargo_air_exporth_dto
+            var old_record_dto = new cargo_air_exporth_dto
             {
                 hbl_id = old_record.hbl_id,
                 hbl_shipper_name = old_record.hbl_shipper_name,
@@ -622,7 +849,29 @@ namespace AirExport.Repositories
                 hbl_pol_name = old_record.hbl_pol_name,
                 hbl_pod_name = old_record.hbl_pod_name,
                 hbl_asarranged_consignee = old_record.hbl_asarranged_consignee,
-                hbl_asarranged_shipper = old_record.hbl_asarranged_shipper
+                hbl_asarranged_shipper = old_record.hbl_asarranged_shipper,
+
+                hbl_packages = old_record.hbl_packages,
+                hbl_weight = old_record.hbl_weight,
+                hbl_weight_unit = old_record.hbl_weight_unit,
+                hbl_class = old_record.hbl_class,
+                hbl_comm = old_record.hbl_comm,
+                hbl_chwt = old_record.hbl_chwt,
+                hbl_rate = old_record.hbl_rate,
+                hbl_total = old_record.hbl_total,
+
+                hbl_remark1 = old_record.hbl_remark1,
+                hbl_remark2 = old_record.hbl_remark2,
+                hbl_remark3 = old_record.hbl_remark3,
+                hbl_by1 = old_record.hbl_by1,
+                hbl_by1_carrier = old_record.hbl_by1_carrier,
+                hbl_by2 = old_record.hbl_by2,
+                hbl_by2_carrier = old_record.hbl_by2_carrier,
+                hbl_issued_date = Lib.FormatDate(old_record.hbl_issued_date, Lib.outputDateTimeFormat),
+                hbl_delivery_date = Lib.FormatDate(old_record.hbl_delivery_date, Lib.outputDateTimeFormat),
+                hbl_issued_by = old_record.hbl_issued_by,
+
+                hbl_tocarrier1 = !Lib.IsBlank(old_record.hbl_charges1_carrier) ? SplitCharges(old_record.hbl_charges1_carrier, 0) : "",
 
             };
 
@@ -647,6 +896,7 @@ namespace AirExport.Repositories
                 .TrackColumn("hbl_notify_add1", "Notify Address 1")
                 .TrackColumn("hbl_notify_add2", "Notify Address 2")
                 .TrackColumn("hbl_notify_add3", "Notify Address 3")
+
                 .TrackColumn("hbl_exp_ref1", "Export Reference 1")
                 .TrackColumn("hbl_exp_ref2", "Export Reference 2")
                 .TrackColumn("hbl_exp_ref3", "Export Reference 3")
@@ -661,6 +911,7 @@ namespace AirExport.Repositories
                 .TrackColumn("hbl_customs_value", "Customs Value")
                 .TrackColumn("hbl_ins_amt", "Insurance Amount")
                 .TrackColumn("hbl_aesno", "AES Number")
+
                 .TrackColumn("hbl_lcno", "LC Number")
                 .TrackColumn("hbl_bltype", "BL Type")
                 .TrackColumn("hbl_goods_nature", "Goods Nature")
@@ -672,6 +923,30 @@ namespace AirExport.Repositories
                 .TrackColumn("hbl_pod_name", "POD Name")
                 .TrackColumn("hbl_asarranged_consignee", "As Arranged Consignee")
                 .TrackColumn("hbl_asarranged_shipper", "As Arranged Shipper")
+
+                .TrackColumn("hbl_packages", "Packages")
+                .TrackColumn("hbl_weight", "Weight")
+                .TrackColumn("hbl_weight_unit", "Weight Unit")
+                .TrackColumn("hbl_class", "Class")
+                .TrackColumn("hbl_comm", "Commodity")
+                .TrackColumn("hbl_chwt", "Chargeable Weight")
+                .TrackColumn("hbl_rate", "Rate")
+                .TrackColumn("hbl_total", "Total")
+
+                .TrackColumn("hbl_remark1", "Remark 1")
+                .TrackColumn("hbl_remark2", "Remark 2")
+                .TrackColumn("hbl_remark3", "Remark 3")
+                .TrackColumn("hbl_by1", "By 1")
+                .TrackColumn("hbl_by1_carrier", "By 1 Carrier")
+                .TrackColumn("hbl_by2", "By 2")
+                .TrackColumn("hbl_by2_carrier", "By 2 Carrier")
+                .TrackColumn("hbl_issued_date", "Issued Date")
+                .TrackColumn("hbl_delivery_date", "Delivery Date")
+                .TrackColumn("hbl_issued_by", "Issued By")
+
+                .TrackColumn("hbl_tocarrier1", "Carrier Charges")
+
+
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
         }

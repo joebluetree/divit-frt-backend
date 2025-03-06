@@ -83,6 +83,55 @@ public class cargo_air_exporth_dto : basetable_dto
     public decimal? hbl_total { get; set; }
 
 
+    public string? hbl_toagent1 { get; set; }
+    public decimal? hbl_rate1 { get; set; }
+    public decimal? hbl_total1 { get; set; }
+    public string? hbl_printsc1 { get; set; }
+    public string? hbl_printsc2 { get; set; }
+
+    public string? hbl_toagent2 { get; set; }
+    public decimal? hbl_rate2 { get; set; }
+    public decimal? hbl_total2 { get; set; }
+    public string? hbl_printsc3 { get; set; }
+    public string? hbl_printsc4 { get; set; }
+
+    public string? hbl_toagent3 { get; set; }
+    public decimal? hbl_rate3 { get; set; }
+    public decimal? hbl_total3 { get; set; }
+    public string? hbl_printsc5 { get; set; }
+    public string? hbl_printsc6 { get; set; }
+
+    public string? hbl_toagent4 { get; set; }
+    public decimal? hbl_rate4 { get; set; }
+    public decimal? hbl_total4 { get; set; }
+    public string? hbl_printsc7 { get; set; }
+    public string? hbl_printsc8 { get; set; }
+
+    public string? hbl_toagent5 { get; set; }
+    public decimal? hbl_rate5 { get; set; }
+    public decimal? hbl_total5 { get; set; }
+    public string? hbl_printsc9 { get; set; }
+    public string? hbl_printsc10 { get; set; }
+
+    public string? hbl_tocarrier1 { get; set; }
+    public decimal? hbl_carrate1 { get; set; }
+    public decimal? hbl_cartotal1 { get; set; }
+    public string? hbl_carprintsc1 { get; set; }
+    public string? hbl_carprintsc2 { get; set; }
+
+    public string? hbl_tocarrier2 { get; set; }
+    public decimal? hbl_carrate2 { get; set; }
+    public decimal? hbl_cartotal2 { get; set; }
+    public string? hbl_carprintsc3 { get; set; }
+    public string? hbl_carprintsc4 { get; set; }
+
+    public string? hbl_tocarrier3 { get; set; }
+    public decimal? hbl_carrate3 { get; set; }
+    public decimal? hbl_cartotal3 { get; set; }
+    public string? hbl_carprintsc5 { get; set; }
+    public string? hbl_carprintsc6 { get; set; }
+
+
     public string? hbl_charges1 { get; set; }
     public string? hbl_charges2 { get; set; }
     public string? hbl_charges3 { get; set; }
@@ -91,9 +140,6 @@ public class cargo_air_exporth_dto : basetable_dto
     public string? hbl_charges1_carrier { get; set; }
     public string? hbl_charges2_carrier { get; set; }
     public string? hbl_charges3_carrier { get; set; }
-    public string? hbl_group { get; set; }
-
-
 
     public string? hbl_remark1 { get; set; }
     public string? hbl_remark2 { get; set; }
@@ -105,6 +151,57 @@ public class cargo_air_exporth_dto : basetable_dto
     public string? hbl_issued_date { get; set; }
     public string? hbl_delivery_date { get; set; }
     public string? hbl_issued_by { get; set; }
+
+
+    public int desc_parent_id { get; set; } = 0;
+    public string? desc_parent_type { get; set; } = "";
+    public int? desc_ctr { get; set; } = 0;
+    public int desc_id1 { get; set; } = 0;
+    public int desc_id2 { get; set; } = 0;
+    public int desc_id3 { get; set; } = 0;
+    public int desc_id4 { get; set; } = 0;
+    public int desc_id5 { get; set; } = 0;
+    public int desc_id6 { get; set; } = 0;
+    public int desc_id7 { get; set; } = 0;
+    public int desc_id8 { get; set; } = 0;
+    public int desc_id9 { get; set; } = 0;
+    public int desc_id10 { get; set; } = 0;
+    public int desc_id11 { get; set; } = 0;
+    public int desc_id12 { get; set; } = 0;
+    public int desc_id13 { get; set; } = 0;
+    public int desc_id14 { get; set; } = 0;
+    public int desc_id15 { get; set; } = 0;
+    public int desc_id16 { get; set; } = 0;
+    public int desc_id17 { get; set; } = 0;
+
+    public string desc_mark1 { get; set; } = "";
+    public string desc_mark2 { get; set; } = "";
+    public string desc_mark3 { get; set; } = "";
+    public string desc_mark4 { get; set; } = "";
+    public string desc_mark5 { get; set; } = "";
+    public string desc_mark6 { get; set; } = "";
+    public string desc_mark7 { get; set; } = "";
+    public string desc_mark8 { get; set; } = "";
+    public string desc_mark9 { get; set; } = "";
+    public string desc_mark10 { get; set; } = "";
+
+    public string desc_description1 { get; set; } = "";
+    public string desc_description2 { get; set; } = "";
+    public string desc_description3 { get; set; } = "";
+    public string desc_description4 { get; set; } = "";
+    public string desc_description5 { get; set; } = "";
+    public string desc_description6 { get; set; } = "";
+    public string desc_description7 { get; set; } = "";
+    public string desc_description8 { get; set; } = "";
+    public string desc_description9 { get; set; } = "";
+    public string desc_description10 { get; set; } = "";
+    public string desc_description11 { get; set; } = "";
+    public string desc_description12 { get; set; } = "";
+    public string desc_description13 { get; set; } = "";
+    public string desc_description14 { get; set; } = "";
+    public string desc_description15 { get; set; } = "";
+    public string desc_description16 { get; set; } = "";
+    public string desc_description17 { get; set; } = "";
 
 
 }
