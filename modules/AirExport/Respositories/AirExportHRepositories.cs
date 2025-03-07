@@ -17,15 +17,16 @@ namespace AirExport.Repositories
     //Command :  Create Repository for the Air Export House.
     //version 1.0
 
-    public class AirExportHouRepository : IAirExportHouRepository
+    public class AirExportHRepository : IAirExportHRepository
     {
 
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
         private DateTime log_date;
         string hbl_mode = "AIR EXPORT";
+        string desc_type = "AR-DESC";
 
-        public AirExportHouRepository(AppDbContext _context, IAuditLog _auditLog)
+        public AirExportHRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
             this.auditLog = _auditLog;
@@ -311,69 +312,87 @@ namespace AirExport.Repositories
 
 
                 //Record.hbl_toagent1 = SplitCharges(Record.hbl_charges1!, 0);
-                Record.hbl_toagent1 = !Lib.IsBlank(Record.hbl_charges1) ? SplitCharges(Record.hbl_charges1, 0) : "";
-                Record.hbl_rate1 = !Lib.IsBlank(Record.hbl_charges1) && !Lib.IsBlank(SplitCharges(Record.hbl_charges1, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges1, 1)) : 0;
-                Record.hbl_total1 = !Lib.IsBlank(Record.hbl_charges1) && !Lib.IsBlank(SplitCharges(Record.hbl_charges1, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges1, 2)) : 0;
-                Record.hbl_printsc1 = !Lib.IsBlank(Record.hbl_charges1) ? SplitCharges(Record.hbl_charges1, 3) : "";
-                Record.hbl_printsc2 = !Lib.IsBlank(Record.hbl_charges1) ? SplitCharges(Record.hbl_charges1, 4) : "";
+                Record.hbl_toagent1 = SplitCharges(Record.hbl_charges1, 0);
+                Record.hbl_rate1 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges1, 1));
 
-                Record.hbl_toagent2 = !Lib.IsBlank(Record.hbl_charges2) ? SplitCharges(Record.hbl_charges2, 0) : "";
-                Record.hbl_rate2 = !Lib.IsBlank(Record.hbl_charges2) && !Lib.IsBlank(SplitCharges(Record.hbl_charges2, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges2, 1)) : 0;
-                Record.hbl_total2 = !Lib.IsBlank(Record.hbl_charges2) && !Lib.IsBlank(SplitCharges(Record.hbl_charges2, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges2, 2)) : 0;
-                Record.hbl_printsc3 = !Lib.IsBlank(Record.hbl_charges2) ? SplitCharges(Record.hbl_charges2, 3) : "";
-                Record.hbl_printsc4 = !Lib.IsBlank(Record.hbl_charges2) ? SplitCharges(Record.hbl_charges2, 4) : "";
+                Record.hbl_total1 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges1, 2));
+                Record.hbl_printsc1 = SplitCharges(Record.hbl_charges1, 3);
+                Record.hbl_printsc2 = SplitCharges(Record.hbl_charges1, 4);
 
-                Record.hbl_toagent3 = !Lib.IsBlank(Record.hbl_charges3) ? SplitCharges(Record.hbl_charges3, 0) : "";
-                Record.hbl_rate3 = !Lib.IsBlank(Record.hbl_charges3) && !Lib.IsBlank(SplitCharges(Record.hbl_charges3, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges3, 1)) : 0;
-                Record.hbl_total3 = !Lib.IsBlank(Record.hbl_charges3) && !Lib.IsBlank(SplitCharges(Record.hbl_charges3, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges3, 2)) : 0;
-                Record.hbl_printsc5 = !Lib.IsBlank(Record.hbl_charges3) ? SplitCharges(Record.hbl_charges3, 3) : "";
-                Record.hbl_printsc6 = !Lib.IsBlank(Record.hbl_charges3) ? SplitCharges(Record.hbl_charges3, 4) : "";
+                Record.hbl_toagent2 = SplitCharges(Record.hbl_charges2, 0);
+                Record.hbl_rate2 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges2, 1));
+                Record.hbl_total2 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges2, 2));
+                Record.hbl_printsc3 = SplitCharges(Record.hbl_charges2, 3);
+                Record.hbl_printsc4 = SplitCharges(Record.hbl_charges2, 4);
 
-                Record.hbl_toagent4 = !Lib.IsBlank(Record.hbl_charges4) ? SplitCharges(Record.hbl_charges4, 0) : "";
-                Record.hbl_rate4 = !Lib.IsBlank(Record.hbl_charges4) && !Lib.IsBlank(SplitCharges(Record.hbl_charges4, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges4, 1)) : 0;
-                Record.hbl_total4 = !Lib.IsBlank(Record.hbl_charges4) && !Lib.IsBlank(SplitCharges(Record.hbl_charges4, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges4, 2)) : 0;
-                Record.hbl_printsc7 = !Lib.IsBlank(Record.hbl_charges4) ? SplitCharges(Record.hbl_charges4, 3) : "";
-                Record.hbl_printsc8 = !Lib.IsBlank(Record.hbl_charges4) ? SplitCharges(Record.hbl_charges4, 4) : "";
+                Record.hbl_toagent3 = SplitCharges(Record.hbl_charges3, 0);
+                Record.hbl_rate3 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges3, 1));
+                Record.hbl_total3 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges3, 2));
+                Record.hbl_printsc5 = SplitCharges(Record.hbl_charges3, 3);
+                Record.hbl_printsc6 =SplitCharges(Record.hbl_charges3, 4);
 
-                Record.hbl_toagent5 = !Lib.IsBlank(Record.hbl_charges5) ? SplitCharges(Record.hbl_charges5, 0) : "";
-                Record.hbl_rate5 = !Lib.IsBlank(Record.hbl_charges5) && !Lib.IsBlank(SplitCharges(Record.hbl_charges5, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges5, 1)) : 0;
-                Record.hbl_total5 = !Lib.IsBlank(Record.hbl_charges5) && !Lib.IsBlank(SplitCharges(Record.hbl_charges5, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges5, 2)) : 0;
-                Record.hbl_printsc9 = !Lib.IsBlank(Record.hbl_charges5) ? SplitCharges(Record.hbl_charges5, 3) : "";
-                Record.hbl_printsc10 = !Lib.IsBlank(Record.hbl_charges5) ? SplitCharges(Record.hbl_charges5, 4) : "";
+                Record.hbl_toagent4 = SplitCharges(Record.hbl_charges4, 0);
+                Record.hbl_rate4 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges4, 1));
+                Record.hbl_total4 =  Lib.StringToDecimal(SplitCharges(Record.hbl_charges4, 2));
+                Record.hbl_printsc7 = SplitCharges(Record.hbl_charges4, 3);
+                Record.hbl_printsc8 = SplitCharges(Record.hbl_charges4, 4);
+
+                Record.hbl_toagent5 = SplitCharges(Record.hbl_charges5, 0);
+                Record.hbl_rate5 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges5, 1));
+                Record.hbl_total5 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges5, 2));
+                Record.hbl_printsc9 = SplitCharges(Record.hbl_charges5, 3);
+                Record.hbl_printsc10 = SplitCharges(Record.hbl_charges5, 4);
 
                 //Charges to carrier details
 
-                Record.hbl_tocarrier1 = !Lib.IsBlank(Record.hbl_charges1_carrier) ? SplitCharges(Record.hbl_charges1_carrier, 0) : "";
-                Record.hbl_carrate1 = !Lib.IsBlank(Record.hbl_charges1_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges1_carrier, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges1_carrier, 1)) : 0;
-                Record.hbl_cartotal1 = !Lib.IsBlank(Record.hbl_charges1_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges1_carrier, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges1_carrier, 2)) : 0;
-                Record.hbl_carprintsc1 = !Lib.IsBlank(Record.hbl_charges1_carrier) ? SplitCharges(Record.hbl_charges1_carrier, 3) : "";
-                Record.hbl_carprintsc2 = !Lib.IsBlank(Record.hbl_charges1_carrier) ? SplitCharges(Record.hbl_charges1_carrier, 4) : "";
+                Record.hbl_tocarrier1 = SplitCharges(Record.hbl_charges1_carrier, 0);
+                Record.hbl_carrate1 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges1_carrier, 1));
+                Record.hbl_cartotal1 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges1_carrier, 2));
+                Record.hbl_carprintsc1 = SplitCharges(Record.hbl_charges1_carrier, 3);
+                Record.hbl_carprintsc2 = SplitCharges(Record.hbl_charges1_carrier, 4);
 
-                Record.hbl_tocarrier1 = !Lib.IsBlank(Record.hbl_charges1_carrier) ? SplitCharges(Record.hbl_charges1_carrier, 0) : "";
-                Record.hbl_carrate1 = !Lib.IsBlank(Record.hbl_charges1_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges1_carrier, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges1_carrier, 1)) : 0;
-                Record.hbl_cartotal1 = !Lib.IsBlank(Record.hbl_charges1_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges1_carrier, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges1_carrier, 2)) : 0;
-                Record.hbl_carprintsc1 = !Lib.IsBlank(Record.hbl_charges1_carrier) ? SplitCharges(Record.hbl_charges1_carrier, 3) : "";
-                Record.hbl_carprintsc2 = !Lib.IsBlank(Record.hbl_charges1_carrier) ? SplitCharges(Record.hbl_charges1_carrier, 4) : "";
+                Record.hbl_tocarrier2 = SplitCharges(Record.hbl_charges2_carrier, 0);
+                Record.hbl_carrate2 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges2_carrier, 1));
+                Record.hbl_cartotal2 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges2_carrier, 2));
+                Record.hbl_carprintsc3 = SplitCharges(Record.hbl_charges2_carrier, 3);
+                Record.hbl_carprintsc4 = SplitCharges(Record.hbl_charges2_carrier, 4);
 
-                Record.hbl_tocarrier2 = !Lib.IsBlank(Record.hbl_charges2_carrier) ? SplitCharges(Record.hbl_charges2_carrier, 0) : "";
-                Record.hbl_carrate2 = !Lib.IsBlank(Record.hbl_charges2_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges2_carrier, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges2_carrier, 1)) : 0;
-                Record.hbl_cartotal2 = !Lib.IsBlank(Record.hbl_charges2_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges2_carrier, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges2_carrier, 2)) : 0;
-                Record.hbl_carprintsc3 = !Lib.IsBlank(Record.hbl_charges2_carrier) ? SplitCharges(Record.hbl_charges2_carrier, 3) : "";
-                Record.hbl_carprintsc4 = !Lib.IsBlank(Record.hbl_charges2_carrier) ? SplitCharges(Record.hbl_charges2_carrier, 4) : "";
+                Record.hbl_tocarrier3 = SplitCharges(Record.hbl_charges3_carrier, 0);
+                Record.hbl_carrate3 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges3_carrier, 1));
+                Record.hbl_cartotal3 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges3_carrier, 2));
+                Record.hbl_carprintsc5 = SplitCharges(Record.hbl_charges3_carrier, 3);
+                Record.hbl_carprintsc6 = SplitCharges(Record.hbl_charges3_carrier, 4);
 
-                Record.hbl_tocarrier3 = !Lib.IsBlank(Record.hbl_charges3_carrier) ? SplitCharges(Record.hbl_charges3_carrier, 0) : "";
-                Record.hbl_carrate3 = !Lib.IsBlank(Record.hbl_charges3_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges3_carrier, 1)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges3_carrier, 1)) : 0;
-                Record.hbl_cartotal3 = !Lib.IsBlank(Record.hbl_charges3_carrier) && !Lib.IsBlank(SplitCharges(Record.hbl_charges3_carrier, 2)) ? Lib.StringToDecimal(SplitCharges(Record.hbl_charges3_carrier, 2)) : 0;
-                Record.hbl_carprintsc5 = !Lib.IsBlank(Record.hbl_charges3_carrier) ? SplitCharges(Record.hbl_charges3_carrier, 3) : "";
-                Record.hbl_carprintsc6 = !Lib.IsBlank(Record.hbl_charges3_carrier) ? SplitCharges(Record.hbl_charges3_carrier, 4) : "";
-
-                 await GetCargoDesc(Record); //Get Record
+                await GetCargoDesc(Record); //Get Record
 
                 return Record;
             }
             catch (Exception Ex)
             {
                 throw new Exception(Ex.Message.ToString());
+            }
+        }
+
+         public async Task GetCargoDesc(cargo_air_exporth_dto Record)
+        {
+            for (int i = 1; i <= 17; i++)
+            {
+                Record.GetType().GetProperty($"desc_id{i}")?.SetValue(Record, 0);
+                Record.GetType().GetProperty($"desc_mark{i}")?.SetValue(Record, "");
+                Record.GetType().GetProperty($"desc_description{i}")?.SetValue(Record, "");
+            }
+
+            var records = await context.cargo_desc
+                .Where(a => a.desc_parent_id == Record.hbl_id)
+                .ToListAsync();
+
+            foreach (var desc in records)
+            {
+                int? ctr = desc.desc_ctr;
+
+                Record.GetType().GetProperty($"desc_id{ctr}")?.SetValue(Record, desc.desc_id);
+                Record.GetType().GetProperty($"desc_mark{ctr}")?.SetValue(Record, desc.desc_mark);
+                Record.GetType().GetProperty($"desc_description{ctr}")?.SetValue(Record, desc.desc_description);
             }
         }
 
@@ -412,15 +431,26 @@ namespace AirExport.Repositories
             if (Lib.IsZero(record_dto.hbl_shipment_stage_id))
                 str += "Shipment Stage To Cannot Be Blank!";
             if (Lib.IsZero(record_dto.hbl_shipper_id))
-                str += "Shipper Cannot Be Blank!";
+                str += "Shipper code Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.hbl_shipper_name))
+                str += "Shipper name Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.hbl_shipper_add1))
+                str += "Shipper Address1 Cannot Be Blank!";
             if (Lib.IsZero(record_dto.hbl_consignee_id))
-                str += "Consignee Cannot Be Blank!";
-            if (Lib.IsZero(record_dto.hbl_handled_id))
-                str += "Handled By Cannot Be Blank!";
-            if (Lib.IsZero(record_dto.hbl_salesman_id))
-                str += "Sales Rep. Cannot Be Blank!";
-            if (Lib.IsBlank(record_dto.hbl_houseno))
-                str += "House By Cannot Be Blank!";
+                str += "Consignee code Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.hbl_consigned_to1))
+                str += "Consignee Name Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.hbl_consigned_to2))
+                str += "Consignee Address1 Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.hbl_bltype))
+                str += "Client.Type Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.hbl_packages))
+                str += "PCS Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.hbl_weight))
+                str += "Weight Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.hbl_chwt))
+                str += "CH.WT Cannot Be Blank!";
+            
 
             if (str != "")
             {
@@ -457,18 +487,18 @@ namespace AirExport.Repositories
 
                 if (mode == "add")
                 {
-                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "AIREXPORT-MASTER-PREFIX,AIREXPORT-MASTER-STARTING-NO");// 
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "AIREXPORT-HOUSE-PREFIX,AIREXPORT-HOUSE-STARTING-NO");// 
 
                     var DefaultCfNo = 0;
                     var Defaultprefix = "";
 
-                    if (result.ContainsKey("AIREXPORT-MASTER-STARTING-NO"))
+                    if (result.ContainsKey("AIREXPORT-HOUSE-STARTING-NO"))
                     {
-                        DefaultCfNo = Lib.StringToInteger(result["AIREXPORT-MASTER-STARTING-NO"]);
+                        DefaultCfNo = Lib.StringToInteger(result["AIREXPORT-HOUSE-STARTING-NO"]);
                     }
-                    if (result.ContainsKey("AIREXPORT-MASTER-PREFIX"))
+                    if (result.ContainsKey("AIREXPORT-HOUSE-PREFIX"))
                     {
-                        Defaultprefix = result["AIREXPORT-MASTER-PREFIX"].ToString();
+                        Defaultprefix = result["AIREXPORT-HOUSE-PREFIX"].ToString();
                     }
                     if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
                     {
@@ -616,39 +646,8 @@ namespace AirExport.Repositories
 
         }
 
-        //function for split the charges
-        private string SplitCharges(string? data, int iPos)
-        {
-            string[] words = data!.Split(',');
-            string str = "";
-            if (words.Length >= iPos)
-                str = words[iPos].ToString();
-            return str;
-        }
-
-        //function for get description
-        public async Task GetCargoDesc(cargo_air_exporth_dto Record) 
-        {
-            for (int i = 1; i <= 17; i++)
-            {
-                Record.GetType().GetProperty($"desc_id{i}")?.SetValue(Record, 0);
-                Record.GetType().GetProperty($"desc_mark{i}")?.SetValue(Record, "");
-                Record.GetType().GetProperty($"desc_description{i}")?.SetValue(Record, "");
-            }
-
-            var records = await context.cargo_desc
-                .Where(a => a.desc_parent_id == Record.hbl_id)
-                .ToListAsync();
-
-            foreach (var desc in records)
-            {
-                int? ctr = desc.desc_ctr;
-
-                Record.GetType().GetProperty($"desc_id{ctr}")?.SetValue(Record, desc.desc_id);
-                Record.GetType().GetProperty($"desc_mark{ctr}")?.SetValue(Record, desc.desc_mark);
-                Record.GetType().GetProperty($"desc_description{ctr}")?.SetValue(Record, desc.desc_description);
-            }
-        }
+       
+       
 
         //function for save description
         public async Task<cargo_air_exporth_dto> SaveCargoDesc(int id, cargo_air_exporth_dto record_dto)
@@ -675,7 +674,6 @@ namespace AirExport.Repositories
                 record_dto.desc_id17 = await SaveMarksandDesc(id, record_dto.desc_id17, null!, record_dto.desc_description17!, 17, record_dto);
 
                 return record_dto;
-
             }
             catch (Exception ex)
             {
@@ -715,42 +713,63 @@ namespace AirExport.Repositories
 
                     Record.desc_parent_id = id;
                     Record.desc_ctr = ctr;
+                    Record.desc_parent_type = desc_type;
 
                     Record.desc_mark = mark;
                     Record.desc_description = description;
                 }
                 else
                 {
-                    Record = await context.cargo_desc
-                        .Where(f => f.desc_parent_id == id && f.desc_id == desc_id)
+                   Record = await context.cargo_desc
+                        .Where(f => f.desc_parent_id == id && f.desc_id == desc_id)//&& f.desc_id == desc_id
                         .FirstOrDefaultAsync();
-                    var records = await context.cargo_desc
-                        .Where(a => a.desc_parent_id == record_dto.hbl_id)
-                        .ToListAsync();
 
                     if (Record == null)
                         throw new Exception("record Not Found");
 
-                
-                // if (mode == "edit")
-                // {
-                Record.desc_mark = mark;
-                Record.desc_description = description;
-                // context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
-                Record.rec_version++;
-                Record.rec_edited_by = record_dto.rec_created_by;
-                Record.rec_edited_date = DbLib.GetDateTime();
-                // }
+                    if (mode == "edit" || mode == "delete")
+                    {
+                        var NewRecord = new cargo_desc_dto
+                        {
+                            desc_parent_id = id,
+                            desc_id = desc_id,
+                            desc_ctr = ctr,
+                            desc_mark = mark,
+                            desc_description = description,
+                            rec_company_id = record_dto.rec_company_id,
+                            rec_branch_id = record_dto.rec_branch_id,
+                            rec_created_by = record_dto.rec_created_by
+                        };
+
+                        await logHistoryCargoDesc(Record, NewRecord, record_dto.hbl_houseno!);
+
+                        Record.desc_mark = NewRecord.desc_mark;
+                        Record.desc_description = NewRecord.desc_description;
+
+                        // context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
+                        Record.rec_version++;
+                        Record.rec_edited_by = record_dto.rec_created_by;
+                        Record.rec_edited_date = DbLib.GetDateTime();
+
+                        // await context.SaveChangesAsync();
+                    }
                 }
 
-                if (mode == "add")
+                if (mode == "add") 
                     await context.cargo_desc.AddAsync(Record);
+
                 if (mode == "delete")
+                {
                     context.cargo_desc.Remove(Record);
+                    desc_id = 0;
+                }
 
                 await context.SaveChangesAsync();
+                
+                if (mode == "add") 
+                    desc_id  =Record.desc_id;
 
-                return Record.desc_id;
+                return desc_id;
             }
             catch (Exception ex)
             {
@@ -770,6 +789,17 @@ namespace AirExport.Repositories
             CfNo = CfNo == 0 ? DefaultCfNo : CfNo + 1;
             return CfNo;
         }
+
+        //function for split the charges
+        private string SplitCharges(string? data, int iPos)
+        {
+            string[] words = data!.Split(',');
+            string str = "";
+            if (words.Length >= iPos)
+                str = words[iPos].ToString();
+            return str;
+        }
+
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
@@ -807,6 +837,7 @@ namespace AirExport.Repositories
             var old_record_dto = new cargo_air_exporth_dto
             {
                 hbl_id = old_record.hbl_id,
+                hbl_shipment_stage_name = old_record.shipstage?.param_name,
                 hbl_shipper_name = old_record.hbl_shipper_name,
                 hbl_shipper_add1 = old_record.hbl_shipper_add1,
                 hbl_shipper_add2 = old_record.hbl_shipper_add2,
@@ -841,8 +872,11 @@ namespace AirExport.Repositories
                 hbl_lcno = old_record.hbl_lcno,
 
                 hbl_bltype = old_record.hbl_bltype,
+                hbl_handled_name = old_record.handledby?.param_name,
+                hbl_salesman_name = old_record.salesman?.param_name,
                 hbl_goods_nature = old_record.hbl_goods_nature,
                 hbl_commodity = old_record.hbl_commodity,
+                hbl_format_name = old_record.format?.param_name,
                 hbl_rout1 = old_record.hbl_rout1,
                 hbl_rout2 = old_record.hbl_rout2,
                 hbl_rout3 = old_record.hbl_rout3,
@@ -871,7 +905,65 @@ namespace AirExport.Repositories
                 hbl_delivery_date = Lib.FormatDate(old_record.hbl_delivery_date, Lib.outputDateTimeFormat),
                 hbl_issued_by = old_record.hbl_issued_by,
 
-                hbl_tocarrier1 = !Lib.IsBlank(old_record.hbl_charges1_carrier) ? SplitCharges(old_record.hbl_charges1_carrier, 0) : "",
+                hbl_charges1 = old_record.hbl_charges1,
+                hbl_charges2 = old_record.hbl_charges2,
+                hbl_charges3 = old_record.hbl_charges3,
+                hbl_charges4 = old_record.hbl_charges4,
+                hbl_charges5 = old_record.hbl_charges5,
+
+                hbl_charges1_carrier = old_record.hbl_charges1_carrier,
+                hbl_charges2_carrier = old_record.hbl_charges2_carrier,
+                hbl_charges3_carrier = old_record.hbl_charges3_carrier,
+
+                hbl_toagent1 = SplitCharges(old_record.hbl_charges1, 0),
+                hbl_rate1 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges1, 1)),
+                hbl_total1 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges1, 2)),
+                hbl_printsc1 = SplitCharges(old_record.hbl_charges1, 3),
+                hbl_printsc2 = SplitCharges(old_record.hbl_charges1, 4),
+
+                hbl_toagent2 = SplitCharges(old_record.hbl_charges2, 0),
+                hbl_rate2 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges2, 1)),
+                hbl_total2 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges2, 2)),
+                hbl_printsc3 = SplitCharges(old_record.hbl_charges2, 3),
+                hbl_printsc4 = SplitCharges(old_record.hbl_charges2, 4),
+
+                hbl_toagent3 = SplitCharges(old_record.hbl_charges3, 0),
+                hbl_rate3 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges3, 1)),
+                hbl_total3 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges3, 2)),
+                hbl_printsc5 = SplitCharges(old_record.hbl_charges3, 3),
+                hbl_printsc6 =  SplitCharges(old_record.hbl_charges3, 4),
+
+                hbl_toagent4 = SplitCharges(old_record.hbl_charges4, 0),
+                hbl_rate4 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges4, 1)),
+                hbl_total4 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges4, 2)),
+                hbl_printsc7 = SplitCharges(old_record.hbl_charges4, 3),
+                hbl_printsc8 = SplitCharges(old_record.hbl_charges4, 4),
+
+                hbl_toagent5 = SplitCharges(old_record.hbl_charges5, 0),
+                hbl_rate5 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges5, 1)),
+                hbl_total5 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges5, 2)),
+                hbl_printsc9 = SplitCharges(old_record.hbl_charges5, 3),
+                hbl_printsc10 = SplitCharges(old_record.hbl_charges5, 4),
+
+                //Charges to carrier details
+
+                hbl_tocarrier1 = SplitCharges(old_record.hbl_charges1_carrier, 0),
+                hbl_carrate1 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges1_carrier, 1)),
+                hbl_cartotal1 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges1_carrier, 2)),
+                hbl_carprintsc1 = SplitCharges(old_record.hbl_charges1_carrier, 3),
+                hbl_carprintsc2 = SplitCharges(old_record.hbl_charges1_carrier, 4),
+
+                hbl_tocarrier2 = SplitCharges(old_record.hbl_charges2_carrier, 0),
+                hbl_carrate2 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges2_carrier, 1)),
+                hbl_cartotal2 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges2_carrier, 2)),
+                hbl_carprintsc3 = SplitCharges(old_record.hbl_charges2_carrier, 3),
+                hbl_carprintsc4 = SplitCharges(old_record.hbl_charges2_carrier, 4),
+
+                hbl_tocarrier3 = SplitCharges(old_record.hbl_charges3_carrier, 0),
+                hbl_carrate3 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges3_carrier, 1)),
+                hbl_cartotal3 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges3_carrier, 2)),
+                hbl_carprintsc5 = SplitCharges(old_record.hbl_charges3_carrier, 3),
+                hbl_carprintsc6 = SplitCharges(old_record.hbl_charges3_carrier, 4),
 
             };
 
@@ -880,6 +972,7 @@ namespace AirExport.Repositories
                 .PrimaryKey("hbl_id", record_dto.hbl_id)
                 .RefNo(record_dto.hbl_houseno!)
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
+                .TrackColumn("hbl_shipment_stage_name", "Shipment Stage")
                 .TrackColumn("hbl_shipper_name", "Shipper Name")
                 .TrackColumn("hbl_shipper_add1", "Shipper Address 1")
                 .TrackColumn("hbl_shipper_add2", "Shipper Address 2")
@@ -914,8 +1007,11 @@ namespace AirExport.Repositories
 
                 .TrackColumn("hbl_lcno", "LC Number")
                 .TrackColumn("hbl_bltype", "BL Type")
+                .TrackColumn("hbl_handled_name", "Handled By")
+                .TrackColumn("hbl_salesman_name", "Salesman")
                 .TrackColumn("hbl_goods_nature", "Goods Nature")
                 .TrackColumn("hbl_commodity", "Commodity")
+                .TrackColumn("hbl_format_name", "Format")
                 .TrackColumn("hbl_rout1", "Route 1")
                 .TrackColumn("hbl_rout2", "Route 2")
                 .TrackColumn("hbl_rout3", "Route 3")
@@ -944,11 +1040,81 @@ namespace AirExport.Repositories
                 .TrackColumn("hbl_delivery_date", "Delivery Date")
                 .TrackColumn("hbl_issued_by", "Issued By")
 
-                .TrackColumn("hbl_tocarrier1", "Carrier Charges")
+                .TrackColumn("hbl_toagent1", "Agent Charges")
+                .TrackColumn("hbl_rate1", "Agent Rate")
+                .TrackColumn("hbl_total1", "Agent Total")
+                .TrackColumn("hbl_printsc1", "Agent Print SC1")
+                .TrackColumn("hbl_printsc2", "Agent Print SC2")
 
+                .TrackColumn("hbl_toagent2", "Agent Charges 2")
+                .TrackColumn("hbl_rate2", "Agent Rate 2")
+                .TrackColumn("hbl_total2", "Agent Total 2")
+                .TrackColumn("hbl_printsc3", "Agent Print SC3")
+                .TrackColumn("hbl_printsc4", "Agent Print SC4")
+
+                .TrackColumn("hbl_toagent3", "Agent Charges 3")
+                .TrackColumn("hbl_rate3", "Agent Rate 3")
+                .TrackColumn("hbl_total3", "Agent Total 3")
+                .TrackColumn("hbl_printsc5", "Agent Print SC5")
+                .TrackColumn("hbl_printsc6", "Agent Print SC6")
+
+                .TrackColumn("hbl_toagent4", "Agent Charges 4")
+                .TrackColumn("hbl_rate4", "Agent Rate 4")
+                .TrackColumn("hbl_total4", "Agent Total 4")
+                .TrackColumn("hbl_printsc7", "Agent Print SC7")
+                .TrackColumn("hbl_printsc8", "Agent Print SC8")
+
+                .TrackColumn("hbl_toagent5", "Agent Charges 5")
+                .TrackColumn("hbl_rate5", "Agent Rate 5")
+                .TrackColumn("hbl_total5", "Agent Total 5")
+                .TrackColumn("hbl_printsc9", "Agent Print SC9")
+                .TrackColumn("hbl_printsc10", "Agent Print SC10")
+
+                .TrackColumn("hbl_tocarrier1", "Carrier Charges 2")
+                .TrackColumn("hbl_carrate1", "Carrier Rate 2")
+                .TrackColumn("hbl_cartotal1", "Carrier Total 2")
+                .TrackColumn("hbl_carprintsc1", "Carrier Print SC3")
+                .TrackColumn("hbl_carprintsc2", "Carrier Print SC4")
+
+                .TrackColumn("hbl_tocarrier2", "Carrier Charges 2")
+                .TrackColumn("hbl_carrate2", "Carrier Rate 2")
+                .TrackColumn("hbl_cartotal2", "Carrier Total 2")
+                .TrackColumn("hbl_carprintsc3", "Carrier Print SC3")
+                .TrackColumn("hbl_carprintsc4", "Carrier Print SC4")
+
+                .TrackColumn("hbl_tocarrier3", "Carrier Charges 3")
+                .TrackColumn("hbl_carrate3", "Carrier Rate 3")
+                .TrackColumn("hbl_cartotal3", "Carrier Total 3")
+                .TrackColumn("hbl_carprintsc5", "Carrier Print SC5")
+                .TrackColumn("hbl_carprintsc6", "Carrier Print SC6")
 
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
+        }
+        public async Task logHistoryCargoDesc(cargo_desc old_record, cargo_desc_dto NewRecord, string hbl_houseno) // int id
+        {
+            var old_record_dto = new cargo_desc_dto
+            {
+                desc_parent_id = old_record.desc_parent_id,
+                desc_id = old_record.desc_id,
+                desc_ctr = old_record.desc_ctr,
+                desc_mark = old_record.desc_mark,
+                desc_description = old_record.desc_description,
+            };
+
+            await new LogHistorym<cargo_desc_dto>(context)
+            .Table("cargo_housem", log_date)
+            .PrimaryKey("desc_id", NewRecord.desc_parent_id)///hbl id pass while call
+            .RefNo(hbl_houseno)
+            .SetCompanyInfo(NewRecord.rec_version, NewRecord.rec_company_id, NewRecord.rec_branch_id, NewRecord.rec_created_by!)
+
+            .TrackColumn("desc_ctr", "Ctr")
+            .TrackColumn("desc_mark", "Mark")
+            .TrackColumn("desc_description", "Description")
+
+            .SetRecord(old_record_dto, NewRecord)
+            .LogChangesAsync();
+
         }
 
     }

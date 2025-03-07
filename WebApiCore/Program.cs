@@ -91,7 +91,7 @@ builder.Services.AddScoped<IAcctmRepository, AcctmRepository>();
 
 //AirExport
 builder.Services.AddScoped<IAirExportRepository, AirExportRepository>();
-builder.Services.AddScoped<IAirExportHouRepository, AirExportHouRepository>();
+builder.Services.AddScoped<IAirExportHRepository, AirExportHRepository>();
 
 //Tnt
 builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();

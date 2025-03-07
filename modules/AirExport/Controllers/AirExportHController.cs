@@ -16,11 +16,11 @@ namespace Marketing.Controllers
 
 
     [Authorize]
-    [Route("api/AirexportHou")]
-    public class AirExportHouController : Controller
+    [Route("api/AirexportH")]
+    public class AirExportHController : Controller
     {
-        private readonly IAirExportHouRepository mRepository;
-        public AirExportHouController(IAirExportHouRepository Repository)
+        private readonly IAirExportHRepository mRepository;
+        public AirExportHController(IAirExportHRepository Repository)
         {
             this.mRepository = Repository;
         }

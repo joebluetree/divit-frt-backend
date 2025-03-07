@@ -8,7 +8,7 @@ namespace AirExport.Interfaces
     //Date : 27/02/2025
     //Remark : Version 1.0
 
-    public interface IAirExportHouRepository
+    public interface IAirExportHRepository
     {
         Task<Dictionary<string, object>> GetListAsync(Dictionary<string, object> data);
         Task<cargo_air_exporth_dto?> GetRecordAsync(int id);
