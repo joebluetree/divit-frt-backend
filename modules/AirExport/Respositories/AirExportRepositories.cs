@@ -43,7 +43,6 @@ namespace AirExport.Repositories
                 if (action == null)
                     action = "search";
 
-
                 var mbl_refno = "";
                 var company_id = 0;
                 var branch_id = 0;
@@ -51,7 +50,6 @@ namespace AirExport.Repositories
                 var mbl_to_date = "";
                 DateTime? from_date = null;
                 DateTime? to_date = null;
-
 
                 if (data.ContainsKey("mbl_refno"))
                     mbl_refno = data["mbl_refno"].ToString();
@@ -61,7 +59,6 @@ namespace AirExport.Repositories
                     mbl_from_date = data["mbl_from_date"].ToString();
                 if (data.ContainsKey("mbl_to_date"))
                     mbl_to_date = data["mbl_to_date"].ToString();
-
 
                 if (data.ContainsKey("rec_company_id"))
                     company_id = int.Parse(data["rec_company_id"].ToString()!);
@@ -92,7 +89,6 @@ namespace AirExport.Repositories
                 }
                 if (!Lib.IsBlank(mbl_refno))
                     query = query.Where(w => w.mbl_refno!.Contains(mbl_refno!));
-
 
                 if (action == "SEARCH")
                 {
@@ -146,6 +142,50 @@ namespace AirExport.Repositories
             {
                 throw new Exception(Ex.Message.ToString());
             }
+        }
+        public async Task<List<cargo_air_exporth_dto>> GetDetailsAsync(int id)
+        {
+            var query = from e in context.cargo_housem
+                        .Where(e => e.hbl_mbl_id == id)
+                        .OrderBy(o => o.hbl_houseno)
+                        select (new cargo_air_exporth_dto
+                        {
+                            hbl_id = e.hbl_id,
+                            hbl_mbl_id = e.hbl_mbl_id,
+                            hbl_houseno = e.hbl_houseno,
+                            hbl_mbl_refno = e.master!.mbl_refno,
+
+                            hbl_date = Lib.FormatDate(e.hbl_date, Lib.outputDateTimeFormat),
+                           
+                            hbl_shipper_id = e.hbl_shipper_id,
+                            hbl_shipper_code = e.shipper!.cust_code,
+                            hbl_shipper_name = e.shipper!.cust_name,
+                           
+                            hbl_consignee_id = e.hbl_consignee_id,
+                            hbl_consigned_code = e.consignee!.cust_code,
+                            hbl_consigned_to1 = e.consignee!.cust_name,
+
+                            hbl_handled_id = e.hbl_handled_id,
+                            hbl_handled_name = e.handledby!.param_name,
+
+                            hbl_packages = e.hbl_packages,
+                            hbl_issued_date = Lib.FormatDate(e.hbl_issued_date, Lib.outputDateTimeFormat),
+                            hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateTimeFormat),
+
+                            rec_version = e.rec_version,
+                            rec_company_id = e.rec_company_id,
+                            rec_branch_id = e.rec_branch_id,
+                            rec_created_by = e.rec_created_by,
+                            rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
+                            rec_edited_by = e.rec_edited_by,
+                            rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
+                        });
+
+
+            var Record = await query.ToListAsync();
+            
+
+            return Record;
         }
 
         public async Task<cargo_air_exportm_dto?> GetRecordAsync(int id)
@@ -208,6 +248,9 @@ namespace AirExport.Repositories
 
                 if (Record == null)
                     throw new Exception("No Qtn Found");
+
+                Record.air_export = await GetDetailsAsync(Record.mbl_id);
+
                 return Record;
             }
             catch (Exception Ex)
@@ -225,6 +268,7 @@ namespace AirExport.Repositories
 
                 context.Database.BeginTransaction();
                 cargo_air_exportm_dto _Record = await SaveParentAsync(id, mode, record_dto);
+                _Record.air_export = await GetDetailsAsync(_Record.mbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -299,13 +343,13 @@ namespace AirExport.Repositories
                     }
                     if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
                     {
-                        throw new Exception("Missing Quotation Prefix/Starting-Number in Branch Settings");
+                        throw new Exception("Missing AirExport Master Prefix/Starting-Number in Branch Settings");
                     }
 
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
                     if (Lib.IsZero(iNextNo))
                     {
-                        throw new Exception("Quotation Number Cannot Be Generated");
+                        throw new Exception("AirExport Number Cannot Be Generated");
                     }
                     string sref_no = $"{Defaultprefix}{iNextNo}";
 

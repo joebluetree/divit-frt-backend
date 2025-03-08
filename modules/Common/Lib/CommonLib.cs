@@ -65,5 +65,22 @@ namespace Common.Lib
             return DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
         }
 
+
+        public static string SplitString(string? data, int iPos, char SplitChar = ',')
+        {
+            string str = "";
+
+            if (!Database.Lib.Lib.IsBlank(data))
+            {
+                string[] words = data!.Split(SplitChar);
+                if (words.Length > iPos)
+                {
+                    str = words[iPos];
+                }
+            }
+
+            return str;
+        }
+
     }
 }

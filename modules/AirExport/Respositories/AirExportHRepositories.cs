@@ -310,58 +310,56 @@ namespace AirExport.Repositories
                 if (Record == null)
                     throw new Exception("No Qtn Found");
 
+                Record.hbl_toagent1 = CommonLib.SplitString(Record.hbl_charges1, 0);
+                Record.hbl_rate1 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges1, 1));
 
-                //Record.hbl_toagent1 = SplitCharges(Record.hbl_charges1!, 0);
-                Record.hbl_toagent1 = SplitCharges(Record.hbl_charges1, 0);
-                Record.hbl_rate1 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges1, 1));
+                Record.hbl_total1 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges1, 2));
+                Record.hbl_printsc1 = CommonLib.SplitString(Record.hbl_charges1, 3);
+                Record.hbl_printsc2 = CommonLib.SplitString(Record.hbl_charges1, 4);
 
-                Record.hbl_total1 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges1, 2));
-                Record.hbl_printsc1 = SplitCharges(Record.hbl_charges1, 3);
-                Record.hbl_printsc2 = SplitCharges(Record.hbl_charges1, 4);
+                Record.hbl_toagent2 = CommonLib.SplitString(Record.hbl_charges2, 0);
+                Record.hbl_rate2 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges2, 1));
+                Record.hbl_total2 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges2, 2));
+                Record.hbl_printsc3 = CommonLib.SplitString(Record.hbl_charges2, 3);
+                Record.hbl_printsc4 = CommonLib.SplitString(Record.hbl_charges2, 4);
 
-                Record.hbl_toagent2 = SplitCharges(Record.hbl_charges2, 0);
-                Record.hbl_rate2 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges2, 1));
-                Record.hbl_total2 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges2, 2));
-                Record.hbl_printsc3 = SplitCharges(Record.hbl_charges2, 3);
-                Record.hbl_printsc4 = SplitCharges(Record.hbl_charges2, 4);
+                Record.hbl_toagent3 = CommonLib.SplitString(Record.hbl_charges3, 0);
+                Record.hbl_rate3 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges3, 1));
+                Record.hbl_total3 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges3, 2));
+                Record.hbl_printsc5 = CommonLib.SplitString(Record.hbl_charges3, 3);
+                Record.hbl_printsc6 =CommonLib.SplitString(Record.hbl_charges3, 4);
 
-                Record.hbl_toagent3 = SplitCharges(Record.hbl_charges3, 0);
-                Record.hbl_rate3 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges3, 1));
-                Record.hbl_total3 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges3, 2));
-                Record.hbl_printsc5 = SplitCharges(Record.hbl_charges3, 3);
-                Record.hbl_printsc6 =SplitCharges(Record.hbl_charges3, 4);
+                Record.hbl_toagent4 = CommonLib.SplitString(Record.hbl_charges4, 0);
+                Record.hbl_rate4 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges4, 1));
+                Record.hbl_total4 =  Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges4, 2));
+                Record.hbl_printsc7 = CommonLib.SplitString(Record.hbl_charges4, 3);
+                Record.hbl_printsc8 = CommonLib.SplitString(Record.hbl_charges4, 4);
 
-                Record.hbl_toagent4 = SplitCharges(Record.hbl_charges4, 0);
-                Record.hbl_rate4 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges4, 1));
-                Record.hbl_total4 =  Lib.StringToDecimal(SplitCharges(Record.hbl_charges4, 2));
-                Record.hbl_printsc7 = SplitCharges(Record.hbl_charges4, 3);
-                Record.hbl_printsc8 = SplitCharges(Record.hbl_charges4, 4);
-
-                Record.hbl_toagent5 = SplitCharges(Record.hbl_charges5, 0);
-                Record.hbl_rate5 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges5, 1));
-                Record.hbl_total5 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges5, 2));
-                Record.hbl_printsc9 = SplitCharges(Record.hbl_charges5, 3);
-                Record.hbl_printsc10 = SplitCharges(Record.hbl_charges5, 4);
+                Record.hbl_toagent5 = CommonLib.SplitString(Record.hbl_charges5, 0);
+                Record.hbl_rate5 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges5, 1));
+                Record.hbl_total5 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges5, 2));
+                Record.hbl_printsc9 = CommonLib.SplitString(Record.hbl_charges5, 3);
+                Record.hbl_printsc10 = CommonLib.SplitString(Record.hbl_charges5, 4);
 
                 //Charges to carrier details
 
-                Record.hbl_tocarrier1 = SplitCharges(Record.hbl_charges1_carrier, 0);
-                Record.hbl_carrate1 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges1_carrier, 1));
-                Record.hbl_cartotal1 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges1_carrier, 2));
-                Record.hbl_carprintsc1 = SplitCharges(Record.hbl_charges1_carrier, 3);
-                Record.hbl_carprintsc2 = SplitCharges(Record.hbl_charges1_carrier, 4);
+                Record.hbl_tocarrier1 = CommonLib.SplitString(Record.hbl_charges1_carrier, 0);
+                Record.hbl_carrate1 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges1_carrier, 1));
+                Record.hbl_cartotal1 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges1_carrier, 2));
+                Record.hbl_carprintsc1 = CommonLib.SplitString(Record.hbl_charges1_carrier, 3);
+                Record.hbl_carprintsc2 = CommonLib.SplitString(Record.hbl_charges1_carrier, 4);
 
-                Record.hbl_tocarrier2 = SplitCharges(Record.hbl_charges2_carrier, 0);
-                Record.hbl_carrate2 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges2_carrier, 1));
-                Record.hbl_cartotal2 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges2_carrier, 2));
-                Record.hbl_carprintsc3 = SplitCharges(Record.hbl_charges2_carrier, 3);
-                Record.hbl_carprintsc4 = SplitCharges(Record.hbl_charges2_carrier, 4);
+                Record.hbl_tocarrier2 = CommonLib.SplitString(Record.hbl_charges2_carrier, 0);
+                Record.hbl_carrate2 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges2_carrier, 1));
+                Record.hbl_cartotal2 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges2_carrier, 2));
+                Record.hbl_carprintsc3 = CommonLib.SplitString(Record.hbl_charges2_carrier, 3);
+                Record.hbl_carprintsc4 = CommonLib.SplitString(Record.hbl_charges2_carrier, 4);
 
-                Record.hbl_tocarrier3 = SplitCharges(Record.hbl_charges3_carrier, 0);
-                Record.hbl_carrate3 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges3_carrier, 1));
-                Record.hbl_cartotal3 = Lib.StringToDecimal(SplitCharges(Record.hbl_charges3_carrier, 2));
-                Record.hbl_carprintsc5 = SplitCharges(Record.hbl_charges3_carrier, 3);
-                Record.hbl_carprintsc6 = SplitCharges(Record.hbl_charges3_carrier, 4);
+                Record.hbl_tocarrier3 = CommonLib.SplitString(Record.hbl_charges3_carrier, 0);
+                Record.hbl_carrate3 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges3_carrier, 1));
+                Record.hbl_cartotal3 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges3_carrier, 2));
+                Record.hbl_carprintsc5 = CommonLib.SplitString(Record.hbl_charges3_carrier, 3);
+                Record.hbl_carprintsc6 = CommonLib.SplitString(Record.hbl_charges3_carrier, 4);
 
                 await GetCargoDesc(Record); //Get Record
 
@@ -502,13 +500,13 @@ namespace AirExport.Repositories
                     }
                     if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
                     {
-                        throw new Exception("Missing Quotation Prefix/Starting-Number in Branch Settings");
+                        throw new Exception("Missing Airexport House Prefix/Starting-Number in Branch Settings");
                     }
 
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
                     if (Lib.IsZero(iNextNo))
                     {
-                        throw new Exception("Quotation Number Cannot Be Generated");
+                        throw new Exception("House Number Cannot Be Generated");
                     }
                     string sref_no = $"{Defaultprefix}{iNextNo}";
 
@@ -630,13 +628,17 @@ namespace AirExport.Repositories
                 record_dto.hbl_houseno = Record.hbl_houseno;
 
                 record_dto.rec_version = Record.rec_version;
-                record_dto.rec_created_by = Record.rec_created_by;
-                record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
-                if (record_dto.hbl_id != 0)
+                if (mode == "add")
+                {
+                    record_dto.rec_created_by = Record.rec_created_by;
+                    record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+                }
+                if (mode == "edit")
                 {
                     record_dto.rec_edited_by = Record.rec_edited_by;
                     record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
                 }
+
                 return record_dto;
             }
             catch (Exception)
@@ -646,8 +648,6 @@ namespace AirExport.Repositories
 
         }
 
-       
-       
 
         //function for save description
         public async Task<cargo_air_exporth_dto> SaveCargoDesc(int id, cargo_air_exporth_dto record_dto)
@@ -721,7 +721,7 @@ namespace AirExport.Repositories
                 else
                 {
                    Record = await context.cargo_desc
-                        .Where(f => f.desc_parent_id == id && f.desc_id == desc_id)//&& f.desc_id == desc_id
+                        .Where(f => f.desc_parent_id == id && f.desc_id == desc_id)
                         .FirstOrDefaultAsync();
 
                     if (Record == null)
@@ -746,12 +746,10 @@ namespace AirExport.Repositories
                         Record.desc_mark = NewRecord.desc_mark;
                         Record.desc_description = NewRecord.desc_description;
 
-                        // context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
                         Record.rec_version++;
                         Record.rec_edited_by = record_dto.rec_created_by;
                         Record.rec_edited_date = DbLib.GetDateTime();
 
-                        // await context.SaveChangesAsync();
                     }
                 }
 
@@ -791,14 +789,6 @@ namespace AirExport.Repositories
         }
 
         //function for split the charges
-        private string SplitCharges(string? data, int iPos)
-        {
-            string[] words = data!.Split(',');
-            string str = "";
-            if (words.Length >= iPos)
-                str = words[iPos].ToString();
-            return str;
-        }
 
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
@@ -915,55 +905,55 @@ namespace AirExport.Repositories
                 hbl_charges2_carrier = old_record.hbl_charges2_carrier,
                 hbl_charges3_carrier = old_record.hbl_charges3_carrier,
 
-                hbl_toagent1 = SplitCharges(old_record.hbl_charges1, 0),
-                hbl_rate1 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges1, 1)),
-                hbl_total1 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges1, 2)),
-                hbl_printsc1 = SplitCharges(old_record.hbl_charges1, 3),
-                hbl_printsc2 = SplitCharges(old_record.hbl_charges1, 4),
+                hbl_toagent1 = CommonLib.SplitString(old_record.hbl_charges1, 0),
+                hbl_rate1 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges1, 1)),
+                hbl_total1 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges1, 2)),
+                hbl_printsc1 = CommonLib.SplitString(old_record.hbl_charges1, 3),
+                hbl_printsc2 = CommonLib.SplitString(old_record.hbl_charges1, 4),
 
-                hbl_toagent2 = SplitCharges(old_record.hbl_charges2, 0),
-                hbl_rate2 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges2, 1)),
-                hbl_total2 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges2, 2)),
-                hbl_printsc3 = SplitCharges(old_record.hbl_charges2, 3),
-                hbl_printsc4 = SplitCharges(old_record.hbl_charges2, 4),
+                hbl_toagent2 = CommonLib.SplitString(old_record.hbl_charges2, 0),
+                hbl_rate2 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges2, 1)),
+                hbl_total2 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges2, 2)),
+                hbl_printsc3 = CommonLib.SplitString(old_record.hbl_charges2, 3),
+                hbl_printsc4 = CommonLib.SplitString(old_record.hbl_charges2, 4),
 
-                hbl_toagent3 = SplitCharges(old_record.hbl_charges3, 0),
-                hbl_rate3 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges3, 1)),
-                hbl_total3 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges3, 2)),
-                hbl_printsc5 = SplitCharges(old_record.hbl_charges3, 3),
-                hbl_printsc6 =  SplitCharges(old_record.hbl_charges3, 4),
+                hbl_toagent3 = CommonLib.SplitString(old_record.hbl_charges3, 0),
+                hbl_rate3 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges3, 1)),
+                hbl_total3 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges3, 2)),
+                hbl_printsc5 = CommonLib.SplitString(old_record.hbl_charges3, 3),
+                hbl_printsc6 =  CommonLib.SplitString(old_record.hbl_charges3, 4),
 
-                hbl_toagent4 = SplitCharges(old_record.hbl_charges4, 0),
-                hbl_rate4 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges4, 1)),
-                hbl_total4 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges4, 2)),
-                hbl_printsc7 = SplitCharges(old_record.hbl_charges4, 3),
-                hbl_printsc8 = SplitCharges(old_record.hbl_charges4, 4),
+                hbl_toagent4 = CommonLib.SplitString(old_record.hbl_charges4, 0),
+                hbl_rate4 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges4, 1)),
+                hbl_total4 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges4, 2)),
+                hbl_printsc7 = CommonLib.SplitString(old_record.hbl_charges4, 3),
+                hbl_printsc8 = CommonLib.SplitString(old_record.hbl_charges4, 4),
 
-                hbl_toagent5 = SplitCharges(old_record.hbl_charges5, 0),
-                hbl_rate5 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges5, 1)),
-                hbl_total5 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges5, 2)),
-                hbl_printsc9 = SplitCharges(old_record.hbl_charges5, 3),
-                hbl_printsc10 = SplitCharges(old_record.hbl_charges5, 4),
+                hbl_toagent5 = CommonLib.SplitString(old_record.hbl_charges5, 0),
+                hbl_rate5 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges5, 1)),
+                hbl_total5 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges5, 2)),
+                hbl_printsc9 = CommonLib.SplitString(old_record.hbl_charges5, 3),
+                hbl_printsc10 = CommonLib.SplitString(old_record.hbl_charges5, 4),
 
                 //Charges to carrier details
 
-                hbl_tocarrier1 = SplitCharges(old_record.hbl_charges1_carrier, 0),
-                hbl_carrate1 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges1_carrier, 1)),
-                hbl_cartotal1 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges1_carrier, 2)),
-                hbl_carprintsc1 = SplitCharges(old_record.hbl_charges1_carrier, 3),
-                hbl_carprintsc2 = SplitCharges(old_record.hbl_charges1_carrier, 4),
+                hbl_tocarrier1 = CommonLib.SplitString(old_record.hbl_charges1_carrier, 0),
+                hbl_carrate1 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges1_carrier, 1)),
+                hbl_cartotal1 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges1_carrier, 2)),
+                hbl_carprintsc1 = CommonLib.SplitString(old_record.hbl_charges1_carrier, 3),
+                hbl_carprintsc2 = CommonLib.SplitString(old_record.hbl_charges1_carrier, 4),
 
-                hbl_tocarrier2 = SplitCharges(old_record.hbl_charges2_carrier, 0),
-                hbl_carrate2 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges2_carrier, 1)),
-                hbl_cartotal2 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges2_carrier, 2)),
-                hbl_carprintsc3 = SplitCharges(old_record.hbl_charges2_carrier, 3),
-                hbl_carprintsc4 = SplitCharges(old_record.hbl_charges2_carrier, 4),
+                hbl_tocarrier2 = CommonLib.SplitString(old_record.hbl_charges2_carrier, 0),
+                hbl_carrate2 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges2_carrier, 1)),
+                hbl_cartotal2 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges2_carrier, 2)),
+                hbl_carprintsc3 = CommonLib.SplitString(old_record.hbl_charges2_carrier, 3),
+                hbl_carprintsc4 = CommonLib.SplitString(old_record.hbl_charges2_carrier, 4),
 
-                hbl_tocarrier3 = SplitCharges(old_record.hbl_charges3_carrier, 0),
-                hbl_carrate3 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges3_carrier, 1)),
-                hbl_cartotal3 = Lib.StringToDecimal(SplitCharges(old_record.hbl_charges3_carrier, 2)),
-                hbl_carprintsc5 = SplitCharges(old_record.hbl_charges3_carrier, 3),
-                hbl_carprintsc6 = SplitCharges(old_record.hbl_charges3_carrier, 4),
+                hbl_tocarrier3 = CommonLib.SplitString(old_record.hbl_charges3_carrier, 0),
+                hbl_carrate3 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges3_carrier, 1)),
+                hbl_cartotal3 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges3_carrier, 2)),
+                hbl_carprintsc5 = CommonLib.SplitString(old_record.hbl_charges3_carrier, 3),
+                hbl_carprintsc6 = CommonLib.SplitString(old_record.hbl_charges3_carrier, 4),
 
             };
 
