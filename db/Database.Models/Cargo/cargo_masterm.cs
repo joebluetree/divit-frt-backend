@@ -188,6 +188,7 @@ public class cargo_masterm
     
     [ForeignKey("mbl_salesman_id")]
     public mast_param? salesman { get; set; }
+    public List<cargo_container>? master_cntr { get; set; }
 
     [ConcurrencyCheck]
     public int? rec_year { get; set; }

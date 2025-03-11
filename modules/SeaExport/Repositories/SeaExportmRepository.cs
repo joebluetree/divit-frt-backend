@@ -11,7 +11,7 @@ using SeaExport.Interfaces;
 using Common.DTO.SeaExport;
 using Database.Models.Cargo;
 
-namespace Masters.Repositories
+namespace SeaExport.Repositories
 {
     public class SeaExportmRepository : ISeaExportmRepository
     {
@@ -19,6 +19,7 @@ namespace Masters.Repositories
         private readonly IAuditLog auditLog;
         private DateTime log_date;
         private string smbl_mode = "SEA EXPORT";
+        private string cntr_catg = "M";
         public SeaExportmRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -117,7 +118,7 @@ namespace Masters.Repositories
                     mbl_liner_name = e.liner!.param_name,
                     mbl_pol_name = e.pol!.param_name,
                     mbl_pol_etd = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateFormat),
-                    mbl_pod_name = e.pol!.param_name,
+                    mbl_pod_name = e.pod!.param_name,
                     mbl_pod_eta = Lib.FormatDate(e.mbl_pod_eta, Lib.outputDateFormat),
                     mbl_cntr_type = e.mbl_cntr_type,
                     mbl_handled_name = e.handledby!.param_name,
@@ -199,7 +200,8 @@ namespace Masters.Repositories
                 if (Record == null)
                     throw new Exception("No Data Found");
 
-                // Record.cust_contacts = await GetDetAsync(Record.cust_id);
+                Record.master_cntr = await GetDetAsync(Record.mbl_id);
+                Record.master_house = await GetHouseAsync(Record.mbl_id);
 
                 return Record;
             }
@@ -209,36 +211,70 @@ namespace Masters.Repositories
             }
         }
 
-        // public async Task<List<mast_contactm_dto>> GetDetAsync(int id)
-        // {
-        //     var query = from e in context.mast_contactm
-        //                 .Where(a => a.cont_parent_id == id)
-        //                 .OrderBy(o => o.cont_id)
-        //                 select (new mast_contactm_dto
-        //                 {
-        //                     cont_id = e.cont_id,
-        //                     cont_parent_id = e.cont_parent_id,
-        //                     cont_title = e.cont_title,
-        //                     cont_name = e.cont_name,
-        //                     cont_group_id = e.cont_group_id,
-        //                     cont_group_name = e.contgroup!.param_name,
-        //                     cont_designation = e.cont_designation,
-        //                     cont_email = e.cont_email,
-        //                     cont_tel = e.cont_tel,
-        //                     cont_mobile = e.cont_mobile,
-        //                     cont_remarks = e.cont_remarks,
-        //                     cont_country_id = e.cont_country_id,
-        //                     cont_country_name = e.country!.param_name,
-        //                     rec_created_by = e.rec_created_by,
-        //                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
-        //                     rec_edited_by = e.rec_edited_by,
-        //                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
-        //                 });
+        public async Task<List<cargo_container_dto>> GetDetAsync(int id)
+        {
+            var query = from e in context.cargo_container
+                        .Where(a => a.cntr_mbl_id == id)
+                        .OrderBy(o => o.cntr_order)
+                        select (new cargo_container_dto
+                        {
+                            cntr_id = e.cntr_id,
+                            cntr_mbl_id = e.cntr_mbl_id,
+                            cntr_catg = e.cntr_catg,
+                            cntr_no = e.cntr_no,
+                            cntr_type_id = e.cntr_type_id,
+                            cntr_type_name = e.cntrtype!.param_name,
+                            cntr_sealno = e.cntr_sealno,
+                            cntr_movement = e.cntr_movement,
+                            cntr_pieces = e.cntr_pieces,
+                            cntr_packages_unit_id = e.cntr_packages_unit_id,
+                            cntr_packages_unit_name = e.packunit!.param_name,
+                            cntr_teu = e.cntr_teu,
+                            cntr_cbm = e.cntr_cbm,
+                            cntr_weight_uom = e.cntr_weight_uom,
+                            cntr_weight = e.cntr_weight,
+                            cntr_rider = e.cntr_rider,
+                            cntr_tare_weight = e.cntr_tare_weight,
+                            cntr_pick_date = Lib.FormatDate(e.cntr_pick_date, Lib.outputDateFormat),
+                            cntr_return_date = Lib.FormatDate(e.cntr_return_date, Lib.outputDateFormat),
+                            cntr_lfd = Lib.FormatDate(e.cntr_lfd, Lib.outputDateFormat),
+                            cntr_discharge_date = Lib.FormatDate(e.cntr_discharge_date, Lib.outputDateFormat),
+                            cntr_order = e.cntr_order,
 
-        //     var records = await query.ToListAsync();
+                            rec_created_by = e.rec_created_by,
+                            rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
+                            rec_edited_by = e.rec_edited_by,
+                            rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat)
+                        });
 
-        //     return records;
-        // }
+            var records = await query.ToListAsync();
+
+            return records;
+        }
+
+        public async Task<List<cargo_sea_exporth_dto>> GetHouseAsync(int id)
+        {
+            var query = from e in context.cargo_housem
+                        .Where(a => a.hbl_mbl_id == id)
+                        .OrderBy(o => o.hbl_id)
+                        select (new cargo_sea_exporth_dto
+                        {
+                            hbl_id = e.hbl_id,
+                            hbl_mbl_id = e.hbl_mbl_id,
+                            hbl_houseno = e.hbl_houseno,
+                            hbl_shipper_name = e.hbl_shipper_name,
+                            hbl_consignee_name = e.consignee!.cust_name,
+                            hbl_pcs = e.hbl_pcs,
+                            hbl_handled_name = e.handledby!.param_name,
+                            hbl_frt_status_name = e.hbl_frt_status_name,
+                            hbl_issued_date = Lib.FormatDate(e.hbl_issued_date, Lib.outputDateTimeFormat),
+                            rec_created_by = e.rec_created_by,
+                        });
+
+            var records = await query.ToListAsync();
+
+            return records;
+        }
 
         public async Task<cargo_sea_exportm_dto> SaveAsync(int id, string mode, cargo_sea_exportm_dto record_dto)
         {
@@ -248,8 +284,9 @@ namespace Masters.Repositories
 
                 context.Database.BeginTransaction();
                 cargo_sea_exportm_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                // _Record = await saveDetAsync(_Record.cust_id, mode, _Record);
-                // _Record.cust_contacts = await GetDetAsync(_Record.cust_id);
+                _Record = await saveDetAsync(_Record.mbl_id, mode, _Record);
+                _Record.master_cntr = await GetDetAsync(_Record.mbl_id);
+                _Record.master_house = await GetHouseAsync(_Record.mbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -301,7 +338,7 @@ namespace Masters.Repositories
 
                 if (mode == "add")
                 {
-                    
+
                     var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "SEA-EXPORT-PREFIX,SEA-EXPORT-STARTING-NO");// 
 
                     var DefaultCfNo = 0;
@@ -323,14 +360,14 @@ namespace Masters.Repositories
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
                     if (Lib.IsZero(iNextNo))
                     {
-                        throw new Exception("Quotation Number Cannot Be Generated");
+                        throw new Exception("Ref Number Cannot Be Generated");
                     }
 
                     string sqtn_no = $"{Defaultprefix}{iNextNo}";  // for setting quote no by adding propper prefix (here QL - Quotation LCL)
                     string stype = smbl_mode;
 
                     Record = new cargo_masterm();
-                    
+
                     Record.mbl_cfno = iNextNo;
                     Record.mbl_refno = sqtn_no;
                     Record.mbl_mode = stype;
@@ -369,7 +406,7 @@ namespace Masters.Repositories
 
 
                 if (mode == "edit")
-                   await logHistory(Record, record_dto);
+                    await logHistory(Record, record_dto);
 
                 Record.mbl_ref_date = Lib.ParseDate(record_dto.mbl_ref_date!);
                 if (Lib.IsZero(record_dto.mbl_shipment_stage_id))
@@ -399,7 +436,7 @@ namespace Masters.Repositories
                     Record.mbl_salesman_id = null;
                 else
                     Record.mbl_salesman_id = record_dto.mbl_salesman_id;
-                    
+
                 Record.mbl_frt_status_name = record_dto.mbl_frt_status_name;
                 if (Lib.IsZero(record_dto.mbl_ship_term_id))
                     Record.mbl_ship_term_id = null;
@@ -455,7 +492,7 @@ namespace Masters.Repositories
 
                 record_dto.rec_created_by = Record.rec_created_by;
                 record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
-                if (record_dto.mbl_id != 0)
+                if (mode == "edit")
                 {
                     record_dto.rec_edited_by = Record.rec_edited_by;
                     record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
@@ -483,83 +520,91 @@ namespace Masters.Repositories
             return CfNo;
         }
 
-        // public async Task<mast_customerm_dto> saveDetAsync(int id, string mode, mast_customerm_dto record_dto)
-        // {
-        //     mast_contactm? record;
-        //     List<mast_contactm_dto> records_dto;
-        //     List<mast_contactm> records;
-        //     try
-        //     {
+        public async Task<cargo_sea_exportm_dto> saveDetAsync(int id, string mode, cargo_sea_exportm_dto record_dto)
+        {
+            cargo_container? record;
+            List<cargo_container_dto> records_dto;
+            List<cargo_container> records;
+            try
+            {
 
-        //         // get contacts from the front end
-        //         records_dto = record_dto.cust_contacts!;
-        //         // read the contact details from database
-        //         records = await context.mast_contactm
-        //             .Include(c => c.country)
-        //             .Include(c => c.contgroup)
-        //             .Where(w => w.cont_parent_id == id)
-        //             .ToListAsync();
+                // get contacts from the front end
+                records_dto = record_dto.master_cntr!;
+                // read the contact details from database
+                records = await context.cargo_container
+                    .Include(c => c.cntrtype)
+                    .Include(c => c.packunit)
+                    .Where(w => w.cntr_mbl_id == id)
+                    .ToListAsync();
 
+                if (mode == "edit")
+                    await logHistoryDetail(records, record_dto);
+                int nextorder = 1;
 
-        //         if (mode == "edit")
-        //             await logHistoryDetail(records, record_dto);
+                // Remove Deleted Records
+                foreach (var existing_record in records)
+                {
+                    var rec = records_dto.Find(f => f.cntr_id == existing_record.cntr_id);
+                    if (rec == null)
+                        context.cargo_container.Remove(existing_record);
+                }
 
+                //Add or Edit Records 
+                foreach (var rec in records_dto)
+                {
 
+                    if (rec.cntr_id == 0)
+                    {
+                        record = new cargo_container();
+                        record.rec_company_id = record_dto.rec_company_id;
+                        record.rec_branch_id = record_dto.rec_branch_id;
+                        record.rec_created_by = record_dto.rec_created_by;
+                        record.rec_created_date = DbLib.GetDateTime();
+                        record.rec_locked = "N";
 
-        //         // Remove Deleted Records
-        //         foreach (var existing_record in records)
-        //         {
-        //             var rec = records_dto.Find(f => f.cont_id == existing_record.cont_id);
-        //             if (rec == null)
-        //                 context.mast_contactm.Remove(existing_record);
-        //         }
+                        record.cntr_catg = cntr_catg;
+                    }
+                    else
+                    {
+                        record = records.Find(f => f.cntr_id == rec.cntr_id);
+                        if (record == null)
+                            throw new Exception("Detail Record Not Found " + rec.cntr_id.ToString());
 
-        //         //Add or Edit Records 
-        //         foreach (var rec in records_dto)
-        //         {
+                        record.rec_edited_by = record_dto.rec_created_by;
+                        record.rec_edited_date = DbLib.GetDateTime();
+                    }
 
-        //             if (rec.cont_id == 0)
-        //             {
-        //                 record = new mast_contactm();
-        //                 record.rec_company_id = record_dto.rec_company_id;
-        //                 record.rec_created_by = record_dto.rec_created_by;
-        //                 record.rec_created_date = DbLib.GetDateTime();
-        //                 record.rec_locked = "N";
-        //             }
-        //             else
-        //             {
-        //                 record = records.Find(f => f.cont_id == rec.cont_id);
-        //                 if (record == null)
-        //                     throw new Exception("Detail Record Not Found " + rec.cont_id.ToString());
+                    record.cntr_mbl_id = id;
+                    record.cntr_no = rec.cntr_no;
+                    record.cntr_type_id = rec.cntr_type_id;
+                    record.cntr_sealno = rec.cntr_sealno;
+                    record.cntr_movement = rec.cntr_movement;
+                    record.cntr_pieces = rec.cntr_pieces;
+                    record.cntr_packages_unit_id = rec.cntr_packages_unit_id;
+                    record.cntr_teu = rec.cntr_teu;
+                    record.cntr_cbm = rec.cntr_cbm;
+                    record.cntr_weight_uom = rec.cntr_weight_uom;
+                    record.cntr_weight = rec.cntr_weight;
+                    record.cntr_rider = rec.cntr_rider;
+                    record.cntr_tare_weight = rec.cntr_tare_weight;
+                    record.cntr_pick_date = Lib.ParseDate(rec.cntr_pick_date!);
+                    record.cntr_return_date = Lib.ParseDate(rec.cntr_return_date!);
+                    record.cntr_lfd = Lib.ParseDate(rec.cntr_lfd!);
+                    record.cntr_discharge_date = Lib.ParseDate(rec.cntr_discharge_date!);
+                    record.cntr_order = nextorder++;
 
-        //                 record.rec_edited_by = record_dto.rec_created_by;
-        //                 record.rec_edited_date = DbLib.GetDateTime();
-        //             }
+                    if (rec.cntr_id == 0)
+                        await context.cargo_container.AddAsync(record);
+                }
 
-        //             record.cont_parent_id = id;
-        //             record.cont_title = rec.cont_title;
-        //             record.cont_name = rec.cont_name;
-        //             record.cont_group_id = rec.cont_group_id;
-        //             record.cont_designation = rec.cont_designation;
-        //             record.cont_email = rec.cont_email;
-        //             record.cont_tel = rec.cont_tel;
-        //             record.cont_mobile = rec.cont_mobile;
-        //             record.cont_remarks = rec.cont_remarks;
-        //             record.cont_country_id = rec.cont_country_id;
-
-        //             if (rec.cont_id == 0)
-        //                 await context.mast_contactm.AddAsync(record);
-        //         }
-
-
-        //         context.SaveChanges();
-        //         return record_dto;
-        //     }
-        //     catch (Exception Ex)
-        //     {
-        //         throw new Exception(Ex.Message.ToString());
-        //     }
-        // }
+                context.SaveChanges();
+                return record_dto;
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
+            }
+        }
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
             try
@@ -575,13 +620,12 @@ namespace Masters.Repositories
                 }
                 else
                 {
-                    // var _Contact = context.mast_contactm
-                    // .Where(c => c.cont_parent_id == id);
-                    // if (_Contact.Any())
-                    // {
-                    //     context.mast_contactm.RemoveRange(_Contact);
-
-                    // }
+                    var _Container = context.cargo_container
+                    .Where(c => c.cntr_mbl_id == id);
+                    if (_Container.Any())
+                    {
+                        context.cargo_container.RemoveRange(_Container);
+                    }
                     context.Remove(_Record);
                     context.SaveChanges();
                     RetData.Add("status", true);
@@ -634,7 +678,7 @@ namespace Masters.Repositories
                 .Table("cargo_masterm", log_date)
                 .PrimaryKey("mbl_id", record_dto.mbl_id)
                 .RefNo(record_dto.mbl_refno!)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)                
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
                 .TrackColumn("mbl_cfno", "CF No")
                 .TrackColumn("mbl_refno", "Reference No")
                 .TrackColumn("mbl_ref_date", "Reference Date")
@@ -666,40 +710,58 @@ namespace Masters.Repositories
                 .LogChangesAsync();
 
         }
-        // public async Task logHistoryDetail(List<mast_contactm> old_records, mast_customerm_dto record_dto)
-        // {
+        public async Task logHistoryDetail(List<cargo_container> old_records, cargo_sea_exportm_dto record_dto)
+        {
 
-        //     var old_records_dto = old_records.Select(record => new mast_contactm_dto
-        //     {
-        //         cont_id = record.cont_id,
-        //         cont_title = record.cont_title,
-        //         cont_name = record.cont_name,
-        //         cont_group_name = record.contgroup?.param_name,
-        //         cont_designation = record.cont_designation,
-        //         cont_email = record.cont_email,
-        //         cont_tel = record.cont_tel,
-        //         cont_mobile = record.cont_mobile,
-        //         cont_remarks = record.cont_remarks,
-        //         cont_country_name = record.country?.param_name,
-        //     }).ToList();
+            var old_records_dto = old_records.Select(record => new cargo_container_dto
+            {
+                cntr_id = record.cntr_id,
+                cntr_catg = record.cntr_catg,
+                cntr_no = record.cntr_no,
+                cntr_type_name = record.cntrtype?.param_name,
+                cntr_sealno = record.cntr_sealno,
+                cntr_movement = record.cntr_movement,
+                cntr_pieces = record.cntr_pieces,
+                cntr_packages_unit_name = record.packunit?.param_name,
+                cntr_teu = record.cntr_teu,
+                cntr_cbm = record.cntr_cbm,
+                cntr_weight_uom = record.cntr_weight_uom,
+                cntr_weight = record.cntr_weight,
+                cntr_rider = record.cntr_rider,
+                cntr_tare_weight = record.cntr_tare_weight,
+                cntr_pick_date = Lib.FormatDate(record.cntr_pick_date, Lib.outputDateFormat),
+                cntr_return_date = Lib.FormatDate(record.cntr_return_date, Lib.outputDateFormat),
+                cntr_lfd = Lib.FormatDate(record.cntr_lfd, Lib.outputDateFormat),
+                cntr_discharge_date = Lib.FormatDate(record.cntr_discharge_date, Lib.outputDateFormat),
+                cntr_order = record.cntr_order
+            }).ToList();
 
-        //     await new LogHistorym<mast_contactm_dto>(context)
-        //         .Table("mast_customerm", log_date)
-        //         .PrimaryKey("cont_id", record_dto.cust_id)
-        //         .RefNo(record_dto.cust_name!)
-        //         .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
-        //         .TrackColumn("cont_title", "Title")
-        //         .TrackColumn("cont_name", "Contact Name")
-        //         .TrackColumn("cont_group_name", "Group Name")
-        //         .TrackColumn("cont_designation", "Designation")
-        //         .TrackColumn("cont_email", "Email")
-        //         .TrackColumn("cont_tel", "Telephone")
-        //         .TrackColumn("cont_mobile", "Mobile")
-        //         .TrackColumn("cont_remarks", "Remarks")
-        //         .TrackColumn("cont_country_name", "Country Name")
-        //         .SetRecords(old_records_dto, record_dto.cust_contacts!)
-        //         .LogChangesAsync();
+            await new LogHistorym<cargo_container_dto>(context)
+                .Table("cargo_masterm", log_date)
+                .PrimaryKey("cntr_id", record_dto.mbl_id)
+                .RefNo(record_dto.mbl_refno!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .TrackColumn("cntr_catg", "Category")
+                .TrackColumn("cntr_no", "Container No")
+                .TrackColumn("cntr_type_name", "Container Type Name")
+                .TrackColumn("cntr_sealno", "Seal No")
+                .TrackColumn("cntr_movement", "Movement")
+                .TrackColumn("cntr_pieces", "Pieces")
+                .TrackColumn("cntr_packages_unit_name", "Packages Unit")
+                .TrackColumn("cntr_teu", "TEU", "decimal")
+                .TrackColumn("cntr_cbm", "CBM", "decimal")
+                .TrackColumn("cntr_weight_uom", "Weight UOM")
+                .TrackColumn("cntr_weight", "Weight", "decimal")
+                .TrackColumn("cntr_rider", "Rider")
+                .TrackColumn("cntr_tare_weight", "Tare Weight", "decimal")
+                .TrackColumn("cntr_pick_date", "Pick Date")
+                .TrackColumn("cntr_return_date", "Return Date")
+                .TrackColumn("cntr_lfd", "LFD")
+                .TrackColumn("cntr_discharge_date", "Discharge Date")
+                .TrackColumn("cntr_order", "Order")
+                .SetRecords(old_records_dto, record_dto.master_cntr!)
+                .LogChangesAsync();
 
-        // }
+        }
     }
 }

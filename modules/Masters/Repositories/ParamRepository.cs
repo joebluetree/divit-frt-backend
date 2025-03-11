@@ -233,8 +233,7 @@ namespace Masters.Repositories
                     await context.mast_param.AddAsync(Record);
 
                 context.SaveChanges();
-                record_dto.param_id = Record.param_id;
-                record_dto.rec_version = Record.rec_version;
+
                 // Lib.AssignDates2DTO(id, mode, Record, record_dto);
                 record_dto.rec_created_by = Record.rec_created_by;
                 record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
@@ -243,6 +242,9 @@ namespace Masters.Repositories
                     record_dto.rec_edited_by = Record.rec_edited_by;
                     record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
                 }
+                record_dto.param_id = Record.param_id;
+                record_dto.rec_version = Record.rec_version;
+
                 return record_dto;
             }
             catch (Exception Ex)

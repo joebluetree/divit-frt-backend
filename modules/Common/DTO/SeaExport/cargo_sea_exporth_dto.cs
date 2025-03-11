@@ -10,145 +10,176 @@ namespace Common.DTO.SeaExport
 {
     public class cargo_sea_exporth_dto : basetable_dto
     {
-        public int mbl_id { get; set; } = 0;
-        public int mbl_cfno { get; set; } = 0;
-        public string? mbl_refno { get; set; } = "";
-        public string? mbl_ref_date { get; set; } = "";
-        public int? mbl_shipment_stage_id { get; set; } = 0;
-        public string? mbl_shipment_stage_name { get; set; } = "";
-        public string? mbl_no { get; set; } = "";
-        public string? mbl_sub_houseno { get; set; } = "";
-        public string? mbl_liner_bookingno { get; set; } = "";
-        public int? mbl_agent_id { get; set; } = 0;
-        public string? mbl_agent_name { get; set; } = "";
-        public int? mbl_liner_id { get; set; } = 0;
-        public string? mbl_liner_name { get; set; } = "";
-        public int? mbl_handled_id { get; set; } = 0;
-        public string? mbl_handled_name { get; set; } = "";
-        public int? mbl_salesman_id { get; set; } = 0;
-        public string? mbl_salesman_name { get; set; } = "";
-        public int? mbl_frt_status_id { get; set; } = 0;
-        public string? mbl_frt_status_name { get; set; } = "";
-        public int? mbl_ship_term_id { get; set; } = 0;
-        public string? mbl_ship_term_name { get; set; } = "";
-        public string? mbl_cntr_type { get; set; } = "";
-        public string? mbl_direct { get; set; } = "";
-        public string? mbl_place_delivery { get; set; } = "";
-        public int? mbl_pol_id { get; set; } = 0;
-        public string? mbl_pol_name { get; set; } = "";
-        public string? mbl_pol_etd { get; set; } = "";
-        public int? mbl_pod_id { get; set; } = 0;
-        public string? mbl_pod_name { get; set; } = "";
-        public string? mbl_pod_eta { get; set; } = "";
-        public int? mbl_pofd_id { get; set; } = 0;
-        public string? mbl_pofd_name { get; set; } = "";
-        public string? mbl_pofd_eta { get; set; } = "";
-        public int? mbl_country_id { get; set; } = 0;
-        public string? mbl_country_name { get; set; } = "";
-        public string? mbl_vessel { get; set; } = "";
-        public string? mbl_voyage { get; set; } = "";
-        public int? mbl_book_slno { get; set; } = 0;
+        public int hbl_id { get; set; } = 0;
+        public int hbl_mbl_id { get; set; } = 0;//fk
+        public string? hbl_mbl_refno { get; set; }= "";
+        public int hbl_cfno { get; set; } = 0;
+        public string? hbl_houseno { get; set; } = "";
+        public int? hbl_shipment_stage_id { get; set; } = 0;
+        public string? hbl_shipment_stage_name { get; set; } = "";
+        public string? hbl_date { get; set; } = "";
+        public string? hbl_bltype { get; set; } = "";
+        public string? hbl_mode { get; set; } = "";
+        public int? hbl_shipper_id { get; set; } = 0;
+        public string? hbl_shipper_code { get; set; } = "";
+        public string? hbl_shipper_name { get; set; } = "";
+        public string? hbl_shipper_add1 { get; set; } = "";
+        public string? hbl_shipper_add2 { get; set; } = "";
+        public string? hbl_shipper_add3 { get; set; } = "";
+        public string? hbl_shipper_add4 { get; set; } = "";
+        public string? hbl_shipper_add5 { get; set; } = "";
+        public int? hbl_consignee_id { get; set; } = 0;
+        public string? hbl_consignee_code { get; set; } = "";
+        public string? hbl_consignee_name { get; set; } = "";
+        public string? hbl_consignee_add1 { get; set; } = "";
+        public string? hbl_consignee_add2 { get; set; } = "";
+        public string? hbl_consignee_add3 { get; set; } = "";
+        public string? hbl_consignee_add4 { get; set; } = "";
+        public string? hbl_consignee_add5 { get; set; } = "";
+        public int? hbl_notify_id { get; set; } = 0;
+        public string? hbl_notify_code { get; set; } = "";
+        public string? hbl_notify_name { get; set; } = "";
+        public string? hbl_notify_add1 { get; set; } = "";
+        public string? hbl_notify_add2 { get; set; } = "";
+        public string? hbl_notify_add3 { get; set; } = "";
+        public string? hbl_notify_add4 { get; set; } = "";
+        public string? hbl_notify_add5 { get; set; } = "";
+        public int? hbl_agent_id { get; set; } = 0;
+        public string? hbl_agent_name { get; set; } = "";
+        public string? hbl_consigned_to1 { get; set; } = "";
+        public string? hbl_consigned_to2 { get; set; } = "";
+        public string? hbl_consigned_to3 { get; set; } = "";
+        public string? hbl_consigned_to4 { get; set; } = "";
+        public string? hbl_consigned_to5 { get; set; } = "";
+        public string? hbl_place_delivery { get; set; } = "";
+        public string? hbl_frt_status_name { get; set;} = "";
+        public int? hbl_uom_id { get; set; } = 0;
+        public string? hbl_uom_name { get; set; } = "";
+        public int? hbl_pcs { get; set; } = 0;
+        public int? hbl_packages { get; set; } = 0;
+        public decimal? hbl_cbm { get; set; } = 0;
+        public decimal? hbl_weight { get; set; } = 0;
+        public decimal? hbl_lbs { get; set; } = 0;
+        public decimal? hbl_cft { get; set; } = 0;
+        public string? hbl_commodity { get; set; } = "";
+        public int? hbl_salesman_id { get; set; } = 0;
+        public string? hbl_salesman_name { get; set; } = "";
+        public int? hbl_handled_id { get; set; } = 0;
+        public string? hbl_handled_name { get; set; } = "";
+        public string? hbl_remark1 { get; set; } = "";
+        public string? hbl_remark2 { get; set; } = "";
+        public string? hbl_remark3 { get; set; } = "";
+
+        public string? hbl_devan_instr1 { get; set; } = "";
+        public string? hbl_devan_instr2 { get; set; } = "";
+        public string? hbl_devan_instr3 { get; set; } = "";
+        public string? hbl_lfd_date { get; set; } = "";
+        public string? hbl_go_date { get; set; } = "";
+        public string? hbl_place_receipt { get; set; } = "";
+        public string? hbl_pod_name { get; set; } = "";
+        public string? hbl_pofd_name { get; set; } = "";
+        public string? hbl_pol_name { get; set; } = "";
+        public string? hbl_pre_carriage { get; set; } = "";
+        public string? hbl_print_kgs { get; set; } = "";
+        public string? hbl_print_lbs { get; set; } = "";
+        public string? hbl_asarranged_consignee { get; set; } = "";
+        public string? hbl_asarranged_shipper { get; set; } = "";
+        public string? hbl_by1 { get; set; } = "";
+        public string? hbl_by1_carrier { get; set; } = "";
+        public string? hbl_by2 { get; set; } = "";
+        public string? hbl_by2_carrier { get; set; } = "";
+        public string? hbl_clean { get; set; } = "";
+        public string? hbl_comm { get; set; } = "";
+        public string? hbl_customs_value { get; set; } = "";
+        public string? hbl_exp_ref1 { get; set; } = "";
+        public string? hbl_exp_ref2 { get; set; } = "";
+        public string? hbl_exp_ref3 { get; set; } = "";
+        public string? hbl_exp_ref4 { get; set; } = "";
+        public string? hbl_goods_nature { get; set; } = "";
+        public string? hbl_is_arranged { get; set; } = "";
+        public string? hbl_is_cntrized { get; set; } = "";
+        public string? hbl_issued_date { get; set; } = "";
+        public string? hbl_origin { get; set; } = "";
+        public int? hbl_originals { get; set; } = 0;
+        public string? hbl_rout1 { get; set; } = "";
+        public string? hbl_rout2 { get; set; } = "";
+        public string? hbl_rout3 { get; set; } = "";
+        public string? hbl_rout4 { get; set; } = "";
+        public string? hbl_type_move { get; set; } = "";
+        public string? hbl_obl_slno { get; set; } = "";
+        public string? hbl_obl_telex { get; set; } = "";
+        public int? hbl_format_id { get; set; } = 0;
+        public string? hbl_format_name { get; set; } = "";
+        public string? hbl_issued_place { get; set; } = "";
+        public int? hbl_draft_format_id { get; set;} = 0;
+        public string? hbl_draft_format_name { get; set; } = "";
+        public string? hbl_delivery_date { get; set; } = "";
 
         
+        public int desc_parent_id { get; set; } = 0;
+        public string? desc_parent_type { get; set; } = "";
+        public int? desc_ctr { get; set; } = 0;
         
-        // public string? mbl_mode { get; set; } = "";
-        public DateTime? mbl_date { get; set; }
-        
-        
+        public int desc_id1 { get; set; } = 0;
+        public int desc_id2 { get; set; } = 0;
+        public int desc_id3 { get; set; } = 0;
+        public int desc_id4 { get; set; } = 0;
+        public int desc_id5 { get; set; } = 0;
+        public int desc_id6 { get; set; } = 0;
+        public int desc_id7 { get; set; } = 0;
+        public int desc_id8 { get; set; } = 0;
+        public int desc_id9 { get; set; } = 0;
+        public int desc_id10 {get; set; } = 0;
+        public int desc_id11 { get; set; } = 0;
+        public int desc_id12 { get; set; } = 0;
+        public int desc_id13 { get; set; } = 0;
+        public int desc_id14 { get; set; } = 0;
+        public int desc_id15 { get; set; } = 0;
+        public int desc_id16 { get; set; } = 0;
+        public int desc_id17 { get; set; } = 0;
 
+        public string? desc_mark1 { get; set; } = "";
+        public string? desc_mark2 { get; set; } = "";
+        public string? desc_mark3 { get; set; } = "";
+        public string? desc_mark4 { get; set; } = "";
+        public string? desc_mark5 { get; set; } = "";
+        public string? desc_mark6 { get; set; } = "";
+        public string? desc_mark7 { get; set; } = "";
+        public string? desc_mark8 { get; set; } = "";
+        public string? desc_mark9 { get; set; } = "";
+        public string? desc_mark10 { get; set; } = "";
+        public string? desc_mark11 { get; set; } = "";
+        public string? desc_mark12 { get; set; } = "";
+        public string? desc_mark13 { get; set; } = "";
+        public string? desc_mark14 { get; set; } = "";
+        public string? desc_mark15 { get; set; } = "";
+        public string? desc_mark16 { get; set; } = "";
+        public string? desc_mark17 { get; set; } = "";
+        public string? desc_package1 { get; set; } = "";
+        public string? desc_package2 { get; set; } = "";
+        public string? desc_package3 { get; set; } = "";
+        public string? desc_description1 { get; set; } = "";
+        public string? desc_description2 { get; set; } = "";
+        public string? desc_description3 { get; set; } = "";
+        public string? desc_description4 { get; set; } = "";
+        public string? desc_description5 { get; set; } = "";
+        public string? desc_description6 { get; set; } = "";
+        public string? desc_description7 { get; set; } = "";
+        public string? desc_description8 { get; set; } = "";
+        public string? desc_description9 { get; set; } = "";
+        public string? desc_description10 { get; set; } = "";
+        public string? desc_description11 { get; set; } = "";
+        public string? desc_description12 { get; set; } = "";
+        public string? desc_description13 { get; set; } = "";
+        public string? desc_description14 { get; set; } = "";
+        public string? desc_description15 { get; set; } = "";
+        public string? desc_description16 { get; set; } = "";
+        public string? desc_description17 { get; set; } = "";
+
+        public List<cargo_container_dto>? house_cntr { get; set; }
         
-
-        public DateTime? mbl_it_date { get; set; }
-        public string? mbl_it_port { get; set; } = "";
-        public int? mbl_cargo_loc_id { get; set; } = 0;
-        public string? mbl_cargo_loc_name { get; set; } = "";
-        public int? mbl_devan_loc_id { get; set; } = 0;
-        public string? mbl_devan_loc_name { get; set; } = "";
-        public string? mbl_is_held { get; set; } = "";
-        public int? mbl_shipper_id { get; set; } = 0;
-        public int? mbl_consignee_id { get; set; } = 0;
-        public int? mbl_house_tot { get; set; } = 0;
-        public decimal? mbl_cntr_cbm { get; set; } = 0;
-        public int? mbl_container_tot { get; set; } = 0;
-        public string? mbl_remarks { get; set; } = "";
-        public int? mbl_shipper_tot { get; set; } = 0;
-        public int? mbl_consignee_tot { get; set; } = 0;
-        public string? mbl_profit_type { get; set; } = "";
-        public int? mbl_jobtype_id { get; set; } = 0;
+        public cargo_desc_dto? cargodesc { get; set; }
         
-        public string? mbl_rotation_no { get; set; } = "";
-        public string? mbl_status { get; set; } = "";
-        public string? mbl_is_sea_waybill { get; set; } = "";
-        public DateTime? mbl_ombl_sent_on { get; set; }
-        public string? mbl_pending_status { get; set; } = "";
-        public DateTime? mbl_unlock_date { get; set; }
-        public string? mbl_ombl_sent_ampm { get; set; } = "";
-        public string? mbl_3rdparty { get; set; } = "";
-        public string? mbl_isfadjust { get; set; } = "";
-        public string? mbl_ulcode { get; set; } = "";
-        public string? mbl_inv_stage { get; set; } = "";
-        public string? mbl_cntr_desc { get; set; } = "";
-        public string? mbl_por { get; set; } = "";
-        public int? mbl_cooformat_id { get; set; } = 0;
-        public DateTime? mbl_of_sent_on { get; set; }
-        public int? mbl_coloader_id { get; set; } = 0;
-        public int? mbl_customer_id { get; set; } = 0;
-        public string? mbl_software_name { get; set; } = "";
-        public string? mbl_it_tot { get; set; } = "";
-        public string? mbl_incoterm { get; set; } = "";
-        public string? mbl_bo_status { get; set; } = "";
-        public string? mbl_bo_attended_code { get; set; } = "";
-        public DateTime? mbl_bo_attended_date { get; set; }
-        public string? mbl_house_nos { get; set; } = "";
-        public DateTime? mbl_carrier_an_recd_dt { get; set; }
-        public DateTime? mbl_an_sent_dt { get; set; }
-        public DateTime? mbl_stage_changed_date { get; set; }
-        public int? mbl_cntr_type_id { get; set; } = 0;
-        public int? mbl_vessel_id { get; set; } = 0;
-        public string? mbl_vessel_name { get; set; } = "";
-        public string? mbl_telex_released { get; set; } = "";
-        public string? mbl_it_no { get; set; } = "";
-        public string? mbl_cargo_loc_add1 { get; set; } = "";
-        public string? mbl_cargo_loc_add2 { get; set; } = "";
-        public string? mbl_cargo_loc_add3 { get; set; } = "";
-        public string? mbl_cargo_loc_add4 { get; set; } = "";
-        public string? mbl_devan_loc_add1 { get; set; } = "";
-        public string? mbl_devan_loc_add2 { get; set; } = "";
-        public string? mbl_devan_loc_add3 { get; set; } = "";
-        public string? mbl_devan_loc_add4 { get; set; } = "";
-        public string? mbl_by_carrier1 { get; set; } = "";
-        public string? mbl_by_carrier2 { get; set; } = "";
-        public string? mbl_by_carrier3 { get; set; } = "";
-        public int? mbl_currency_id { get; set; } = 0;
-        public string? mbl_to_port1 { get; set; } = "";
-        public string? mbl_to_port2 { get; set; } = "";
-        public string? mbl_to_port3 { get; set; } = "";
-        public decimal? mbl_teu { get; set; } = 0;
-        public decimal? mbl_20 { get; set; } = 0;
-        public decimal? mbl_40 { get; set; } = 0;
-        public decimal? mbl_40hq { get; set; } = 0;
-        public decimal? mbl_45 { get; set; } = 0;
-        public decimal? mbl_pcs { get; set; } = 0;
-        public decimal? mbl_weight { get; set; } = 0;
-        public decimal? mbl_weight_lbs { get; set; } = 0;
-        public decimal? mbl_chwt { get; set; } = 0;
-        public decimal? mbl_chwt_lbs { get; set; } = 0;
-        public decimal? mbl_cbm { get; set; } = 0;
-        public decimal? mbl_cft { get; set; } = 0;
-        public decimal? mbl_mawb_weight { get; set; } = 0;
-        public decimal? mbl_mawb_chwt { get; set; } = 0;
-        public decimal? mbl_inc_total { get; set; } = 0;
-        public decimal? mbl_exp_total { get; set; } = 0;
-        public decimal? mbl_revenue { get; set; } = 0;
-        public string? mbl_type { get; set; } = "";
-        public string? rec_files_attached { get; set; } = "";
-        public decimal? mbl_per { get; set; } = 0;
-        public string? mbl_lock { get; set; } = "";
-        public int? mbl_zero_cbm { get; set; } = 0;
-        public int? mbl_zero_chwt { get; set; } = 0;
-        public int? mbl_zero_wt { get; set; } = 0;
-        public string? mbl_loss_approved { get; set; } = "";
-
-
     }
 }
+

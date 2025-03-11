@@ -49,6 +49,8 @@ namespace Common.DTO.SeaExport
         public string? mbl_vessel_name { get; set; } = "";
         public string? mbl_voyage { get; set; } = "";
         public int? mbl_book_slno { get; set; } = 0;
+        public List<cargo_container_dto>? master_cntr { get; set; }
+        public List<cargo_sea_exporth_dto>? master_house { get; set; }
 
     }
 }

@@ -10,11 +10,11 @@ using SeaExport.Interfaces;
 namespace SeaExport.Controllers
 {
     [Authorize]
-    [Route("api/SeaExport/seaexportm")]
-    public class SeaExportmController : Controller
+    [Route("api/SeaExport/seaexporth")]
+    public class SeaExporthController : Controller
     {
-        private readonly ISeaExportmRepository mRepository;
-        public SeaExportmController(ISeaExportmRepository Repository)
+        private readonly ISeaExporthRepository mRepository;
+        public SeaExporthController(ISeaExporthRepository Repository)
         {
             this.mRepository = Repository;
         }
@@ -51,11 +51,11 @@ namespace SeaExport.Controllers
 
         [HttpPost]
         [Route("SaveAsync")]
-        public async Task<IActionResult> SaveAsync(int id, string mode, [FromBody] cargo_sea_exportm_dto rec)
+        public async Task<IActionResult> SaveAsync(int id, string mode, [FromBody] cargo_sea_exporth_dto rec) // string mark,string package, string desc, int ctr,
         {
             try
             {
-                var record = await mRepository.SaveAsync(id, mode, rec);
+                var record = await mRepository.SaveAsync(id, mode, rec); // mark, package, desc, ctr,
                 return Ok(record);
             }
             catch (Exception Ex)

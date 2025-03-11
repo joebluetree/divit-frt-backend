@@ -622,11 +622,7 @@ namespace Masters.Repositories
 
 
                 await context.SaveChangesAsync();
-
-                record_dto.cust_id = Record.cust_id;
-                record_dto.rec_version = Record.rec_version;
                 //Lib.AssignDates2DTO(record_dto.cust_id, mode, Record, record_dto);
-
                 record_dto.rec_created_by = Record.rec_created_by;
                 record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
                 if (record_dto.cust_id != 0)
@@ -634,6 +630,8 @@ namespace Masters.Repositories
                     record_dto.rec_edited_by = Record.rec_edited_by;
                     record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
                 }
+                record_dto.cust_id = Record.cust_id;
+                record_dto.rec_version = Record.rec_version;
 
                 return record_dto;
             }
