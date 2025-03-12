@@ -130,13 +130,13 @@ namespace AirExport.Repositories
                     hbl_shipper_add4 = e.hbl_shipper_add4,
                     hbl_shipper_add5 = e.shipper!.cust_tel,
                     hbl_consignee_id = e.hbl_consignee_id,
-                    hbl_consigned_code = e.consignee!.cust_code,
-                    hbl_consigned_to1 = e.consignee!.cust_name,
-                    hbl_consigned_to2 = e.consignee!.cust_address1,
-                    hbl_consigned_to3 = e.consignee!.cust_address2,
-                    hbl_consigned_to4 = e.consignee!.cust_address3,
-                    hbl_consigned_to5 = e.hbl_consigned_to5,
-                    hbl_consigned_to6 = e.consignee!.cust_tel,
+                    hbl_consignee_code = e.consignee!.cust_code,
+                    hbl_consignee_name = e.hbl_consignee_name,
+                    hbl_consignee_add1 = e.hbl_consignee_add1,
+                    hbl_consignee_add2 = e.hbl_consignee_add2,
+                    hbl_consignee_add3 = e.hbl_consignee_add3,
+                    hbl_consignee_add4 = e.hbl_consignee_add4,
+                    hbl_consignee_add5 = e.hbl_consignee_add5,
                     hbl_notify_name = e.hbl_notify_name,
                     hbl_notify_add1 = e.hbl_notify_add1,
                     hbl_notify_add2 = e.hbl_notify_add2,
@@ -214,20 +214,20 @@ namespace AirExport.Repositories
                     hbl_mode = e.hbl_mode,
                     hbl_shipper_id = e.hbl_shipper_id,
                     hbl_shipper_code = e.shipper!.cust_code,
-                    hbl_shipper_name = e.shipper!.cust_name,
-                    hbl_shipper_add1 = e.shipper!.cust_address1,
-                    hbl_shipper_add2 = e.shipper!.cust_address2,
-                    hbl_shipper_add3 = e.shipper!.cust_address3,
+                    hbl_shipper_name = e.hbl_shipper_name,
+                    hbl_shipper_add1 = e.hbl_shipper_add1,
+                    hbl_shipper_add2 = e.hbl_shipper_add2,
+                    hbl_shipper_add3 = e.hbl_shipper_add3,
                     hbl_shipper_add4 = e.hbl_shipper_add4,
-                    hbl_shipper_add5 = e.shipper!.cust_tel,
+                    hbl_shipper_add5 = e.hbl_shipper_add5,
                     hbl_consignee_id = e.hbl_consignee_id,
-                    hbl_consigned_code = e.consignee!.cust_code,
-                    hbl_consigned_to1 = e.consignee!.cust_name,
-                    hbl_consigned_to2 = e.consignee!.cust_address1,
-                    hbl_consigned_to3 = e.consignee!.cust_address2,
-                    hbl_consigned_to4 = e.consignee!.cust_address3,
-                    hbl_consigned_to5 = e.hbl_consigned_to5,
-                    hbl_consigned_to6 = e.consignee!.cust_tel,
+                    hbl_consignee_code = e.consignee!.cust_code,
+                    hbl_consignee_name = e.hbl_consignee_name,
+                    hbl_consignee_add1 = e.hbl_consignee_add1,
+                    hbl_consignee_add2 = e.hbl_consignee_add2,
+                    hbl_consignee_add3 = e.hbl_consignee_add3,
+                    hbl_consignee_add4 = e.hbl_consignee_add4,
+                    hbl_consignee_add5 = e.hbl_consignee_add5,
                     hbl_notify_name = e.hbl_notify_name,
                     hbl_notify_add1 = e.hbl_notify_add1,
                     hbl_notify_add2 = e.hbl_notify_add2,
@@ -308,7 +308,7 @@ namespace AirExport.Repositories
                 }).FirstOrDefaultAsync();
 
                 if (Record == null)
-                    throw new Exception("No Qtn Found");
+                    throw new Exception("No House Found");
 
                 Record.hbl_toagent1 = CommonLib.SplitString(Record.hbl_charges1, 0);
                 Record.hbl_rate1 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges1, 1));
@@ -436,9 +436,9 @@ namespace AirExport.Repositories
                 str += "Shipper Address1 Cannot Be Blank!";
             if (Lib.IsZero(record_dto.hbl_consignee_id))
                 str += "Consignee code Cannot Be Blank!";
-            if (Lib.IsBlank(record_dto.hbl_consigned_to1))
+            if (Lib.IsBlank(record_dto.hbl_consignee_name))
                 str += "Consignee Name Cannot Be Blank!";
-            if (Lib.IsBlank(record_dto.hbl_consigned_to2))
+            if (Lib.IsBlank(record_dto.hbl_consignee_add1))
                 str += "Consignee Address1 Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.hbl_bltype))
                 str += "Client.Type Cannot Be Blank!";
@@ -514,6 +514,7 @@ namespace AirExport.Repositories
                     Record.hbl_cfno = iNextNo;
                     Record.hbl_houseno = sref_no;
                     Record.hbl_mode = hbl_mode;
+                    Record.hbl_mbl_id = record_dto.hbl_mbl_id;
 
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_branch_id = record_dto.rec_branch_id;
@@ -549,12 +550,12 @@ namespace AirExport.Repositories
                 Record.hbl_shipper_add4 = record_dto.hbl_shipper_add4;
                 Record.hbl_shipper_add5 = record_dto.hbl_shipper_add5;
                 Record.hbl_consignee_id = record_dto.hbl_consignee_id;
-                Record.hbl_consigned_to1 = record_dto.hbl_consigned_to1;
-                Record.hbl_consigned_to2 = record_dto.hbl_consigned_to2;
-                Record.hbl_consigned_to3 = record_dto.hbl_consigned_to3;
-                Record.hbl_consigned_to4 = record_dto.hbl_consigned_to4;
-                Record.hbl_consigned_to5 = record_dto.hbl_consigned_to5;
-                Record.hbl_consigned_to6 = record_dto.hbl_consigned_to6;
+                Record.hbl_consignee_name = record_dto.hbl_consignee_name;
+                Record.hbl_consignee_add1 = record_dto.hbl_consignee_add1;
+                Record.hbl_consignee_add2 = record_dto.hbl_consignee_add2;
+                Record.hbl_consignee_add3 = record_dto.hbl_consignee_add3;
+                Record.hbl_consignee_add4 = record_dto.hbl_consignee_add4;
+                Record.hbl_consignee_add5 = record_dto.hbl_consignee_add5;
                 Record.hbl_notify_name = record_dto.hbl_notify_name;
                 Record.hbl_notify_add1 = record_dto.hbl_notify_add1;
                 Record.hbl_notify_add2 = record_dto.hbl_notify_add2;
@@ -626,6 +627,8 @@ namespace AirExport.Repositories
                 context.SaveChanges();
                 record_dto.hbl_id = Record.hbl_id;
                 record_dto.hbl_houseno = Record.hbl_houseno;
+                record_dto.hbl_mbl_id = Record.hbl_mbl_id;
+                // record_dto.hbl_mbl_refno = Record.master?.mbl_refno;
 
                 record_dto.rec_version = Record.rec_version;
                 if (mode == "add")
@@ -808,6 +811,13 @@ namespace AirExport.Repositories
                 }
                 else
                 {
+                   var desc = context.cargo_desc
+                    .Where(c => c.desc_parent_id == id);
+                    if (desc.Any())
+                    {
+                        context.cargo_desc.RemoveRange(desc);
+
+                    }
                     context.Remove(_Record);
                     context.SaveChanges();
                     RetData.Add("status", true);
@@ -834,12 +844,12 @@ namespace AirExport.Repositories
                 hbl_shipper_add3 = old_record.hbl_shipper_add3,
                 hbl_shipper_add4 = old_record.hbl_shipper_add4,
                 hbl_shipper_add5 = old_record.hbl_shipper_add5,
-                hbl_consigned_to1 = old_record.hbl_consigned_to1,
-                hbl_consigned_to2 = old_record.hbl_consigned_to2,
-                hbl_consigned_to3 = old_record.hbl_consigned_to3,
-                hbl_consigned_to4 = old_record.hbl_consigned_to4,
-                hbl_consigned_to5 = old_record.hbl_consigned_to5,
-                hbl_consigned_to6 = old_record.hbl_consigned_to6,
+                hbl_consignee_name = old_record.hbl_consignee_name,
+                hbl_consignee_add1 = old_record.hbl_consignee_add1,
+                hbl_consignee_add2 = old_record.hbl_consignee_add2,
+                hbl_consignee_add3 = old_record.hbl_consignee_add3,
+                hbl_consignee_add4 = old_record.hbl_consignee_add4,
+                hbl_consignee_add5 = old_record.hbl_consignee_add5,
                 hbl_notify_name = old_record.hbl_notify_name,
                 hbl_notify_add1 = old_record.hbl_notify_add1,
                 hbl_notify_add2 = old_record.hbl_notify_add2,
@@ -969,12 +979,12 @@ namespace AirExport.Repositories
                 .TrackColumn("hbl_shipper_add3", "Shipper Address 3")
                 .TrackColumn("hbl_shipper_add4", "Shipper Address 4")
                 .TrackColumn("hbl_shipper_add5", "Shipper Address 5")
-                .TrackColumn("hbl_consigned_to1", "Consigned To 1")
-                .TrackColumn("hbl_consigned_to2", "Consigned To 2")
-                .TrackColumn("hbl_consigned_to3", "Consigned To 3")
-                .TrackColumn("hbl_consigned_to4", "Consigned To 4")
-                .TrackColumn("hbl_consigned_to5", "Consigned To 5")
-                .TrackColumn("hbl_consigned_to6", "Consigned To 6")
+                .TrackColumn("hbl_consignee_name", "Consignee Name ")
+                .TrackColumn("hbl_consignee_add1", "Consignee Address 1")
+                .TrackColumn("hbl_consignee_add2", "Consignee Address 2")
+                .TrackColumn("hbl_consignee_add3", "Consignee Address 3")
+                .TrackColumn("hbl_consignee_add4", "Consignee Address 4")
+                .TrackColumn("hbl_consignee_add5", "Consignee Address 5")
                 .TrackColumn("hbl_notify_name", "Notify Name")
                 .TrackColumn("hbl_notify_add1", "Notify Address 1")
                 .TrackColumn("hbl_notify_add2", "Notify Address 2")

@@ -59,6 +59,7 @@ public class cargo_housem
     public string? hbl_consigned_to3 { get; set; }
     public string? hbl_consigned_to4 { get; set; }
     public string? hbl_consigned_to5 { get; set; }
+    public string? hbl_consigned_to6 { get; set; }
     public string? hbl_ams_fileno { get; set; }
     public string? hbl_sub_house { get; set; }//
     public string? hbl_it_no { get; set; }
@@ -193,7 +194,6 @@ public class cargo_housem
     public string? hbl_custom_reles_status { get; set; }
     public string? hbl_is_delivery { get; set; }
     public string? hbl_paid_remarks { get; set; }
-    public string? hbl_consigned_to6 { get; set; }
     public DateTime? hbl_delivery_date { get; set; }
     public DateTime? hbl_custom_clear_date { get; set; }
     public int? hbl_container_tot { get; set; }

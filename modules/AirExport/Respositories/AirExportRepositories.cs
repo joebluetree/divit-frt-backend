@@ -155,22 +155,22 @@ namespace AirExport.Repositories
                             hbl_houseno = e.hbl_houseno,
                             hbl_mbl_refno = e.master!.mbl_refno,
 
-                            hbl_date = Lib.FormatDate(e.hbl_date, Lib.outputDateTimeFormat),
-                           
+                            hbl_date = Lib.FormatDate(e.hbl_date, Lib.outputDateFormat),
+
                             hbl_shipper_id = e.hbl_shipper_id,
                             hbl_shipper_code = e.shipper!.cust_code,
-                            hbl_shipper_name = e.shipper!.cust_name,
-                           
+                            hbl_shipper_name = e.hbl_shipper_name,
+
                             hbl_consignee_id = e.hbl_consignee_id,
-                            hbl_consigned_code = e.consignee!.cust_code,
-                            hbl_consigned_to1 = e.consignee!.cust_name,
+                            hbl_consignee_code = e.consignee!.cust_code,
+                            hbl_consignee_name = e.hbl_consignee_name,
 
                             hbl_handled_id = e.hbl_handled_id,
                             hbl_handled_name = e.handledby!.param_name,
 
                             hbl_packages = e.hbl_packages,
-                            hbl_issued_date = Lib.FormatDate(e.hbl_issued_date, Lib.outputDateTimeFormat),
-                            hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateTimeFormat),
+                            hbl_issued_date = Lib.FormatDate(e.hbl_issued_date, Lib.outputDateFormat),
+                            hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateFormat),
 
                             rec_version = e.rec_version,
                             rec_company_id = e.rec_company_id,
@@ -183,7 +183,7 @@ namespace AirExport.Repositories
 
 
             var Record = await query.ToListAsync();
-            
+
 
             return Record;
         }
@@ -202,22 +202,22 @@ namespace AirExport.Repositories
                     mbl_cfno = e.mbl_cfno,
                     mbl_refno = e.mbl_refno,
                     mbl_ref_date = Lib.FormatDate(e.mbl_ref_date, Lib.outputDateTimeFormat),
-                    mbl_shipment_stage_id = e.shipstage!.param_id,
+                    mbl_shipment_stage_id = e.mbl_shipment_stage_id,
                     mbl_shipment_stage_name = e.shipstage!.param_name,
                     mbl_mode = e.mbl_mode,
                     mbl_no = e.mbl_no,
-                    mbl_agent_id = e.agent!.cust_id,
+                    mbl_agent_id = e.mbl_agent_id,
                     mbl_agent_name = e.agent!.cust_name,
                     mbl_frt_status_name = e.mbl_frt_status_name,
-                    mbl_pol_id = e.pol!.param_id,
+                    mbl_pol_id = e.mbl_pol_id,
                     mbl_pol_name = e.pol!.param_name,
                     mbl_pol_etd = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateTimeFormat),
-                    mbl_pod_id = e.pod!.param_id,
+                    mbl_pod_id = e.mbl_pod_id,
                     mbl_pod_name = e.pod!.param_name,
                     mbl_pod_eta = Lib.FormatDate(e.mbl_pod_eta, Lib.outputDateTimeFormat),
-                    mbl_country_id = e.country!.param_id,
+                    mbl_country_id = e.mbl_country_id,
                     mbl_country_name = e.country!.param_name,
-                    mbl_liner_id = e.liner!.param_id,
+                    mbl_liner_id = e.mbl_liner_id,
                     mbl_liner_name = e.liner!.param_name,
                     mbl_by_carrier1 = e.mbl_by_carrier1,
                     mbl_by_carrier2 = e.mbl_by_carrier2,
@@ -225,11 +225,11 @@ namespace AirExport.Repositories
                     mbl_to_port1 = e.mbl_to_port1,
                     mbl_to_port2 = e.mbl_to_port2,
                     mbl_to_port3 = e.mbl_to_port3,
-                    mbl_currency_id = e.currency!.param_id,
+                    mbl_currency_id = e.mbl_currency_id,
                     mbl_currency_code = e.currency!.param_code,
-                    mbl_handled_id = e.handledby!.param_id,
+                    mbl_handled_id = e.mbl_handled_id,
                     mbl_handled_name = e.handledby!.param_name,
-                    mbl_salesman_id = e.salesman!.param_id,
+                    mbl_salesman_id = e.mbl_salesman_id,
                     mbl_salesman_name = e.salesman!.param_name,
                     mbl_mawb_weight = e.mbl_mawb_weight,
                     mbl_mawb_chwt = e.mbl_mawb_chwt,
@@ -291,20 +291,33 @@ namespace AirExport.Repositories
 
             string str = "";
 
+            if (Lib.IsBlank(record_dto.mbl_no))
+                str += "Mawb By Cannot Be Blank!";
             if (Lib.IsZero(record_dto.mbl_shipment_stage_id))
                 str += "Shipment Stage To Cannot Be Blank!";
             if (Lib.IsZero(record_dto.mbl_agent_id))
                 str += "Agent Cannot Be Blank!";
             if (Lib.IsZero(record_dto.mbl_liner_id))
                 str += "Carrier Cannot Be Blank!";
-            if (Lib.IsZero(record_dto.mbl_currency_id))
+            if (Lib.IsZero(record_dto.mbl_country_id))
                 str += "Country Cannot Be Blank!";
-            if (Lib.IsZero(record_dto.mbl_salesman_id))
-                str += "Sales Rep. Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.mbl_handled_id))
+                str += "Handled by. Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_ref_date))
                 str += "Quote Date Cannot Be Blank!";
-            if (Lib.IsBlank(record_dto.mbl_no))
-                str += "Mawb By Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.mbl_pol_id))
+                str += "Port of loading Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_pol_etd))
+                str += "ETD Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.mbl_pod_id))
+                str += "Port of Discharge Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_pod_eta))
+                str += "ETA Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.mbl_mawb_weight))
+                str += "Weight Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.mbl_mawb_chwt))
+                str += "Ch.Weight Cannot Be Blank!";
+
 
             if (str != "")
             {
@@ -461,6 +474,13 @@ namespace AirExport.Repositories
                 }
                 else
                 {
+                    var air_exporth = context.cargo_housem
+                    .Where(c => c.hbl_mbl_id == id);
+                    if (air_exporth.Any())
+                    {
+                        context.cargo_housem.RemoveRange(air_exporth);
+
+                    }
                     context.Remove(_Record);
                     context.SaveChanges();
                     RetData.Add("status", true);
