@@ -381,6 +381,14 @@ namespace AirExport.Repositories
                 {
                     Record = await context.cargo_masterm
                         .Include(c => c.salesman)
+                        .Include(c => c.agent)
+                        .Include(c => c.liner)
+                        .Include(c => c.country)
+                        .Include(c => c.currency)
+                        .Include(c => c.shipstage)
+                        .Include(c => c.handledby)
+                        .Include(c => c.pol)
+                        .Include(c => c.pod)
                         .Where(f => f.mbl_id == id)
                         .FirstOrDefaultAsync();
 

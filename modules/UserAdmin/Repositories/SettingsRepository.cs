@@ -316,6 +316,11 @@ namespace UserAdmin.Repositories
 
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIREXPORT-HOUSE-PREFIX", "", "STRING", "", "", "", "", 13);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIREXPORT-HOUSE-STARTING-NO", "", "INT", "", "", "", "",14);
+            
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "ISSUING AGENT NAME", "", "STRING", "", "", "", "",18);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "ISSUING AGENT ADRESS", "", "STRING", "", "", "", "",19);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "ISSUING AGENT CITY", "", "STRING", "", "", "", "",20);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "IATA CODE", "", "STRING", "", "", "", "",21);
 
             return retValue;
         }

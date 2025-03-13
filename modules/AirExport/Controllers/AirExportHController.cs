@@ -55,6 +55,21 @@ namespace Marketing.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetMasterAsync")]
+        public async Task<IActionResult> GetMasterAsync(int id)
+        {
+            try
+            {
+                var RetData = await mRepository.GetMasterAsync(id);
+                return Ok(RetData);
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Lib.getErrorMessage(Ex));
+            }
+        }
+
         [HttpPost]
         [Route("SaveAsync")]
         public async Task<IActionResult> SaveAsync(int id, string mode, [FromBody] cargo_air_exporth_dto rec)

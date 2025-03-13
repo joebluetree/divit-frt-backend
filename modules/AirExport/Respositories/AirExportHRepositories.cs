@@ -8,6 +8,7 @@ using Common.Lib;
 using Database.Models.Cargo;
 using Common.DTO.AirExport;
 using AirExport.Interfaces;
+using Database.Models.UserAdmin;
 
 namespace AirExport.Repositories
 {
@@ -394,6 +395,41 @@ namespace AirExport.Repositories
             }
         }
 
+        public async Task<cargo_air_exporth_dto?> GetMasterAsync(int id)
+        {
+            try
+            {
+                IQueryable<cargo_masterm> query = context.cargo_masterm;
+                IQueryable<mast_settings> query1 = context.mast_settings; //
+
+                query1 = query1.Where(f => f.caption == "ISSUING AGENT NAME" && f.caption == "ISSUING AGENT ADRESS" && f.caption == "ISSUING AGENT CITY" && f.caption == "IATA CODE"); //
+
+                query = query.Where(f => f.mbl_id == id && f.mbl_mode == hbl_mode);
+
+                var Record = await query.Select(e => new cargo_air_exporth_dto
+                {
+
+                    hbl_mbl_refno = e.mbl_refno,
+                    hbl_handled_id = e.mbl_handled_id,
+                    hbl_handled_name = e.handledby!.param_name,
+                    hbl_salesman_id = e.mbl_salesman_id,
+                    hbl_salesman_name = e.salesman!.param_name,
+                    hbl_pol_name = e.pol!.param_code,
+                    hbl_pod_name = e.pod!.param_code,
+                    hbl_issued_date = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateTimeFormat),
+                    hbl_issued_by = e.handledby!.param_name,
+                    hbl_by2_carrier = e.liner!.param_name,
+
+                }).FirstOrDefaultAsync();
+                return Record;
+            }
+            catch(Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
+            }
+        }
+
+
 
         public async Task<cargo_air_exporth_dto> SaveAsync(int id, string mode, cargo_air_exporth_dto record_dto)
         {
@@ -442,6 +478,8 @@ namespace AirExport.Repositories
                 str += "Consignee Address1 Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.hbl_bltype))
                 str += "Client.Type Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.hbl_frt_status_name))
+                str += "Frt.Status Cannot Be Blank!";
             if (Lib.IsZero(record_dto.hbl_packages))
                 str += "PCS Cannot Be Blank!";
             if (Lib.IsZero(record_dto.hbl_weight))
@@ -525,6 +563,11 @@ namespace AirExport.Repositories
                 else
                 {
                     Record = await context.cargo_housem
+                        .Include(c => c.shipper)
+                        .Include(c => c.consignee)
+                        .Include(c => c.shipstage)
+                        .Include(c => c.handledby)
+                        .Include(c => c.format)
                         .Include(c => c.salesman)
                         .Where(f => f.hbl_id == id)
                         .FirstOrDefaultAsync();
@@ -628,7 +671,6 @@ namespace AirExport.Repositories
                 record_dto.hbl_id = Record.hbl_id;
                 record_dto.hbl_houseno = Record.hbl_houseno;
                 record_dto.hbl_mbl_id = Record.hbl_mbl_id;
-                // record_dto.hbl_mbl_refno = Record.master?.mbl_refno;
 
                 record_dto.rec_version = Record.rec_version;
                 if (mode == "add")
