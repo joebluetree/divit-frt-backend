@@ -13,6 +13,9 @@ namespace Common.DTO.SeaExport
         public int hbl_id { get; set; } = 0;
         public int hbl_mbl_id { get; set; } = 0;//fk
         public string? hbl_mbl_refno { get; set; }= "";
+        public string? hbl_mbl_no { get; set; }= "";
+        public string? hbl_mbl_pol_etd { get; set; }= "";
+        public string? hbl_mbl_pod_eta { get; set; }= "";
         public int hbl_cfno { get; set; } = 0;
         public string? hbl_houseno { get; set; } = "";
         public int? hbl_shipment_stage_id { get; set; } = 0;
@@ -70,11 +73,6 @@ namespace Common.DTO.SeaExport
         public string? hbl_remark2 { get; set; } = "";
         public string? hbl_remark3 { get; set; } = "";
 
-        public string? hbl_devan_instr1 { get; set; } = "";
-        public string? hbl_devan_instr2 { get; set; } = "";
-        public string? hbl_devan_instr3 { get; set; } = "";
-        public string? hbl_lfd_date { get; set; } = "";
-        public string? hbl_go_date { get; set; } = "";
         public string? hbl_place_receipt { get; set; } = "";
         public string? hbl_pod_name { get; set; } = "";
         public string? hbl_pofd_name { get; set; } = "";

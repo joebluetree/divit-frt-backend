@@ -12,6 +12,7 @@ using Common.DTO.SeaExport;
 using Database.Models.Cargo;
 using SeaExport.Interfaces;
 using System.Threading.Tasks.Dataflow;
+using System.Numerics;
 
 //Name : Sourav V
 //Created Date : 03/03/2025
@@ -27,8 +28,6 @@ namespace SeaExport.Repositories
         private readonly IAuditLog auditLog;
         private DateTime log_date;
         private string shbl_mode = "SEA EXPORT";
-        private string cntr_catg = "H";
-        private string desc_type = "SE-DESC";
         public SeaExporthRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -119,10 +118,15 @@ namespace SeaExport.Repositories
                 var Records = await query.Select(e => new cargo_sea_exporth_dto
                 {
                     hbl_id = e.hbl_id,
-                    // hbl_mbl_refno = e.master!.mbl_refno,
+                    hbl_mbl_refno = e.master!.mbl_refno,
+                    hbl_mbl_no = e.master!.mbl_no,
                     hbl_houseno = e.hbl_houseno,
-                    hbl_agent_name = e.agent!.cust_name,
+                    hbl_shipper_name = e.hbl_shipper_name,
+                    hbl_consignee_name = e.hbl_consignee_name,
+                    hbl_pcs = e.hbl_pcs,
                     hbl_handled_name = e.handledby!.param_name,
+                    hbl_mbl_pol_etd = Lib.FormatDate(e.master!.mbl_pol_etd, Lib.outputDateFormat),
+                    hbl_mbl_pod_eta = Lib.FormatDate(e.master!.mbl_pod_eta, Lib.outputDateFormat),
 
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
@@ -170,11 +174,12 @@ namespace SeaExport.Repositories
                     hbl_shipper_add5 = e.hbl_shipper_add5,
                     hbl_consignee_id = e.hbl_consignee_id,
                     hbl_consignee_code = e.consignee!.cust_code,
-                    hbl_consigned_to1 = e.hbl_consigned_to1,
-                    hbl_consigned_to2 = e.hbl_consigned_to2,
-                    hbl_consigned_to3 = e.hbl_consigned_to3,
-                    hbl_consigned_to4 = e.hbl_consigned_to4,
-                    hbl_consigned_to5 = e.hbl_consigned_to5,
+                    hbl_consignee_name = e.hbl_consignee_name,
+                    hbl_consignee_add1 = e.hbl_consignee_add1,
+                    hbl_consignee_add2 = e.hbl_consignee_add2,
+                    hbl_consignee_add3 = e.hbl_consignee_add3,
+                    hbl_consignee_add4 = e.hbl_consignee_add4,
+                    hbl_consignee_add5 = e.hbl_consignee_add5,
                     hbl_notify_id = e.hbl_notify_id,
                     hbl_notify_code = e.notify!.cust_code,
                     hbl_notify_name = e.hbl_notify_name,
@@ -249,8 +254,8 @@ namespace SeaExport.Repositories
 
                 if (Record == null)
                     throw new Exception("No Data Found");
-
-                Record.house_cntr = await GetDetAsync(Record.hbl_id);
+                
+                Record.house_cntr = await getCntrAsync(Record.hbl_id);
 
                 await GetCargoDesc(Record);
 
@@ -261,16 +266,58 @@ namespace SeaExport.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
-
-        public async Task<List<cargo_container_dto>> GetDetAsync(int id)
+        public async Task<List<cargo_container_dto>> GetMastDetAsync(int id)
         {
             var query = from e in context.cargo_container
-                        .Where(a => a.cntr_hbl_id == id)
+                        .Where(a => a.cntr_mbl_id == id && a.cntr_catg == "M")
                         .OrderBy(o => o.cntr_order)
                         select (new cargo_container_dto
                         {
                             cntr_id = e.cntr_id,
                             cntr_hbl_id = e.cntr_hbl_id,
+                            cntr_mbl_id = e.cntr_mbl_id,
+                            cntr_catg = e.cntr_catg,
+                            cntr_no = e.cntr_no,
+                            cntr_type_id = e.cntr_type_id,
+                            cntr_type_name = e.cntrtype!.param_name,
+                            cntr_sealno = e.cntr_sealno,
+                            cntr_movement = e.cntr_movement,
+                            cntr_pieces = e.cntr_pieces,
+                            cntr_packages_unit_id = e.cntr_packages_unit_id,
+                            cntr_packages_unit_name = e.packunit!.param_name,
+                            cntr_packages = e.cntr_packages,
+                            cntr_teu = e.cntr_teu,
+                            cntr_cbm = e.cntr_cbm,
+                            cntr_weight_uom = e.cntr_weight_uom,
+                            cntr_weight = e.cntr_weight,
+                            cntr_rider = e.cntr_rider,
+                            cntr_tare_weight = e.cntr_tare_weight,
+                            cntr_pick_date = Lib.FormatDate(e.cntr_pick_date, Lib.outputDateFormat),
+                            cntr_return_date = Lib.FormatDate(e.cntr_return_date, Lib.outputDateFormat),
+                            cntr_lfd = Lib.FormatDate(e.cntr_lfd, Lib.outputDateFormat),
+                            cntr_discharge_date = Lib.FormatDate(e.cntr_discharge_date, Lib.outputDateFormat),
+                            cntr_order = e.cntr_order,
+
+                            rec_created_by = e.rec_created_by,
+                            rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
+                            rec_edited_by = e.rec_edited_by,
+                            rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat)
+                        });
+
+            var records = await query.ToListAsync();
+
+            return records;
+        }
+        public async Task<List<cargo_container_dto>> getCntrAsync(int id)
+        {
+            var query = from e in context.cargo_container
+                        .Where(a => a.cntr_hbl_id == id && a.cntr_catg == "H")
+                        .OrderBy(o => o.cntr_order)
+                        select (new cargo_container_dto
+                        {
+                            cntr_id = e.cntr_id,
+                            cntr_hbl_id = id,
+                            cntr_mbl_id = e.cargom!.mbl_id,
                             cntr_catg = e.cntr_catg,
                             cntr_no = e.cntr_no,
                             cntr_type_id = e.cntr_type_id,
@@ -327,7 +374,39 @@ namespace SeaExport.Repositories
                 Record.GetType().GetProperty($"desc_description{ctr}")?.SetValue(Record, desc.desc_description);
             }
         }
+        public async Task<cargo_sea_exporth_dto?> GetDefaultData(int id)
+        {
+            try
+            {
+                IQueryable<cargo_masterm> query = context.cargo_masterm;
+            
+                query = query.Where(f => f.mbl_id == id && f.mbl_mode ==shbl_mode);
 
+                var Record = await query.Select(e => new cargo_sea_exporth_dto
+                {
+                    hbl_mbl_id = e.mbl_id,
+                    hbl_mbl_refno = e.mbl_refno,
+                    hbl_agent_id = e.mbl_agent_id,
+                    hbl_agent_name = e.agent!.cust_name,
+                    hbl_pol_name = e.pol!.param_name,
+                    hbl_pod_name = e.pod!.param_name,
+                    hbl_place_delivery = e.mbl_place_delivery,
+                    hbl_issued_date = Lib.FormatDate(e.mbl_pol_etd,Lib.outputDateFormat),
+
+                }).FirstOrDefaultAsync();
+            
+                if (Record == null)
+                    throw new Exception("No Data Found");
+
+                Record.house_cntr = await GetMastDetAsync(id);
+
+                return Record;
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
+            }
+        }
 
         public async Task<cargo_sea_exporth_dto> SaveAsync(int id, string mode, cargo_sea_exporth_dto record_dto) //string mark,string package,string desc,int ctr,
         {
@@ -337,9 +416,9 @@ namespace SeaExport.Repositories
 
                 context.Database.BeginTransaction();
                 cargo_sea_exporth_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record = await saveDetAsync(_Record.hbl_id, mode, _Record);
+                _Record = await saveCntrAsync(_Record.hbl_id, mode, _Record);
                 _Record = await SaveCargoDesc(_Record.hbl_id, record_dto);
-                _Record.house_cntr = await GetDetAsync(_Record.hbl_id);
+                _Record.house_cntr = await getCntrAsync(_Record.hbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -365,8 +444,33 @@ namespace SeaExport.Repositories
 
             if (Lib.IsZero(record_dto.hbl_shipment_stage_id))
                 str += "Stage Cannot Be Blank!";
-            if (Lib.IsZero(record_dto.hbl_shipper_id))
-                str += "Shipper Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.hbl_shipper_code))
+                str += "Shipper Code Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.hbl_shipper_name))
+                str += "Shipper Name Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.hbl_shipper_add1))
+                str += "Shipper Adress1 Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.hbl_consignee_code))
+                str += "Consignee Code Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.hbl_consignee_name))
+                str += "Consignee Name Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.hbl_frt_status_name))
+                str += "Fright Status Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.hbl_bltype))
+                str += "Client.Type Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.hbl_lbs))
+                str += "LBS Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.hbl_weight))
+                str += "Weight Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.hbl_cft))
+                str += "CFT Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.hbl_cbm))
+                str += "CBM Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.hbl_packages))
+                str += "PKGS Cannot Be Blank!";                                
+            if (Lib.IsBlank(record_dto.hbl_uom_name))
+                str += "Uom Cannot Be Blank!";
+
 
             if (str != "")
             {
@@ -379,6 +483,7 @@ namespace SeaExport.Repositories
 
         public async Task<cargo_sea_exporth_dto> SaveParentAsync(int id, string mode, cargo_sea_exporth_dto record_dto)
         {
+
             cargo_housem? Record;
             string error = "";
             try
@@ -484,11 +589,12 @@ namespace SeaExport.Repositories
                     Record.hbl_consignee_id = null;
                 else
                     Record.hbl_consignee_id = record_dto.hbl_consignee_id;
-                Record.hbl_consigned_to1 = record_dto.hbl_consigned_to1;
-                Record.hbl_consigned_to2 = record_dto.hbl_consigned_to2;
-                Record.hbl_consigned_to3 = record_dto.hbl_consigned_to3;
-                Record.hbl_consigned_to4 = record_dto.hbl_consigned_to4;
-                Record.hbl_consigned_to5 = record_dto.hbl_consigned_to5;
+                Record.hbl_consignee_name = record_dto.hbl_consignee_name;
+                Record.hbl_consignee_add1 = record_dto.hbl_consignee_add1;
+                Record.hbl_consignee_add2 = record_dto.hbl_consignee_add2;
+                Record.hbl_consignee_add3 = record_dto.hbl_consignee_add3;
+                Record.hbl_consignee_add4 = record_dto.hbl_consignee_add4;
+                Record.hbl_consignee_add5 = record_dto.hbl_consignee_add5;
 
                 if (Lib.IsZero(record_dto.hbl_notify_id))
                     Record.hbl_notify_id = null;
@@ -581,7 +687,7 @@ namespace SeaExport.Repositories
                 await context.SaveChangesAsync();
 
                 record_dto.hbl_id = Record.hbl_id;
-                // record_dto.hbl_mbl_id = Record.hbl_mbl_id;
+                record_dto.hbl_mbl_id = Record.hbl_mbl_id;
                 record_dto.hbl_houseno = Record.hbl_houseno;
                 record_dto.rec_version = Record.rec_version;
                 //Lib.AssignDates2DTO(record_dto.cust_id, mode, Record, record_dto);
@@ -617,7 +723,7 @@ namespace SeaExport.Repositories
             return CfNo;
         }
 
-        public async Task<cargo_sea_exporth_dto> saveDetAsync(int id, string mode, cargo_sea_exporth_dto record_dto)
+        public async Task<cargo_sea_exporth_dto> saveCntrAsync(int id, string mode, cargo_sea_exporth_dto record_dto)
         {
             cargo_container? record;
             List<cargo_container_dto> records_dto;
@@ -625,20 +731,18 @@ namespace SeaExport.Repositories
             try
             {
 
-                // get contacts from the front end
                 records_dto = record_dto.house_cntr!;
-                // read the contact details from database
+                
                 records = await context.cargo_container
                     .Include(c => c.cntrtype)
                     .Include(c => c.packunit)
-                    .Where(w => w.cntr_hbl_id == id)
+                    .Where(w => w.cntr_hbl_id == id )
                     .ToListAsync();
 
                 if (mode == "edit")
                     await logHistoryDetail(records, record_dto);
                 int nextorder = 1;
 
-                // Remove Deleted Records
                 foreach (var existing_record in records)
                 {
                     var rec = records_dto.Find(f => f.cntr_id == existing_record.cntr_id);
@@ -650,7 +754,7 @@ namespace SeaExport.Repositories
                 foreach (var rec in records_dto)
                 {
 
-                    if (rec.cntr_id == 0)
+                    if (mode== "add" || rec.cntr_id == 0)
                     {
                         record = new cargo_container();
                         record.rec_company_id = record_dto.rec_company_id;
@@ -658,8 +762,9 @@ namespace SeaExport.Repositories
                         record.rec_created_by = record_dto.rec_created_by;
                         record.rec_created_date = DbLib.GetDateTime();
                         record.rec_locked = "N";
-
-                        record.cntr_catg = cntr_catg;
+                        
+                        record.cntr_catg = "H";
+                        record.cntr_mbl_id = record_dto.hbl_mbl_id;
                     }
                     else
                     {
@@ -692,7 +797,7 @@ namespace SeaExport.Repositories
                     record.cntr_discharge_date = Lib.ParseDate(rec.cntr_discharge_date!);
                     record.cntr_order = nextorder++;
 
-                    if (rec.cntr_id == 0)
+                    if (mode == "add" || rec.cntr_id == 0)
                         await context.cargo_container.AddAsync(record);
                 }
 
@@ -766,9 +871,9 @@ namespace SeaExport.Repositories
                     Record.rec_created_date = DbLib.GetDateTime();
                     Record.rec_locked = "N";
 
+                    Record.desc_parent_type ="SE-DESC";
                     Record.desc_parent_id = id;
                     Record.desc_ctr = ctr;
-                    Record.desc_parent_type =desc_type;
 
                     Record.desc_mark = mark;
                     Record.desc_package = package;
@@ -875,11 +980,9 @@ namespace SeaExport.Repositories
             var old_record_dto = new cargo_sea_exporth_dto
             {
                 hbl_id = old_record.hbl_id,
-                hbl_cfno = old_record.hbl_cfno,
                 hbl_houseno = old_record.hbl_houseno,
                 hbl_bltype = old_record.hbl_bltype,
                 hbl_shipment_stage_name = old_record.shipstage?.param_name,
-                hbl_mode = old_record.hbl_mode,
                 hbl_shipper_code = old_record.shipper?.cust_code,
                 hbl_shipper_name = old_record.hbl_shipper_name,
                 hbl_shipper_add1 = old_record.hbl_shipper_add1,
@@ -888,11 +991,12 @@ namespace SeaExport.Repositories
                 hbl_shipper_add4 = old_record.hbl_shipper_add4,
                 hbl_shipper_add5 = old_record.hbl_shipper_add5,
                 hbl_consignee_code = old_record.consignee?.cust_code,
-                hbl_consigned_to1 = old_record.hbl_consigned_to1,
-                hbl_consigned_to2 = old_record.hbl_consigned_to2,
-                hbl_consigned_to3 = old_record.hbl_consigned_to3,
-                hbl_consigned_to4 = old_record.hbl_consigned_to4,
-                hbl_consigned_to5 = old_record.hbl_consigned_to5,
+                hbl_consignee_name = old_record.hbl_consignee_name,
+                hbl_consignee_add1 = old_record.hbl_consignee_add1,
+                hbl_consignee_add2 = old_record.hbl_consignee_add2,
+                hbl_consignee_add3 = old_record.hbl_consignee_add3,
+                hbl_consignee_add4 = old_record.hbl_consignee_add4,
+                hbl_consignee_add5 = old_record.hbl_consignee_add5,
                 hbl_notify_code = old_record.notify?.cust_code,
                 hbl_notify_name = old_record.hbl_notify_name,
                 hbl_notify_add1 = old_record.hbl_notify_add1,
@@ -953,11 +1057,9 @@ namespace SeaExport.Repositories
             .RefNo(record_dto.hbl_houseno!)
             .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
 
-            .TrackColumn("hbl_cfno", "CF No")
             .TrackColumn("hbl_houseno", "House No")
             .TrackColumn("hbl_bltype", "BL Type")
             .TrackColumn("hbl_shipment_stage_name", "Shipment Stage Name")
-            .TrackColumn("hbl_mode", "Mode")
             .TrackColumn("hbl_shipper_code", "Shipper Code")
             .TrackColumn("hbl_shipper_name", "Shipper Name")
             .TrackColumn("hbl_shipper_add1", "Shipper Address 1")
@@ -966,11 +1068,12 @@ namespace SeaExport.Repositories
             .TrackColumn("hbl_shipper_add4", "Shipper Address 4")
             .TrackColumn("hbl_shipper_add5", "Shipper Address 5")
             .TrackColumn("hbl_consignee_code", "Consignee Code")
-            .TrackColumn("hbl_consigned_to1", "Consigned To 1")
-            .TrackColumn("hbl_consigned_to2", "Consigned To 2")
-            .TrackColumn("hbl_consigned_to3", "Consigned To 3")
-            .TrackColumn("hbl_consigned_to4", "Consigned To 4")
-            .TrackColumn("hbl_consigned_to5", "Consigned To 5")
+            .TrackColumn("hbl_consignee_name", "Consignee Name")
+            .TrackColumn("hbl_consignee_add1", "Consignee Address 1")
+            .TrackColumn("hbl_consignee_add2", "Consignee Address 2")
+            .TrackColumn("hbl_consignee_add3", "Consignee Address 3")
+            .TrackColumn("hbl_consignee_add4", "Consignee Address 4")
+            .TrackColumn("hbl_consignee_add5", "Consignee Address 5")
             .TrackColumn("hbl_notify_code", "Notify Code")
             .TrackColumn("hbl_notify_name", "Notify Name")
             .TrackColumn("hbl_notify_add1", "Notify Address 1")

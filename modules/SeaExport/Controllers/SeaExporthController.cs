@@ -48,6 +48,21 @@ namespace SeaExport.Controllers
                 return BadRequest(Lib.getErrorMessage(Ex));
             }
         }
+        
+        [HttpGet]
+        [Route("GetDefaultData")]
+        public async Task<IActionResult> GetDefaultData(int id)
+        {
+            try
+            {
+                var RetData = await mRepository.GetDefaultData(id);
+                return Ok(RetData);
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Lib.getErrorMessage(Ex));         
+            }
+        }
 
         [HttpPost]
         [Route("SaveAsync")]

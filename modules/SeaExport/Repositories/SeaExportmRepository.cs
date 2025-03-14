@@ -19,7 +19,6 @@ namespace SeaExport.Repositories
         private readonly IAuditLog auditLog;
         private DateTime log_date;
         private string smbl_mode = "SEA EXPORT";
-        private string cntr_catg = "M";
         public SeaExportmRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -41,6 +40,10 @@ namespace SeaExport.Repositories
                 var mbl_from_date = "";
                 var mbl_to_date = "";
                 var mbl_refno = "";
+                var mbl_agent_name = "";
+                var mbl_pol_name = "";
+                var mbl_pod_name = "";
+
                 var company_id = 0;
                 var branch_id = 0;
 
@@ -55,6 +58,12 @@ namespace SeaExport.Repositories
                     mbl_to_date = data["mbl_to_date"].ToString();
                 if (data.ContainsKey("mbl_refno"))
                     mbl_refno = data["mbl_refno"].ToString();
+                if (data.ContainsKey("mbl_agent_name"))
+                    mbl_agent_name = data["mbl_agent_name"].ToString();
+                if (data.ContainsKey("mbl_pol_name"))
+                    mbl_pol_name = data["mbl_pol_name"].ToString();
+                if (data.ContainsKey("mbl_pod_name"))
+                    mbl_pod_name = data["mbl_pod_name"].ToString();
 
                 if (data.ContainsKey("rec_company_id"))
                     company_id = int.Parse(data["rec_company_id"].ToString()!);
@@ -89,6 +98,12 @@ namespace SeaExport.Repositories
                 }
                 if (!Lib.IsBlank(mbl_refno))
                     query = query.Where(w => w.mbl_refno!.Contains(mbl_refno!));
+                if (!Lib.IsBlank(mbl_agent_name))
+                    query = query.Where(w => w.agent!.cust_name!.Contains(mbl_agent_name!));
+                if (!Lib.IsBlank(mbl_pol_name))
+                    query = query.Where(w => w.pol!.param_name!.Contains(mbl_pol_name!));
+                if (!Lib.IsBlank(mbl_pod_name))
+                    query = query.Where(w => w.pod!.param_name!.Contains(mbl_pod_name!));
 
                 if (action == "SEARCH")
                 {
@@ -200,7 +215,7 @@ namespace SeaExport.Repositories
                 if (Record == null)
                     throw new Exception("No Data Found");
 
-                Record.master_cntr = await GetDetAsync(Record.mbl_id);
+                Record.master_cntr = await getCntrAsync(Record.mbl_id);
                 Record.master_house = await GetHouseAsync(Record.mbl_id);
 
                 return Record;
@@ -211,10 +226,10 @@ namespace SeaExport.Repositories
             }
         }
 
-        public async Task<List<cargo_container_dto>> GetDetAsync(int id)
+        public async Task<List<cargo_container_dto>> getCntrAsync(int id)
         {
             var query = from e in context.cargo_container
-                        .Where(a => a.cntr_mbl_id == id)
+                        .Where(a => a.cntr_mbl_id == id && a.cntr_catg == "M")
                         .OrderBy(o => o.cntr_order)
                         select (new cargo_container_dto
                         {
@@ -267,7 +282,7 @@ namespace SeaExport.Repositories
                             hbl_pcs = e.hbl_pcs,
                             hbl_handled_name = e.handledby!.param_name,
                             hbl_frt_status_name = e.hbl_frt_status_name,
-                            hbl_issued_date = Lib.FormatDate(e.hbl_issued_date, Lib.outputDateTimeFormat),
+                            rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateFormat),
                             rec_created_by = e.rec_created_by,
                         });
 
@@ -284,8 +299,8 @@ namespace SeaExport.Repositories
 
                 context.Database.BeginTransaction();
                 cargo_sea_exportm_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record = await saveDetAsync(_Record.mbl_id, mode, _Record);
-                _Record.master_cntr = await GetDetAsync(_Record.mbl_id);
+                _Record = await saveCntrAsync(_Record.mbl_id, mode, _Record);
+                _Record.master_cntr = await getCntrAsync(_Record.mbl_id);
                 _Record.master_house = await GetHouseAsync(_Record.mbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
@@ -310,10 +325,35 @@ namespace SeaExport.Repositories
 
             string str = "";
 
-            if (Lib.IsBlank(record_dto.mbl_ref_date))
-                str += "Ref Date Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_agent_name))
+                str += "Master Agent Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_shipment_stage_name))
                 str += "Shipment Stage Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_handled_name))
+                str += "Handled By Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_frt_status_name))
+                str += "Fright Status Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_ship_term_name))
+                str += "Shipping Term Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_cntr_type))
+                str += "Shipping Type Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_pol_name))
+                str += "POL Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_pol_etd))
+                str += "ETD Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_pod_name))
+                str += "Port.Discharge Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_pod_eta))
+                str += "ETA Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_pofd_name))
+                str += "Port.Final Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_country_name))
+                str += "Dest.Country Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_vessel_name))
+                str += "Vessel Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_voyage))
+                str += "Voyage Cannot Be Blank!";
+
 
             if (str != "")
             {
@@ -520,7 +560,7 @@ namespace SeaExport.Repositories
             return CfNo;
         }
 
-        public async Task<cargo_sea_exportm_dto> saveDetAsync(int id, string mode, cargo_sea_exportm_dto record_dto)
+        public async Task<cargo_sea_exportm_dto> saveCntrAsync(int id, string mode, cargo_sea_exportm_dto record_dto)
         {
             cargo_container? record;
             List<cargo_container_dto> records_dto;
@@ -534,7 +574,7 @@ namespace SeaExport.Repositories
                 records = await context.cargo_container
                     .Include(c => c.cntrtype)
                     .Include(c => c.packunit)
-                    .Where(w => w.cntr_mbl_id == id)
+                    .Where(w => w.cntr_mbl_id == id && w.cntr_catg == "M")
                     .ToListAsync();
 
                 if (mode == "edit")
@@ -562,7 +602,7 @@ namespace SeaExport.Repositories
                         record.rec_created_date = DbLib.GetDateTime();
                         record.rec_locked = "N";
 
-                        record.cntr_catg = cntr_catg;
+                        record.cntr_catg = "M";
                     }
                     else
                     {
@@ -581,7 +621,7 @@ namespace SeaExport.Repositories
                     record.cntr_movement = rec.cntr_movement;
                     record.cntr_pieces = rec.cntr_pieces;
                     record.cntr_packages_unit_id = rec.cntr_packages_unit_id;
-                    record.cntr_teu = rec.cntr_teu;
+                    // record.cntr_teu = GetTeuValue(rec.cntr_type_id);
                     record.cntr_cbm = rec.cntr_cbm;
                     record.cntr_weight_uom = rec.cntr_weight_uom;
                     record.cntr_weight = rec.cntr_weight;
@@ -605,6 +645,21 @@ namespace SeaExport.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+        // public decimal? GetTeuValue(int? cntr_type_id)
+        // {
+        //     var containerType = context.cargo_container
+        //         .Where(c => c.cntr_type_id == cntr_type_id)
+        //         .Select(c => c.cntrtype!.param_name)
+        //         .FirstOrDefault();
+        //     var teu = 0.00;
+
+        //     if (containerType!.Contains("20")) teu = 1.0;
+        //     if (containerType.Contains("40")) teu = 2.0;
+        //     if (containerType.Contains("45")) teu = 2.5;
+        //     if (containerType.Contains("45")) teu = 2.5;
+        //     if (containerType.Contains("FCL")) teu = 0;
+        //     return teu;
+        // }
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
             try
@@ -626,6 +681,14 @@ namespace SeaExport.Repositories
                     {
                         context.cargo_container.RemoveRange(_Container);
                     }
+
+                    var _House = context.cargo_housem
+                    .Where(c => c.hbl_mbl_id == id);
+                    if (_House.Any())
+                    {
+                        context.cargo_housem.RemoveRange(_House);
+                    }
+
                     context.Remove(_Record);
                     context.SaveChanges();
                     RetData.Add("status", true);
@@ -638,6 +701,7 @@ namespace SeaExport.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+
         public async Task logHistory(cargo_masterm old_record, cargo_sea_exportm_dto record_dto)
         {
 
@@ -758,10 +822,11 @@ namespace SeaExport.Repositories
                 .TrackColumn("cntr_return_date", "Return Date")
                 .TrackColumn("cntr_lfd", "LFD")
                 .TrackColumn("cntr_discharge_date", "Discharge Date")
-                .TrackColumn("cntr_order", "Order")
+                .TrackColumn("cntr_order", "Order", "integer")
                 .SetRecords(old_records_dto, record_dto.master_cntr!)
                 .LogChangesAsync();
 
         }
+
     }
 }
