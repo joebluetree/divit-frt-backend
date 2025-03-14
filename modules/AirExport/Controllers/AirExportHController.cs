@@ -56,12 +56,12 @@ namespace Marketing.Controllers
         }
 
         [HttpGet]
-        [Route("GetMasterAsync")]
-        public async Task<IActionResult> GetMasterAsync(int id)
+        [Route("GetDefaultDataAsync")]
+        public async Task<IActionResult> GetDefaultDataAsync(int id)
         {
             try
             {
-                var RetData = await mRepository.GetMasterAsync(id);
+                var RetData = await mRepository.GetDefaultDataAsync(id);
                 return Ok(RetData);
             }
             catch (Exception Ex)

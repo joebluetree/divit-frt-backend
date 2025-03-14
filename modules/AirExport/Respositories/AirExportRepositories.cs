@@ -292,7 +292,9 @@ namespace AirExport.Repositories
             string str = "";
 
             if (Lib.IsBlank(record_dto.mbl_no))
-                str += "Mawb By Cannot Be Blank!";
+                str += "Master BL# Cannot Be Blank!";
+            else if(record_dto.mbl_no?.Length < 11)
+                str += "Master BL# is Invalid!";
             if (Lib.IsZero(record_dto.mbl_shipment_stage_id))
                 str += "Shipment Stage To Cannot Be Blank!";
             if (Lib.IsZero(record_dto.mbl_agent_id))

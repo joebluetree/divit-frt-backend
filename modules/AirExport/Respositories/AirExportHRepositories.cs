@@ -25,7 +25,7 @@ namespace AirExport.Repositories
         private readonly IAuditLog auditLog;
         private DateTime log_date;
         string hbl_mode = "AIR EXPORT";
-        string desc_type = "AR-DESC";
+        
 
         public AirExportHRepository(AppDbContext _context, IAuditLog _auditLog)
         {
@@ -328,11 +328,11 @@ namespace AirExport.Repositories
                 Record.hbl_rate3 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges3, 1));
                 Record.hbl_total3 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges3, 2));
                 Record.hbl_printsc5 = CommonLib.SplitString(Record.hbl_charges3, 3);
-                Record.hbl_printsc6 =CommonLib.SplitString(Record.hbl_charges3, 4);
+                Record.hbl_printsc6 = CommonLib.SplitString(Record.hbl_charges3, 4);
 
                 Record.hbl_toagent4 = CommonLib.SplitString(Record.hbl_charges4, 0);
                 Record.hbl_rate4 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges4, 1));
-                Record.hbl_total4 =  Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges4, 2));
+                Record.hbl_total4 = Lib.StringToDecimal(CommonLib.SplitString(Record.hbl_charges4, 2));
                 Record.hbl_printsc7 = CommonLib.SplitString(Record.hbl_charges4, 3);
                 Record.hbl_printsc8 = CommonLib.SplitString(Record.hbl_charges4, 4);
 
@@ -372,7 +372,7 @@ namespace AirExport.Repositories
             }
         }
 
-         public async Task GetCargoDesc(cargo_air_exporth_dto Record)
+        public async Task GetCargoDesc(cargo_air_exporth_dto Record)
         {
             for (int i = 1; i <= 17; i++)
             {
@@ -395,41 +395,70 @@ namespace AirExport.Repositories
             }
         }
 
-        public async Task<cargo_air_exporth_dto?> GetMasterAsync(int id)
+        public async Task<cargo_air_exporth_dto?> GetDefaultDataAsync(int id)
         {
             try
             {
-                IQueryable<cargo_masterm> query = context.cargo_masterm;
-                IQueryable<mast_settings> query1 = context.mast_settings; //
+                var query = context.cargo_masterm
+                    .Where(f => f.mbl_id == id && f.mbl_mode == hbl_mode);
 
-                query1 = query1.Where(f => f.caption == "ISSUING AGENT NAME" && f.caption == "ISSUING AGENT ADRESS" && f.caption == "ISSUING AGENT CITY" && f.caption == "IATA CODE"); //
+                var Record = await query
+                    .Select(e => new cargo_air_exporth_dto
+                    {
+                        hbl_mbl_id = e.mbl_id,
+                        hbl_mbl_refno = e.mbl_refno,
+                        hbl_handled_id = e.mbl_handled_id,
+                        hbl_handled_name = e.handledby!.param_name,
+                        hbl_salesman_id = e.mbl_salesman_id,
+                        hbl_salesman_name = e.salesman!.param_name,
+                        hbl_pol_name = e.pol!.param_code,
+                        hbl_pod_name = e.pod!.param_code,
+                        hbl_issued_date = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateTimeFormat),
+                        hbl_issued_by = e.handledby!.param_name,
+                        hbl_by2_carrier = e.liner!.param_name,
+                        rec_branch_id = e.rec_branch_id,
+                        rec_company_id = e.rec_company_id,
+                    })
+                    .FirstOrDefaultAsync();
 
-                query = query.Where(f => f.mbl_id == id && f.mbl_mode == hbl_mode);
+                var captions = new List<string> {"ISSUING AGENT NAME", "ISSUING AGENT ADDRESS", "ISSUING AGENT CITY", "IATA CODE"};
 
-                var Record = await query.Select(e => new cargo_air_exporth_dto
+                var settings = await context.mast_settings
+                .Where(f => f.rec_company_id == Record!.rec_company_id && f.rec_branch_id == Record!.rec_branch_id && 
+                captions.Contains(f.caption!))
+                .ToListAsync();
+
+                var agentname = settings.FirstOrDefault(s => s.caption == "ISSUING AGENT NAME")?.value;
+                var agentcity = settings.FirstOrDefault(s => s.caption == "ISSUING AGENT CITY")?.value;
+                var agentadress = settings.FirstOrDefault(s => s.caption == "ISSUING AGENT ADDRESS")?.value;
+                var iata = settings.FirstOrDefault(s => s.caption == "IATA CODE")?.value;
+
+
+                if (Record != null)
                 {
 
-                    hbl_mbl_refno = e.mbl_refno,
-                    hbl_handled_id = e.mbl_handled_id,
-                    hbl_handled_name = e.handledby!.param_name,
-                    hbl_salesman_id = e.mbl_salesman_id,
-                    hbl_salesman_name = e.salesman!.param_name,
-                    hbl_pol_name = e.pol!.param_code,
-                    hbl_pod_name = e.pod!.param_code,
-                    hbl_issued_date = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateTimeFormat),
-                    hbl_issued_by = e.handledby!.param_name,
-                    hbl_by2_carrier = e.liner!.param_name,
+                    Record.hbl_agent_name = agentname;
+                    Record.hbl_agent_city = agentcity;
+                    Record.hbl_exp_ref1 = agentname;
+                    Record.hbl_exp_ref2 = agentcity;
+                    Record.hbl_exp_ref3 = agentadress;
+                    Record.hbl_iata = iata;
+                    Record.hbl_by1 = $"{agentname} AGENT FOR";
+                    Record.hbl_by2 = $"{agentname} AGENT FOR";
+                    Record.hbl_rout3 = $"PLEASE CONTACT WITH CONSIGNEE UPON SHIPMENT ARRIVAL.";
+                    Record.hbl_ins_amt = $"NILL";
+                    Record.hbl_customs_value = $"NCV";
+                    Record.hbl_carriage_value = $"NVD";
 
-                }).FirstOrDefaultAsync();
+                }
+
                 return Record;
             }
-            catch(Exception Ex)
+            catch (Exception Ex)
             {
-                throw new Exception(Ex.Message.ToString());
+                throw new Exception(Ex.Message, Ex);
             }
         }
-
-
 
         public async Task<cargo_air_exporth_dto> SaveAsync(int id, string mode, cargo_air_exporth_dto record_dto)
         {
@@ -486,7 +515,7 @@ namespace AirExport.Repositories
                 str += "Weight Cannot Be Blank!";
             if (Lib.IsZero(record_dto.hbl_chwt))
                 str += "CH.WT Cannot Be Blank!";
-            
+
 
             if (str != "")
             {
@@ -758,16 +787,16 @@ namespace AirExport.Repositories
 
                     Record.desc_parent_id = id;
                     Record.desc_ctr = ctr;
-                    Record.desc_parent_type = desc_type;
+                    Record.desc_parent_type = "AR-DESC";
 
                     Record.desc_mark = mark;
                     Record.desc_description = description;
                 }
                 else
                 {
-                   Record = await context.cargo_desc
-                        .Where(f => f.desc_parent_id == id && f.desc_id == desc_id)
-                        .FirstOrDefaultAsync();
+                    Record = await context.cargo_desc
+                         .Where(f => f.desc_parent_id == id && f.desc_id == desc_id)
+                         .FirstOrDefaultAsync();
 
                     if (Record == null)
                         throw new Exception("record Not Found");
@@ -798,7 +827,7 @@ namespace AirExport.Repositories
                     }
                 }
 
-                if (mode == "add") 
+                if (mode == "add")
                     await context.cargo_desc.AddAsync(Record);
 
                 if (mode == "delete")
@@ -808,9 +837,9 @@ namespace AirExport.Repositories
                 }
 
                 await context.SaveChangesAsync();
-                
-                if (mode == "add") 
-                    desc_id  =Record.desc_id;
+
+                if (mode == "add")
+                    desc_id = Record.desc_id;
 
                 return desc_id;
             }
@@ -853,8 +882,8 @@ namespace AirExport.Repositories
                 }
                 else
                 {
-                   var desc = context.cargo_desc
-                    .Where(c => c.desc_parent_id == id);
+                    var desc = context.cargo_desc
+                     .Where(c => c.desc_parent_id == id);
                     if (desc.Any())
                     {
                         context.cargo_desc.RemoveRange(desc);
@@ -973,7 +1002,7 @@ namespace AirExport.Repositories
                 hbl_rate3 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges3, 1)),
                 hbl_total3 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges3, 2)),
                 hbl_printsc5 = CommonLib.SplitString(old_record.hbl_charges3, 3),
-                hbl_printsc6 =  CommonLib.SplitString(old_record.hbl_charges3, 4),
+                hbl_printsc6 = CommonLib.SplitString(old_record.hbl_charges3, 4),
 
                 hbl_toagent4 = CommonLib.SplitString(old_record.hbl_charges4, 0),
                 hbl_rate4 = Lib.StringToDecimal(CommonLib.SplitString(old_record.hbl_charges4, 1)),
