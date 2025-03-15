@@ -306,7 +306,7 @@ namespace AirExport.Repositories
             if (Lib.IsZero(record_dto.mbl_handled_id))
                 str += "Handled by. Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_ref_date))
-                str += "Quote Date Cannot Be Blank!";
+                str += "Date Cannot Be Blank!";
             if (Lib.IsZero(record_dto.mbl_pol_id))
                 str += "Port of loading Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_pol_etd))
