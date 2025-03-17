@@ -184,7 +184,6 @@ namespace AirExport.Repositories
 
             var Record = await query.ToListAsync();
 
-
             return Record;
         }
 
@@ -431,6 +430,7 @@ namespace AirExport.Repositories
                 Record.mbl_direct = record_dto.mbl_direct;
                 Record.mbl_vessel_name = record_dto.mbl_vessel_name;
                 Record.mbl_voyage = record_dto.mbl_voyage;
+                // Record.mbl_house_tot = record_dto.air_export!.Count();
                 if (mode == "add")
                     await context.cargo_masterm.AddAsync(Record);
                 context.SaveChanges();
@@ -453,7 +453,6 @@ namespace AirExport.Repositories
             }
 
         }
-
 
         public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)
         {
