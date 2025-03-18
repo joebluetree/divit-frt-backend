@@ -10,6 +10,7 @@ using Common.Lib;
 using SeaExport.Interfaces;
 using Common.DTO.SeaExport;
 using Database.Models.Cargo;
+using System.Diagnostics.Eventing.Reader;
 
 namespace SeaExport.Repositories
 {
@@ -269,6 +270,7 @@ namespace SeaExport.Repositories
 
         public async Task<List<cargo_sea_exporth_dto>> GetHouseAsync(int id)
         {
+            // await SeaExporthRepository.UpdateHouseCount(id);
             var query = from e in context.cargo_housem
                         .Where(a => a.hbl_mbl_id == id)
                         .OrderBy(o => o.hbl_id)
@@ -324,6 +326,9 @@ namespace SeaExport.Repositories
             Boolean bRet = true;
 
             string str = "";
+            string type = "";
+            string cntr_no = "";
+            string unit = "";
 
             if (Lib.IsBlank(record_dto.mbl_agent_name))
                 str += "Master Agent Cannot Be Blank!";
@@ -353,8 +358,22 @@ namespace SeaExport.Repositories
                 str += "Vessel Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_voyage))
                 str += "Voyage Cannot Be Blank!";
+            foreach (cargo_container_dto rec in record_dto.master_cntr!)
+            {
+                if (Lib.IsBlank(rec.cntr_type_name))
+                    type = "Type Cannot Be Blank!";
+                if (Lib.IsBlank(rec.cntr_no))
+                    cntr_no = "Cntr No Cannot Be Blank!";
+                if (Lib.IsBlank(rec.cntr_packages_unit_name))
+                    unit = "Unit Cannot Be Blank";
+            }
 
-
+            if (type != "")
+                str += type;
+            if (cntr_no != "")
+                str += cntr_no;
+            if (unit != "")
+                str += unit;
             if (str != "")
             {
                 error = error + str;
@@ -518,6 +537,19 @@ namespace SeaExport.Repositories
                 Record.mbl_voyage = record_dto.mbl_voyage;
                 Record.mbl_book_slno = record_dto.mbl_book_slno;
 
+                GetCntrCount(record_dto);
+
+                Record.mbl_20 = record_dto.mbl_20;
+                Record.mbl_40 = record_dto.mbl_40;
+                Record.mbl_40hq = record_dto.mbl_40hq;
+                Record.mbl_45 = record_dto.mbl_45;
+                Record.mbl_teu = record_dto.mbl_teu;
+                Record.mbl_container_tot = record_dto.mbl_container_tot;
+
+                // var (houseCount, uniqueShipperCount, uniqueConsigneeCount) = GetHouseCount(record_dto);
+                // Record.mbl_house_tot = houseCount;
+                // Record.mbl_shipper_tot = uniqueShipperCount;
+                // Record.mbl_consignee_tot = uniqueConsigneeCount;
 
                 if (mode == "add")
                     await context.cargo_masterm.AddAsync(Record);
@@ -568,9 +600,8 @@ namespace SeaExport.Repositories
             try
             {
 
-                // get contacts from the front end
                 records_dto = record_dto.master_cntr!;
-                // read the contact details from database
+
                 records = await context.cargo_container
                     .Include(c => c.cntrtype)
                     .Include(c => c.packunit)
@@ -581,7 +612,6 @@ namespace SeaExport.Repositories
                     await logHistoryDetail(records, record_dto);
                 int nextorder = 1;
 
-                // Remove Deleted Records
                 foreach (var existing_record in records)
                 {
                     var rec = records_dto.Find(f => f.cntr_id == existing_record.cntr_id);
@@ -589,7 +619,6 @@ namespace SeaExport.Repositories
                         context.cargo_container.Remove(existing_record);
                 }
 
-                //Add or Edit Records 
                 foreach (var rec in records_dto)
                 {
 
@@ -621,7 +650,7 @@ namespace SeaExport.Repositories
                     record.cntr_movement = rec.cntr_movement;
                     record.cntr_pieces = rec.cntr_pieces;
                     record.cntr_packages_unit_id = rec.cntr_packages_unit_id;
-                    // record.cntr_teu = GetTeuValue(rec.cntr_type_id);
+                    record.cntr_teu = GetTeuValue(rec.cntr_type_id);
                     record.cntr_cbm = rec.cntr_cbm;
                     record.cntr_weight_uom = rec.cntr_weight_uom;
                     record.cntr_weight = rec.cntr_weight;
@@ -645,21 +674,84 @@ namespace SeaExport.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
-        // public decimal? GetTeuValue(int? cntr_type_id)
-        // {
-        //     var containerType = context.cargo_container
-        //         .Where(c => c.cntr_type_id == cntr_type_id)
-        //         .Select(c => c.cntrtype!.param_name)
-        //         .FirstOrDefault();
-        //     var teu = 0.00;
+        public decimal? GetTeuValue(int? cntr_type_id)
+        {
+            var containerType = context.cargo_container
+                .Where(c => c.cntr_type_id == cntr_type_id)
+                .Select(c => c.cntrtype!.param_name)
+                .FirstOrDefault();
 
-        //     if (containerType!.Contains("20")) teu = 1.0;
-        //     if (containerType.Contains("40")) teu = 2.0;
-        //     if (containerType.Contains("45")) teu = 2.5;
-        //     if (containerType.Contains("45")) teu = 2.5;
-        //     if (containerType.Contains("FCL")) teu = 0;
-        //     return teu;
-        // }
+            decimal teu = 0;
+
+            if (containerType!.Contains("20")) teu = 1.0m;
+            if (containerType.Contains("45")) teu = 2.5m;
+            if (containerType.Contains("FCL")) teu = 0;
+            if (containerType.Contains("40"))
+            {
+                if(containerType.Contains("HC"))
+                    teu = 2.25m;
+                else
+                    teu = 2.0m;   
+            }
+            return teu;
+        }
+        public cargo_sea_exportm_dto GetCntrCount(cargo_sea_exportm_dto record_dto)
+        {
+            try
+            {
+
+                int mbl_40hq = 0;
+                int mbl_40 = 0;
+                int mbl_20 = 0;
+                int mbl_45 = 0;
+                decimal mbl_teu = 0;
+                int mbl_container_tot = 0;
+
+                foreach (var cntr in record_dto.master_cntr!)
+                {
+                    var containerType = cntr.cntr_type_name;
+
+                    if (containerType!.Contains("20"))
+                    {
+                        mbl_20++;
+                        mbl_teu += 1.0m;
+                    }
+                    if (containerType.Contains("40"))
+                    {
+                        if (containerType!.Contains("HC"))
+                        {
+                            mbl_40hq++;
+                            mbl_teu += 2.25m;
+                        }
+                        else
+                        {
+                            mbl_40++;
+                            mbl_teu += 2.0m;
+                        }
+
+                    }
+                    if (containerType.Contains("45"))
+                    {
+                        mbl_45++;
+                        mbl_teu += 2.5m;
+                    }
+                    mbl_container_tot++;
+                }
+                record_dto.mbl_20 = mbl_20;
+                record_dto.mbl_40 = mbl_40;
+                record_dto.mbl_40hq = mbl_40hq;
+                record_dto.mbl_45 = mbl_45;
+                record_dto.mbl_teu = mbl_teu;
+                record_dto.mbl_container_tot = mbl_container_tot;
+
+                return record_dto;
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
+            }
+        }
+
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
             try
