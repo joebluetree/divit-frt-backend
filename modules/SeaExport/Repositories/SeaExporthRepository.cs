@@ -18,7 +18,9 @@ using System.Numerics;
 //Created Date : 03/03/2025
 //Remark : this file defines functions like Save, Delete, getList and getRecords which save/retrieve data
 //version v1-03-03-2025: added full repository
-//        v2-10-03-2025: edited mbl_id reference            
+//        v2-10-03-2025: edited mbl_id reference 
+//        v3-15-03-2025: added function UpdateHouse and GetTeuValue
+//        v4-18-03-2025: modified SaveMarksandDesc for updating logHistory
 
 namespace SeaExport.Repositories
 {
@@ -417,7 +419,7 @@ namespace SeaExport.Repositories
                 context.Database.BeginTransaction();
                 cargo_sea_exporth_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await saveCntrAsync(_Record.hbl_id, mode, _Record);
-                _Record = await SaveCargoDesc(_Record.hbl_id, record_dto);
+                _Record = await SaveCargoDesc(_Record.hbl_id, mode, record_dto);
                 _Record.house_cntr = await getCntrAsync(_Record.hbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
@@ -830,28 +832,27 @@ namespace SeaExport.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
-        public async Task<cargo_sea_exporth_dto> SaveCargoDesc(int id, cargo_sea_exporth_dto record_dto)
+        public async Task<cargo_sea_exporth_dto> SaveCargoDesc(int id, string mode, cargo_sea_exporth_dto record_dto)
         {
             try
             {
 
-                record_dto.desc_id1 = await SaveMarksandDesc(id, record_dto.desc_id1, record_dto.desc_mark1!, record_dto.desc_package1!, record_dto.desc_description1!, 1, record_dto);
-                record_dto.desc_id2 = await SaveMarksandDesc(id, record_dto.desc_id2, record_dto.desc_mark2!, record_dto.desc_package2!, record_dto.desc_description2!, 2, record_dto);
-                record_dto.desc_id3 = await SaveMarksandDesc(id, record_dto.desc_id3, record_dto.desc_mark3!, record_dto.desc_package3!, record_dto.desc_description3!, 3, record_dto);
-                record_dto.desc_id4 = await SaveMarksandDesc(id, record_dto.desc_id4, record_dto.desc_mark4!, null!, record_dto.desc_description4!, 4, record_dto);
-                record_dto.desc_id5 = await SaveMarksandDesc(id, record_dto.desc_id5, record_dto.desc_mark5!, null!, record_dto.desc_description5!, 5, record_dto);
-                record_dto.desc_id6 = await SaveMarksandDesc(id, record_dto.desc_id6, record_dto.desc_mark6!, null!, record_dto.desc_description6!, 6, record_dto);
-                record_dto.desc_id7 = await SaveMarksandDesc(id, record_dto.desc_id7, record_dto.desc_mark7!, null!, record_dto.desc_description7!, 7, record_dto);
-                record_dto.desc_id8 = await SaveMarksandDesc(id, record_dto.desc_id8, record_dto.desc_mark8!, null!, record_dto.desc_description8!, 8, record_dto);
-                record_dto.desc_id9 = await SaveMarksandDesc(id, record_dto.desc_id9, record_dto.desc_mark9!, null!, record_dto.desc_description9!, 9, record_dto);
-                record_dto.desc_id10 = await SaveMarksandDesc(id, record_dto.desc_id10, record_dto.desc_mark10!, null!, record_dto.desc_description10!, 10, record_dto);
-                record_dto.desc_id11 = await SaveMarksandDesc(id, record_dto.desc_id11, record_dto.desc_mark11!, null!, record_dto.desc_description11!, 11, record_dto);
-                record_dto.desc_id12 = await SaveMarksandDesc(id, record_dto.desc_id12, record_dto.desc_mark12!, null!, record_dto.desc_description12!, 12, record_dto);
-                record_dto.desc_id13 = await SaveMarksandDesc(id, record_dto.desc_id13, record_dto.desc_mark13!, null!, record_dto.desc_description13!, 13, record_dto);
-                record_dto.desc_id14 = await SaveMarksandDesc(id, record_dto.desc_id14, record_dto.desc_mark14!, null!, record_dto.desc_description14!, 14, record_dto);
-                record_dto.desc_id15 = await SaveMarksandDesc(id, record_dto.desc_id15, record_dto.desc_mark15!, null!, record_dto.desc_description15!, 15, record_dto);
-                record_dto.desc_id16 = await SaveMarksandDesc(id, record_dto.desc_id16, record_dto.desc_mark16!, null!, record_dto.desc_description16!, 16, record_dto);
-                record_dto.desc_id17 = await SaveMarksandDesc(id, record_dto.desc_id17, record_dto.desc_mark17!, null!, record_dto.desc_description17!, 17, record_dto);
+                record_dto.desc_id1 = await SaveMarksandDesc(id, mode, record_dto.desc_id1, record_dto.desc_mark1!, record_dto.desc_package1!, record_dto.desc_description1!, 1, record_dto);
+                record_dto.desc_id2 = await SaveMarksandDesc(id, mode, record_dto.desc_id2, record_dto.desc_mark2!, record_dto.desc_package2!, record_dto.desc_description2!, 2, record_dto);
+                record_dto.desc_id3 = await SaveMarksandDesc(id, mode, record_dto.desc_id3, record_dto.desc_mark3!, record_dto.desc_package3!, record_dto.desc_description3!, 3, record_dto);
+                record_dto.desc_id4 = await SaveMarksandDesc(id, mode, record_dto.desc_id4, record_dto.desc_mark4!, null!, record_dto.desc_description4!, 4, record_dto);
+                record_dto.desc_id5 = await SaveMarksandDesc(id, mode, record_dto.desc_id5, record_dto.desc_mark5!, null!, record_dto.desc_description5!, 5, record_dto);
+                record_dto.desc_id6 = await SaveMarksandDesc(id, mode, record_dto.desc_id6, record_dto.desc_mark6!, null!, record_dto.desc_description6!, 6, record_dto);
+                record_dto.desc_id7 = await SaveMarksandDesc(id, mode, record_dto.desc_id7, record_dto.desc_mark7!, null!, record_dto.desc_description7!, 7, record_dto);
+                record_dto.desc_id8 = await SaveMarksandDesc(id, mode, record_dto.desc_id8, record_dto.desc_mark8!, null!, record_dto.desc_description8!, 8, record_dto);
+                record_dto.desc_id9 = await SaveMarksandDesc(id, mode, record_dto.desc_id9, record_dto.desc_mark9!, null!, record_dto.desc_description9!, 9, record_dto);
+                record_dto.desc_id10 = await SaveMarksandDesc(id, mode, record_dto.desc_id10, record_dto.desc_mark10!, null!, record_dto.desc_description10!, 10, record_dto); record_dto.desc_id11 = await SaveMarksandDesc(id, mode, record_dto.desc_id11, record_dto.desc_mark11!, null!, record_dto.desc_description11!, 11, record_dto);
+                record_dto.desc_id12 = await SaveMarksandDesc(id, mode, record_dto.desc_id12, record_dto.desc_mark12!, null!, record_dto.desc_description12!, 12, record_dto);
+                record_dto.desc_id13 = await SaveMarksandDesc(id, mode, record_dto.desc_id13, record_dto.desc_mark13!, null!, record_dto.desc_description13!, 13, record_dto);
+                record_dto.desc_id14 = await SaveMarksandDesc(id, mode, record_dto.desc_id14, record_dto.desc_mark14!, null!, record_dto.desc_description14!, 14, record_dto);
+                record_dto.desc_id15 = await SaveMarksandDesc(id, mode, record_dto.desc_id15, record_dto.desc_mark15!, null!, record_dto.desc_description15!, 15, record_dto);
+                record_dto.desc_id16 = await SaveMarksandDesc(id, mode, record_dto.desc_id16, record_dto.desc_mark16!, null!, record_dto.desc_description16!, 16, record_dto);
+                record_dto.desc_id17 = await SaveMarksandDesc(id, mode, record_dto.desc_id17, record_dto.desc_mark17!, null!, record_dto.desc_description17!, 17, record_dto);
 
                 return record_dto;
 
@@ -862,11 +863,11 @@ namespace SeaExport.Repositories
             }
         }
 
-        public async Task<int> SaveMarksandDesc(int id, int desc_id, string mark, string package, string description, int ctr, cargo_sea_exporth_dto record_dto)
+        public async Task<int> SaveMarksandDesc(int id, string mode, int desc_id, string mark, string package, string description, int ctr, cargo_sea_exporth_dto record_dto)
         {
             cargo_desc? Record;
             Boolean bOk = true;
-            string mode = "";
+            string DescMode = "";
 
             try
             {
@@ -875,14 +876,27 @@ namespace SeaExport.Repositories
                 if (bOk == false && desc_id == 0)
                     return 0;
 
-                if (bOk && desc_id == 0)  // new record
-                    mode = "add";
+                if (bOk && desc_id == 0)  // new record && id!=0
+                    DescMode = "add";
                 if (bOk && desc_id != 0)  // edit record                  
-                    mode = "edit";
+                    DescMode = "edit";
                 if (bOk == false && desc_id != 0)  // delete record                 
-                    mode = "delete";
+                    DescMode = "delete";
 
-                if (mode == "add")
+                var NewRecord = new cargo_desc_dto
+                {
+                    desc_parent_id = record_dto.desc_parent_id,
+                    desc_id = desc_id,
+                    desc_ctr = ctr,
+                    desc_mark = mark,
+                    desc_package = package,
+                    desc_description = description,
+                    rec_company_id = record_dto.rec_company_id,
+                    rec_branch_id = record_dto.rec_branch_id,
+                    rec_created_by = record_dto.rec_created_by
+                };
+
+                if (DescMode == "add")//if (DescMode == "add")
                 {
                     Record = new cargo_desc();
 
@@ -894,11 +908,15 @@ namespace SeaExport.Repositories
 
                     Record.desc_parent_type = "SE-DESC";
                     Record.desc_parent_id = id;
-                    Record.desc_ctr = ctr;
 
+                    if (mode == "edit")
+                        await logHistoryCargoDesc(Record, NewRecord, record_dto.hbl_houseno!, record_dto.hbl_id);
+
+                    Record.desc_ctr = ctr;
                     Record.desc_mark = mark;
                     Record.desc_package = package;
                     Record.desc_description = description;
+
                 }
                 else
                 {
@@ -909,22 +927,9 @@ namespace SeaExport.Repositories
                     if (Record == null)
                         throw new Exception("record Not Found");
 
-                    if (mode == "edit" || mode == "delete")
+                    if (DescMode == "edit" || DescMode == "delete")
                     {
-                        var NewRecord = new cargo_desc_dto
-                        {
-                            desc_parent_id = id,
-                            desc_id = desc_id,
-                            desc_ctr = ctr,
-                            desc_mark = mark,
-                            desc_package = package,
-                            desc_description = description,
-                            rec_company_id = record_dto.rec_company_id,
-                            rec_branch_id = record_dto.rec_branch_id,
-                            rec_created_by = record_dto.rec_created_by
-                        };
-
-                        await logHistoryCargoDesc(Record, NewRecord, record_dto.hbl_houseno!);
+                        await logHistoryCargoDesc(Record, NewRecord, record_dto.hbl_houseno!, record_dto.hbl_id);
 
                         Record.desc_mark = NewRecord.desc_mark;
                         Record.desc_package = NewRecord.desc_package;
@@ -934,17 +939,12 @@ namespace SeaExport.Repositories
                         Record.rec_version++;
                         Record.rec_edited_by = record_dto.rec_created_by;
                         Record.rec_edited_date = DbLib.GetDateTime();
-
-                        // await context.SaveChangesAsync();
                     }
                 }
 
-
-
-                if (mode == "add")
+                if (DescMode == "add")
                     await context.cargo_desc.AddAsync(Record);
-
-                if (mode == "delete")
+                if (DescMode == "delete")
                 {
                     context.cargo_desc.Remove(Record);
                     desc_id = 0;
@@ -952,7 +952,7 @@ namespace SeaExport.Repositories
 
                 await context.SaveChangesAsync();
 
-                if (mode == "add")
+                if (DescMode == "add")
                     desc_id = Record.desc_id;
 
                 return desc_id;
@@ -968,7 +968,7 @@ namespace SeaExport.Repositories
                 .Where(c => c.cntr_type_id == cntr_type_id)
                 .Select(c => c.cntrtype!.param_name)
                 .FirstOrDefault();
-            
+
             decimal teu = 0;
 
             if (containerType!.Contains("20")) teu = 1.0m;
@@ -976,10 +976,10 @@ namespace SeaExport.Repositories
             if (containerType.Contains("FCL")) teu = 0;
             if (containerType.Contains("40"))
             {
-                if(containerType.Contains("HC"))
+                if (containerType.Contains("HC"))
                     teu = 2.25m;
                 else
-                    teu = 2.0m;   
+                    teu = 2.0m;
             }
             return teu;
         }
@@ -1121,7 +1121,7 @@ namespace SeaExport.Repositories
                 hbl_issued_date = Lib.FormatDate(old_record.hbl_issued_date, Lib.outputDateFormat),
                 hbl_delivery_date = Lib.FormatDate(old_record.hbl_delivery_date, Lib.outputDateFormat),
                 hbl_originals = old_record.hbl_originals,
-                
+
             };
             await new LogHistorym<cargo_sea_exporth_dto>(context)
             .Table("cargo_housem", log_date)
@@ -1237,7 +1237,7 @@ namespace SeaExport.Repositories
                 .TrackColumn("cntr_type_name", "Container Type Name")
                 .TrackColumn("cntr_sealno", "Seal No")
                 .TrackColumn("cntr_movement", "Movement")
-                .TrackColumn("cntr_pieces", "Pieces","integer")
+                .TrackColumn("cntr_pieces", "Pieces", "integer")
                 .TrackColumn("cntr_packages_unit_name", "Packages Unit")
                 .TrackColumn("cntr_packages", "Packages")
                 // .TrackColumn("cntr_teu", "TEU", "decimal")
@@ -1255,13 +1255,13 @@ namespace SeaExport.Repositories
                 .LogChangesAsync();
 
         }
-        public async Task logHistoryCargoDesc(cargo_desc old_record, cargo_desc_dto NewRecord, string hbl_houseno) // int id
+        public async Task logHistoryCargoDesc(cargo_desc old_record, cargo_desc_dto NewRecord, string hbl_houseno, int hbl_id) // int id
         {
             var old_record_dto = new cargo_desc_dto
             {
                 desc_parent_id = old_record.desc_parent_id,
                 desc_id = old_record.desc_id,
-                desc_ctr = old_record.desc_ctr,
+                // desc_ctr = old_record.desc_ctr,
                 desc_mark = old_record.desc_mark,
                 desc_package = old_record.desc_package,
                 desc_description = old_record.desc_description,
@@ -1269,11 +1269,11 @@ namespace SeaExport.Repositories
 
             await new LogHistorym<cargo_desc_dto>(context)
             .Table("cargo_housem", log_date)
-            .PrimaryKey("desc_id", NewRecord.desc_parent_id)///hbl id pass whil;e cal
+            .PrimaryKey("desc_id", hbl_id)///hbl id pass while call
             .RefNo(hbl_houseno)
             .SetCompanyInfo(NewRecord.rec_version, NewRecord.rec_company_id, NewRecord.rec_branch_id, NewRecord.rec_created_by!)
 
-            .TrackColumn("desc_ctr", "Ctr")
+            // .TrackColumn("desc_ctr", "Ctr")
             .TrackColumn("desc_mark", "Mark")
             .TrackColumn("desc_package", "Package")
             .TrackColumn("desc_description", "Description")
