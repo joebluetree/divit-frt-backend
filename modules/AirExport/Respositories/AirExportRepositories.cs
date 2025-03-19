@@ -172,7 +172,6 @@ namespace AirExport.Repositories
                             hbl_issued_date = Lib.FormatDate(e.hbl_issued_date, Lib.outputDateFormat),
                             hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateFormat),
 
-                            rec_version = e.rec_version,
                             rec_company_id = e.rec_company_id,
                             rec_branch_id = e.rec_branch_id,
                             rec_created_by = e.rec_created_by,
@@ -200,7 +199,7 @@ namespace AirExport.Repositories
                     mbl_id = e.mbl_id,
                     mbl_cfno = e.mbl_cfno,
                     mbl_refno = e.mbl_refno,
-                    mbl_ref_date = Lib.FormatDate(e.mbl_ref_date, Lib.outputDateTimeFormat),
+                    mbl_ref_date = Lib.FormatDate(e.mbl_ref_date, Lib.outputDateFormat),
                     mbl_shipment_stage_id = e.mbl_shipment_stage_id,
                     mbl_shipment_stage_name = e.shipstage!.param_name,
                     mbl_mode = e.mbl_mode,
@@ -210,10 +209,10 @@ namespace AirExport.Repositories
                     mbl_frt_status_name = e.mbl_frt_status_name,
                     mbl_pol_id = e.mbl_pol_id,
                     mbl_pol_name = e.pol!.param_name,
-                    mbl_pol_etd = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateTimeFormat),
+                    mbl_pol_etd = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateFormat),
                     mbl_pod_id = e.mbl_pod_id,
                     mbl_pod_name = e.pod!.param_name,
-                    mbl_pod_eta = Lib.FormatDate(e.mbl_pod_eta, Lib.outputDateTimeFormat),
+                    mbl_pod_eta = Lib.FormatDate(e.mbl_pod_eta, Lib.outputDateFormat),
                     mbl_country_id = e.mbl_country_id,
                     mbl_country_name = e.country!.param_name,
                     mbl_liner_id = e.mbl_liner_id,
@@ -401,6 +400,7 @@ namespace AirExport.Repositories
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+
                 if (mode == "edit")
                     await logHistory(Record, record_dto);
 
@@ -430,7 +430,6 @@ namespace AirExport.Repositories
                 Record.mbl_direct = record_dto.mbl_direct;
                 Record.mbl_vessel_name = record_dto.mbl_vessel_name;
                 Record.mbl_voyage = record_dto.mbl_voyage;
-                // Record.mbl_house_tot = record_dto.air_export!.Count();
                 if (mode == "add")
                     await context.cargo_masterm.AddAsync(Record);
                 context.SaveChanges();
@@ -576,6 +575,7 @@ namespace AirExport.Repositories
                 .TrackColumn("mbl_direct", "Direct")
                 .TrackColumn("mbl_vessel_name", "Vessel Name")
                 .TrackColumn("mbl_voyage", "Voyage")
+                
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
 

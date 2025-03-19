@@ -413,7 +413,7 @@ namespace AirExport.Repositories
                         hbl_salesman_name = e.salesman!.param_name,
                         hbl_pol_name = e.pol!.param_code,
                         hbl_pod_name = e.pod!.param_code,
-                        hbl_issued_date = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateTimeFormat),
+                        hbl_issued_date = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateFormat),
                         hbl_issued_by = e.handledby!.param_name,
                         hbl_by2_carrier = e.liner!.param_name,
                         rec_branch_id = e.rec_branch_id,
@@ -449,7 +449,7 @@ namespace AirExport.Repositories
                     Record.hbl_ins_amt = $"NILL";
                     Record.hbl_customs_value = $"NCV";
                     Record.hbl_carriage_value = $"NVD";
-
+                    Record.rec_version = Record.rec_version;
                 }
 
                 return Record;
@@ -468,7 +468,7 @@ namespace AirExport.Repositories
 
                 context.Database.BeginTransaction();
                 cargo_air_exporth_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record = await SaveCargoDesc(_Record.hbl_id,mode, record_dto);
+                _Record = await SaveCargoDesc(_Record.hbl_id, mode, record_dto);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -606,7 +606,7 @@ namespace AirExport.Repositories
                         throw new Exception("Record Not Found");
 
                     context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
-                    Record.rec_version++;
+                    Record.rec_version += 1;
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
@@ -762,7 +762,7 @@ namespace AirExport.Repositories
 
 
         //function for save description
-        public async Task<cargo_air_exporth_dto> SaveCargoDesc(int id,string mode, cargo_air_exporth_dto record_dto)
+        public async Task<cargo_air_exporth_dto> SaveCargoDesc(int id, string mode, cargo_air_exporth_dto record_dto)
         {
             try
             {
@@ -798,21 +798,36 @@ namespace AirExport.Repositories
         {
             cargo_desc? Record;
             Boolean bOk = true;
+            string DescMode = "";
+
             try
             {
                 if (Lib.IsBlank(mark) && Lib.IsBlank(description))
                     bOk = false;
-                // if (bOk == false && desc_id == 0)
-                //     return 0;
+                if (bOk == false && desc_id == 0)
+                    return 0;
 
-                // if (bOk && desc_id == 0)  // new record
-                //     mode = "add";
-                // if (bOk && desc_id != 0)  // edit record                  
-                //     mode = "edit";
+                if (bOk && desc_id == 0)  // new record && id!=0
+                    DescMode = "add";
+                if (bOk && desc_id != 0)  // edit record                  
+                    DescMode = "edit";
                 if (bOk == false && desc_id != 0)  // delete record                 
-                    mode = "delete";
+                    DescMode = "delete";
 
-                if (mode == "add")
+                var NewRecord = new cargo_desc_dto
+                {
+                    desc_parent_id = record_dto.desc_parent_id,
+                    desc_id = desc_id,
+                    desc_ctr = ctr,
+                    desc_mark = mark,
+                    desc_description = description,
+                    rec_company_id = record_dto.rec_company_id,
+                    rec_branch_id = record_dto.rec_branch_id,
+                    rec_created_by = record_dto.rec_created_by,
+                    rec_version = record_dto.rec_version,
+                };
+
+                if (DescMode == "add")//if (DescMode == "add")
                 {
                     Record = new cargo_desc();
 
@@ -820,54 +835,47 @@ namespace AirExport.Repositories
                     Record.rec_branch_id = record_dto.rec_branch_id;
                     Record.rec_created_by = record_dto.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
+                    Record.rec_version = record_dto.rec_version;
                     Record.rec_locked = "N";
 
-                    Record.desc_parent_id = id;
-                    Record.desc_ctr = ctr;
                     Record.desc_parent_type = "AR-DESC";
+                    Record.desc_parent_id = id;
 
+                    if (mode == "edit")
+                        await logHistoryCargoDesc(Record, NewRecord, record_dto.hbl_houseno!, record_dto.hbl_id, ctr);
+
+                    Record.desc_ctr = ctr;
                     Record.desc_mark = mark;
                     Record.desc_description = description;
+
                 }
                 else
                 {
                     Record = await context.cargo_desc
-                         .Where(f => f.desc_parent_id == id && f.desc_id == desc_id)
-                         .FirstOrDefaultAsync();
+                        .Where(f => f.desc_parent_id == id && f.desc_id == desc_id)//&& f.desc_id == desc_id
+                        .FirstOrDefaultAsync();
 
                     if (Record == null)
-                        throw new Exception("record Not Found");
+                        throw new Exception("Description record Not Found");
 
-                    if (mode == "edit" || mode == "delete")
+                    if (DescMode == "edit" || DescMode == "delete")
                     {
-                        var NewRecord = new cargo_desc_dto
-                        {
-                            desc_parent_id = id,
-                            desc_id = desc_id,
-                            desc_ctr = ctr,
-                            desc_mark = mark,
-                            desc_description = description,
-                            rec_company_id = record_dto.rec_company_id,
-                            rec_branch_id = record_dto.rec_branch_id,
-                            rec_created_by = record_dto.rec_created_by,
-                        };
-
-                        await logHistoryCargoDesc(Record, NewRecord, record_dto.hbl_houseno!);
+                        await logHistoryCargoDesc(Record, NewRecord, record_dto.hbl_houseno!, record_dto.hbl_id, ctr);
 
                         Record.desc_mark = NewRecord.desc_mark;
+                        Record.desc_package = NewRecord.desc_package;
                         Record.desc_description = NewRecord.desc_description;
 
+                        // context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
                         Record.rec_version++;
                         Record.rec_edited_by = record_dto.rec_created_by;
                         Record.rec_edited_date = DbLib.GetDateTime();
-
                     }
                 }
 
-                if (mode == "add")
+                if (DescMode == "add")
                     await context.cargo_desc.AddAsync(Record);
-
-                if (mode == "delete")
+                if (DescMode == "delete")
                 {
                     context.cargo_desc.Remove(Record);
                     desc_id = 0;
@@ -875,7 +883,7 @@ namespace AirExport.Repositories
 
                 await context.SaveChangesAsync();
 
-                if (mode == "add")
+                if (DescMode == "add")
                     desc_id = Record.desc_id;
 
                 return desc_id;
@@ -1199,7 +1207,7 @@ namespace AirExport.Repositories
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
         }
-        public async Task logHistoryCargoDesc(cargo_desc old_record, cargo_desc_dto NewRecord, string hbl_houseno) // int id
+        public async Task logHistoryCargoDesc(cargo_desc old_record, cargo_desc_dto NewRecord, string hbl_houseno, int hbl_id, int ctr)// int id
         {
             var old_record_dto = new cargo_desc_dto
             {
@@ -1212,13 +1220,12 @@ namespace AirExport.Repositories
 
             await new LogHistorym<cargo_desc_dto>(context)
             .Table("cargo_housem", log_date)
-            .PrimaryKey("desc_id", NewRecord.desc_parent_id)///hbl id pass while call
+            .PrimaryKey("desc_id", hbl_id)///hbl id pass while call
             .RefNo(hbl_houseno)
             .SetCompanyInfo(NewRecord.rec_version, NewRecord.rec_company_id, NewRecord.rec_branch_id, NewRecord.rec_created_by!)
 
-            .TrackColumn("desc_ctr", "Ctr")
-            .TrackColumn("desc_mark", "Mark")
-            .TrackColumn("desc_description", "Description")
+            .TrackColumn("desc_mark", $"Mark {ctr}")
+            .TrackColumn("desc_description", $"Description {ctr}")
 
             .SetRecord(old_record_dto, NewRecord)
             .LogChangesAsync();
