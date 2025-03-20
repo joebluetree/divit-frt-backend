@@ -449,7 +449,6 @@ namespace AirExport.Repositories
                     Record.hbl_ins_amt = $"NILL";
                     Record.hbl_customs_value = $"NCV";
                     Record.hbl_carriage_value = $"NVD";
-                    Record.rec_version = Record.rec_version;
                 }
 
                 return Record;
@@ -606,7 +605,7 @@ namespace AirExport.Repositories
                         throw new Exception("Record Not Found");
 
                     context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
-                    Record.rec_version += 1;
+                    Record.rec_version++;
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
@@ -703,7 +702,8 @@ namespace AirExport.Repositories
                 record_dto.hbl_houseno = Record.hbl_houseno;
                 record_dto.hbl_mbl_id = Record.hbl_mbl_id;
 
-                record_dto.rec_version = Record.rec_version;
+                //record_dto.rec_version = Record.rec_version;
+
                 if (mode == "add")
                 {
                     record_dto.rec_created_by = Record.rec_created_by;

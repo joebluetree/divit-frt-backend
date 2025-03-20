@@ -187,8 +187,8 @@ public class cargo_masterm
     public List <cargo_housem>? air_export { get; set; } 
 
     [ConcurrencyCheck]
-    public int? rec_year { get; set; }
     public int rec_version { get; set; }
+    public int? rec_year { get; set; }
     public string? rec_locked { get; set; }
     public string? rec_created_by { get; set; }
     public DateTime rec_created_date { get; set; }

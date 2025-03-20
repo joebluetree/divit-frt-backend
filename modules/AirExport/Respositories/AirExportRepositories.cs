@@ -395,6 +395,7 @@ namespace AirExport.Repositories
                     if (Record == null)
                         throw new Exception("Record Not Found");
 
+                    
                     context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
                     Record.rec_version++;
                     Record.rec_edited_by = record_dto.rec_created_by;
@@ -430,9 +431,12 @@ namespace AirExport.Repositories
                 Record.mbl_direct = record_dto.mbl_direct;
                 Record.mbl_vessel_name = record_dto.mbl_vessel_name;
                 Record.mbl_voyage = record_dto.mbl_voyage;
+
                 if (mode == "add")
                     await context.cargo_masterm.AddAsync(Record);
-                context.SaveChanges();
+                    
+                await context.SaveChangesAsync();
+                
                 record_dto.mbl_id = Record.mbl_id;
                 record_dto.mbl_refno = Record.mbl_refno;
 
