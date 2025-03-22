@@ -362,7 +362,23 @@ namespace AirExport.Repositories
                 Record.hbl_carprintsc5 = CommonLib.SplitString(Record.hbl_charges3_carrier, 3);
                 Record.hbl_carprintsc6 = CommonLib.SplitString(Record.hbl_charges3_carrier, 4);
 
-                await GetCargoDesc(Record); //Get Record
+                Record.mark1 = await GetCargoDesc(Record.hbl_id,0);
+                Record.mark2 = await GetCargoDesc(Record.hbl_id,1);
+                Record.mark3 = await GetCargoDesc(Record.hbl_id,2);
+                Record.mark4 = await GetCargoDesc(Record.hbl_id,3);
+                Record.mark5 = await GetCargoDesc(Record.hbl_id,4);
+                Record.mark6 = await GetCargoDesc(Record.hbl_id,5);
+                Record.mark7 = await GetCargoDesc(Record.hbl_id,6);
+                Record.mark8 = await GetCargoDesc(Record.hbl_id,7);
+                Record.mark9 = await GetCargoDesc(Record.hbl_id,8);
+                Record.mark10 = await GetCargoDesc(Record.hbl_id,9);
+                Record.mark11 = await GetCargoDesc(Record.hbl_id,10);
+                Record.mark12 = await GetCargoDesc(Record.hbl_id,11);
+                Record.mark13 = await GetCargoDesc(Record.hbl_id,12);
+                Record.mark14 = await GetCargoDesc(Record.hbl_id,13);
+                Record.mark15 = await GetCargoDesc(Record.hbl_id,14);
+                Record.mark16 = await GetCargoDesc(Record.hbl_id,15);
+                Record.mark17 = await GetCargoDesc(Record.hbl_id,16);
 
                 return Record;
             }
@@ -372,27 +388,23 @@ namespace AirExport.Repositories
             }
         }
 
-        public async Task GetCargoDesc(cargo_air_exporth_dto Record)
+        public async Task<cargo_desc_dto?> GetCargoDesc(int id, int ctr)
         {
-            for (int i = 1; i <= 17; i++)
-            {
-                Record.GetType().GetProperty($"desc_id{i}")?.SetValue(Record, 0);
-                Record.GetType().GetProperty($"desc_mark{i}")?.SetValue(Record, "");
-                Record.GetType().GetProperty($"desc_description{i}")?.SetValue(Record, "");
-            }
 
-            var records = await context.cargo_desc
-                .Where(a => a.desc_parent_id == Record.hbl_id)
-                .ToListAsync();
+            var query = context.cargo_desc
+                .Where(a => a.desc_parent_id == id && a.desc_ctr == ctr);
 
-            foreach (var desc in records)
-            {
-                int? ctr = desc.desc_ctr;
-
-                Record.GetType().GetProperty($"desc_id{ctr}")?.SetValue(Record, desc.desc_id);
-                Record.GetType().GetProperty($"desc_mark{ctr}")?.SetValue(Record, desc.desc_mark);
-                Record.GetType().GetProperty($"desc_description{ctr}")?.SetValue(Record, desc.desc_description);
-            }
+            return await query
+                .Select(e => new cargo_desc_dto
+                {
+                    desc_id = e.desc_id,
+                    desc_ctr = e.desc_ctr,
+                    desc_description = e.desc_description!,
+                    desc_mark = e.desc_mark!,
+                    desc_parent_id =  e.desc_parent_id,
+                    desc_parent_type = e.desc_parent_type,
+                })
+                .FirstOrDefaultAsync();
         }
 
         public async Task<cargo_air_exporth_dto?> GetDefaultDataAsync(int id)
@@ -467,7 +479,8 @@ namespace AirExport.Repositories
 
                 context.Database.BeginTransaction();
                 cargo_air_exporth_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record = await SaveCargoDesc(_Record.hbl_id, mode, record_dto);
+                _Record = await SaveCargoDesc(_Record.hbl_id, mode, _Record);
+                await CommonLib.SaveMasterSummary(this.context, _Record.hbl_mbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -537,7 +550,7 @@ namespace AirExport.Repositories
                 if (!AllValid(mode, record_dto, ref error))
                     throw new Exception(error);
 
-                //Other Charges To Agent Details
+                //Other Charges To Agent Details and concatenate values into a single string
 
                 var hbl_charges1 = $"{record_dto.hbl_toagent1},{record_dto.hbl_rate1},{record_dto.hbl_total1},{record_dto.hbl_printsc1},{record_dto.hbl_printsc2}";
                 var hbl_charges2 = $"{record_dto.hbl_toagent2},{record_dto.hbl_rate2},{record_dto.hbl_total2},{record_dto.hbl_printsc3},{record_dto.hbl_printsc4}";
@@ -545,18 +558,18 @@ namespace AirExport.Repositories
                 var hbl_charges4 = $"{record_dto.hbl_toagent4},{record_dto.hbl_rate4},{record_dto.hbl_total4},{record_dto.hbl_printsc7},{record_dto.hbl_printsc8}";
                 var hbl_charges5 = $"{record_dto.hbl_toagent5},{record_dto.hbl_rate5},{record_dto.hbl_total5},{record_dto.hbl_printsc9},{record_dto.hbl_printsc10}";
 
-                //Other Charges To Carrier Details
+                //Other Charges To Carrier Details and concatenate values into a single string
                 var hbl_charges1_carrier = $"{record_dto.hbl_tocarrier1},{record_dto.hbl_carrate1},{record_dto.hbl_cartotal1},{record_dto.hbl_carprintsc1},{record_dto.hbl_carprintsc2}";
                 var hbl_charges2_carrier = $"{record_dto.hbl_tocarrier2},{record_dto.hbl_carrate2},{record_dto.hbl_cartotal2},{record_dto.hbl_carprintsc3},{record_dto.hbl_carprintsc4}";
                 var hbl_charges3_carrier = $"{record_dto.hbl_tocarrier3},{record_dto.hbl_carrate3},{record_dto.hbl_cartotal3},{record_dto.hbl_carprintsc5},{record_dto.hbl_carprintsc6}";
 
                 if (mode == "add")
                 {
-                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "AIREXPORT-HOUSE-PREFIX,AIREXPORT-HOUSE-STARTING-NO");// 
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "AIREXPORT-HOUSE-PREFIX,AIREXPORT-HOUSE-STARTING-NO");//Call the branch settings for the prefix and suffix. 
 
                     var DefaultCfNo = 0;
                     var Defaultprefix = "";
-
+                    // Check if the result contains the required keys and values from Branch Settings
                     if (result.ContainsKey("AIREXPORT-HOUSE-STARTING-NO"))
                     {
                         DefaultCfNo = Lib.StringToInteger(result["AIREXPORT-HOUSE-STARTING-NO"]);
@@ -570,14 +583,15 @@ namespace AirExport.Repositories
                         throw new Exception("Missing Airexport House Prefix/Starting-Number in Branch Settings");
                     }
 
+                    //Getting the Cfno from using the GetNextCfno() function
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
                     if (Lib.IsZero(iNextNo))
                     {
                         throw new Exception("House Number Cannot Be Generated");
                     }
-                    string sref_no = $"{Defaultprefix}{iNextNo}";
+                    string sref_no = $"{Defaultprefix}{iNextNo}"; //Assigning the prefix and suffix to a new element..
 
-                    Record = new cargo_housem();
+                    Record = new cargo_housem();  //Assigning the values to the database elements
                     Record.hbl_cfno = iNextNo;
                     Record.hbl_houseno = sref_no;
                     Record.hbl_mode = hbl_mode;
@@ -591,6 +605,8 @@ namespace AirExport.Repositories
                 }
                 else
                 {
+                    //code retrives the data from cargo_housem table in database
+
                     Record = await context.cargo_housem
                         .Include(c => c.shipper)
                         .Include(c => c.consignee)
@@ -604,13 +620,18 @@ namespace AirExport.Repositories
                     if (Record == null)
                         throw new Exception("Record Not Found");
 
+                    //concurency checking code by using rec_version
                     context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
-                    Record.rec_version++;
+                    Record.rec_version++; //incrementing the rec_version after the concurrency check
+                    record_dto.rec_version = Record.rec_version; //asigning the rec_version value to the dto.
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
+                //Mode is edit, Then Check the LogHistory.
                 if (mode == "edit")
                     await logHistory(Record, record_dto);
+
+                //Save values to the database from dto.
 
                 Record.hbl_shipment_stage_id = record_dto.hbl_shipment_stage_id;
                 Record.hbl_date = Lib.ParseDate(record_dto.hbl_date!);
@@ -693,16 +714,17 @@ namespace AirExport.Repositories
                 Record.hbl_delivery_date = Lib.ParseDate(record_dto.hbl_delivery_date!);
                 Record.hbl_issued_by = record_dto.hbl_issued_by;
 
-
+                //Mode = add, Then add values to the table cargo_housem.
                 if (mode == "add")
                     await context.cargo_housem.AddAsync(Record);
+                //Save changes to database
                 context.SaveChanges();
-                await GetHouseCount(record_dto.hbl_mbl_id);
+                //After the save return values to the dto from database table.
                 record_dto.hbl_id = Record.hbl_id;
                 record_dto.hbl_houseno = Record.hbl_houseno;
                 record_dto.hbl_mbl_id = Record.hbl_mbl_id;
 
-                //record_dto.rec_version = Record.rec_version;
+                record_dto.rec_version = Record.rec_version;
 
                 if (mode == "add")
                 {
@@ -724,41 +746,6 @@ namespace AirExport.Repositories
 
         }
 
-        //Save update function for house count. 
-        public async Task GetHouseCount(int id)
-        {
-
-            var houseList = await context.cargo_housem
-                .Where(h => h.hbl_mbl_id == id)
-                .ToListAsync();
-
-            int houseCount = houseList.Count();
-
-            int ShipperCount = houseList
-                .Where(h => !Lib.IsBlank(h.hbl_shipper_name))
-                .Select(h => h.hbl_shipper_name)
-                .Distinct()
-                .Count();
-
-            int ConsigneeCount = houseList
-                .Where(h => !Lib.IsBlank(h.hbl_consignee_name))
-                .Select(h => h.hbl_consignee_name)
-                .Distinct()
-                .Count();
-
-            var master_Record = await context.cargo_masterm
-                .Where(m => m.mbl_id == id)
-                .FirstOrDefaultAsync();
-
-            if (master_Record != null)
-            {
-                master_Record.mbl_house_tot = houseCount;
-                master_Record.mbl_shipper_tot = ShipperCount;
-                master_Record.mbl_consignee_tot = ConsigneeCount;
-                await context.SaveChangesAsync();
-            }
-
-        }
 
 
         //function for save description
@@ -766,35 +753,29 @@ namespace AirExport.Repositories
         {
             try
             {
+                // List to store marks for simplified iteration
+                var marks = new List<cargo_desc_dto?>
+                {
+                    record_dto.mark1, record_dto.mark2, record_dto.mark3, record_dto.mark4, record_dto.mark5,
+                    record_dto.mark6, record_dto.mark7, record_dto.mark8, record_dto.mark9, record_dto.mark10,
+                    record_dto.mark11, record_dto.mark12, record_dto.mark13, record_dto.mark14, record_dto.mark15,
+                    record_dto.mark16, record_dto.mark17
+                };
 
-                record_dto.desc_id1 = await SaveMarksandDesc(id, mode, record_dto.desc_id1, record_dto.desc_mark1!, record_dto.desc_description1!, 1, record_dto);
-                record_dto.desc_id2 = await SaveMarksandDesc(id, mode, record_dto.desc_id2, record_dto.desc_mark2!, record_dto.desc_description2!, 2, record_dto);
-                record_dto.desc_id3 = await SaveMarksandDesc(id, mode, record_dto.desc_id3, record_dto.desc_mark3!, record_dto.desc_description3!, 3, record_dto);
-                record_dto.desc_id4 = await SaveMarksandDesc(id, mode, record_dto.desc_id4, record_dto.desc_mark4!, record_dto.desc_description4!, 4, record_dto);
-                record_dto.desc_id5 = await SaveMarksandDesc(id, mode, record_dto.desc_id5, record_dto.desc_mark5!, record_dto.desc_description5!, 5, record_dto);
-                record_dto.desc_id6 = await SaveMarksandDesc(id, mode, record_dto.desc_id6, record_dto.desc_mark6!, record_dto.desc_description6!, 6, record_dto);
-                record_dto.desc_id7 = await SaveMarksandDesc(id, mode, record_dto.desc_id7, record_dto.desc_mark7!, record_dto.desc_description7!, 7, record_dto);
-                record_dto.desc_id8 = await SaveMarksandDesc(id, mode, record_dto.desc_id8, record_dto.desc_mark8!, record_dto.desc_description8!, 8, record_dto);
-                record_dto.desc_id9 = await SaveMarksandDesc(id, mode, record_dto.desc_id9, record_dto.desc_mark9!, record_dto.desc_description9!, 9, record_dto);
-                record_dto.desc_id10 = await SaveMarksandDesc(id, mode, record_dto.desc_id10, record_dto.desc_mark10!, record_dto.desc_description10!, 10, record_dto);
-                record_dto.desc_id11 = await SaveMarksandDesc(id, mode, record_dto.desc_id11, null!, record_dto.desc_description11!, 11, record_dto);
-                record_dto.desc_id12 = await SaveMarksandDesc(id, mode, record_dto.desc_id12, null!, record_dto.desc_description12!, 12, record_dto);
-                record_dto.desc_id13 = await SaveMarksandDesc(id, mode, record_dto.desc_id13, null!, record_dto.desc_description13!, 13, record_dto);
-                record_dto.desc_id14 = await SaveMarksandDesc(id, mode, record_dto.desc_id14, null!, record_dto.desc_description14!, 14, record_dto);
-                record_dto.desc_id15 = await SaveMarksandDesc(id, mode, record_dto.desc_id15, null!, record_dto.desc_description15!, 15, record_dto);
-                record_dto.desc_id16 = await SaveMarksandDesc(id, mode, record_dto.desc_id16, null!, record_dto.desc_description16!, 16, record_dto);
-                record_dto.desc_id17 = await SaveMarksandDesc(id, mode, record_dto.desc_id17, null!, record_dto.desc_description17!, 17, record_dto);
+
+                // Save all marks using the updated SaveMarksandDesc function
+                await SaveMarksandDesc(id, mode, marks, record_dto);
 
                 return record_dto;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception($"Error in SaveCargoDesc: {ex.Message}", ex);
             }
         }
 
-        //function for save description
-        public async Task<int> SaveMarksandDesc(int id, string mode, int desc_id, string mark, string description, int ctr, cargo_air_exporth_dto record_dto)
+
+        public async Task<int> SaveMarksandDesc(int id, string mode, List<cargo_desc_dto?> marks, cargo_air_exporth_dto record_dto)
         {
             cargo_desc? Record;
             Boolean bOk = true;
@@ -802,97 +783,116 @@ namespace AirExport.Repositories
 
             try
             {
-                if (Lib.IsBlank(mark) && Lib.IsBlank(description))
-                    bOk = false;
-                if (bOk == false && desc_id == 0)
+                if (marks == null || marks.Count == 0)
                     return 0;
 
-                if (bOk && desc_id == 0)  // new record && id!=0
-                    DescMode = "add";
-                if (bOk && desc_id != 0)  // edit record                  
-                    DescMode = "edit";
-                if (bOk == false && desc_id != 0)  // delete record                 
-                    DescMode = "delete";
-
-                var NewRecord = new cargo_desc_dto
+                foreach (var markItem in marks)
                 {
-                    desc_parent_id = record_dto.desc_parent_id,
-                    desc_id = desc_id,
-                    desc_ctr = ctr,
-                    desc_mark = mark,
-                    desc_description = description,
-                    rec_company_id = record_dto.rec_company_id,
-                    rec_branch_id = record_dto.rec_branch_id,
-                    rec_created_by = record_dto.rec_created_by,
-                    rec_version = record_dto.rec_version,
-                };
-
-                if (DescMode == "add")//if (DescMode == "add")
-                {
-                    Record = new cargo_desc();
-
-                    Record.rec_company_id = record_dto.rec_company_id;
-                    Record.rec_branch_id = record_dto.rec_branch_id;
-                    Record.rec_created_by = record_dto.rec_created_by;
-                    Record.rec_created_date = DbLib.GetDateTime();
-                    Record.rec_version = record_dto.rec_version;
-                    Record.rec_locked = "N";
-
-                    Record.desc_parent_type = "AR-DESC";
-                    Record.desc_parent_id = id;
-
-                    if (mode == "edit")
-                        await logHistoryCargoDesc(Record, NewRecord, record_dto.hbl_houseno!, record_dto.hbl_id, ctr);
-
-                    Record.desc_ctr = ctr;
-                    Record.desc_mark = mark;
-                    Record.desc_description = description;
-
-                }
-                else
-                {
-                    Record = await context.cargo_desc
-                        .Where(f => f.desc_parent_id == id && f.desc_id == desc_id)//&& f.desc_id == desc_id
-                        .FirstOrDefaultAsync();
-
-                    if (Record == null)
-                        throw new Exception("Description record Not Found");
-
-                    if (DescMode == "edit" || DescMode == "delete")
+                    if (markItem == null)
                     {
-                        await logHistoryCargoDesc(Record, NewRecord, record_dto.hbl_houseno!, record_dto.hbl_id, ctr);
-
-                        Record.desc_mark = NewRecord.desc_mark;
-                        Record.desc_package = NewRecord.desc_package;
-                        Record.desc_description = NewRecord.desc_description;
-
-                        // context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
-                        Record.rec_version++;
-                        Record.rec_edited_by = record_dto.rec_created_by;
-                        Record.rec_edited_date = DbLib.GetDateTime();
+                        continue;
                     }
+
+                    int? ctr = markItem.desc_ctr;
+                    var description = markItem.desc_description;
+                    var desc_id = markItem.desc_id;
+                    var mark = markItem.desc_mark;
+
+                    if (Lib.IsBlank(mark) && Lib.IsBlank(description))
+                        bOk = false;
+                    if (bOk == false && desc_id == 0)
+                        return 0;
+
+                    if (bOk && desc_id == 0)  // new record && id!=0
+                        DescMode = "add";
+                    if (bOk && desc_id != 0)  // edit record                  
+                        DescMode = "edit";
+                    if (bOk == false && desc_id != 0)  // delete record                 
+                        DescMode = "delete";
+
+                    var NewRecord = new cargo_desc_dto
+                    {
+                        desc_parent_id = record_dto.desc_parent_id,
+                        desc_id = desc_id,
+                        desc_ctr = ctr,
+                        desc_mark = mark,
+                        desc_description = description,
+                        rec_company_id = record_dto.rec_company_id,
+                        rec_branch_id = record_dto.rec_branch_id,
+                        rec_created_by = record_dto.rec_created_by,
+                        rec_version = record_dto.rec_version,
+                    };
+
+                    if (DescMode == "add")
+                    {
+                        Record = new cargo_desc();
+
+                        Record.rec_company_id = record_dto.rec_company_id;
+                        Record.rec_branch_id = record_dto.rec_branch_id;
+                        Record.rec_created_by = record_dto.rec_created_by;
+                        Record.rec_created_date = DbLib.GetDateTime();
+                        Record.rec_version = record_dto.rec_version;
+                        Record.rec_locked = "N";
+
+                        Record.desc_parent_type = "AR-DESC";
+                        Record.desc_parent_id = id;
+
+                        if (mode == "edit")
+                            await logHistoryCargoDesc(Record, NewRecord, record_dto.hbl_houseno!, record_dto.hbl_id, ctr);
+
+                        Record.desc_ctr = ctr;
+                        Record.desc_mark = mark;
+                        Record.desc_description = description;
+
+                    }
+                    else
+                    {
+                        Record = await context.cargo_desc
+                            .Where(f => f.desc_parent_id == id && f.desc_id == desc_id)
+                            .FirstOrDefaultAsync();
+
+                        if (Record == null)
+                            throw new Exception("Description record Not Found");
+
+                        if (DescMode == "edit" || DescMode == "delete")
+                        {
+                            await logHistoryCargoDesc(Record, NewRecord, record_dto.hbl_houseno!, record_dto.hbl_id, ctr);
+
+                            Record.desc_mark = NewRecord.desc_mark;
+                            Record.desc_package = NewRecord.desc_package;
+                            Record.desc_description = NewRecord.desc_description;
+
+                            // context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
+                            Record.rec_version++;
+                            Record.rec_edited_by = record_dto.rec_created_by;
+                            Record.rec_edited_date = DbLib.GetDateTime();
+                        }
+                    }
+
+                    if (DescMode == "add")
+                        await context.cargo_desc.AddAsync(Record);
+                    if (DescMode == "delete")
+                    {
+                        context.cargo_desc.Remove(Record);
+                        desc_id = 0;
+                    }
+
+                    await context.SaveChangesAsync();
+
+                    if (DescMode == "add")
+                        desc_id = Record.desc_id;
+
+                    return desc_id;
                 }
-
-                if (DescMode == "add")
-                    await context.cargo_desc.AddAsync(Record);
-                if (DescMode == "delete")
-                {
-                    context.cargo_desc.Remove(Record);
-                    desc_id = 0;
-                }
-
-                await context.SaveChangesAsync();
-
-                if (DescMode == "add")
-                    desc_id = Record.desc_id;
-
-                return desc_id;
+                return 0;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception($"Error in saving marks and descriptions: {ex.Message}");
             }
         }
+
+
 
 
         public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)
@@ -907,8 +907,6 @@ namespace AirExport.Repositories
             return CfNo;
         }
 
-        //function for split the charges
-
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
@@ -919,6 +917,7 @@ namespace AirExport.Repositories
                 var _Record = await context.cargo_housem
                     .Where(f => f.hbl_id == id)
                     .FirstOrDefaultAsync();
+                var mbl_id = _Record?.hbl_mbl_id;
 
                 if (_Record == null)
                 {
@@ -932,10 +931,10 @@ namespace AirExport.Repositories
                     if (desc.Any())
                     {
                         context.cargo_desc.RemoveRange(desc);
-
                     }
                     context.Remove(_Record);
                     context.SaveChanges();
+                    await CommonLib.SaveMasterSummary(this.context, mbl_id);
                     RetData.Add("status", true);
                     RetData.Add("message", "");
                 }
@@ -1017,8 +1016,8 @@ namespace AirExport.Repositories
                 hbl_by1_carrier = old_record.hbl_by1_carrier,
                 hbl_by2 = old_record.hbl_by2,
                 hbl_by2_carrier = old_record.hbl_by2_carrier,
-                hbl_issued_date = Lib.FormatDate(old_record.hbl_issued_date, Lib.outputDateTimeFormat),
-                hbl_delivery_date = Lib.FormatDate(old_record.hbl_delivery_date, Lib.outputDateTimeFormat),
+                hbl_issued_date = Lib.FormatDate(old_record.hbl_issued_date, Lib.outputDateFormat),
+                hbl_delivery_date = Lib.FormatDate(old_record.hbl_delivery_date, Lib.outputDateFormat),
                 hbl_issued_by = old_record.hbl_issued_by,
 
                 hbl_charges1 = old_record.hbl_charges1,
@@ -1207,13 +1206,13 @@ namespace AirExport.Repositories
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
         }
-        public async Task logHistoryCargoDesc(cargo_desc old_record, cargo_desc_dto NewRecord, string hbl_houseno, int hbl_id, int ctr)// int id
+        public async Task logHistoryCargoDesc(cargo_desc old_record, cargo_desc_dto NewRecord, string hbl_houseno, int hbl_id, int? ctr)// int id
         {
             var old_record_dto = new cargo_desc_dto
             {
                 desc_parent_id = old_record.desc_parent_id,
                 desc_id = old_record.desc_id,
-                desc_ctr = old_record.desc_ctr,
+                desc_ctr = ctr,
                 desc_mark = old_record.desc_mark,
                 desc_description = old_record.desc_description,
             };

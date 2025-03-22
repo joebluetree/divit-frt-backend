@@ -143,6 +143,8 @@ namespace AirExport.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+
+        //Get House data from the house table
         public async Task<List<cargo_air_exporth_dto>> GetDetailsAsync(int id)
         {
             var query = from e in context.cargo_housem
@@ -291,7 +293,7 @@ namespace AirExport.Repositories
 
             if (Lib.IsBlank(record_dto.mbl_no))
                 str += "Master BL# Cannot Be Blank!";
-            else if(record_dto.mbl_no?.Length < 11)
+            else if (record_dto.mbl_no?.Length < 11)
                 str += "Master BL# is Invalid!";
             if (Lib.IsZero(record_dto.mbl_shipment_stage_id))
                 str += "Shipment Stage To Cannot Be Blank!";
@@ -395,9 +397,10 @@ namespace AirExport.Repositories
                     if (Record == null)
                         throw new Exception("Record Not Found");
 
-                    
+
                     context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
                     Record.rec_version++;
+                    Record.rec_version = record_dto.rec_version;
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
@@ -434,9 +437,9 @@ namespace AirExport.Repositories
 
                 if (mode == "add")
                     await context.cargo_masterm.AddAsync(Record);
-                    
+
                 await context.SaveChangesAsync();
-                
+
                 record_dto.mbl_id = Record.mbl_id;
                 record_dto.mbl_refno = Record.mbl_refno;
 
@@ -579,7 +582,7 @@ namespace AirExport.Repositories
                 .TrackColumn("mbl_direct", "Direct")
                 .TrackColumn("mbl_vessel_name", "Vessel Name")
                 .TrackColumn("mbl_voyage", "Voyage")
-                
+
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
 
