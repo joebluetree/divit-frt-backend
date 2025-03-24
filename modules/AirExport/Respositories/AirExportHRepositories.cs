@@ -362,23 +362,7 @@ namespace AirExport.Repositories
                 Record.hbl_carprintsc5 = CommonLib.SplitString(Record.hbl_charges3_carrier, 3);
                 Record.hbl_carprintsc6 = CommonLib.SplitString(Record.hbl_charges3_carrier, 4);
 
-                Record.mark1 = await GetCargoDesc(Record.hbl_id,0);
-                Record.mark2 = await GetCargoDesc(Record.hbl_id,1);
-                Record.mark3 = await GetCargoDesc(Record.hbl_id,2);
-                Record.mark4 = await GetCargoDesc(Record.hbl_id,3);
-                Record.mark5 = await GetCargoDesc(Record.hbl_id,4);
-                Record.mark6 = await GetCargoDesc(Record.hbl_id,5);
-                Record.mark7 = await GetCargoDesc(Record.hbl_id,6);
-                Record.mark8 = await GetCargoDesc(Record.hbl_id,7);
-                Record.mark9 = await GetCargoDesc(Record.hbl_id,8);
-                Record.mark10 = await GetCargoDesc(Record.hbl_id,9);
-                Record.mark11 = await GetCargoDesc(Record.hbl_id,10);
-                Record.mark12 = await GetCargoDesc(Record.hbl_id,11);
-                Record.mark13 = await GetCargoDesc(Record.hbl_id,12);
-                Record.mark14 = await GetCargoDesc(Record.hbl_id,13);
-                Record.mark15 = await GetCargoDesc(Record.hbl_id,14);
-                Record.mark16 = await GetCargoDesc(Record.hbl_id,15);
-                Record.mark17 = await GetCargoDesc(Record.hbl_id,16);
+                await GetCargoDesc(Record);
 
                 return Record;
             }
@@ -388,24 +372,30 @@ namespace AirExport.Repositories
             }
         }
 
-        public async Task<cargo_desc_dto?> GetCargoDesc(int id, int ctr)
+        public async Task GetCargoDesc(cargo_air_exporth_dto Record)
         {
+            for (int i = 1; i <= 17; i++)
+            {
+                Record.GetType().GetProperty($"desc_id{i}")?.SetValue(Record, 0);
+                Record.GetType().GetProperty($"desc_mark{i}")?.SetValue(Record, "");
+                Record.GetType().GetProperty($"desc_description{i}")?.SetValue(Record, "");
+            }
 
-            var query = context.cargo_desc
-                .Where(a => a.desc_parent_id == id && a.desc_ctr == ctr);
+            var records = await context.cargo_desc
+                .Where(a => a.desc_parent_id == Record.hbl_id)
+                .ToListAsync();
 
-            return await query
-                .Select(e => new cargo_desc_dto
-                {
-                    desc_id = e.desc_id,
-                    desc_ctr = e.desc_ctr,
-                    desc_description = e.desc_description!,
-                    desc_mark = e.desc_mark!,
-                    desc_parent_id =  e.desc_parent_id,
-                    desc_parent_type = e.desc_parent_type,
-                })
-                .FirstOrDefaultAsync();
+            foreach (var desc in records)
+            {
+                int? ctr = desc.desc_ctr;
+
+                Record.GetType().GetProperty($"desc_id{ctr}")?.SetValue(Record, desc.desc_id);
+                Record.GetType().GetProperty($"desc_mark{ctr}")?.SetValue(Record, desc.desc_mark);
+                Record.GetType().GetProperty($"desc_description{ctr}")?.SetValue(Record, desc.desc_description);
+            }
         }
+
+
 
         public async Task<cargo_air_exporth_dto?> GetDefaultDataAsync(int id)
         {
@@ -765,7 +755,6 @@ namespace AirExport.Repositories
 
                 // Save all marks using the updated SaveMarksandDesc function
                 await SaveMarksandDesc(id, mode, marks, record_dto);
-
                 return record_dto;
             }
             catch (Exception ex)
@@ -775,25 +764,27 @@ namespace AirExport.Repositories
         }
 
 
-        public async Task<int> SaveMarksandDesc(int id, string mode, List<cargo_desc_dto?> marks, cargo_air_exporth_dto record_dto)
+        public async Task<cargo_air_exporth_dto> SaveMarksandDesc(int id, string mode, List<cargo_desc_dto?> marks, cargo_air_exporth_dto record_dto)
         {
             cargo_desc? Record;
-            Boolean bOk = true;
             string DescMode = "";
+            int? ctr = 1;
 
             try
             {
                 if (marks == null || marks.Count == 0)
-                    return 0;
+                    throw new Exception("Marks and Numbers are NULL");
 
                 foreach (var markItem in marks)
                 {
+                    Boolean bOk = true;
+
                     if (markItem == null)
                     {
-                        continue;
+                        throw new Exception("The error in ");
                     }
 
-                    int? ctr = markItem.desc_ctr;
+                    ctr++;
                     var description = markItem.desc_description;
                     var desc_id = markItem.desc_id;
                     var mark = markItem.desc_mark;
@@ -801,7 +792,7 @@ namespace AirExport.Repositories
                     if (Lib.IsBlank(mark) && Lib.IsBlank(description))
                         bOk = false;
                     if (bOk == false && desc_id == 0)
-                        return 0;
+                        continue;
 
                     if (bOk && desc_id == 0)  // new record && id!=0
                         DescMode = "add";
@@ -859,7 +850,6 @@ namespace AirExport.Repositories
                             await logHistoryCargoDesc(Record, NewRecord, record_dto.hbl_houseno!, record_dto.hbl_id, ctr);
 
                             Record.desc_mark = NewRecord.desc_mark;
-                            Record.desc_package = NewRecord.desc_package;
                             Record.desc_description = NewRecord.desc_description;
 
                             // context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
@@ -881,10 +871,12 @@ namespace AirExport.Repositories
 
                     if (DescMode == "add")
                         desc_id = Record.desc_id;
-
-                    return desc_id;
+                    
+                    markItem.desc_id = Record.desc_id;
+                    markItem.desc_ctr = Record.desc_ctr;
+                
                 }
-                return 0;
+                return record_dto;
             }
             catch (Exception ex)
             {

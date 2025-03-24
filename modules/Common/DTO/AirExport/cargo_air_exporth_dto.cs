@@ -186,6 +186,7 @@ public class cargo_air_exporth_dto : basetable_dto
     public cargo_desc_dto? mark15 { get; set; }
     public cargo_desc_dto? mark16 { get; set; }
     public cargo_desc_dto? mark17 { get; set; }
+    public List<cargo_desc_dto>? marks {get; set;}
 
 
 }
