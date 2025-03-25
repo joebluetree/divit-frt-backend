@@ -310,8 +310,10 @@ namespace UserAdmin.Repositories
 
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-FCL-PREFIX", "", "STRING", "", "", "", "", 9);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-FCL-STARTING-NO", "", "INT", "", "", "", "",10);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXPORT-PREFIX", "", "STRING", "", "", "", "", 13);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXPORT-STARTING-NO", "", "INT", "", "", "", "",14);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-MASTER-PREFIX", "", "STRING", "", "", "", "", 13);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-MASTER-STARTING-NO", "", "INT", "", "", "", "",14);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-HOUSE-PREFIX", "", "STRING", "", "", "", "", 17);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-HOUSE-STARTING-NO", "", "INT", "", "", "", "",18);
 
             return retValue;
         }

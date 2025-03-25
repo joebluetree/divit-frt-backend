@@ -114,69 +114,85 @@ namespace Common.DTO.SeaExport
         public string? hbl_delivery_date { get; set; } = "";
 
         
+
+        // public int? desc_ctr { get; set; } = 0;
+        // public int desc_id1 { get; set; } = 0;
+        // public int desc_id2 { get; set; } = 0;
+        // public int desc_id3 { get; set; } = 0;
+        // public int desc_id4 { get; set; } = 0;
+        // public int desc_id5 { get; set; } = 0;
+        // public int desc_id6 { get; set; } = 0;
+        // public int desc_id7 { get; set; } = 0;
+        // public int desc_id8 { get; set; } = 0;
+        // public int desc_id9 { get; set; } = 0;
+        // public int desc_id10 {get; set; } = 0;
+        // public int desc_id11 { get; set; } = 0;
+        // public int desc_id12 { get; set; } = 0;
+        // public int desc_id13 { get; set; } = 0;
+        // public int desc_id14 { get; set; } = 0;
+        // public int desc_id15 { get; set; } = 0;
+        // public int desc_id16 { get; set; } = 0;
+        // public int desc_id17 { get; set; } = 0;
+
+        // public string? desc_mark1 { get; set; } = "";
+        // public string? desc_mark2 { get; set; } = "";
+        // public string? desc_mark3 { get; set; } = "";
+        // public string? desc_mark4 { get; set; } = "";
+        // public string? desc_mark5 { get; set; } = "";
+        // public string? desc_mark6 { get; set; } = "";
+        // public string? desc_mark7 { get; set; } = "";
+        // public string? desc_mark8 { get; set; } = "";
+        // public string? desc_mark9 { get; set; } = "";
+        // public string? desc_mark10 { get; set; } = "";
+        // public string? desc_mark11 { get; set; } = "";
+        // public string? desc_mark12 { get; set; } = "";
+        // public string? desc_mark13 { get; set; } = "";
+        // public string? desc_mark14 { get; set; } = "";
+        // public string? desc_mark15 { get; set; } = "";
+        // public string? desc_mark16 { get; set; } = "";
+        // public string? desc_mark17 { get; set; } = "";
+        // public string? desc_package1 { get; set; } = "";
+        // public string? desc_package2 { get; set; } = "";
+        // public string? desc_package3 { get; set; } = "";
+        // public string? desc_description1 { get; set; } = "";
+        // public string? desc_description2 { get; set; } = "";
+        // public string? desc_description3 { get; set; } = "";
+        // public string? desc_description4 { get; set; } = "";
+        // public string? desc_description5 { get; set; } = "";
+        // public string? desc_description6 { get; set; } = "";
+        // public string? desc_description7 { get; set; } = "";
+        // public string? desc_description8 { get; set; } = "";
+        // public string? desc_description9 { get; set; } = "";
+        // public string? desc_description10 { get; set; } = "";
+        // public string? desc_description11 { get; set; } = "";
+        // public string? desc_description12 { get; set; } = "";
+        // public string? desc_description13 { get; set; } = "";
+        // public string? desc_description14 { get; set; } = "";
+        // public string? desc_description15 { get; set; } = "";
+        // public string? desc_description16 { get; set; } = "";
+        // public string? desc_description17 { get; set; } = "";
         public int desc_parent_id { get; set; } = 0;
         public string? desc_parent_type { get; set; } = "";
-        public int? desc_ctr { get; set; } = 0;
-        
-        public int desc_id1 { get; set; } = 0;
-        public int desc_id2 { get; set; } = 0;
-        public int desc_id3 { get; set; } = 0;
-        public int desc_id4 { get; set; } = 0;
-        public int desc_id5 { get; set; } = 0;
-        public int desc_id6 { get; set; } = 0;
-        public int desc_id7 { get; set; } = 0;
-        public int desc_id8 { get; set; } = 0;
-        public int desc_id9 { get; set; } = 0;
-        public int desc_id10 {get; set; } = 0;
-        public int desc_id11 { get; set; } = 0;
-        public int desc_id12 { get; set; } = 0;
-        public int desc_id13 { get; set; } = 0;
-        public int desc_id14 { get; set; } = 0;
-        public int desc_id15 { get; set; } = 0;
-        public int desc_id16 { get; set; } = 0;
-        public int desc_id17 { get; set; } = 0;
-
-        public string? desc_mark1 { get; set; } = "";
-        public string? desc_mark2 { get; set; } = "";
-        public string? desc_mark3 { get; set; } = "";
-        public string? desc_mark4 { get; set; } = "";
-        public string? desc_mark5 { get; set; } = "";
-        public string? desc_mark6 { get; set; } = "";
-        public string? desc_mark7 { get; set; } = "";
-        public string? desc_mark8 { get; set; } = "";
-        public string? desc_mark9 { get; set; } = "";
-        public string? desc_mark10 { get; set; } = "";
-        public string? desc_mark11 { get; set; } = "";
-        public string? desc_mark12 { get; set; } = "";
-        public string? desc_mark13 { get; set; } = "";
-        public string? desc_mark14 { get; set; } = "";
-        public string? desc_mark15 { get; set; } = "";
-        public string? desc_mark16 { get; set; } = "";
-        public string? desc_mark17 { get; set; } = "";
-        public string? desc_package1 { get; set; } = "";
-        public string? desc_package2 { get; set; } = "";
-        public string? desc_package3 { get; set; } = "";
-        public string? desc_description1 { get; set; } = "";
-        public string? desc_description2 { get; set; } = "";
-        public string? desc_description3 { get; set; } = "";
-        public string? desc_description4 { get; set; } = "";
-        public string? desc_description5 { get; set; } = "";
-        public string? desc_description6 { get; set; } = "";
-        public string? desc_description7 { get; set; } = "";
-        public string? desc_description8 { get; set; } = "";
-        public string? desc_description9 { get; set; } = "";
-        public string? desc_description10 { get; set; } = "";
-        public string? desc_description11 { get; set; } = "";
-        public string? desc_description12 { get; set; } = "";
-        public string? desc_description13 { get; set; } = "";
-        public string? desc_description14 { get; set; } = "";
-        public string? desc_description15 { get; set; } = "";
-        public string? desc_description16 { get; set; } = "";
-        public string? desc_description17 { get; set; } = "";
-
         public List<cargo_container_dto>? house_cntr { get; set; }
         
-        public cargo_desc_dto? cargodesc { get; set; }
+        public cargo_desc_dto? marks1 { get; set; }
+        public cargo_desc_dto? marks2 { get; set; }
+        public cargo_desc_dto? marks3 { get; set; }
+        public cargo_desc_dto? marks4 { get; set; }
+        public cargo_desc_dto? marks5 { get; set; }
+        public cargo_desc_dto? marks6 { get; set; }
+        public cargo_desc_dto? marks7 { get; set; }
+        public cargo_desc_dto? marks8 { get; set; }
+        public cargo_desc_dto? marks9 { get; set; }
+        public cargo_desc_dto? marks10 { get; set; }
+        public cargo_desc_dto? marks11 { get; set; }
+        public cargo_desc_dto? marks12 { get; set; }
+        public cargo_desc_dto? marks13 { get; set; }
+        public cargo_desc_dto? marks14 { get; set; }
+        public cargo_desc_dto? marks15 { get; set; }
+        public cargo_desc_dto? marks16 { get; set; }
+        public cargo_desc_dto? marks17 { get; set; }
+        
         
     }
 }

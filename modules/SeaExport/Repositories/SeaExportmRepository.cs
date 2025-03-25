@@ -205,6 +205,7 @@ namespace SeaExport.Repositories
                     mbl_vessel_name = e.mbl_vessel_name,
                     mbl_voyage = e.mbl_voyage,
                     mbl_book_slno = e.mbl_book_slno,
+
                     rec_version = e.rec_version,
 
                     rec_created_by = e.rec_created_by,
@@ -269,8 +270,7 @@ namespace SeaExport.Repositories
         }
 
         public async Task<List<cargo_sea_exporth_dto>> GetHouseAsync(int id)
-        {
-            // await SeaExporthRepository.UpdateHouseCount(id);
+        {            
             var query = from e in context.cargo_housem
                         .Where(a => a.hbl_mbl_id == id)
                         .OrderBy(o => o.hbl_id)
@@ -302,6 +302,7 @@ namespace SeaExport.Repositories
                 context.Database.BeginTransaction();
                 cargo_sea_exportm_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await saveCntrAsync(_Record.mbl_id, mode, _Record);
+                // await 
                 _Record.master_cntr = await getCntrAsync(_Record.mbl_id);
                 _Record.master_house = await GetHouseAsync(_Record.mbl_id);
                 context.Database.CommitTransaction();
@@ -398,18 +399,18 @@ namespace SeaExport.Repositories
                 if (mode == "add")
                 {
 
-                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "SEA-EXPORT-PREFIX,SEA-EXPORT-STARTING-NO");// 
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "SEA-EXP-MASTER-PREFIX,SEA-EXP-MASTER-STARTING-NO");// 
 
                     var DefaultCfNo = 0;
                     var Defaultprefix = "";
 
-                    if (result.ContainsKey("SEA-EXPORT-STARTING-NO"))
+                    if (result.ContainsKey("SEA-EXP-MASTER-STARTING-NO"))
                     {
-                        DefaultCfNo = Lib.StringToInteger(result["SEA-EXPORT-STARTING-NO"]);
+                        DefaultCfNo = Lib.StringToInteger(result["SEA-EXP-MASTER-STARTING-NO"]);
                     }
-                    if (result.ContainsKey("SEA-EXPORT-PREFIX"))
+                    if (result.ContainsKey("SEA-EXP-MASTER-PREFIX"))
                     {
-                        Defaultprefix = result["SEA-EXPORT-PREFIX"].ToString();
+                        Defaultprefix = result["SEA-EXP-MASTER-PREFIX"].ToString();
                     }
                     if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
                     {
@@ -537,7 +538,7 @@ namespace SeaExport.Repositories
                 Record.mbl_voyage = record_dto.mbl_voyage;
                 Record.mbl_book_slno = record_dto.mbl_book_slno;
 
-                GetCntrCount(record_dto);
+                UpdateCntrCount(record_dto);
 
                 Record.mbl_20 = record_dto.mbl_20;
                 Record.mbl_40 = record_dto.mbl_40;
@@ -546,20 +547,14 @@ namespace SeaExport.Repositories
                 Record.mbl_teu = record_dto.mbl_teu;
                 Record.mbl_container_tot = record_dto.mbl_container_tot;
 
-                // var (houseCount, uniqueShipperCount, uniqueConsigneeCount) = GetHouseCount(record_dto);
-                // Record.mbl_house_tot = houseCount;
-                // Record.mbl_shipper_tot = uniqueShipperCount;
-                // Record.mbl_consignee_tot = uniqueConsigneeCount;
-
                 if (mode == "add")
                     await context.cargo_masterm.AddAsync(Record);
-
 
                 await context.SaveChangesAsync();
 
                 record_dto.mbl_id = Record.mbl_id;
                 record_dto.mbl_refno = Record.mbl_refno;
-                record_dto.rec_version = Record.rec_version;
+                
                 //Lib.AssignDates2DTO(record_dto.cust_id, mode, Record, record_dto);
 
                 record_dto.rec_created_by = Record.rec_created_by;
@@ -569,12 +564,15 @@ namespace SeaExport.Repositories
                     record_dto.rec_edited_by = Record.rec_edited_by;
                     record_dto.rec_edited_date = Lib.FormatDate(Record.rec_edited_date, Lib.outputDateTimeFormat);
                 }
+                record_dto.rec_version = Record.rec_version;
+
 
                 return record_dto;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
-                throw new Exception(Ex.Message.ToString());
+                // throw new Exception(Ex.Message.ToString());
+                throw;
             }
 
         }
@@ -599,9 +597,9 @@ namespace SeaExport.Repositories
             List<cargo_container> records;
             try
             {
-
+                // get cntr details from the frontend
                 records_dto = record_dto.master_cntr!;
-
+                // read the cntr details from database
                 records = await context.cargo_container
                     .Include(c => c.cntrtype)
                     .Include(c => c.packunit)
@@ -609,9 +607,9 @@ namespace SeaExport.Repositories
                     .ToListAsync();
 
                 if (mode == "edit")
-                    await logHistoryDetail(records, record_dto);
+                    await logHistoryCntrDetail(records, record_dto);
                 int nextorder = 1;
-
+                //remove deleted cntr details
                 foreach (var existing_record in records)
                 {
                     var rec = records_dto.Find(f => f.cntr_id == existing_record.cntr_id);
@@ -619,6 +617,7 @@ namespace SeaExport.Repositories
                         context.cargo_container.Remove(existing_record);
                 }
 
+                //Add or Edit Records cntr
                 foreach (var rec in records_dto)
                 {
 
@@ -637,7 +636,7 @@ namespace SeaExport.Repositories
                     {
                         record = records.Find(f => f.cntr_id == rec.cntr_id);
                         if (record == null)
-                            throw new Exception("Detail Record Not Found " + rec.cntr_id.ToString());
+                            throw new Exception("Container Detail Record Not Found " + rec.cntr_id.ToString());
 
                         record.rec_edited_by = record_dto.rec_created_by;
                         record.rec_edited_date = DbLib.GetDateTime();
@@ -650,7 +649,7 @@ namespace SeaExport.Repositories
                     record.cntr_movement = rec.cntr_movement;
                     record.cntr_pieces = rec.cntr_pieces;
                     record.cntr_packages_unit_id = rec.cntr_packages_unit_id;
-                    record.cntr_teu = GetTeuValue(rec.cntr_type_id);
+                    record.cntr_teu = CommonLib.UpdateTeuValue(rec.cntr_type_name!);
                     record.cntr_cbm = rec.cntr_cbm;
                     record.cntr_weight_uom = rec.cntr_weight_uom;
                     record.cntr_weight = rec.cntr_weight;
@@ -674,28 +673,7 @@ namespace SeaExport.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
-        public decimal? GetTeuValue(int? cntr_type_id)
-        {
-            var containerType = context.cargo_container
-                .Where(c => c.cntr_type_id == cntr_type_id)
-                .Select(c => c.cntrtype!.param_name)
-                .FirstOrDefault();
-
-            decimal teu = 0;
-
-            if (containerType!.Contains("20")) teu = 1.0m;
-            if (containerType.Contains("45")) teu = 2.5m;
-            if (containerType.Contains("FCL")) teu = 0;
-            if (containerType.Contains("40"))
-            {
-                if(containerType.Contains("HC"))
-                    teu = 2.25m;
-                else
-                    teu = 2.0m;   
-            }
-            return teu;
-        }
-        public cargo_sea_exportm_dto GetCntrCount(cargo_sea_exportm_dto record_dto)
+        public cargo_sea_exportm_dto UpdateCntrCount(cargo_sea_exportm_dto record_dto)
         {
             try
             {
@@ -800,7 +778,6 @@ namespace SeaExport.Repositories
             var old_record_dto = new cargo_sea_exportm_dto
             {
                 mbl_id = old_record.mbl_id,
-                mbl_cfno = old_record.mbl_cfno,
                 mbl_refno = old_record.mbl_refno,
                 mbl_ref_date = Lib.FormatDate(old_record.mbl_ref_date, Lib.outputDateFormat),
                 mbl_shipment_stage_name = old_record.shipstage?.param_name,
@@ -835,7 +812,6 @@ namespace SeaExport.Repositories
                 .PrimaryKey("mbl_id", record_dto.mbl_id)
                 .RefNo(record_dto.mbl_refno!)
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
-                .TrackColumn("mbl_cfno", "CF No")
                 .TrackColumn("mbl_refno", "Reference No")
                 .TrackColumn("mbl_ref_date", "Reference Date")
                 .TrackColumn("mbl_shipment_stage_name", "Shipment Stage Name")
@@ -848,15 +824,15 @@ namespace SeaExport.Repositories
                 .TrackColumn("mbl_salesman_name", "Salesman Name")
                 .TrackColumn("mbl_frt_status_name", "Freight Status Name")
                 .TrackColumn("mbl_ship_term_name", "Shipping Term Name")
-                .TrackColumn("mbl_cntr_type", "Container Type")
+                .TrackColumn("mbl_cntr_type", "Shipping Type")
                 .TrackColumn("mbl_direct", "Direct Shipment")
                 .TrackColumn("mbl_place_delivery", "Place of Delivery")
                 .TrackColumn("mbl_pol_name", "Port of Loading")
-                .TrackColumn("mbl_pol_etd", "ETD (POL)")
+                .TrackColumn("mbl_pol_etd", "ETD (POL)","date")
                 .TrackColumn("mbl_pod_name", "Port of Discharge")
-                .TrackColumn("mbl_pod_eta", "ETA (POD)")
+                .TrackColumn("mbl_pod_eta", "ETA (POD)","date")
                 .TrackColumn("mbl_pofd_name", "Place of Final Delivery")
-                .TrackColumn("mbl_pofd_eta", "ETA (POFD)")
+                .TrackColumn("mbl_pofd_eta", "ETA (POFD)","date")
                 .TrackColumn("mbl_country_name", "Country Name")
                 .TrackColumn("mbl_vessel_name", "Vessel Name")
                 .TrackColumn("mbl_voyage", "Voyage")
@@ -866,7 +842,7 @@ namespace SeaExport.Repositories
                 .LogChangesAsync();
 
         }
-        public async Task logHistoryDetail(List<cargo_container> old_records, cargo_sea_exportm_dto record_dto)
+        public async Task logHistoryCntrDetail(List<cargo_container> old_records, cargo_sea_exportm_dto record_dto)
         {
 
             var old_records_dto = old_records.Select(record => new cargo_container_dto
@@ -879,7 +855,6 @@ namespace SeaExport.Repositories
                 cntr_movement = record.cntr_movement,
                 cntr_pieces = record.cntr_pieces,
                 cntr_packages_unit_name = record.packunit?.param_name,
-                cntr_teu = record.cntr_teu,
                 cntr_cbm = record.cntr_cbm,
                 cntr_weight_uom = record.cntr_weight_uom,
                 cntr_weight = record.cntr_weight,
@@ -889,7 +864,7 @@ namespace SeaExport.Repositories
                 cntr_return_date = Lib.FormatDate(record.cntr_return_date, Lib.outputDateFormat),
                 cntr_lfd = Lib.FormatDate(record.cntr_lfd, Lib.outputDateFormat),
                 cntr_discharge_date = Lib.FormatDate(record.cntr_discharge_date, Lib.outputDateFormat),
-                cntr_order = record.cntr_order
+                // cntr_order = record.cntr_order
             }).ToList();
 
             await new LogHistorym<cargo_container_dto>(context)
@@ -902,9 +877,8 @@ namespace SeaExport.Repositories
                 .TrackColumn("cntr_type_name", "Container Type Name")
                 .TrackColumn("cntr_sealno", "Seal No")
                 .TrackColumn("cntr_movement", "Movement")
-                .TrackColumn("cntr_pieces", "Pieces")
+                .TrackColumn("cntr_pieces", "Pieces","int")
                 .TrackColumn("cntr_packages_unit_name", "Packages Unit")
-                .TrackColumn("cntr_teu", "TEU", "decimal")
                 .TrackColumn("cntr_cbm", "CBM", "decimal")
                 .TrackColumn("cntr_weight_uom", "Weight UOM")
                 .TrackColumn("cntr_weight", "Weight", "decimal")
@@ -914,7 +888,7 @@ namespace SeaExport.Repositories
                 .TrackColumn("cntr_return_date", "Return Date")
                 .TrackColumn("cntr_lfd", "LFD")
                 .TrackColumn("cntr_discharge_date", "Discharge Date")
-                .TrackColumn("cntr_order", "Order", "integer")
+                // .TrackColumn("cntr_order", "Order", "int")
                 .SetRecords(old_records_dto, record_dto.master_cntr!)
                 .LogChangesAsync();
 
