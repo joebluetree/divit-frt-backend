@@ -33,12 +33,6 @@ public class cargo_air_exporth_dto : basetable_dto
     public string? hbl_consignee_add3 { get; set; }
     public string? hbl_consignee_add4 { get; set; }
     public string? hbl_consignee_add5 { get; set; }//
-    public string? hbl_consigned_to1 { get; set; }
-    public string? hbl_consigned_to2 { get; set; }
-    public string? hbl_consigned_to3 { get; set; }
-    public string? hbl_consigned_to4 { get; set; }
-    public string? hbl_consigned_to5 { get; set; }
-    public string? hbl_consigned_to6 { get; set; }
     public string? hbl_notify_name { get; set; }
     public string? hbl_notify_add1 { get; set; }
     public string? hbl_notify_add2 { get; set; }
@@ -160,15 +154,7 @@ public class cargo_air_exporth_dto : basetable_dto
     public string? hbl_issued_by { get; set; }
 
 
-    public int desc_parent_id { get; set; } = 0;
-    public string? desc_parent_type { get; set; } = "";
-    public int? desc_ctr { get; set; } = 0;
-    public int desc_id { get; set; } = 0;
-    public string desc_mark { get; set; } = "";
-
-
-    public string desc_description { get; set; } = "";
-
+    public int desc_parent_id { get; set; }
     public cargo_desc_dto? mark1 { get; set; }
     public cargo_desc_dto? mark2 { get; set; }
     public cargo_desc_dto? mark3 { get; set; }
@@ -186,7 +172,6 @@ public class cargo_air_exporth_dto : basetable_dto
     public cargo_desc_dto? mark15 { get; set; }
     public cargo_desc_dto? mark16 { get; set; }
     public cargo_desc_dto? mark17 { get; set; }
-    public List<cargo_desc_dto>? marks {get; set;}
 
 
 }

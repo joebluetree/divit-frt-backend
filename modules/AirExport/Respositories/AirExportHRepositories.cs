@@ -374,13 +374,13 @@ namespace AirExport.Repositories
 
         public async Task GetCargoDesc(cargo_air_exporth_dto Record)
         {
+            //setting initial value to null or new,
             for (int i = 1; i <= 17; i++)
             {
-                Record.GetType().GetProperty($"desc_id{i}")?.SetValue(Record, 0);
-                Record.GetType().GetProperty($"desc_mark{i}")?.SetValue(Record, "");
-                Record.GetType().GetProperty($"desc_description{i}")?.SetValue(Record, "");
+                Record.GetType().GetProperty($"mark{i}")?.SetValue(Record, new cargo_desc_dto());
             }
 
+            // retriving from. db
             var records = await context.cargo_desc
                 .Where(a => a.desc_parent_id == Record.hbl_id)
                 .ToListAsync();
@@ -388,14 +388,23 @@ namespace AirExport.Repositories
             foreach (var desc in records)
             {
                 int? ctr = desc.desc_ctr;
+                if (ctr <= 17)//is >= 1 and 
+                {
+                    var markGroup = new cargo_desc_dto
+                    {
+                        desc_id = desc.desc_id,
+                        desc_parent_id = desc.desc_parent_id,
+                        desc_parent_type = desc.desc_parent_type,
+                        desc_ctr = desc.desc_ctr,
+                        desc_mark = desc.desc_mark,
+                        desc_package = desc.desc_package,
+                        desc_description = desc.desc_description
+                    };
 
-                Record.GetType().GetProperty($"desc_id{ctr}")?.SetValue(Record, desc.desc_id);
-                Record.GetType().GetProperty($"desc_mark{ctr}")?.SetValue(Record, desc.desc_mark);
-                Record.GetType().GetProperty($"desc_description{ctr}")?.SetValue(Record, desc.desc_description);
+                    Record.GetType().GetProperty($"mark{markGroup.desc_ctr}")?.SetValue(Record, markGroup);
+                }
             }
         }
-
-
 
         public async Task<cargo_air_exporth_dto?> GetDefaultDataAsync(int id)
         {
@@ -737,7 +746,6 @@ namespace AirExport.Repositories
         }
 
 
-
         //function for save description
         public async Task<cargo_air_exporth_dto> SaveCargoDesc(int id, string mode, cargo_air_exporth_dto record_dto)
         {
@@ -773,7 +781,7 @@ namespace AirExport.Repositories
             try
             {
                 if (marks == null || marks.Count == 0)
-                    throw new Exception("Marks and Numbers are NULL");
+                    throw new Exception("No Marks and Numbers Found");
 
                 foreach (var markItem in marks)
                 {
@@ -781,10 +789,9 @@ namespace AirExport.Repositories
 
                     if (markItem == null)
                     {
-                        throw new Exception("The error in ");
+                        throw new Exception("Invalid marks and nos : " + ctr);
                     }
 
-                    ctr++;
                     var description = markItem.desc_description;
                     var desc_id = markItem.desc_id;
                     var mark = markItem.desc_mark;
@@ -792,7 +799,10 @@ namespace AirExport.Repositories
                     if (Lib.IsBlank(mark) && Lib.IsBlank(description))
                         bOk = false;
                     if (bOk == false && desc_id == 0)
+                    {
+                        ctr++;
                         continue;
+                    }
 
                     if (bOk && desc_id == 0)  // new record && id!=0
                         DescMode = "add";
@@ -825,7 +835,7 @@ namespace AirExport.Repositories
                         Record.rec_version = record_dto.rec_version;
                         Record.rec_locked = "N";
 
-                        Record.desc_parent_type = "AR-DESC";
+                        Record.desc_parent_type = "AE-DESC";
                         Record.desc_parent_id = id;
 
                         if (mode == "edit")
@@ -843,7 +853,7 @@ namespace AirExport.Repositories
                             .FirstOrDefaultAsync();
 
                         if (Record == null)
-                            throw new Exception("Description record Not Found");
+                            throw new Exception("Description record Not Found " + ctr);
 
                         if (DescMode == "edit" || DescMode == "delete")
                         {
@@ -853,7 +863,7 @@ namespace AirExport.Repositories
                             Record.desc_description = NewRecord.desc_description;
 
                             // context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
-                            Record.rec_version++;
+                            Record.rec_version = record_dto.rec_version;
                             Record.rec_edited_by = record_dto.rec_created_by;
                             Record.rec_edited_date = DbLib.GetDateTime();
                         }
@@ -861,6 +871,7 @@ namespace AirExport.Repositories
 
                     if (DescMode == "add")
                         await context.cargo_desc.AddAsync(Record);
+                    
                     if (DescMode == "delete")
                     {
                         context.cargo_desc.Remove(Record);
@@ -871,10 +882,9 @@ namespace AirExport.Repositories
 
                     if (DescMode == "add")
                         desc_id = Record.desc_id;
-                    
-                    markItem.desc_id = Record.desc_id;
-                    markItem.desc_ctr = Record.desc_ctr;
-                
+
+                    markItem.desc_id = desc_id;
+                    ctr++;
                 }
                 return record_dto;
             }
@@ -1132,9 +1142,9 @@ namespace AirExport.Repositories
                 .TrackColumn("hbl_weight_unit", "Weight Unit")
                 .TrackColumn("hbl_class", "Class")
                 .TrackColumn("hbl_comm", "Commodity")
-                .TrackColumn("hbl_chwt", "Chargeable Weight")
-                .TrackColumn("hbl_rate", "Rate")
-                .TrackColumn("hbl_total", "Total")
+                .TrackColumn("hbl_chwt", "Chargeable Weight", "decimal")
+                .TrackColumn("hbl_rate", "Rate", "decimal")
+                .TrackColumn("hbl_total", "Total","decimal")
 
                 .TrackColumn("hbl_remark1", "Remark 1")
                 .TrackColumn("hbl_remark2", "Remark 2")
