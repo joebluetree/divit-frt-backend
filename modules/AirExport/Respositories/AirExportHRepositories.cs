@@ -115,6 +115,7 @@ namespace AirExport.Repositories
                 var Records = await query.Select(e => new cargo_air_exporth_dto
                 {
                     hbl_id = e.hbl_id,
+                    hbl_cfno = e.hbl_cfno,
                     hbl_mbl_id = e.hbl_mbl_id,
                     hbl_houseno = e.hbl_houseno,
                     hbl_mbl_refno = e.master!.mbl_refno,
@@ -377,7 +378,7 @@ namespace AirExport.Repositories
             //setting initial value to null or new,
             for (int i = 1; i <= 17; i++)
             {
-                Record.GetType().GetProperty($"mark{i}")?.SetValue(Record, new cargo_desc_dto());
+                Record.GetType().GetProperty($"marks{i}")?.SetValue(Record, new cargo_desc_dto());
             }
 
             // retriving from. db
@@ -401,7 +402,7 @@ namespace AirExport.Repositories
                         desc_description = desc.desc_description
                     };
 
-                    Record.GetType().GetProperty($"mark{markGroup.desc_ctr}")?.SetValue(Record, markGroup);
+                    Record.GetType().GetProperty($"marks{markGroup.desc_ctr}")?.SetValue(Record, markGroup);
                 }
             }
         }
@@ -435,9 +436,16 @@ namespace AirExport.Repositories
                 var captions = new List<string> { "ISSUING AGENT NAME", "ISSUING AGENT ADDRESS", "ISSUING AGENT CITY", "IATA CODE" };
 
                 var settings = await context.mast_settings
-                .Where(f => f.rec_company_id == Record!.rec_company_id && f.rec_branch_id == Record!.rec_branch_id &&
-                captions.Contains(f.caption!))
-                .ToListAsync();
+                    .Where(f => f.rec_company_id == Record!.rec_company_id && f.rec_branch_id == Record!.rec_branch_id && captions
+                    .Contains(f.caption!))
+                    .ToListAsync();
+
+                var format = await context.mast_param
+                    .Where(f => f.param_type == "HAWB-FORMAT" && f.param_code == "DEFAULT")
+                    .ToListAsync();
+
+                var hawb_id = format.FirstOrDefault()?.param_id;
+                var hawb_name = format.FirstOrDefault()?.param_name;
 
                 var agentname = settings.FirstOrDefault(s => s.caption == "ISSUING AGENT NAME")?.value;
                 var agentcity = settings.FirstOrDefault(s => s.caption == "ISSUING AGENT CITY")?.value;
@@ -460,6 +468,8 @@ namespace AirExport.Repositories
                     Record.hbl_ins_amt = $"NILL";
                     Record.hbl_customs_value = $"NCV";
                     Record.hbl_carriage_value = $"NVD";
+                    Record.hbl_format_id = hawb_id;
+                    Record.hbl_format_name = hawb_name;
                 }
 
                 return Record;
@@ -754,15 +764,15 @@ namespace AirExport.Repositories
                 // List to store marks for simplified iteration
                 var marks = new List<cargo_desc_dto?>
                 {
-                    record_dto.mark1, record_dto.mark2, record_dto.mark3, record_dto.mark4, record_dto.mark5,
-                    record_dto.mark6, record_dto.mark7, record_dto.mark8, record_dto.mark9, record_dto.mark10,
-                    record_dto.mark11, record_dto.mark12, record_dto.mark13, record_dto.mark14, record_dto.mark15,
-                    record_dto.mark16, record_dto.mark17
+                    record_dto.marks1, record_dto.marks2, record_dto.marks3, record_dto.marks4, record_dto.marks5,
+                    record_dto.marks6, record_dto.marks7, record_dto.marks8, record_dto.marks9, record_dto.marks10,
+                    record_dto.marks11, record_dto.marks12, record_dto.marks13, record_dto.marks14, record_dto.marks15,
+                    record_dto.marks16, record_dto.marks17
                 };
 
 
                 // Save all marks using the updated SaveMarksandDesc function
-                await SaveMarksandDesc(id, mode, marks, record_dto);
+                await SaveMarksandNumbers(id, mode, marks, record_dto);
                 return record_dto;
             }
             catch (Exception ex)
@@ -772,11 +782,11 @@ namespace AirExport.Repositories
         }
 
 
-        public async Task<cargo_air_exporth_dto> SaveMarksandDesc(int id, string mode, List<cargo_desc_dto?> marks, cargo_air_exporth_dto record_dto)
+        public async Task<cargo_air_exporth_dto> SaveMarksandNumbers(int id, string mode, List<cargo_desc_dto?> marks, cargo_air_exporth_dto record_dto)
         {
             cargo_desc? Record;
             string DescMode = "";
-            int? ctr = 1;
+            int? ctr = 0;
 
             try
             {
@@ -792,15 +802,15 @@ namespace AirExport.Repositories
                         throw new Exception("Invalid marks and nos : " + ctr);
                     }
 
-                    var description = markItem.desc_description;
+                    ctr++;
                     var desc_id = markItem.desc_id;
                     var mark = markItem.desc_mark;
+                    var description = markItem.desc_description;
 
                     if (Lib.IsBlank(mark) && Lib.IsBlank(description))
                         bOk = false;
                     if (bOk == false && desc_id == 0)
                     {
-                        ctr++;
                         continue;
                     }
 
@@ -811,7 +821,7 @@ namespace AirExport.Repositories
                     if (bOk == false && desc_id != 0)  // delete record                 
                         DescMode = "delete";
 
-                    var NewRecord = new cargo_desc_dto
+                    var NewRecord_dto = new cargo_desc_dto
                     {
                         desc_parent_id = record_dto.desc_parent_id,
                         desc_id = desc_id,
@@ -839,7 +849,7 @@ namespace AirExport.Repositories
                         Record.desc_parent_id = id;
 
                         if (mode == "edit")
-                            await logHistoryCargoDesc(Record, NewRecord, record_dto.hbl_houseno!, record_dto.hbl_id, ctr);
+                            await logHistoryCargoDesc(Record, NewRecord_dto, record_dto.hbl_houseno!, record_dto.hbl_id, ctr);
 
                         Record.desc_ctr = ctr;
                         Record.desc_mark = mark;
@@ -857,10 +867,10 @@ namespace AirExport.Repositories
 
                         if (DescMode == "edit" || DescMode == "delete")
                         {
-                            await logHistoryCargoDesc(Record, NewRecord, record_dto.hbl_houseno!, record_dto.hbl_id, ctr);
+                            await logHistoryCargoDesc(Record, NewRecord_dto, record_dto.hbl_houseno!, record_dto.hbl_id, ctr);
 
-                            Record.desc_mark = NewRecord.desc_mark;
-                            Record.desc_description = NewRecord.desc_description;
+                            Record.desc_mark = NewRecord_dto.desc_mark;
+                            Record.desc_description = NewRecord_dto.desc_description;
 
                             // context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
                             Record.rec_version = record_dto.rec_version;
@@ -871,11 +881,14 @@ namespace AirExport.Repositories
 
                     if (DescMode == "add")
                         await context.cargo_desc.AddAsync(Record);
-                    
+
                     if (DescMode == "delete")
                     {
                         context.cargo_desc.Remove(Record);
                         desc_id = 0;
+                        Record.desc_ctr = 0;
+                        Record.desc_parent_id = 0;
+                        Record.desc_parent_type = "";
                     }
 
                     await context.SaveChangesAsync();
@@ -884,7 +897,10 @@ namespace AirExport.Repositories
                         desc_id = Record.desc_id;
 
                     markItem.desc_id = desc_id;
-                    ctr++;
+                    markItem.desc_ctr = Record.desc_ctr;
+                    markItem.desc_parent_id = Record.desc_parent_id;
+                    markItem.desc_parent_type = Record.desc_parent_type;
+
                 }
                 return record_dto;
             }
@@ -1144,7 +1160,7 @@ namespace AirExport.Repositories
                 .TrackColumn("hbl_comm", "Commodity")
                 .TrackColumn("hbl_chwt", "Chargeable Weight", "decimal")
                 .TrackColumn("hbl_rate", "Rate", "decimal")
-                .TrackColumn("hbl_total", "Total","decimal")
+                .TrackColumn("hbl_total", "Total", "decimal")
 
                 .TrackColumn("hbl_remark1", "Remark 1")
                 .TrackColumn("hbl_remark2", "Remark 2")

@@ -155,23 +155,23 @@ public class cargo_air_exporth_dto : basetable_dto
 
 
     public int desc_parent_id { get; set; }
-    public cargo_desc_dto? mark1 { get; set; }
-    public cargo_desc_dto? mark2 { get; set; }
-    public cargo_desc_dto? mark3 { get; set; }
-    public cargo_desc_dto? mark4 { get; set; }
-    public cargo_desc_dto? mark5 { get; set; }
-    public cargo_desc_dto? mark6 { get; set; }
-    public cargo_desc_dto? mark7 { get; set; }
-    public cargo_desc_dto? mark8 { get; set; }
-    public cargo_desc_dto? mark9 { get; set; }
-    public cargo_desc_dto? mark10 { get; set; }
-    public cargo_desc_dto? mark11 { get; set; }
-    public cargo_desc_dto? mark12 { get; set; }
-    public cargo_desc_dto? mark13 { get; set; }
-    public cargo_desc_dto? mark14 { get; set; }
-    public cargo_desc_dto? mark15 { get; set; }
-    public cargo_desc_dto? mark16 { get; set; }
-    public cargo_desc_dto? mark17 { get; set; }
+    public cargo_desc_dto? marks1 { get; set; }
+    public cargo_desc_dto? marks2 { get; set; }
+    public cargo_desc_dto? marks3 { get; set; }
+    public cargo_desc_dto? marks4 { get; set; }
+    public cargo_desc_dto? marks5 { get; set; }
+    public cargo_desc_dto? marks6 { get; set; }
+    public cargo_desc_dto? marks7 { get; set; }
+    public cargo_desc_dto? marks8 { get; set; }
+    public cargo_desc_dto? marks9 { get; set; }
+    public cargo_desc_dto? marks10 { get; set; }
+    public cargo_desc_dto? marks11 { get; set; }
+    public cargo_desc_dto? marks12 { get; set; }
+    public cargo_desc_dto? marks13 { get; set; }
+    public cargo_desc_dto? marks14 { get; set; }
+    public cargo_desc_dto? marks15 { get; set; }
+    public cargo_desc_dto? marks16 { get; set; }
+    public cargo_desc_dto? marks17 { get; set; }
 
 
 }
