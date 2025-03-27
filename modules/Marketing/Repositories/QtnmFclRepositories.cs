@@ -331,14 +331,16 @@ namespace Marketing.Repositories
             string error = "";
             try
             {
+                //check the dto is null or not.
                 if (record_dto == null)
                     throw new Exception("No Data Found");
-
+                //check all the validations
                 if (!AllValid(mode, record_dto, ref error))
                     throw new Exception(error);
 
                 if (mode == "add")
                 {
+                    //getting the prefix and default number from branchsettings
                     var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "QUOTATION-FCL-PREFIX,QUOTATION-FCL-STARTING-NO");// 
 
                     var DefaultCfNo = 0;
@@ -356,14 +358,14 @@ namespace Marketing.Repositories
                     {
                         throw new Exception("Missing Quotation Prefix/Starting-Number in Branch Settings");
                     }
-
+                    //getting the next cfno
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
                     if (Lib.IsZero(iNextNo))
                     {
                         throw new Exception("Quotation Number Cannot Be Generated");
                     }
-                    string sqtn_no = $"{Defaultprefix}{iNextNo}";
-
+                    string sqtn_no = $"{Defaultprefix}{iNextNo}"; //add the quotation number into the variable.
+                    //if the mode is add, updated the cfno,quotation number,quotation type to the database.
                     Record = new mark_qtnm();
                     Record.qtnm_cfno = iNextNo;
                     Record.qtnm_no = sqtn_no;
@@ -377,22 +379,23 @@ namespace Marketing.Repositories
                 }
                 else
                 {
+                    //if the mode is edit, the get the records from the database
                     Record = await context.mark_qtnm
                         .Include(c => c.salesman)
                         .Where(f => f.qtnm_id == id)
                         .FirstOrDefaultAsync();
-
+                    //check the record is null or not.
                     if (Record == null)
                         throw new Exception("Record Not Found");
-
+                    //concurrency control checking for the rec_version
                     context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
                     Record.rec_version++;
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
-                if (mode == "edit")
+                if (mode == "edit") //if mode is edit, then call the log history
                     await logHistory(Record, record_dto);
-
+                //Add and edit records to the database
                 Record.qtnm_to_id = record_dto.qtnm_to_id;
                 Record.qtnm_to_name = record_dto.qtnm_to_name;
                 Record.qtnm_to_addr1 = record_dto.qtnm_to_addr1;
@@ -405,9 +408,10 @@ namespace Marketing.Repositories
                 Record.qtnm_salesman_id = record_dto.qtnm_salesman_id;
                 Record.qtnm_move_type = record_dto.qtnm_move_type;
                 Record.qtnm_commodity = record_dto.qtnm_commodity;
-                if (mode == "add")
+                if (mode == "add")  //add the record to database
                     await context.mark_qtnm.AddAsync(Record);
-                context.SaveChanges();
+                context.SaveChanges();//Save changes in database
+                //return the elements from database to dto.
                 record_dto.qtnm_id = Record.qtnm_id;
                 record_dto.qtnm_no = Record.qtnm_no;
                 record_dto.qtnm_amt = Record.qtnm_amt;

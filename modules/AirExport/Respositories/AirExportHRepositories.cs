@@ -433,24 +433,20 @@ namespace AirExport.Repositories
                     })
                     .FirstOrDefaultAsync();
 
-                var captions = new List<string> { "ISSUING AGENT NAME", "ISSUING AGENT ADDRESS", "ISSUING AGENT CITY", "IATA CODE" };
+                var captions = new List<string> { "ISSUING AGENT NAME", "ISSUING AGENT ADDRESS", "ISSUING AGENT CITY", "IATA CODE", "HAWB-FORMAT" };
 
                 var settings = await context.mast_settings
                     .Where(f => f.rec_company_id == Record!.rec_company_id && f.rec_branch_id == Record!.rec_branch_id && captions
                     .Contains(f.caption!))
                     .ToListAsync();
 
-                var format = await context.mast_param
-                    .Where(f => f.param_type == "HAWB-FORMAT" && f.param_code == "DEFAULT")
-                    .ToListAsync();
-
-                var hawb_id = format.FirstOrDefault()?.param_id;
-                var hawb_name = format.FirstOrDefault()?.param_name;
-
                 var agentname = settings.FirstOrDefault(s => s.caption == "ISSUING AGENT NAME")?.value;
                 var agentcity = settings.FirstOrDefault(s => s.caption == "ISSUING AGENT CITY")?.value;
                 var agentadress = settings.FirstOrDefault(s => s.caption == "ISSUING AGENT ADDRESS")?.value;
                 var iata = settings.FirstOrDefault(s => s.caption == "IATA CODE")?.value;
+                var hawb_id = settings.FirstOrDefault(s => s.caption == "HAWB-FORMAT")?.value;
+                var hawb_name = settings.FirstOrDefault(s => s.caption == "HAWB-FORMAT")?.name;
+
 
 
                 if (Record != null)
@@ -468,7 +464,7 @@ namespace AirExport.Repositories
                     Record.hbl_ins_amt = $"NILL";
                     Record.hbl_customs_value = $"NCV";
                     Record.hbl_carriage_value = $"NVD";
-                    Record.hbl_format_id = hawb_id;
+                    Record.hbl_format_id = int.Parse(hawb_id!);
                     Record.hbl_format_name = hawb_name;
                 }
 
@@ -945,7 +941,7 @@ namespace AirExport.Repositories
                 else
                 {
                     var desc = context.cargo_desc
-                     .Where(c => c.desc_parent_id == id);
+                        .Where(c => c.desc_parent_id == id);
                     if (desc.Any())
                     {
                         context.cargo_desc.RemoveRange(desc);
