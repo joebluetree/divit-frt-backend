@@ -270,7 +270,7 @@ namespace SeaExport.Repositories
         }
 
         public async Task<List<cargo_sea_exporth_dto>> GetHouseAsync(int id)
-        {            
+        {
             var query = from e in context.cargo_housem
                         .Where(a => a.hbl_mbl_id == id)
                         .OrderBy(o => o.hbl_id)
@@ -469,10 +469,13 @@ namespace SeaExport.Repositories
                     await logHistory(Record, record_dto);
 
                 Record.mbl_ref_date = Lib.ParseDate(record_dto.mbl_ref_date!);
-                if (Lib.IsZero(record_dto.mbl_shipment_stage_id))
-                    Record.mbl_shipment_stage_id = null;
-                else
+                if (Record.mbl_shipment_stage_id != record_dto.mbl_shipment_stage_id)
+                {
                     Record.mbl_shipment_stage_id = record_dto.mbl_shipment_stage_id;
+
+                    //to update all house shipstages under this master
+                    await CommonLib.UpdateHouseShipmentStage(context, Record.mbl_id, record_dto.mbl_shipment_stage_id);
+                }
                 Record.mbl_no = record_dto.mbl_no;
                 Record.mbl_sub_houseno = record_dto.mbl_sub_houseno;
                 Record.mbl_liner_bookingno = record_dto.mbl_liner_bookingno;
@@ -554,7 +557,7 @@ namespace SeaExport.Repositories
 
                 record_dto.mbl_id = Record.mbl_id;
                 record_dto.mbl_refno = Record.mbl_refno;
-                
+
                 //Lib.AssignDates2DTO(record_dto.cust_id, mode, Record, record_dto);
 
                 record_dto.rec_created_by = Record.rec_created_by;
@@ -620,6 +623,10 @@ namespace SeaExport.Repositories
                 //Add or Edit Records cntr
                 foreach (var rec in records_dto)
                 {
+                    // CommonLib.ValidContainerNumber(rec.cntr_no!);
+                    // {
+                    //     throw new Exception($"Invalid Container Number: {rec.cntr_no}");// 4 Character And 7 digits.
+                    // }
 
                     if (rec.cntr_id == 0)
                     {
@@ -828,11 +835,11 @@ namespace SeaExport.Repositories
                 .TrackColumn("mbl_direct", "Direct Shipment")
                 .TrackColumn("mbl_place_delivery", "Place of Delivery")
                 .TrackColumn("mbl_pol_name", "Port of Loading")
-                .TrackColumn("mbl_pol_etd", "ETD (POL)","date")
+                .TrackColumn("mbl_pol_etd", "ETD (POL)", "date")
                 .TrackColumn("mbl_pod_name", "Port of Discharge")
-                .TrackColumn("mbl_pod_eta", "ETA (POD)","date")
+                .TrackColumn("mbl_pod_eta", "ETA (POD)", "date")
                 .TrackColumn("mbl_pofd_name", "Place of Final Delivery")
-                .TrackColumn("mbl_pofd_eta", "ETA (POFD)","date")
+                .TrackColumn("mbl_pofd_eta", "ETA (POFD)", "date")
                 .TrackColumn("mbl_country_name", "Country Name")
                 .TrackColumn("mbl_vessel_name", "Vessel Name")
                 .TrackColumn("mbl_voyage", "Voyage")
@@ -877,7 +884,7 @@ namespace SeaExport.Repositories
                 .TrackColumn("cntr_type_name", "Container Type Name")
                 .TrackColumn("cntr_sealno", "Seal No")
                 .TrackColumn("cntr_movement", "Movement")
-                .TrackColumn("cntr_pieces", "Pieces","int")
+                .TrackColumn("cntr_pieces", "Pieces", "int")
                 .TrackColumn("cntr_packages_unit_name", "Packages Unit")
                 .TrackColumn("cntr_cbm", "CBM", "decimal")
                 .TrackColumn("cntr_weight_uom", "Weight UOM")

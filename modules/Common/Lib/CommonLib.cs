@@ -6,7 +6,7 @@ using Database;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using Microsoft.VisualBasic;
-
+using System.Text.RegularExpressions;
 
 
 //Name : Sourav V
@@ -67,22 +67,23 @@ namespace Common.Lib
         public static decimal? UpdateTeuValue(string cntr_type_name)
         {
             decimal teu = 0;
-            if (cntr_type_name == "20")  
+            if (cntr_type_name == "20")
             {
                 teu = 1.0m;
             }
-            if (cntr_type_name == "45")  
+            if (cntr_type_name == "45")
             {
                 teu = 2.5m;
             }
             if (cntr_type_name == "40")
             {
                 teu = 2.0m;
-                if (cntr_type_name == "HC") {
+                if (cntr_type_name == "HC")
+                {
                     teu = 2.25m;
                 }
             }
-            if (cntr_type_name == "LCL")  
+            if (cntr_type_name == "LCL")
             {
                 teu = 0;
             }
@@ -92,7 +93,7 @@ namespace Common.Lib
         {
             context = _context;
 
-            var houseList =  context.cargo_housem
+            var houseList = context.cargo_housem
                 .Where(h => h.hbl_mbl_id == mbl_id)
                 .ToList();
 
@@ -108,7 +109,7 @@ namespace Common.Lib
                 .Distinct()
                 .Count();
 
-            var master_Record =  context.cargo_masterm
+            var master_Record = context.cargo_masterm
                 .Where(m => m.mbl_id == mbl_id)
                 .FirstOrDefault();
 
@@ -120,6 +121,31 @@ namespace Common.Lib
                 await context.SaveChangesAsync();
             }
         }
+        public static async Task UpdateHouseShipmentStage(AppDbContext context, int mbl_id, int? newShipmentStageId)
+        {
+            // Get all houses under that master
+            var houseList = await context.cargo_housem
+                .Where(h => h.hbl_mbl_id == mbl_id)
+                .ToListAsync();
+
+            if (houseList.Any())
+            {
+                foreach (var house in houseList)
+                {
+                    house.hbl_shipment_stage_id = newShipmentStageId;
+                }
+
+                await context.SaveChangesAsync();
+            }
+        }
+        public static bool IsValidContainerNumber(string cntr_no)
+        {
+            if (string.IsNullOrWhiteSpace(cntr_no))
+                return false;
+
+            return Regex.IsMatch(cntr_no, @"^[A-Z]{4}\d{7}$");
+        }
 
     }
+
 }

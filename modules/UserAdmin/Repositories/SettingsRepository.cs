@@ -314,6 +314,8 @@ namespace UserAdmin.Repositories
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-MASTER-STARTING-NO", "", "INT", "", "", "", "",14);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-HOUSE-PREFIX", "", "STRING", "", "", "", "", 17);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-HOUSE-STARTING-NO", "", "INT", "", "", "", "",18);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "DEFAULT-BLANK-FORMAT", "", "TABLE", "param,hbl-format,param_id,param_code, param_name", "", "", "", 22);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "DEFAULT-DRAFT-FORMAT", "", "TABLE", "param,hbl-format,param_id,param_code, param_name", "", "", "", 23);
 
             return retValue;
         }

@@ -163,8 +163,8 @@ namespace SeaExport.Repositories
                     hbl_mbl_refno = e.master!.mbl_refno,
                     hbl_houseno = e.hbl_houseno,
                     hbl_bltype = e.hbl_bltype,
-                    hbl_shipment_stage_id = e.hbl_shipment_stage_id,
-                    hbl_shipment_stage_name = e.shipstage!.param_name,
+                    hbl_shipment_stage_id = e.master.mbl_shipment_stage_id,
+                    hbl_shipment_stage_name = e.master.shipstage!.param_name,
                     hbl_mode = e.hbl_mode,
                     hbl_shipper_id = e.hbl_shipper_id,
                     hbl_shipper_code = e.shipper!.cust_code,
@@ -392,6 +392,8 @@ namespace SeaExport.Repositories
                 var Record = await query.Select(e => new cargo_sea_exporth_dto
                 {
                     hbl_mbl_id = e.mbl_id,
+                    hbl_shipment_stage_id = e.mbl_shipment_stage_id,
+                    hbl_shipment_stage_name = e.shipstage!.param_name,
                     hbl_mbl_refno = e.mbl_refno,
                     hbl_agent_id = e.mbl_agent_id,
                     hbl_agent_name = e.agent!.cust_name,
@@ -404,8 +406,39 @@ namespace SeaExport.Repositories
                     hbl_salesman_name = e.salesman!.param_name,
                     hbl_by1 = e.handledby!.param_name,
                     hbl_issued_date = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateFormat),
+                    marks1 = new cargo_desc_dto
+                    {
+                        desc_description = e.mbl_cntr_type == "FCL" || e.mbl_cntr_type == "CONSOLE" ? "SAID TO CONTAIN" :
+                              e.mbl_cntr_type == "LCL" ? "SHIPPERS'S LOAD, COUNT, AND SEALED" :
+                              ""
 
+                    },
+                    marks2 = new cargo_desc_dto
+                    {
+                        desc_description = e.mbl_cntr_type == "LCL" ? "SAID TO CONTAIN" : ""
+                    },
+                    
+                    rec_branch_id = e.rec_branch_id,
+                    rec_company_id = e.rec_company_id,
                 }).FirstOrDefaultAsync();
+                
+                var caption = new List<string> {"DEFAULT-DRAFT-FORMAT","DEFAULT-BLANK-FORMAT"};
+
+                var settings =await context.mast_settings
+                .Where(f => f.rec_company_id == Record!.rec_company_id && f.rec_branch_id == Record.rec_branch_id && caption.Contains(f.caption!))
+                .ToListAsync();
+
+                var blank_format_id = settings.FirstOrDefault(s=>s.caption == "DEFAULT-BLANK-FORMAT")?.value;
+                var blank_format_name = settings.FirstOrDefault(s=>s.caption == "DEFAULT-BLANK-FORMAT")?.name;
+                var draft_format_id = settings.FirstOrDefault(s=>s.caption == "DEFAULT-DRAFT-FORMAT")?.value;
+                var draft_format_name = settings.FirstOrDefault(s=>s.caption == "DEFAULT-DRAFT-FORMAT")?.name;
+
+                if(Record!=null){
+                    Record.hbl_format_id = Lib.StringToInteger(blank_format_id!);
+                    Record.hbl_format_name = blank_format_name;
+                    Record.hbl_draft_format_id = Lib.StringToInteger(draft_format_id!);
+                    Record.hbl_draft_format_name = draft_format_name;
+                }
 
                 if (Record == null)
                     throw new Exception("No Data Found");
@@ -493,6 +526,8 @@ namespace SeaExport.Repositories
             {
                 if (Lib.IsBlank(rec.cntr_type_name))
                     type = "Type Cannot Be Blank!";
+                    //CommonLib.IsValidContainerNumber(rec.cntr_no!)
+                    //call function here
                 if (Lib.IsBlank(rec.cntr_no))
                     cntr_no = "Cntr No Cannot Be Blank!";
                 if (Lib.IsBlank(rec.cntr_packages_unit_name))
@@ -791,7 +826,7 @@ namespace SeaExport.Repositories
                 //Add or Edit Records cntr
                 foreach (var rec in records_dto)
                 {
-
+                    
                     if (rec.cntr_id == 0)
                     {
                         record = new cargo_container();
@@ -872,10 +907,8 @@ namespace SeaExport.Repositories
                     record_dto.marks17,
 
                 };
-                
-                await SaveMarksandNumber(id, mode, marks, record_dto);//mark.desc_id = 
-                            
-                // await SaveMarksandDesc(id,mode,ctr,marks,record_dto);
+
+                await SaveMarksandNumber(id, mode, marks, record_dto);
 
                 return record_dto;
 
@@ -886,7 +919,7 @@ namespace SeaExport.Repositories
             }
         }
 
-       public async Task<cargo_sea_exporth_dto> SaveMarksandNumber(int id, string mode, List<cargo_desc_dto?> marks, cargo_sea_exporth_dto record_dto)
+        public async Task<cargo_sea_exporth_dto> SaveMarksandNumber(int id, string mode, List<cargo_desc_dto?> marks, cargo_sea_exporth_dto record_dto)
         {
             cargo_desc? Record;
             // Boolean bOk = true;
@@ -904,7 +937,7 @@ namespace SeaExport.Repositories
                     Boolean bOk = true;
                     if (markItem == null)
                     {
-                        throw new Exception("Description Record Not Found"+ markItem!.desc_ctr);
+                        throw new Exception("Description Record Not Found" + markItem!.desc_ctr);
                     }
 
                     ctr++;
@@ -918,7 +951,7 @@ namespace SeaExport.Repositories
                         bOk = false;
                     if (bOk == false && desc_id == 0)
                         continue;
-                    
+
 
                     if (bOk && desc_id == 0)  // new record && id!=0
                         DescMode = "add";
@@ -971,7 +1004,7 @@ namespace SeaExport.Repositories
                             .FirstOrDefaultAsync();
 
                         if (Record == null)
-                            throw new Exception("Description record Not Found"+ Record!.desc_ctr.ToString());
+                            throw new Exception("Description record Not Found" + Record!.desc_ctr.ToString());
 
                         if (DescMode == "edit" || DescMode == "delete")
                         {
@@ -997,6 +1030,8 @@ namespace SeaExport.Repositories
                         context.cargo_desc.Remove(Record);
                         desc_id = 0;
                         Record.desc_ctr = 0;
+                        Record.desc_parent_id = 0;
+                        Record.desc_parent_type = "";
                     }
 
                     await context.SaveChangesAsync();
@@ -1005,10 +1040,12 @@ namespace SeaExport.Repositories
                     if (DescMode == "add")
                         desc_id = Record.desc_id;
 
-                    markItem.desc_id =desc_id;
+                    markItem.desc_id = desc_id;
                     markItem.desc_ctr = Record.desc_ctr;
+                    markItem.desc_parent_id = Record.desc_parent_id;
+                    markItem.desc_parent_type = Record.desc_parent_type;
                 }
-                return record_dto;              
+                return record_dto;
             }
             catch (Exception ex)
             {
