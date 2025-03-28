@@ -507,9 +507,9 @@ namespace Marketing.Repositories
             List<mark_qtnd_lcl> records;
             try
             {
-
+                // get details from the frontend
                 records_dto = record_dto.qtnd_lcl!;
-
+                // read the details from database
                 records = await context.mark_qtnd_lcl
                     .Where(w => w.qtnd_qtnm_id == id)
                     .ToListAsync();

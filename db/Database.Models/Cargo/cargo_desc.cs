@@ -20,6 +20,7 @@ namespace Database.Models.Cargo
         public cargo_housem? parentHouse { get; set; }
 
         [ConcurrencyCheck]
+        public int? rec_version { get; set; } 
         public int rec_company_id { get; set; }
         public int rec_branch_id { get; set; }
         public string? rec_created_by { get; set; }
@@ -27,7 +28,6 @@ namespace Database.Models.Cargo
         public string? rec_edited_by { get; set; }
         public DateTime? rec_edited_date { get; set; }
         public string? rec_locked { get; set; }
-        public int? rec_version { get; set; } 
         
         [ForeignKey("rec_company_id")]
         public mast_companym? company { get; set; }

@@ -6,7 +6,7 @@ using Database;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using Microsoft.VisualBasic;
-
+using System.Text.RegularExpressions;
 
 
 //Name : Sourav V
@@ -63,6 +63,84 @@ namespace Common.Lib
                 return null;
             DateTime parsedDate = DateTime.Parse(dateString);
             return DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
+        }
+        public static decimal? UpdateTeuValue(string cntr_type_name)
+        {
+            decimal teu = 0;
+            if (cntr_type_name == "20")
+            {
+                teu = 1.0m;
+            }
+            if (cntr_type_name == "45")
+            {
+                teu = 2.5m;
+            }
+            if (cntr_type_name == "40")
+            {
+                teu = 2.0m;
+                if (cntr_type_name == "HC")
+                {
+                    teu = 2.25m;
+                }
+            }
+            if (cntr_type_name == "LCL")
+            {
+                teu = 0;
+            }
+            return teu;
+        }
+        public static async Task SaveMasterSummary(AppDbContext _context, int mbl_id)//,cargo_sea_exporth_dto record_dto
+        {
+            context = _context;
+
+            var houseList = context.cargo_housem
+                .Where(h => h.hbl_mbl_id == mbl_id)
+                .ToList();
+
+            int houseCount = houseList.Count;
+            int ShipperCount = houseList
+                .Where(h => h.hbl_mbl_id == mbl_id)
+                .Select(h => h.hbl_shipper_name)
+                .Distinct() //only unique count. needed
+                .Count();
+            int ConsigneeCount = houseList
+                .Where(h => h.hbl_mbl_id == mbl_id)
+                .Select(h => h.hbl_consignee_name)
+                .Distinct()
+                .Count();
+
+            var master_Record = context.cargo_masterm
+                .Where(m => m.mbl_id == mbl_id)
+                .FirstOrDefault();
+
+            if (master_Record != null)
+            {
+                master_Record.mbl_house_tot = houseCount;
+                master_Record.mbl_shipper_tot = ShipperCount;
+                master_Record.mbl_consignee_tot = ConsigneeCount;
+                await context.SaveChangesAsync();
+            }
+        }
+        public static async Task UpdateHouseShipmentStage(AppDbContext context, int mbl_id, int? newShipmentStageId)
+        {
+            // Get all houses under that master
+            var houseList = await context.cargo_housem
+                .Where(h => h.hbl_mbl_id == mbl_id)
+                .ToListAsync();
+
+            if (houseList.Any())
+            {
+                foreach (var house in houseList)
+                {
+                    house.hbl_shipment_stage_id = newShipmentStageId;
+                }
+
+                await context.SaveChangesAsync();
+            }
+        }
+        public static bool IsValidContainerNumber(string cntr_no)
+        {
+            return Regex.IsMatch(cntr_no, @"^[A-Z]{4}\d{7}$");
         }
 
 
@@ -124,4 +202,5 @@ namespace Common.Lib
         }
 
     }
+
 }

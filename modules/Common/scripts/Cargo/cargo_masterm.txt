@@ -229,12 +229,10 @@ BEGIN
         CREATE INDEX "IX_cargo_masterm_mbl_vessel_id" ON cargo_masterm USING btree (mbl_vessel_id);
     END IF;
 
-
     -- Check and create index IX_cargo_masterm_mbl_shipment_stage_id
     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_masterm_mbl_shipment_stage_id') THEN
         CREATE INDEX "IX_cargo_masterm_mbl_shipment_stage_id" ON cargo_masterm USING btree (mbl_shipment_stage_id);
     END IF;
-
 
     -- Check and create index IX_cargo_masterm_rec_branch_id
     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_masterm_rec_branch_id') THEN
