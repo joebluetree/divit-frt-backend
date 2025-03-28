@@ -26,6 +26,8 @@ using TnT.Interfaces;
 using TnT.Repositories;
 using Marketing.Interfaces;
 using Marketing.Repositories;
+using AirExport.Interfaces;
+using AirExport.Repositories;
 
 
 
@@ -86,6 +88,10 @@ builder.Services.AddScoped<IQtnmAirRepository, QtnmAirRepository>();
 //Accounts
 builder.Services.AddScoped<IAccGroupRepository, AccGroupRepository>();
 builder.Services.AddScoped<IAcctmRepository, AcctmRepository>();
+
+//AirExport
+builder.Services.AddScoped<IAirExportRepository, AirExportRepository>();
+builder.Services.AddScoped<IAirExportHRepository, AirExportHRepository>();
 
 //Tnt
 builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();

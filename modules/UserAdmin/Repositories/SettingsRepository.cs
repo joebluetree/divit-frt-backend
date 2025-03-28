@@ -291,9 +291,9 @@ namespace UserAdmin.Repositories
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "LOGO SMALL", "", "STRING", "", "", "", "", 3);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "LOGO MEDIUM", "", "STRING", "", "", "", "", 4);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "LOGO LARGE", "", "STRING", "", "", "", "", 5);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SUNDRY DEBTORS", "", "TABLE", "acctm,acc_id,acc_code,acc_name", "", "", "", 7);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SUNDRY CREDITORS", "", "TABLE", "acctm,acc_id,acc_code,acc_name", "", "", "", 8);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "MAIN BRANCH", "", "TABLE", "branchm,branch_id,branch_code, branch_name", "", "", "", 9);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SUNDRY DEBTORS", "", "TABLE", "acctm, ,acc_id,acc_code,acc_name", "", "", "", 7);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SUNDRY CREDITORS", "", "TABLE", "acctm, ,acc_id,acc_code,acc_name", "", "", "", 8);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "MAIN BRANCH", "", "TABLE", "branchm, ,branch_id,branch_code, branch_name", "", "", "", 9);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SHIPSGO-ID", "", "STRING", "", "35448b76451fe9919422b17e11b9a2c8", "", "", 10);
             return retValue;
         }
@@ -310,6 +310,19 @@ namespace UserAdmin.Repositories
 
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-FCL-PREFIX", "", "STRING", "", "", "", "", 9);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-FCL-STARTING-NO", "", "INT", "", "", "", "",10);
+
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIREXPORT-MASTER-PREFIX", "", "STRING", "", "", "", "", 11);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIREXPORT-MASTER-STARTING-NO", "", "INT", "", "", "", "",12);
+
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIREXPORT-HOUSE-PREFIX", "", "STRING", "", "", "", "", 13);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIREXPORT-HOUSE-STARTING-NO", "", "INT", "", "", "", "",14);
+            
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "ISSUING AGENT NAME", "", "STRING", "", "", "", "",18);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "ISSUING AGENT ADDRESS", "", "STRING", "", "", "", "",19);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "ISSUING AGENT CITY", "", "STRING", "", "", "", "",20);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "IATA CODE", "", "STRING", "", "", "", "",21);
+
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "HAWB-FORMAT", "", "TABLE", "param,HAWB-FORMAT,param_id,param_code, param_name", "", "", "", 24);
 
             return retValue;
         }

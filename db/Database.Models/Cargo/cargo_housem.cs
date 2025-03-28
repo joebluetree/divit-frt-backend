@@ -14,6 +14,7 @@ public class cargo_housem
 {
     [Key]
     public int hbl_id { get; set; }
+    public int hbl_cfno { get; set; }
     public int hbl_mbl_id { get; set; }
     public string? hbl_houseno { get; set; }
     public DateTime? hbl_date { get; set; }
@@ -58,6 +59,7 @@ public class cargo_housem
     public string? hbl_consigned_to3 { get; set; }
     public string? hbl_consigned_to4 { get; set; }
     public string? hbl_consigned_to5 { get; set; }
+    public string? hbl_consigned_to6 { get; set; }
     public string? hbl_ams_fileno { get; set; }
     public string? hbl_sub_house { get; set; }//
     public string? hbl_it_no { get; set; }
@@ -80,9 +82,9 @@ public class cargo_housem
     public string? hbl_place_final { get; set; }
     public DateTime? hbl_pld_eta { get; set; }
     public DateTime? hbl_plf_eta { get; set; }
-    public int? hbl_frt_status_id { get; set; }
+    public string? hbl_frt_status_name { get; set; }
     public int? hbl_ship_term_id { get; set; }
-    public string? hbl_uom { get; set; }
+    public int? hbl_uom_id { get; set; }
     public int? hbl_pcs { get; set; }
     public int? hbl_packages { get; set; }
     public decimal? hbl_cbm { get; set; }
@@ -192,7 +194,6 @@ public class cargo_housem
     public string? hbl_custom_reles_status { get; set; }
     public string? hbl_is_delivery { get; set; }
     public string? hbl_paid_remarks { get; set; }
-    public string? hbl_consigned_to6 { get; set; }
     public DateTime? hbl_delivery_date { get; set; }
     public DateTime? hbl_custom_clear_date { get; set; }
     public int? hbl_container_tot { get; set; }
@@ -234,9 +235,7 @@ public class cargo_housem
     [ForeignKey("hbl_handled_id")]
     public mast_param? handledby { get; set; }
 
-    [ForeignKey("hbl_frt_status_id")]
-    public mast_param? frtstatus { get; set; }
-    
+        
     [ForeignKey("hbl_shipment_stage_id")]
     public mast_param? shipstage { get; set; }
 
@@ -253,8 +252,8 @@ public class cargo_housem
     public mast_param? draftformat { get; set; }
 
     [ConcurrencyCheck]
-    public int? rec_year { get; set; }
     public int rec_version { get; set; }
+    public int? rec_year { get; set; }
     public string? rec_locked { get; set; }
     public string? rec_created_by { get; set; }
     public DateTime rec_created_date { get; set; }

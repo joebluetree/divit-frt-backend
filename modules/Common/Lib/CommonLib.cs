@@ -65,5 +65,63 @@ namespace Common.Lib
             return DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
         }
 
+
+        public static string SplitString(string? data, int iPos, char SplitChar = ',')
+        {
+            string str = "";
+
+            if (!Database.Lib.Lib.IsBlank(data))
+            {
+                string[] words = data!.Split(SplitChar);
+                if (words.Length > iPos)
+                {
+                    str = words[iPos];
+                }
+            }
+
+            return str;
+        }
+        
+           //Save update function for house count. 
+        public static async Task SaveMasterSummary(AppDbContext _context,int? id)
+        {
+            context = _context;
+            // Get House list from the database table cargo_housem
+            var houseList = context.cargo_housem
+                .Where(h => h.hbl_mbl_id == id)
+                .ToList();
+
+            int houseCount = houseList.Count(); //Get the count of Houses
+
+            //Get Shipper Count from house list
+            int ShipperCount = houseList
+                .Where(h => !Database.Lib.Lib.IsBlank(h.hbl_shipper_name))
+                .Select(h => h.hbl_shipper_name)
+                .Distinct()
+                .Count();
+
+            //Get Consignee Count from the House List
+            int ConsigneeCount = houseList
+                .Where(h => !Database.Lib.Lib.IsBlank(h.hbl_consignee_name))
+                .Select(h => h.hbl_consignee_name)
+                .Distinct()
+                .Count();
+
+            //select the master record from the database
+            var master_Record = context.cargo_masterm
+                .Where(m => m.mbl_id == id)
+                .FirstOrDefault();
+
+            //Assign values to the master record
+            if (master_Record != null)
+            {
+                master_Record.mbl_house_tot = houseCount;
+                master_Record.mbl_shipper_tot = ShipperCount;
+                master_Record.mbl_consignee_tot = ConsigneeCount;
+                await context.SaveChangesAsync();
+            }
+
+        }
+
     }
 }

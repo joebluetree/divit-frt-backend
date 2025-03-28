@@ -250,7 +250,8 @@ namespace Database.Lib.Repositories
                             rec.cust_fax,
                             rec.cust_email,
                             rec.cust_is_parent,
-                            rec.rec_company_id
+                            rec.cust_nomination,
+                            rec.rec_company_id,
                         };
 
             if (search_string != "" && search_string != null)
