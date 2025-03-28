@@ -1,8 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Database.Models.Cargo;
-using Database.Models.Masters;
 using Database.Models.UserAdmin;
 
 namespace Database.Models.Cargo
@@ -22,7 +20,7 @@ namespace Database.Models.Cargo
         public cargo_housem? parentHouse { get; set; }
 
         [ConcurrencyCheck]
-        public int rec_version {get;set;}
+        public int? rec_version { get; set; } 
         public int rec_company_id { get; set; }
         public int rec_branch_id { get; set; }
         public string? rec_created_by { get; set; }
@@ -38,3 +36,4 @@ namespace Database.Models.Cargo
         public mast_branchm? branch { get; set; }
     }
 }
+

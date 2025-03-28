@@ -46,8 +46,10 @@ namespace Database
         //Cargo
         public DbSet<cargo_masterm> cargo_masterm { get; set; } = null!;
         public DbSet<cargo_housem> cargo_housem { get; set; } = null!;
+
         public DbSet<cargo_container> cargo_container { get; set; } = null!;
         public DbSet<cargo_desc> cargo_desc { get; set; } = null!;
+
 
         //Accounts
         public DbSet<acc_groupm> acc_groupm { get; set; } = null!;

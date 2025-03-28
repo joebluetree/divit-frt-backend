@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Database.Models.Masters;
 using Database.Models.UserAdmin;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 //Name : Alen Cherian
 //Created Date : 21/02/2025
@@ -130,7 +129,19 @@ namespace Database.Models.Cargo
         public int? mbl_zero_chwt { get; set; }
         public int? mbl_zero_wt { get; set; }
         public string? mbl_loss_approved { get; set; }
+      
+        [ConcurrencyCheck]
+        public int rec_version { get; set; }
+        public int? rec_year { get; set; }
+        public string? rec_locked { get; set; }
+        public string? rec_created_by { get; set; }
+        public DateTime rec_created_date { get; set; }
+        public string? rec_edited_by { get; set; }
+        public DateTime? rec_edited_date { get; set; }
+        public int rec_company_id { get; set; }
+        public int rec_branch_id { get; set; }
 
+      
         [ForeignKey("mbl_agent_id")]
         public mast_customerm? agent { get; set; }
 
@@ -151,6 +162,9 @@ namespace Database.Models.Cargo
 
         [ForeignKey("mbl_vessel_id")]
         public mast_param? vessel { get; set; }
+
+        [ForeignKey("mbl_currency_id")]
+        public mast_param? currency { get; set; }
 
         [ForeignKey("mbl_shipment_stage_id")]
         public mast_param? shipstage { get; set; }
@@ -181,18 +195,7 @@ namespace Database.Models.Cargo
 
         [ForeignKey("mbl_salesman_id")]
         public mast_param? salesman { get; set; }
-        public List<cargo_container>? master_cntr { get; set; }
 
-        [ConcurrencyCheck]
-        public int rec_version { get; set; }
-        public string? rec_locked { get; set; }
-        public string? rec_created_by { get; set; }
-        public DateTime rec_created_date { get; set; }
-        public string? rec_edited_by { get; set; }
-        public DateTime? rec_edited_date { get; set; }
-        public int rec_company_id { get; set; }
-        public int rec_branch_id { get; set; }
-        public int? rec_year { get; set; }
 
         [ForeignKey("rec_company_id")]
         public mast_companym? company { get; set; }
@@ -201,3 +204,4 @@ namespace Database.Models.Cargo
         public mast_branchm? branch { get; set; }
     }
 }
+
