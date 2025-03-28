@@ -140,9 +140,6 @@ namespace Common.Lib
         }
         public static bool IsValidContainerNumber(string cntr_no)
         {
-            if (string.IsNullOrWhiteSpace(cntr_no))
-                return false;
-
             return Regex.IsMatch(cntr_no, @"^[A-Z]{4}\d{7}$");
         }
 

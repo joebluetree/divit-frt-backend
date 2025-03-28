@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS cargo_housem (
     hbl_place_final varchar(60) NULL,
     hbl_pld_eta date NULL,
     hbl_plf_eta date NULL,
-    hbl_frt_status_id int4 NULL,////
+    hbl_frt_status_name varchar(60) NULL,
     hbl_ship_term_id int4 NULL,
     hbl_uom varchar(10) NULL,
     hbl_pcs int4 NULL,
@@ -106,8 +106,8 @@ CREATE TABLE IF NOT EXISTS cargo_housem (
     hbl_aesno varchar(30) NULL,
     hbl_agent_name varchar(60) NULL,
     hbl_agent_city varchar(60) NULL,
-    hbl_asarranged_consignee varchar(1) NULL,
-    hbl_asarranged_shipper varchar(1) NULL,
+    hbl_asarranged_consignee varchar(10) NULL,
+    hbl_asarranged_shipper varchar(10) NULL,
     hbl_by1 varchar(60) NULL,
     hbl_by1_carrier varchar(100) NULL,
     hbl_by2 varchar(60) NULL,
@@ -256,11 +256,6 @@ BEGIN
     -- Check and create index IX_cargo_housem_hbl_pofd_id
     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_housem_hbl_pofd_id') THEN
         CREATE INDEX "IX_cargo_housem_hbl_pofd_id" ON cargo_housem USING btree (hbl_pofd_id);
-    END IF;
-
-    -- Check and create index IX_cargo_housem_hbl_frt_status_id
-    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_housem_hbl_frt_status_id') THEN
-        CREATE INDEX "IX_cargo_housem_hbl_frt_status_id" ON cargo_housem USING btree (hbl_frt_status_id);
     END IF;
 
     -- Check and create index IX_cargo_housem_hbl_shipment_stage_id

@@ -331,6 +331,7 @@ namespace SeaExport.Repositories
             string cntr_no = "";
             string unit = "";
 
+
             if (Lib.IsBlank(record_dto.mbl_agent_name))
                 str += "Master Agent Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_shipment_stage_name))
@@ -363,8 +364,10 @@ namespace SeaExport.Repositories
             {
                 if (Lib.IsBlank(rec.cntr_type_name))
                     type = "Type Cannot Be Blank!";
-                if (Lib.IsBlank(rec.cntr_no))
-                    cntr_no = "Cntr No Cannot Be Blank!";
+                if(!CommonLib.IsValidContainerNumber(rec.cntr_no!))
+                    cntr_no = $"Invalid Container Number: {rec.cntr_no}";
+                    if (Lib.IsBlank(rec.cntr_no))
+                        cntr_no = "Cntr No Cannot Be Blank!";
                 if (Lib.IsBlank(rec.cntr_packages_unit_name))
                     unit = "Unit Cannot Be Blank";
             }

@@ -32,7 +32,6 @@ namespace Database.Models.Cargo
         public string? mbl_place_delivery { get; set; }
         public int? mbl_pofd_id { get; set; }
         public DateTime? mbl_pofd_eta { get; set; }
-        // public string? mbl_vessel { get; set; }
         public string? mbl_frt_status_name { get; set; }
         public int? mbl_ship_term_id { get; set; }
         public string? mbl_cntr_type { get; set; }
@@ -88,7 +87,6 @@ namespace Database.Models.Cargo
         public int? mbl_vessel_id { get; set; }
         public string? mbl_vessel_name { get; set; }
         public string? mbl_voyage { get; set; }
-        // public int? mbl_cntr_type_id { get; set; }
         public string? mbl_telex_released { get; set; }
         public string? mbl_it_no { get; set; }
         public string? mbl_cargo_loc_add1 { get; set; }
@@ -154,17 +152,11 @@ namespace Database.Models.Cargo
         [ForeignKey("mbl_vessel_id")]
         public mast_param? vessel { get; set; }
 
-        // [ForeignKey("mbl_frt_status_id")]
-        // public mast_param? frtstatus { get; set; }
-
         [ForeignKey("mbl_shipment_stage_id")]
         public mast_param? shipstage { get; set; }
 
         [ForeignKey("mbl_ship_term_id")]
         public mast_param? shipterm { get; set; }
-
-        // [ForeignKey("mbl_cntr_type_id")]
-        // public mast_param? cntrtype { get; set; }
 
         [ForeignKey("mbl_cargo_loc_id")]
         public mast_param? cargoloc { get; set; }

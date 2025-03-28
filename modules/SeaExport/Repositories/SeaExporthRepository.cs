@@ -490,8 +490,8 @@ namespace SeaExport.Repositories
 
             string str = "";
             string type = "";
-            string cntr_no = "";
             string unit = "";
+            string cntr_no = "";
 
 
             if (Lib.IsZero(record_dto.hbl_shipment_stage_id))
@@ -526,16 +526,17 @@ namespace SeaExport.Repositories
             {
                 if (Lib.IsBlank(rec.cntr_type_name))
                     type = "Type Cannot Be Blank!";
-                    //CommonLib.IsValidContainerNumber(rec.cntr_no!)
-                    //call function here
-                if (Lib.IsBlank(rec.cntr_no))
-                    cntr_no = "Cntr No Cannot Be Blank!";
+                if(!CommonLib.IsValidContainerNumber(rec.cntr_no!))
+                    cntr_no = $"Invalid Container Number: {rec.cntr_no}";
+                    if (Lib.IsBlank(rec.cntr_no))
+                        cntr_no = "Cntr No Cannot Be Blank!";
                 if (Lib.IsBlank(rec.cntr_packages_unit_name))
                     unit = "Unit Cannot Be Blank";
             }
 
             if (type != "")
                 str += type;
+                
             if (cntr_no != "")
                 str += cntr_no;
             if (unit != "")

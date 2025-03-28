@@ -291,9 +291,9 @@ namespace UserAdmin.Repositories
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "LOGO SMALL", "", "STRING", "", "", "", "", 3);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "LOGO MEDIUM", "", "STRING", "", "", "", "", 4);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "LOGO LARGE", "", "STRING", "", "", "", "", 5);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SUNDRY DEBTORS", "", "TABLE", "acctm,acc_id,acc_code,acc_name", "", "", "", 7);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SUNDRY CREDITORS", "", "TABLE", "acctm,acc_id,acc_code,acc_name", "", "", "", 8);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "MAIN BRANCH", "", "TABLE", "branchm,branch_id,branch_code, branch_name", "", "", "", 9);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SUNDRY DEBTORS", "", "TABLE", "acctm,,acc_id,acc_code,acc_name", "", "", "", 7);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SUNDRY CREDITORS", "", "TABLE", "acctm,,acc_id,acc_code,acc_name", "", "", "", 8);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "MAIN BRANCH", "", "TABLE", "branchm,,branch_id,branch_code, branch_name", "", "", "", 9);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SHIPSGO-ID", "", "STRING", "", "35448b76451fe9919422b17e11b9a2c8", "", "", 10);
             return retValue;
         }
