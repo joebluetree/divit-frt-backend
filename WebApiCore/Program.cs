@@ -29,6 +29,8 @@ using Marketing.Repositories;
 
 using SeaExport.Interfaces;
 using SeaExport.Repositories;
+using SeaImport.Interfaces;
+using SeaImport.Repositories;
 
 using AirExport.Interfaces;
 using AirExport.Repositories;
@@ -92,6 +94,9 @@ builder.Services.AddScoped<IQtnmAirRepository, QtnmAirRepository>();
 //Cargo
 builder.Services.AddScoped<ISeaExportmRepository, SeaExportmRepository>();
 builder.Services.AddScoped<ISeaExporthRepository, SeaExporthRepository>();
+
+//SeaImport
+builder.Services.AddScoped<ISeaImportmRepository, SeaImportmRepository>();
 
 //Accounts
 builder.Services.AddScoped<IAccGroupRepository, AccGroupRepository>();
