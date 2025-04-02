@@ -54,7 +54,7 @@ namespace Database.Models.Cargo
         public int? mbl_jobtype_id { get; set; }
         public int? mbl_salesman_id { get; set; }
         public string? mbl_rotation_no { get; set; }
-        public string? mbl_status { get; set; }
+        public int? mbl_status_id { get; set; } //changed
         public string? mbl_is_sea_waybill { get; set; }
         public DateTime? mbl_ombl_sent_on { get; set; }
         public string? mbl_pending_status { get; set; }
@@ -73,7 +73,7 @@ namespace Database.Models.Cargo
         public int? mbl_customer_id { get; set; }
         public string? mbl_software_name { get; set; }
         public string? mbl_it_tot { get; set; }
-        public string? mbl_incoterm { get; set; }
+        public int? mbl_incoterm_id { get; set; } //changed
         public string? mbl_bo_status { get; set; }
         public string? mbl_bo_attended_code { get; set; }
         public DateTime? mbl_bo_attended_date { get; set; }
@@ -172,8 +172,11 @@ namespace Database.Models.Cargo
         [ForeignKey("mbl_ship_term_id")]
         public mast_param? shipterm { get; set; }
 
+        [ForeignKey("mbl_status_id")]
+        public mast_param? mblstatus { get; set; } //changed
+
         [ForeignKey("mbl_cargo_loc_id")]
-        public mast_param? cargoloc { get; set; }
+        public mast_customerm? cargoloc { get; set; } //changed
 
         [ForeignKey("mbl_devan_loc_id")]
         public mast_param? devanloc { get; set; }
@@ -195,6 +198,9 @@ namespace Database.Models.Cargo
 
         [ForeignKey("mbl_salesman_id")]
         public mast_param? salesman { get; set; }
+
+        [ForeignKey("mbl_incoterm_id")]
+        public mast_param? incoterm { get; set; } //changed
 
 
         [ForeignKey("rec_company_id")]

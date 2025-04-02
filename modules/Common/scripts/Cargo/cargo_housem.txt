@@ -182,6 +182,7 @@ CREATE TABLE IF NOT EXISTS cargo_housem (
     hbl_delivery_date date NULL,
     hbl_custom_clear_date date NULL,
     hbl_container_tot int4 NULL,
+    hbl_incoterm_id int4 NULL,
     hbl_incoterm varchar(15) NULL,
     hbl_software_name varchar(15) NULL,
     hbl_an_sent varchar(1) NULL,

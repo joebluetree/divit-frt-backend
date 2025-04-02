@@ -6,26 +6,26 @@ using Database.Lib.Interfaces;
 using Database.Models.BaseTables;
 using Common.Lib;
 using Database.Models.Cargo;
-using Common.DTO.AirExport;
-using AirExport.Interfaces;
+using Common.DTO.AirImport;
+using AirImport.Interfaces;
 
 
-namespace AirExport.Repositories
+namespace AirImport.Repositories
 {
 
     //Name : Alen Cherian
-    //Date : 24/02/2025
-    //Command :  Create Repository for the Air Export.
+    //Date : 28/03/2025
+    //Command :  Create Repository for the Air Import.
 
-    public class AirExportRepository : IAirExportRepository
+    public class AirImportRepository : IAirImportRepository
     {
 
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
         private DateTime log_date;
-        string mbl_mode = "AIR EXPORT";
+        string mbl_mode = "AIR IMPORT";
 
-        public AirExportRepository(AppDbContext _context, IAuditLog _auditLog)
+        public AirImportRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
             this.auditLog = _auditLog;
@@ -108,7 +108,7 @@ namespace AirExport.Repositories
                     .Skip(StartRow)
                     .Take(_page.pageSize);
 
-                var Records = await query.Select(e => new cargo_air_exportm_dto
+                var Records = await query.Select(e => new cargo_air_importm_dto
                 {
                     mbl_id = e.mbl_id,
                     mbl_refno = e.mbl_refno,
@@ -145,19 +145,19 @@ namespace AirExport.Repositories
         }
 
         //Get House data from the house table
-        public async Task<List<cargo_air_exporth_dto>> GetDetailsAsync(int id)
+        public async Task<List<cargo_air_importh_dto>> GetDetailsAsync(int id)
         {
             var query = from e in context.cargo_housem
                         .Where(e => e.hbl_mbl_id == id)
                         .OrderBy(o => o.hbl_houseno)
-                        select (new cargo_air_exporth_dto
+                        select (new cargo_air_importh_dto
                         {
                             hbl_id = e.hbl_id,
                             hbl_mbl_id = e.hbl_mbl_id,
                             hbl_houseno = e.hbl_houseno,
                             hbl_mbl_refno = e.master!.mbl_refno,
 
-                            hbl_date = Lib.FormatDate(e.hbl_date, Lib.outputDateFormat),
+                            //hbl_date = Lib.FormatDate(e.hbl_date, Lib.outputDateFormat),
 
                             hbl_shipper_id = e.hbl_shipper_id,
                             hbl_shipper_code = e.shipper!.cust_code,
@@ -171,7 +171,6 @@ namespace AirExport.Repositories
                             hbl_handled_name = e.handledby!.param_name,
 
                             hbl_packages = e.hbl_packages,
-                            hbl_issued_date = Lib.FormatDate(e.hbl_issued_date, Lib.outputDateFormat),
                             hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateFormat),
 
                             rec_company_id = e.rec_company_id,
@@ -188,7 +187,7 @@ namespace AirExport.Repositories
             return Record;
         }
 
-        public async Task<cargo_air_exportm_dto?> GetRecordAsync(int id)
+        public async Task<cargo_air_importm_dto?> GetRecordAsync(int id)
         {
             try
             {
@@ -196,7 +195,7 @@ namespace AirExport.Repositories
 
                 query = query.Where(f => f.mbl_id == id && f.mbl_mode == mbl_mode);
 
-                var Record = await query.Select(e => new cargo_air_exportm_dto
+                var Record = await query.Select(e => new cargo_air_importm_dto
                 {
                     mbl_id = e.mbl_id,
                     mbl_cfno = e.mbl_cfno,
@@ -219,24 +218,27 @@ namespace AirExport.Repositories
                     mbl_country_name = e.country!.param_name,
                     mbl_liner_id = e.mbl_liner_id,
                     mbl_liner_name = e.liner!.param_name,
-                    mbl_by_carrier1 = e.mbl_by_carrier1,
-                    mbl_by_carrier2 = e.mbl_by_carrier2,
-                    mbl_by_carrier3 = e.mbl_by_carrier3,
-                    mbl_to_port1 = e.mbl_to_port1,
-                    mbl_to_port2 = e.mbl_to_port2,
-                    mbl_to_port3 = e.mbl_to_port3,
-                    mbl_currency_id = e.mbl_currency_id,
-                    mbl_currency_code = e.currency!.param_code,
+
                     mbl_handled_id = e.mbl_handled_id,
                     mbl_handled_name = e.handledby!.param_name,
                     mbl_salesman_id = e.mbl_salesman_id,
                     mbl_salesman_name = e.salesman!.param_name,
                     mbl_mawb_weight = e.mbl_mawb_weight,
                     mbl_mawb_chwt = e.mbl_mawb_chwt,
-                    mbl_3rdparty = e.mbl_3rdparty,
-                    mbl_direct = e.mbl_direct,
                     mbl_vessel_name = e.mbl_vessel_name,
-                    mbl_voyage = e.mbl_voyage,
+
+                    mbl_cargo_loc_id = e.mbl_cargo_loc_id,
+                    mbl_cargo_loc_code = e.cargoloc!.cust_code,
+                    mbl_cargo_loc_name = e.mbl_cargo_loc_name,
+                    mbl_cargo_loc_add1 = e.mbl_cargo_loc_add1,
+                    mbl_cargo_loc_add2 = e.mbl_cargo_loc_add2,
+                    mbl_cargo_loc_add3 = e.mbl_cargo_loc_add3,
+                    mbl_cargo_loc_add4 = e.mbl_cargo_loc_add4,
+                    mbl_incoterm_id = e.mbl_incoterm_id,
+                    mbl_incoterm = e.incoterm!.param_name,
+
+                    mbl_an_sent_dt = Lib.FormatDate(e.mbl_an_sent_dt, Lib.outputDateFormat),
+                    mbl_stage_changed_date = Lib.FormatDate(e.mbl_stage_changed_date, Lib.outputDateTimeFormat),
 
                     rec_version = e.rec_version,
                     rec_branch_id = e.rec_branch_id,
@@ -249,7 +251,7 @@ namespace AirExport.Repositories
                 if (Record == null)
                     throw new Exception("No Qtn Found");
 
-                Record.air_export = await GetDetailsAsync(Record.mbl_id);
+                Record.air_import = await GetDetailsAsync(Record.mbl_id);
 
                 return Record;
             }
@@ -260,15 +262,15 @@ namespace AirExport.Repositories
         }
 
 
-        public async Task<cargo_air_exportm_dto> SaveAsync(int id, string mode, cargo_air_exportm_dto record_dto)
+        public async Task<cargo_air_importm_dto> SaveAsync(int id, string mode, cargo_air_importm_dto record_dto)
         {
             try
             {
                 log_date = DbLib.GetDateTime();
 
                 context.Database.BeginTransaction();
-                cargo_air_exportm_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record.air_export = await GetDetailsAsync(_Record.mbl_id);
+                cargo_air_importm_dto _Record = await SaveParentAsync(id, mode, record_dto);
+                _Record.air_import = await GetDetailsAsync(_Record.mbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -285,7 +287,7 @@ namespace AirExport.Repositories
             }
         }
 
-        private Boolean AllValid(string mode, cargo_air_exportm_dto record_dto, ref string error)
+        private Boolean AllValid(string mode, cargo_air_importm_dto record_dto, ref string error)
         {
             Boolean bRet = true;
 
@@ -329,7 +331,7 @@ namespace AirExport.Repositories
             return bRet;
         }
 
-        public async Task<cargo_air_exportm_dto> SaveParentAsync(int id, string mode, cargo_air_exportm_dto record_dto)
+        public async Task<cargo_air_importm_dto> SaveParentAsync(int id, string mode, cargo_air_importm_dto record_dto)
         {
             cargo_masterm? Record;
             string error = "";
@@ -343,28 +345,28 @@ namespace AirExport.Repositories
 
                 if (mode == "add")
                 {
-                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "AIREXPORT-MASTER-PREFIX,AIREXPORT-MASTER-STARTING-NO");// 
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "AIRIMPORT-MASTER-PREFIX,AIRIMPORT-MASTER-STARTING-NO");// 
 
                     var DefaultCfNo = 0;
                     var Defaultprefix = "";
 
-                    if (result.ContainsKey("AIREXPORT-MASTER-STARTING-NO"))
+                    if (result.ContainsKey("AIRIMPORT-MASTER-STARTING-NO"))
                     {
-                        DefaultCfNo = Lib.StringToInteger(result["AIREXPORT-MASTER-STARTING-NO"]);
+                        DefaultCfNo = Lib.StringToInteger(result["AIRIMPORT-MASTER-STARTING-NO"]);
                     }
-                    if (result.ContainsKey("AIREXPORT-MASTER-PREFIX"))
+                    if (result.ContainsKey("AIRIMPORT-MASTER-PREFIX"))
                     {
-                        Defaultprefix = result["AIREXPORT-MASTER-PREFIX"].ToString();
+                        Defaultprefix = result["AIRIMPORT-MASTER-PREFIX"].ToString();
                     }
                     if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
                     {
-                        throw new Exception("Missing AirExport Master Prefix/Starting-Number in Branch Settings");
+                        throw new Exception("Missing AirImport Master Prefix/Starting-Number in Branch Settings");
                     }
 
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
                     if (Lib.IsZero(iNextNo))
                     {
-                        throw new Exception("AirExport Number Cannot Be Generated");
+                        throw new Exception("AirImport Number Cannot Be Generated");
                     }
                     string sref_no = $"{Defaultprefix}{iNextNo}";
 
@@ -386,7 +388,7 @@ namespace AirExport.Repositories
                         .Include(c => c.agent)
                         .Include(c => c.liner)
                         .Include(c => c.country)
-                        .Include(c => c.currency)
+                        .Include(c => c.cargoloc)
                         .Include(c => c.shipstage)
                         .Include(c => c.handledby)
                         .Include(c => c.pol)
@@ -400,7 +402,6 @@ namespace AirExport.Repositories
 
                     context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
                     Record.rec_version++;
-                    record_dto.rec_version = Record.rec_version;
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
@@ -419,21 +420,23 @@ namespace AirExport.Repositories
                 Record.mbl_pod_eta = Lib.ParseDate(record_dto.mbl_pod_eta!);
                 Record.mbl_country_id = record_dto.mbl_country_id;
                 Record.mbl_liner_id = record_dto.mbl_liner_id;
-                Record.mbl_by_carrier1 = record_dto.mbl_by_carrier1;
-                Record.mbl_by_carrier2 = record_dto.mbl_by_carrier2;
-                Record.mbl_by_carrier3 = record_dto.mbl_by_carrier3;
-                Record.mbl_to_port1 = record_dto.mbl_to_port1;
-                Record.mbl_to_port2 = record_dto.mbl_to_port2;
-                Record.mbl_to_port3 = record_dto.mbl_to_port3;
-                Record.mbl_currency_id = record_dto.mbl_currency_id;
+                
                 Record.mbl_handled_id = record_dto.mbl_handled_id;
                 Record.mbl_salesman_id = record_dto.mbl_salesman_id;
                 Record.mbl_mawb_weight = record_dto.mbl_mawb_weight;
                 Record.mbl_mawb_chwt = record_dto.mbl_mawb_chwt;
-                Record.mbl_3rdparty = record_dto.mbl_3rdparty;
-                Record.mbl_direct = record_dto.mbl_direct;
                 Record.mbl_vessel_name = record_dto.mbl_vessel_name;
-                Record.mbl_voyage = record_dto.mbl_voyage;
+                
+                Record.mbl_cargo_loc_id = record_dto.mbl_cargo_loc_id;
+                Record.mbl_cargo_loc_name = record_dto.mbl_cargo_loc_name;
+                Record.mbl_cargo_loc_add1 = record_dto.mbl_cargo_loc_add1;
+                Record.mbl_cargo_loc_add2 = record_dto.mbl_cargo_loc_add2;
+                Record.mbl_cargo_loc_add3 = record_dto.mbl_cargo_loc_add3;
+                Record.mbl_cargo_loc_add4 = record_dto.mbl_cargo_loc_add4;
+                Record.mbl_incoterm_id = record_dto.mbl_incoterm_id;
+
+                Record.mbl_an_sent_dt = Lib.ParseDate(record_dto.mbl_an_sent_dt!);
+                Record.mbl_stage_changed_date = Lib.ParseDate(record_dto.mbl_stage_changed_date!);
 
                 if (mode == "add")
                     await context.cargo_masterm.AddAsync(Record);
@@ -509,10 +512,10 @@ namespace AirExport.Repositories
             }
         }
 
-        public async Task logHistory(cargo_masterm old_record, cargo_air_exportm_dto record_dto)
+        public async Task logHistory(cargo_masterm old_record, cargo_air_importm_dto record_dto)
         {
 
-            var old_record_dto = new cargo_air_exportm_dto
+            var old_record_dto = new cargo_air_importm_dto
             {
                 mbl_id = old_record.mbl_id,
                 mbl_cfno = old_record.mbl_cfno,
@@ -529,26 +532,24 @@ namespace AirExport.Repositories
                 mbl_pod_eta = Lib.FormatDate(old_record.mbl_pod_eta, Lib.outputDateFormat),
                 mbl_country_name = old_record.country?.param_name,
                 mbl_liner_name = old_record.liner?.param_name,
-                mbl_by_carrier1 = old_record.mbl_by_carrier1,
-                mbl_by_carrier2 = old_record.mbl_by_carrier2,
-                mbl_by_carrier3 = old_record.mbl_by_carrier3,
-                mbl_to_port1 = old_record.mbl_to_port1,
-                mbl_to_port2 = old_record.mbl_to_port2,
-                mbl_to_port3 = old_record.mbl_to_port3,
-                mbl_currency_code = old_record.currency?.param_code,
                 mbl_handled_name = old_record.handledby?.param_name,
                 mbl_salesman_name = old_record.salesman?.param_name,
                 mbl_mawb_weight = old_record.mbl_mawb_weight,
                 mbl_mawb_chwt = old_record.mbl_mawb_chwt,
-                mbl_3rdparty = old_record.mbl_3rdparty,
-                mbl_direct = old_record.mbl_direct,
                 mbl_vessel_name = old_record.mbl_vessel_name,
-                mbl_voyage = old_record.mbl_voyage,
 
+                mbl_cargo_loc_name = old_record.mbl_cargo_loc_name,
+                mbl_cargo_loc_add1 = old_record.mbl_cargo_loc_add1,
+                mbl_cargo_loc_add2 = old_record.mbl_cargo_loc_add2,
+                mbl_cargo_loc_add3 = old_record.mbl_cargo_loc_add3,
+                mbl_cargo_loc_add4 = old_record.mbl_cargo_loc_add4,
+                mbl_incoterm = old_record.incoterm?.param_name,
+
+                
 
             };
 
-            await new LogHistorym<cargo_air_exportm_dto>(context)
+            await new LogHistorym<cargo_air_importm_dto>(context)
                 .Table("cargo_masterm", log_date)
                 .PrimaryKey("mbl_id", record_dto.mbl_id)
                 .RefNo(record_dto.mbl_refno!)
@@ -567,21 +568,18 @@ namespace AirExport.Repositories
                 .TrackColumn("mbl_pod_eta", "POD ETA")
                 .TrackColumn("mbl_country_name", "Country Name")
                 .TrackColumn("mbl_liner_name", "Liner Name")
-                .TrackColumn("mbl_by_carrier1", "By Carrier 1")
-                .TrackColumn("mbl_by_carrier2", "By Carrier 2")
-                .TrackColumn("mbl_by_carrier3", "By Carrier 3")
-                .TrackColumn("mbl_to_port1", "To Port 1")
-                .TrackColumn("mbl_to_port2", "To Port 2")
-                .TrackColumn("mbl_to_port3", "To Port 3")
-                .TrackColumn("mbl_currency_code", "Currency Code")
                 .TrackColumn("mbl_handled_name", "Handled By")
                 .TrackColumn("mbl_salesman_name", "Salesman Name")
                 .TrackColumn("mbl_mawb_weight", "MAWB Weight")
                 .TrackColumn("mbl_mawb_chwt", "MAWB Chargeable Weight")
-                .TrackColumn("mbl_3rdparty", "Third Party")
-                .TrackColumn("mbl_direct", "Direct")
                 .TrackColumn("mbl_vessel_name", "Vessel Name")
-                .TrackColumn("mbl_voyage", "Voyage")
+
+                .TrackColumn("mbl_cargo_loc_name","Cargo Location Name")
+                .TrackColumn("mbl_cargo_loc_add1","Cargo Location Address1")
+                .TrackColumn("mbl_cargo_loc_add2","Cargo Location Address2")
+                .TrackColumn("mbl_cargo_loc_add3","Cargo Location Address3")
+                .TrackColumn("mbl_cargo_loc_add4","Cargo Location Address4")
+                .TrackColumn("mbl_incoterm","Inco Term")         
 
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();

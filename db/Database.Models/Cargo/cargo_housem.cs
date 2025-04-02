@@ -176,7 +176,7 @@ namespace Database.Models.Cargo
         public string? hbl_pono { get; set; }
         public string? hbl_boeno { get; set; }
         public int? hbl_format_id { get; set; }
-        public string? hbl_paid_status { get; set; }
+        public int? hbl_paid_status_id { get; set; }
         public string? hbl_bl_status { get; set; }
         public string? hbl_cargo_release_status { get; set; }
         public int? hbl_shipment_stage_id { get; set; }
@@ -195,6 +195,7 @@ namespace Database.Models.Cargo
         public DateTime? hbl_delivery_date { get; set; }
         public DateTime? hbl_custom_clear_date { get; set; }
         public int? hbl_container_tot { get; set; }
+        public int? hbl_incoterm_id { get; set; } //changed
         public string? hbl_incoterm { get; set; }
         public string? hbl_software_name { get; set; }
         public string? hbl_an_sent { get; set; }
@@ -217,7 +218,7 @@ namespace Database.Models.Cargo
         public int rec_branch_id { get; set; }
         
 
-              [ForeignKey("hbl_mbl_id")]
+        [ForeignKey("hbl_mbl_id")]
         public cargo_masterm? master { get; set; }
 
         [ForeignKey("hbl_shipper_id")]
@@ -254,7 +255,7 @@ namespace Database.Models.Cargo
         public mast_param? pofd { get; set; }
 
         [ForeignKey("hbl_careof_id")]//
-        public mast_param? careof { get; set; }
+        public mast_customerm? careof { get; set; } //changed param to cust.
 
         [ForeignKey("hbl_format_id")]//
         public mast_param? format { get; set; }
@@ -265,6 +266,11 @@ namespace Database.Models.Cargo
         [ForeignKey("hbl_uom_id")]
         public mast_param? packageunit { get; set; }
 
+        [ForeignKey("hbl_incoterm_id")] //changed
+        public mast_param? incoterm { get; set; }
+
+        [ForeignKey("hbl_paid_status_id")] //changed
+        public mast_param? paidstatus { get; set; }
       
       
         [ForeignKey("rec_company_id")]
