@@ -172,6 +172,7 @@ namespace AirImport.Repositories
 
                             hbl_packages = e.hbl_packages,
                             hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateFormat),
+                            hbl_pickup_date = Lib.FormatDate(e.hbl_pickup_date, Lib.outputDateFormat),
 
                             rec_company_id = e.rec_company_id,
                             rec_branch_id = e.rec_branch_id,

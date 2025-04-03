@@ -47,12 +47,12 @@ namespace Database.Lib.Controllers
         }
 
         [HttpGet]
-        [Route("GetCustomerDataAsync")]
-        public async Task<IActionResult> GetCustomerDataAsync(int id)
+        [Route("GetCustomerAsync")]
+        public async Task<IActionResult> GetCustomerAsync(int id)
         {
             try
             {
-                var RetData = await mRepository.GetCustomerDataAsync(id);
+                var RetData = await mRepository.GetCustomerAsync(id);
                 return Ok(RetData);
             }
             catch (Exception Ex)

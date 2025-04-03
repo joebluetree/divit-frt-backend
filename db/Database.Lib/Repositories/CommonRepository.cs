@@ -179,39 +179,36 @@ namespace Database.Lib.Repositories
         }
 
 
-        public async Task<mast_customerm> GetCustomerDataAsync(int id)
+        public async Task<mast_customerm> GetCustomerAsync(int id)
         {
             try
             {
                 IQueryable<mast_customerm> query = context.mast_customerm;
-                query = query.Where(f => f.cust_id == id );
+                query = query.Where(f => f.cust_id == id);
 
-                var Record =  await query.Select(e => new mast_customerm
-                        {
-                            cust_id = e.cust_id,
-                            cust_code = e.cust_code,
-                            cust_name = e.cust_name,
-                            cust_address1 = e.cust_address1,
-                            cust_address2 = e.cust_address2,
-                            cust_address3 = e.cust_address3,
-                            cust_contact = e.cust_contact,
-                            cust_tel = e.cust_tel,
-                            cust_fax = e.cust_fax,
-                            cust_email = e.cust_email,
-                            cust_nomination = e.cust_nomination,
-                            cust_is_parent = e.cust_is_parent,
-                            cust_chb_id = e.cust_chb_id,
-                            rec_company_id = e.rec_company_id
-                        }).FirstOrDefaultAsync();
+                var Record = await query.Select(e => new mast_customerm
+                {
+                    cust_id = e.cust_id,
+                    cust_code = e.cust_code,
+                    cust_name = e.cust_name,
+                    cust_address1 = e.cust_address1,
+                    cust_address2 = e.cust_address2,
+                    cust_address3 = e.cust_address3,
+                    cust_contact = e.cust_contact,
+                    cust_tel = e.cust_tel,
+                    cust_fax = e.cust_fax,
+                    cust_email = e.cust_email,
+                    cust_nomination = e.cust_nomination,
+                    cust_is_parent = e.cust_is_parent,
+                    cust_chb_id = e.cust_chb_id,
+                    rec_company_id = e.rec_company_id
+                }).FirstOrDefaultAsync();
 
-                if (Record == null)
-                    throw new Exception("No Record Found");
-
-                return Record;
+                return Record!;
             }
-            catch (Exception)
+            catch (Exception Ex)
             {
-                throw new NullReferenceException();
+                throw new Exception(Ex.Message.ToString());
             }
         }
 
