@@ -1,4 +1,5 @@
 ﻿using Database.Models;
+using Database.Models.Masters;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq;
 using System.Reflection;
@@ -13,7 +14,7 @@ namespace Database.Lib.Interfaces
         
         Task<DataContainer> GetCompanySettings(int id,string caption = "");
         Task<DataContainer> GetBranchSettings(int id, string caption = "");
-
+        Task<mast_customerm> GetCustomerAsync(int id);
 
 
     }

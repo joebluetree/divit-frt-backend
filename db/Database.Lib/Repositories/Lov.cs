@@ -251,6 +251,7 @@ namespace Database.Lib.Repositories
                             rec.cust_email,
                             rec.cust_nomination,
                             rec.cust_is_parent,
+                            rec.cust_chb_id,
                             rec.rec_company_id,
                         };
 

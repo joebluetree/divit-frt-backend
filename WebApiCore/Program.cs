@@ -97,6 +97,7 @@ builder.Services.AddScoped<ISeaExporthRepository, SeaExporthRepository>();
 
 //SeaImport
 builder.Services.AddScoped<ISeaImportmRepository, SeaImportmRepository>();
+builder.Services.AddScoped<ISeaImporthRepository, SeaImporthRepository>();
 
 //Accounts
 builder.Services.AddScoped<IAccGroupRepository, AccGroupRepository>();

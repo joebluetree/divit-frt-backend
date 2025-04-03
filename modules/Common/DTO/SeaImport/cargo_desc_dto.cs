@@ -3,7 +3,7 @@ using Database.Models.BaseTables;
 using System.ComponentModel.DataAnnotations;
 
 // Name : Sourav V
-// Created Date : 28/03/2025
+// Created Date : 29/03/2025
 // Remark : This file defines data objects (variables) which transfer data from frontend to backend and vice-versa
 
 namespace Common.DTO.SeaImport

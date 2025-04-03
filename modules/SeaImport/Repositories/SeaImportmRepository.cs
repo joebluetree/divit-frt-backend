@@ -7,7 +7,6 @@ using Database.Lib.Interfaces;
 using Database.Models.Masters;
 using Database.Models.BaseTables;
 using Common.Lib;
-using Common.DTO.SeaExport;
 using Database.Models.Cargo;
 using System.Diagnostics.Eventing.Reader;
 using SeaImport.Interfaces;
@@ -20,7 +19,7 @@ namespace SeaImport.Repositories
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
         private DateTime log_date;
-        private string smbl_mode = "SEA EXPORT";
+        private string smbl_mode = "SEA IMPORT";
         public SeaImportmRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -237,7 +236,7 @@ namespace SeaImport.Repositories
                     throw new Exception("No Data Found");
 
                 Record.master_cntr = await getCntrAsync(Record.mbl_id);
-                // Record.master_house = await GetHouseAsync(Record.mbl_id);
+                Record.master_house = await GetHouseAsync(Record.mbl_id);
 
                 return Record;
             }
@@ -288,12 +287,12 @@ namespace SeaImport.Repositories
             return records;
         }
 
-        public async Task<List<cargo_sea_exporth_dto>> GetHouseAsync(int id)
+        public async Task<List<cargo_sea_importh_dto>> GetHouseAsync(int id)
         {
             var query = from e in context.cargo_housem
                         .Where(a => a.hbl_mbl_id == id)
                         .OrderBy(o => o.hbl_id)
-                        select (new cargo_sea_exporth_dto
+                        select (new cargo_sea_importh_dto
                         {
                             hbl_id = e.hbl_id,
                             hbl_mbl_id = e.hbl_mbl_id,
@@ -323,7 +322,7 @@ namespace SeaImport.Repositories
                 _Record = await saveCntrAsync(_Record.mbl_id, mode, _Record);
                 // await 
                 _Record.master_cntr = await getCntrAsync(_Record.mbl_id);
-                // _Record.master_house = await GetHouseAsync(_Record.mbl_id);
+                _Record.master_house = await GetHouseAsync(_Record.mbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -419,22 +418,22 @@ namespace SeaImport.Repositories
                 if (mode == "add")
                 {
 
-                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "SEA-EXP-MASTER-PREFIX,SEA-EXP-MASTER-STARTING-NO");// 
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "SEA-IMP-MASTER-PREFIX,SEA-IMP-MASTER-STARTING-NO");// 
 
                     var DefaultCfNo = 0;
                     var Defaultprefix = "";
 
-                    if (result.ContainsKey("SEA-EXP-MASTER-STARTING-NO"))
+                    if (result.ContainsKey("SEA-IMP-MASTER-STARTING-NO"))
                     {
-                        DefaultCfNo = Lib.StringToInteger(result["SEA-EXP-MASTER-STARTING-NO"]);
+                        DefaultCfNo = Lib.StringToInteger(result["SEA-IMP-MASTER-STARTING-NO"]);
                     }
-                    if (result.ContainsKey("SEA-EXP-MASTER-PREFIX"))
+                    if (result.ContainsKey("SEA-IMP-MASTER-PREFIX"))
                     {
-                        Defaultprefix = result["SEA-EXP-MASTER-PREFIX"].ToString();
+                        Defaultprefix = result["SEA-IMP-MASTER-PREFIX"].ToString();
                     }
                     if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
                     {
-                        throw new Exception("Missing Sea Export master Prefix/Starting-Number in Branch Settings");
+                        throw new Exception("Missing Sea Import master Prefix/Starting-Number in Branch Settings");
                     }
 
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
@@ -530,7 +529,11 @@ namespace SeaImport.Repositories
                     Record.mbl_ship_term_id = record_dto.mbl_ship_term_id;
 
                 Record.mbl_cntr_type = record_dto.mbl_cntr_type;
-                Record.mbl_incoterm_id = record_dto.mbl_incoterm_id;
+                
+                if (Lib.IsZero(record_dto.mbl_incoterm_id))
+                    Record.mbl_incoterm_id = null;
+                else
+                    Record.mbl_incoterm_id = record_dto.mbl_incoterm_id;
 
                 if (Lib.IsZero(record_dto.mbl_pol_id))
                     Record.mbl_pol_id = null;
@@ -559,6 +562,15 @@ namespace SeaImport.Repositories
                     Record.mbl_vessel_id = record_dto.mbl_vessel_id;
                 Record.mbl_vessel_name = record_dto.mbl_vessel_name;
                 Record.mbl_voyage = record_dto.mbl_voyage;
+
+                if (Lib.IsZero(record_dto.mbl_status_id))
+                    Record.mbl_status_id = null;
+                else
+                    Record.mbl_status_id = record_dto.mbl_status_id;
+                Record.mbl_ombl_sent_on = Lib.ParseDate(record_dto.mbl_of_sent_on!);
+                Record.mbl_ombl_sent_ampm = record_dto.mbl_ombl_sent_ampm;
+                Record.mbl_of_sent_on = Lib.ParseDate(record_dto.mbl_of_sent_on!);
+
                 if (Lib.IsZero(record_dto.mbl_cargo_loc_id))
                     Record.mbl_cargo_loc_id = null;
                 else
@@ -661,10 +673,6 @@ namespace SeaImport.Repositories
                 //Add or Edit Records cntr
                 foreach (var rec in records_dto)
                 {
-                    // CommonLib.ValidContainerNumber(rec.cntr_no!);
-                    // {
-                    //     throw new Exception($"Invalid Container Number: {rec.cntr_no}");// 4 Character And 7 digits.
-                    // }
 
                     if (rec.cntr_id == 0)
                     {

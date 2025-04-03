@@ -331,6 +331,10 @@ namespace UserAdmin.Repositories
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "IATA CODE", "", "STRING", "", "", "", "",21);
 
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "HAWB-FORMAT", "", "TABLE", "param,HAWB-FORMAT,param_id,param_code, param_name", "", "", "", 24);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-IMP-MASTER-PREFIX", "", "STRING", "", "", "", "", 28);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-IMP-MASTER-STARTING-NO", "", "INT", "", "", "", "",29);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-IMP-HOUSE-PREFIX", "", "STRING", "", "", "", "", 30);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-IMP-HOUSE-STARTING-NO", "", "INT", "", "", "", "",31);
 
             return retValue;
         }
