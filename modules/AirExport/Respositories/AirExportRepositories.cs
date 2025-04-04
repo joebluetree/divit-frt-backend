@@ -157,7 +157,7 @@ namespace AirExport.Repositories
                             hbl_houseno = e.hbl_houseno,
                             hbl_mbl_refno = e.master!.mbl_refno,
 
-                            hbl_date = Lib.FormatDate(e.hbl_date, Lib.outputDateFormat),
+                            hbl_date = Lib.FormatDate(e.hbl_date, Lib.DisplayDateFormat),
 
                             hbl_shipper_id = e.hbl_shipper_id,
                             hbl_shipper_code = e.shipper!.cust_code,
@@ -171,8 +171,8 @@ namespace AirExport.Repositories
                             hbl_handled_name = e.handledby!.param_name,
 
                             hbl_packages = e.hbl_packages,
-                            hbl_issued_date = Lib.FormatDate(e.hbl_issued_date, Lib.outputDateFormat),
-                            hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateFormat),
+                            hbl_issued_date = Lib.FormatDate(e.hbl_issued_date, Lib.DisplayDateFormat),
+                            hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.DisplayDateFormat),
 
                             rec_company_id = e.rec_company_id,
                             rec_branch_id = e.rec_branch_id,
@@ -576,8 +576,8 @@ namespace AirExport.Repositories
                 .TrackColumn("mbl_currency_code", "Currency Code")
                 .TrackColumn("mbl_handled_name", "Handled By")
                 .TrackColumn("mbl_salesman_name", "Salesman Name")
-                .TrackColumn("mbl_mawb_weight", "MAWB Weight")
-                .TrackColumn("mbl_mawb_chwt", "MAWB Chargeable Weight")
+                .TrackColumn("mbl_mawb_weight", "MAWB Weight", "decimal")
+                .TrackColumn("mbl_mawb_chwt", "MAWB Chargeable Weight", "decimal")
                 .TrackColumn("mbl_3rdparty", "Third Party")
                 .TrackColumn("mbl_direct", "Direct")
                 .TrackColumn("mbl_vessel_name", "Vessel Name")

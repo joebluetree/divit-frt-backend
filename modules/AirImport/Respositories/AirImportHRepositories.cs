@@ -141,6 +141,7 @@ namespace AirImport.Repositories
 
                     hbl_agent_name = e.hbl_agent_name,
                     hbl_frt_status_name = e.hbl_frt_status_name,
+                    hbl_packages = e.hbl_packages,
 
                     hbl_bltype = e.hbl_bltype,
                     hbl_handled_id = e.hbl_handled_id,
@@ -271,6 +272,7 @@ namespace AirImport.Repositories
 
                     hbl_bltype = e.hbl_bltype,
                     hbl_place_final = e.hbl_place_final,
+                    hbl_plf_eta = Lib.FormatDate(e.hbl_plf_eta, Lib.outputDateFormat),
                     hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateFormat),
 
                     rec_version = e.rec_version,
@@ -506,6 +508,7 @@ namespace AirImport.Repositories
                         .Include(c => c.format)
                         .Include(c => c.location)
                         .Include(c => c.salesman)
+                        .Include(c => c.paidstatus)
                         .Where(f => f.hbl_id == id)
                         .FirstOrDefaultAsync();
 
@@ -604,6 +607,7 @@ namespace AirImport.Repositories
 
                 Record.hbl_bltype = record_dto.hbl_bltype;
                 Record.hbl_place_final = record_dto.hbl_place_final;
+                Record.hbl_plf_eta = Lib.ParseDate(record_dto.hbl_plf_eta!);
                 Record.hbl_delivery_date = Lib.ParseDate(record_dto.hbl_delivery_date!);
                 //Mode = add, Then add values to the table cargo_housem.
                 if (mode == "add")
@@ -961,11 +965,11 @@ namespace AirImport.Repositories
                 .TrackColumn("hbl_location_add4", "Location Address 4")
                 .TrackColumn("hbl_frt_status_name", "Freight Status Name")
                 .TrackColumn("hbl_uom_name", "UOM Name")
-                .TrackColumn("hbl_packages", "Packages")
-                .TrackColumn("hbl_weight", "Weight")
-                .TrackColumn("hbl_lbs", "LBS")
-                .TrackColumn("hbl_chwt_lbs", "Chargeable Weight LBS")
-                .TrackColumn("hbl_chwt", "Chargeable Weight")
+                .TrackColumn("hbl_packages", "Packages", "int")
+                .TrackColumn("hbl_weight", "Weight", "decimal")
+                .TrackColumn("hbl_lbs", "LBS", "decimal")
+                .TrackColumn("hbl_chwt_lbs", "Chargeable Weight LBS", "decimal")
+                .TrackColumn("hbl_chwt", "Chargeable Weight", "decimal")
                 .TrackColumn("hbl_commodity", "Commodity")
                 .TrackColumn("hbl_handled_name", "Handled By Name")
                 .TrackColumn("hbl_salesman_name", "Salesman Name")
@@ -992,18 +996,18 @@ namespace AirImport.Repositories
                 .TrackColumn("hbl_it_no", "IT.No.1")
                 .TrackColumn("hbl_it_date", "IT.Date 1")
                 .TrackColumn("hbl_it_port", "IT.Port 1")
-                .TrackColumn("hbl_it_pcs", "IT.Pcs 1")
-                .TrackColumn("hbl_it_wt", "IT.Weight 1")
+                .TrackColumn("hbl_it_pcs", "IT.Pcs 1", "int")
+                .TrackColumn("hbl_it_wt", "IT.Weight 1", "decimal")
                 .TrackColumn("hbl_it_no2", "IT.No.2")
                 .TrackColumn("hbl_it_date2", "IT.Date 2")
                 .TrackColumn("hbl_it_port2", "IT.Port 2")
-                .TrackColumn("hbl_it_pcs2", "IT.Pcs 2")
-                .TrackColumn("hbl_it_wt2", "IT.Weight 2")
+                .TrackColumn("hbl_it_pcs2", "IT.Pcs 2", "int")
+                .TrackColumn("hbl_it_wt2", "IT.Weight 2", "decimal")
                 .TrackColumn("hbl_it_no3", "IT.No.3")
                 .TrackColumn("hbl_it_date3", "IT.Date 3")
                 .TrackColumn("hbl_it_port3", "IT.Port 3")
-                .TrackColumn("hbl_it_pcs3", "IT.Pcs 3")
-                .TrackColumn("hbl_it_wt3", "IT.Weight 3")
+                .TrackColumn("hbl_it_pcs3", "IT.Pcs 3", "int")
+                .TrackColumn("hbl_it_wt3", "IT.Weight 3", "decimal")
                 .TrackColumn("hbl_place_final", "Final Destination")
                 .TrackColumn("hbl_plf_eta", "Final Date")
                 .SetRecord(old_record_dto, record_dto)

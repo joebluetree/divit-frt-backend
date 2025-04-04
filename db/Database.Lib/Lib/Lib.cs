@@ -8,7 +8,7 @@ namespace Database.Lib
     {
         public static string outputDateTimeFormat = "yyyy-MM-ddTHHmmss";
         public static string outputDateFormat = "yyyy-MM-dd";
-
+        public static string DisplayDateFormat = "dd-MMM-yyyy";
         public static string BACK_END_DATE_FORMAT = "yyyy-MM-dd";
         public static int getTotalPages(int Rows, int PageSize)
         {

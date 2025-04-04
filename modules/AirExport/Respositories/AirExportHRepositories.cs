@@ -121,7 +121,7 @@ namespace AirExport.Repositories
                     hbl_mbl_refno = e.master!.mbl_refno,
                     hbl_shipment_stage_id = e.hbl_shipment_stage_id,
                     hbl_shipment_stage_name = e.shipstage!.param_name,
-                    hbl_date = Lib.FormatDate(e.hbl_date, Lib.outputDateTimeFormat),
+                    hbl_date = Lib.FormatDate(e.hbl_date, Lib.outputDateFormat),
                     hbl_mode = e.hbl_mode,
                     hbl_shipper_id = e.hbl_shipper_id,
                     hbl_shipper_code = e.shipper!.cust_code,
@@ -1149,8 +1149,8 @@ namespace AirExport.Repositories
                 .TrackColumn("hbl_asarranged_consignee", "As Arranged Consignee")
                 .TrackColumn("hbl_asarranged_shipper", "As Arranged Shipper")
 
-                .TrackColumn("hbl_packages", "Packages")
-                .TrackColumn("hbl_weight", "Weight")
+                .TrackColumn("hbl_packages", "Packages", "int")
+                .TrackColumn("hbl_weight", "Weight", "decimal")
                 .TrackColumn("hbl_weight_unit", "Weight Unit")
                 .TrackColumn("hbl_class", "Class")
                 .TrackColumn("hbl_comm", "Commodity")

@@ -171,8 +171,8 @@ namespace AirImport.Repositories
                             hbl_handled_name = e.handledby!.param_name,
 
                             hbl_packages = e.hbl_packages,
-                            hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateFormat),
-                            hbl_pickup_date = Lib.FormatDate(e.hbl_pickup_date, Lib.outputDateFormat),
+                            hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.DisplayDateFormat),
+                            hbl_pickup_date = Lib.FormatDate(e.hbl_pickup_date, Lib.DisplayDateFormat),
 
                             rec_company_id = e.rec_company_id,
                             rec_branch_id = e.rec_branch_id,
@@ -394,6 +394,7 @@ namespace AirImport.Repositories
                         .Include(c => c.handledby)
                         .Include(c => c.pol)
                         .Include(c => c.pod)
+                        .Include(c => c.incoterm)
                         .Where(f => f.mbl_id == id)
                         .FirstOrDefaultAsync();
 
@@ -421,13 +422,13 @@ namespace AirImport.Repositories
                 Record.mbl_pod_eta = Lib.ParseDate(record_dto.mbl_pod_eta!);
                 Record.mbl_country_id = record_dto.mbl_country_id;
                 Record.mbl_liner_id = record_dto.mbl_liner_id;
-                
+
                 Record.mbl_handled_id = record_dto.mbl_handled_id;
                 Record.mbl_salesman_id = record_dto.mbl_salesman_id;
                 Record.mbl_mawb_weight = record_dto.mbl_mawb_weight;
                 Record.mbl_mawb_chwt = record_dto.mbl_mawb_chwt;
                 Record.mbl_vessel_name = record_dto.mbl_vessel_name;
-                
+
                 Record.mbl_cargo_loc_id = record_dto.mbl_cargo_loc_id;
                 Record.mbl_cargo_loc_name = record_dto.mbl_cargo_loc_name;
                 Record.mbl_cargo_loc_add1 = record_dto.mbl_cargo_loc_add1;
@@ -546,7 +547,7 @@ namespace AirImport.Repositories
                 mbl_cargo_loc_add4 = old_record.mbl_cargo_loc_add4,
                 mbl_incoterm = old_record.incoterm?.param_name,
 
-                
+
 
             };
 
@@ -571,16 +572,16 @@ namespace AirImport.Repositories
                 .TrackColumn("mbl_liner_name", "Liner Name")
                 .TrackColumn("mbl_handled_name", "Handled By")
                 .TrackColumn("mbl_salesman_name", "Salesman Name")
-                .TrackColumn("mbl_mawb_weight", "MAWB Weight")
-                .TrackColumn("mbl_mawb_chwt", "MAWB Chargeable Weight")
+                .TrackColumn("mbl_mawb_weight", "MAWB Weight", "decimal")
+                .TrackColumn("mbl_mawb_chwt", "MAWB Chargeable Weight", "decimal")
                 .TrackColumn("mbl_vessel_name", "Vessel Name")
 
-                .TrackColumn("mbl_cargo_loc_name","Cargo Location Name")
-                .TrackColumn("mbl_cargo_loc_add1","Cargo Location Address1")
-                .TrackColumn("mbl_cargo_loc_add2","Cargo Location Address2")
-                .TrackColumn("mbl_cargo_loc_add3","Cargo Location Address3")
-                .TrackColumn("mbl_cargo_loc_add4","Cargo Location Address4")
-                .TrackColumn("mbl_incoterm","Inco Term")         
+                .TrackColumn("mbl_cargo_loc_name", "Cargo Location Name")
+                .TrackColumn("mbl_cargo_loc_add1", "Cargo Location Address1")
+                .TrackColumn("mbl_cargo_loc_add2", "Cargo Location Address2")
+                .TrackColumn("mbl_cargo_loc_add3", "Cargo Location Address3")
+                .TrackColumn("mbl_cargo_loc_add4", "Cargo Location Address4")
+                .TrackColumn("mbl_incoterm", "Inco Term")
 
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
