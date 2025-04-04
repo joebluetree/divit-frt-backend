@@ -123,7 +123,7 @@ namespace SeaImport.Repositories
                     hbl_houseno = e.hbl_houseno,
                     hbl_shipper_name = e.hbl_shipper_name,
                     hbl_consignee_name = e.hbl_consignee_name,
-                    hbl_pcs = e.hbl_pcs,
+                    hbl_packages = e.hbl_packages,
                     hbl_handled_name = e.handledby!.param_name,
                     hbl_mbl_pol_etd = Lib.FormatDate(e.master!.mbl_pol_etd, Lib.outputDateFormat),
                     hbl_mbl_pod_eta = Lib.FormatDate(e.master!.mbl_pod_eta, Lib.outputDateFormat),
@@ -232,7 +232,8 @@ namespace SeaImport.Repositories
                     hbl_ams_fileno = e.hbl_ams_fileno,
                     hbl_sub_house = e.hbl_sub_house,
                     hbl_isf_no = e.hbl_isf_no,
-                    hbl_telex_released = e.hbl_telex_released,
+                    hbl_telex_released_id = e.hbl_telex_released_id,
+                    hbl_telex_released_name = e.telexrelease!.param_name,
                     hbl_mov_dad = e.hbl_mov_dad,
                     hbl_bl_req = e.hbl_bl_req,
                     hbl_book_slno = e.hbl_book_slno,
@@ -437,17 +438,6 @@ namespace SeaImport.Repositories
                     rec_company_id = e.rec_company_id,
                 }).FirstOrDefaultAsync();
 
-                // var caption = new List<string> {"DEFAULT-DRAFT-FORMAT","DEFAULT-BLANK-FORMAT"};
-
-                // var settings =await context.mast_settings
-                // .Where(f => f.rec_company_id == Record!.rec_company_id && f.rec_branch_id == Record.rec_branch_id && caption.Contains(f.caption!))
-                // .ToListAsync();
-
-                // var blank_format_id = settings.FirstOrDefault(s=>s.caption == "DEFAULT-BLANK-FORMAT")?.value;
-                // var blank_format_name = settings.FirstOrDefault(s=>s.caption == "DEFAULT-BLANK-FORMAT")?.name;
-                // var draft_format_id = settings.FirstOrDefault(s=>s.caption == "DEFAULT-DRAFT-FORMAT")?.value;
-                // var draft_format_name = settings.FirstOrDefault(s=>s.caption == "DEFAULT-DRAFT-FORMAT")?.name;
-
                 if(Record!=null){
                     Record.hbl_bl_req = $"* ENDORSED ORIGINAL B/L REQUIRED";
                 }
@@ -457,6 +447,9 @@ namespace SeaImport.Repositories
                 if(Record!=null)
                 {
                     var DefaultCntr = await GetMastCntrAsync(id);
+                    Record.hbl_uom_id = DefaultCntr.FirstOrDefault()?.cntr_packages_unit_id ?? 0;
+                    Record.hbl_uom_name = DefaultCntr.FirstOrDefault()?.cntr_packages_unit_name ?? "";
+                    Record.hbl_packages = DefaultCntr.Sum(c=>c.cntr_pieces);
                     Record.hbl_weight = DefaultCntr.Sum(c=> c.cntr_weight);
                     Record.hbl_cbm = DefaultCntr.Sum(c=> c.cntr_cbm);
                     Record.house_cntr = DefaultCntr;
@@ -760,7 +753,11 @@ namespace SeaImport.Repositories
                 Record.hbl_ams_fileno = record_dto.hbl_ams_fileno;
                 Record.hbl_sub_house = record_dto.hbl_sub_house;
                 Record.hbl_isf_no = record_dto.hbl_isf_no;
-                Record.hbl_telex_released = record_dto.hbl_telex_released;
+                if (Lib.IsZero(record_dto.hbl_telex_released_id))
+                    Record.hbl_telex_released_id = null;
+                else
+                    Record.hbl_telex_released_id = record_dto.hbl_telex_released_id;
+                
                 Record.hbl_mov_dad = record_dto.hbl_mov_dad;
                 Record.hbl_bl_req = record_dto.hbl_bl_req;
                 Record.hbl_book_slno = record_dto.hbl_book_slno;
@@ -1205,7 +1202,7 @@ namespace SeaImport.Repositories
                 hbl_ams_fileno = old_record.hbl_ams_fileno,
                 hbl_sub_house = old_record.hbl_sub_house,
                 hbl_isf_no = old_record.hbl_isf_no,
-                hbl_telex_released = old_record.hbl_telex_released,
+                hbl_telex_released_name = old_record.telexrelease?.param_name,
                 hbl_mov_dad = old_record.hbl_mov_dad,
                 hbl_bl_req = old_record.hbl_bl_req,
                 hbl_book_slno = old_record.hbl_book_slno,
@@ -1298,7 +1295,7 @@ namespace SeaImport.Repositories
             .TrackColumn("hbl_ams_fileno", "AMS File No")
             .TrackColumn("hbl_sub_house", "Sub House")
             .TrackColumn("hbl_isf_no", "ISF No")
-            .TrackColumn("hbl_telex_released", "Telex Released")
+            .TrackColumn("hbl_telex_released_name", "Telex Released")
             .TrackColumn("hbl_mov_dad", "Movement DAD")
             .TrackColumn("hbl_bl_req", "BL Requirement")
             .TrackColumn("hbl_book_slno", "Booking Serial No")

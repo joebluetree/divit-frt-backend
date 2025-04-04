@@ -299,9 +299,13 @@ namespace SeaImport.Repositories
                             hbl_houseno = e.hbl_houseno,
                             hbl_shipper_name = e.hbl_shipper_name,
                             hbl_consignee_name = e.consignee!.cust_name,
-                            hbl_pcs = e.hbl_pcs,
+                            hbl_client_cat = e.consignee!.cust_type,
+                            hbl_client_type = e.consignee!.cust_nomination,
+                            hbl_packages = e.hbl_packages,
                             hbl_handled_name = e.handledby!.param_name,
+                            hbl_telex_released_name = e.telexrelease!.param_name,
                             hbl_frt_status_name = e.hbl_frt_status_name,
+                            hbl_ship_term_name = e.shipterm!.param_name,
                             rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateFormat),
                             rec_created_by = e.rec_created_by,
                         });
@@ -348,6 +352,8 @@ namespace SeaImport.Repositories
             string type = "";
             string cntr_no = "";
             string unit = "";
+            DateTime? etd_date = Lib.ParseDate(record_dto.mbl_pol_etd!)?? null;
+            DateTime? eta_date = Lib.ParseDate(record_dto.mbl_pod_eta!)?? null;
 
 
             if (Lib.IsBlank(record_dto.mbl_agent_name))
@@ -364,12 +370,18 @@ namespace SeaImport.Repositories
                 str += "Shipping Type Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_pol_name))
                 str += "POL Cannot Be Blank!";
-            if (Lib.IsBlank(record_dto.mbl_pol_etd))
-                str += "ETD Cannot Be Blank!";
+            
+                if (Lib.IsBlank(record_dto.mbl_pol_etd))
+                    str += "ETD Cannot Be Blank!";
+            
             if (Lib.IsBlank(record_dto.mbl_pod_name))
                 str += "Port.Discharge Cannot Be Blank!";
-            if (Lib.IsBlank(record_dto.mbl_pod_eta))
-                str += "ETA Cannot Be Blank!";
+            if (eta_date < etd_date)
+            {
+                str += "ETD Cannot be Greater than POD ETA";
+                if (Lib.IsBlank(record_dto.mbl_pod_eta))
+                    str += "ETA Cannot Be Blank!";
+            }
             if (Lib.IsBlank(record_dto.mbl_country_name))
                 str += "Dest.Country Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_vessel_name))

@@ -40,6 +40,8 @@ namespace Common.DTO.SeaImport
         public string? hbl_consignee_add3 { get; set; } = "";
         public string? hbl_consignee_add4 { get; set; } = "";
         public string? hbl_consignee_add5 { get; set; } = "";
+        public string? hbl_client_cat { get; set; } = "";
+        public string? hbl_client_type { get; set; } = "";
         public int? hbl_location_id { get; set; } = 0;
         public string? hbl_location_code { get; set; } = "";
         public string? hbl_location_name { get; set; } = "";
@@ -99,7 +101,8 @@ namespace Common.DTO.SeaImport
         public string? hbl_ams_fileno { get; set; } = "";
         public string? hbl_sub_house { get; set; } = "";
         public string? hbl_isf_no { get; set; } = "";
-        public string? hbl_telex_released { get; set; } = "";
+        public int? hbl_telex_released_id { get; set; } = 0;
+        public string? hbl_telex_released_name { get; set; } = "";
         public string? hbl_mov_dad { get; set; } = "";
         public string? hbl_bl_req { get; set; } = "";
         public string? hbl_book_slno { get; set; } = "";
