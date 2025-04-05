@@ -75,7 +75,7 @@ namespace Database.Models.Cargo
         public string? hbl_it_port3 { get; set; }
         public int? hbl_it_pcs3 { get; set; }
         public decimal? hbl_it_wt3 { get; set; }
-        public string? hbl_telex_released { get; set; }
+        public int? hbl_telex_released_id { get; set; }
         public string? hbl_place_delivery { get; set; }
         public string? hbl_place_final { get; set; }
         public DateTime? hbl_pld_eta { get; set; }
@@ -271,8 +271,10 @@ namespace Database.Models.Cargo
 
         [ForeignKey("hbl_paid_status_id")] //changed
         public mast_param? paidstatus { get; set; }
-      
-      
+
+        [ForeignKey("hbl_telex_released_id")] //changed
+        public mast_param? telex { get; set; }
+        
         [ForeignKey("rec_company_id")]
         public mast_companym? company { get; set; }
 
