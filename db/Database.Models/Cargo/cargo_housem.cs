@@ -196,7 +196,6 @@ namespace Database.Models.Cargo
         public DateTime? hbl_custom_clear_date { get; set; }
         public int? hbl_container_tot { get; set; }
         public int? hbl_incoterm_id { get; set; } //changed
-        public string? hbl_incoterm { get; set; }
         public string? hbl_software_name { get; set; }
         public string? hbl_an_sent { get; set; }
         public string? hbl_an_sent_by { get; set; }
@@ -216,7 +215,7 @@ namespace Database.Models.Cargo
         public DateTime? rec_edited_date { get; set; }
         public int rec_company_id { get; set; }
         public int rec_branch_id { get; set; }
-        
+
 
         [ForeignKey("hbl_mbl_id")]
         public cargo_masterm? master { get; set; }
@@ -260,6 +259,12 @@ namespace Database.Models.Cargo
         [ForeignKey("hbl_format_id")]//
         public mast_param? format { get; set; }
 
+        [ForeignKey("hbl_telex_released_id")] //changed
+        public mast_param? telexrelease { get; set; }
+
+        [ForeignKey("hbl_paid_status_id")] //changed
+        public mast_param? paidstatus { get; set; }
+
         [ForeignKey("hbl_draft_format_id")]//
         public mast_param? draftformat { get; set; }
 
@@ -269,12 +274,9 @@ namespace Database.Models.Cargo
         [ForeignKey("hbl_incoterm_id")] //changed
         public mast_param? incoterm { get; set; }
 
-        [ForeignKey("hbl_paid_status_id")] //changed
-        public mast_param? paidstatus { get; set; }
 
-        [ForeignKey("hbl_telex_released_id")] //changed
-        public mast_param? telex { get; set; }
-        
+
+
         [ForeignKey("rec_company_id")]
         public mast_companym? company { get; set; }
 

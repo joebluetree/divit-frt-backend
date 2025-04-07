@@ -157,8 +157,6 @@ namespace AirImport.Repositories
                             hbl_houseno = e.hbl_houseno,
                             hbl_mbl_refno = e.master!.mbl_refno,
 
-                            //hbl_date = Lib.FormatDate(e.hbl_date, Lib.outputDateFormat),
-
                             hbl_shipper_id = e.hbl_shipper_id,
                             hbl_shipper_code = e.shipper!.cust_code,
                             hbl_shipper_name = e.hbl_shipper_name,
@@ -546,8 +544,6 @@ namespace AirImport.Repositories
                 mbl_cargo_loc_add3 = old_record.mbl_cargo_loc_add3,
                 mbl_cargo_loc_add4 = old_record.mbl_cargo_loc_add4,
                 mbl_incoterm = old_record.incoterm?.param_name,
-
-
 
             };
 

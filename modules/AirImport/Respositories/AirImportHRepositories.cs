@@ -585,7 +585,6 @@ namespace AirImport.Repositories
                 Record.hbl_is_delivery = record_dto.hbl_is_delivery;
                 Record.hbl_paid_remarks = record_dto.hbl_paid_remarks;
                 Record.hbl_incoterm_id = record_dto.hbl_incoterm_id;
-                Record.hbl_incoterm = record_dto.hbl_incoterm;
                 Record.hbl_invoiceno = record_dto.hbl_invoiceno;
                 Record.hbl_delivery_date = Lib.ParseDate(record_dto.hbl_delivery_date!);
 

@@ -47,6 +47,7 @@ namespace Database.Models.Cargo
         public int? mbl_house_tot { get; set; }
         public decimal? mbl_cntr_cbm { get; set; }
         public int? mbl_container_tot { get; set; }
+        public decimal? mbl_cbm_tot { get; set; }
         public string? mbl_remarks { get; set; }
         public int? mbl_shipper_tot { get; set; }
         public int? mbl_consignee_tot { get; set; }
@@ -129,7 +130,7 @@ namespace Database.Models.Cargo
         public int? mbl_zero_chwt { get; set; }
         public int? mbl_zero_wt { get; set; }
         public string? mbl_loss_approved { get; set; }
-      
+
         [ConcurrencyCheck]
         public int rec_version { get; set; }
         public int? rec_year { get; set; }
@@ -141,7 +142,7 @@ namespace Database.Models.Cargo
         public int rec_company_id { get; set; }
         public int rec_branch_id { get; set; }
 
-      
+
         [ForeignKey("mbl_agent_id")]
         public mast_customerm? agent { get; set; }
 
@@ -172,6 +173,9 @@ namespace Database.Models.Cargo
         [ForeignKey("mbl_ship_term_id")]
         public mast_param? shipterm { get; set; }
 
+        [ForeignKey("mbl_incoterm_id")]
+        public mast_param? incoterm { get; set; } //changed
+
         [ForeignKey("mbl_status_id")]
         public mast_param? mblstatus { get; set; } //changed
 
@@ -179,7 +183,7 @@ namespace Database.Models.Cargo
         public mast_customerm? cargoloc { get; set; } //changed
 
         [ForeignKey("mbl_devan_loc_id")]
-        public mast_param? devanloc { get; set; }
+        public mast_customerm? devanloc { get; set; }
 
         [ForeignKey("mbl_handled_id")]
         public mast_param? handledby { get; set; }
@@ -199,8 +203,8 @@ namespace Database.Models.Cargo
         [ForeignKey("mbl_salesman_id")]
         public mast_param? salesman { get; set; }
 
-        [ForeignKey("mbl_incoterm_id")]
-        public mast_param? incoterm { get; set; } //changed
+        [ForeignKey("mbl_coloader_id")]
+        public mast_param? coloader { get; set; }
 
 
         [ForeignKey("rec_company_id")]
