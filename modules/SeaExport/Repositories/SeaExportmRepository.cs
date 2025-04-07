@@ -476,7 +476,6 @@ namespace SeaExport.Repositories
                 {
                     Record.mbl_shipment_stage_id = record_dto.mbl_shipment_stage_id;
 
-                    //to update all house shipstages under this master
                     await CommonLib.UpdateHouseShipmentStage(context, Record.mbl_id, record_dto.mbl_shipment_stage_id);
                 }
                 Record.mbl_no = record_dto.mbl_no;

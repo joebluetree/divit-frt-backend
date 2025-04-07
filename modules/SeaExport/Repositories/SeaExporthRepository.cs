@@ -417,7 +417,7 @@ namespace SeaExport.Repositories
                     {
                         desc_description = e.mbl_cntr_type == "LCL" ? "SAID TO CONTAIN" : ""
                     },
-                    
+                    hbl_notify_name = "SAME AS CONSIGNEE",
                     rec_branch_id = e.rec_branch_id,
                     rec_company_id = e.rec_company_id,
                 }).FirstOrDefaultAsync();

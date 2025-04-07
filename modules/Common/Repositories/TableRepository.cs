@@ -93,6 +93,7 @@ namespace Common.Repositories
             files.Add("Masters\\mast_param_ship-move-status.txt");
             files.Add("Masters\\mast_param_state.txt");
             files.Add("Masters\\mast_param_unit-master.txt");
+            files.Add("Masters\\mast_param_telex-release.txt");
             files.Add("Masters\\mast_param_newid.txt");
             files.Add("UserAdmin\\mast_mail_serverm.txt");
 

@@ -89,7 +89,7 @@ namespace Common.Lib
             }
             return teu;
         }
-        public static async Task SaveMasterSummary(AppDbContext _context, int mbl_id)//,cargo_sea_exporth_dto record_dto
+        public static async Task SaveMasterSummary(AppDbContext _context, int? mbl_id)//,cargo_sea_exporth_dto record_dto
         {
             context = _context;
 
@@ -121,8 +121,9 @@ namespace Common.Lib
                 await context.SaveChangesAsync();
             }
         }
-        public static async Task UpdateHouseShipmentStage(AppDbContext context, int mbl_id, int? newShipmentStageId)
+        public static async Task UpdateHouseShipmentStage(AppDbContext _context, int mbl_id, int? newShipmentStageId)
         {
+            context = _context;
             // Get all houses under that master
             var houseList = await context.cargo_housem
                 .Where(h => h.hbl_mbl_id == mbl_id)
@@ -158,47 +159,6 @@ namespace Common.Lib
             }
 
             return str;
-        }
-        
-           //Save update function for house count. 
-        public static async Task SaveMasterSummary(AppDbContext _context,int? id)
-        {
-            context = _context;
-            // Get House list from the database table cargo_housem
-            var houseList = context.cargo_housem
-                .Where(h => h.hbl_mbl_id == id)
-                .ToList();
-
-            int houseCount = houseList.Count(); //Get the count of Houses
-
-            //Get Shipper Count from house list
-            int ShipperCount = houseList
-                .Where(h => !Database.Lib.Lib.IsBlank(h.hbl_shipper_name))
-                .Select(h => h.hbl_shipper_name)
-                .Distinct()
-                .Count();
-
-            //Get Consignee Count from the House List
-            int ConsigneeCount = houseList
-                .Where(h => !Database.Lib.Lib.IsBlank(h.hbl_consignee_name))
-                .Select(h => h.hbl_consignee_name)
-                .Distinct()
-                .Count();
-
-            //select the master record from the database
-            var master_Record = context.cargo_masterm
-                .Where(m => m.mbl_id == id)
-                .FirstOrDefault();
-
-            //Assign values to the master record
-            if (master_Record != null)
-            {
-                master_Record.mbl_house_tot = houseCount;
-                master_Record.mbl_shipper_tot = ShipperCount;
-                master_Record.mbl_consignee_tot = ConsigneeCount;
-                await context.SaveChangesAsync();
-            }
-
         }
 
     }

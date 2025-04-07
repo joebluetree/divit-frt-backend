@@ -1334,7 +1334,6 @@ namespace SeaImport.Repositories
                 cntr_pieces = record.cntr_pieces,
                 cntr_packages_unit_name = record.packunit?.param_name,
                 cntr_packages = record.cntr_packages,
-                // cntr_teu = record.cntr_teu,
                 cntr_cbm = record.cntr_cbm,
                 cntr_weight_uom = record.cntr_weight_uom,
                 cntr_weight = record.cntr_weight,
@@ -1360,7 +1359,6 @@ namespace SeaImport.Repositories
                 .TrackColumn("cntr_pieces", "Pieces")
                 .TrackColumn("cntr_packages_unit_name", "Packages Unit")
                 .TrackColumn("cntr_packages", "Packages")
-                // .TrackColumn("cntr_teu", "TEU", "decimal")
                 .TrackColumn("cntr_cbm", "CBM", "decimal")
                 .TrackColumn("cntr_weight_uom", "Weight UOM")
                 .TrackColumn("cntr_weight", "Weight", "decimal")
@@ -1370,6 +1368,7 @@ namespace SeaImport.Repositories
                 .TrackColumn("cntr_return_date", "Return Date")
                 .TrackColumn("cntr_lfd", "LFD")
                 .TrackColumn("cntr_discharge_date", "Discharge Date")
+                .TrackColumn("cntr_order", "Order", "int")
                 .SetRecords(old_records_dto, record_dto.house_cntr!)
                 .LogChangesAsync();
 

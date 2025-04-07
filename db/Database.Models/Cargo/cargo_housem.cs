@@ -59,19 +59,19 @@ namespace Database.Models.Cargo
         public string? hbl_consigned_to4 { get; set; }
         public string? hbl_consigned_to5 { get; set; }
         public string? hbl_ams_fileno { get; set; }
-        public string? hbl_sub_house { get; set; }
+        public string? hbl_sub_house { get; set; }//
         public string? hbl_it_no { get; set; }
         public DateTime? hbl_it_date { get; set; }
         public string? hbl_it_port { get; set; }
         public int? hbl_it_pcs { get; set; }
         public decimal? hbl_it_wt { get; set; }
-        public string? hbl_it_no2 { get; set; }
-        public DateTime? hbl_it_date2 { get; set; }
-        public string? hbl_it_port2 { get; set; }
-        public int? hbl_it_pcs2 { get; set; }
-        public decimal? hbl_it_wt2 { get; set; }
-        public string? hbl_it_no3 { get; set; }
-        public DateTime? hbl_it_date3 { get; set; }
+        public string? hbl_it_no2 { get; set; }//
+        public DateTime? hbl_it_date2 { get; set; }//
+        public string? hbl_it_port2 { get; set; }//
+        public int? hbl_it_pcs2 { get; set; }//
+        public decimal? hbl_it_wt2 { get; set; }//
+        public string? hbl_it_no3 { get; set; }//
+        public DateTime? hbl_it_date3 { get; set; }//
         public string? hbl_it_port3 { get; set; }
         public int? hbl_it_pcs3 { get; set; }
         public decimal? hbl_it_wt3 { get; set; }
@@ -195,7 +195,7 @@ namespace Database.Models.Cargo
         public DateTime? hbl_delivery_date { get; set; }
         public DateTime? hbl_custom_clear_date { get; set; }
         public int? hbl_container_tot { get; set; }
-        public int? hbl_incoterm_id { get; set; }
+        public int? hbl_incoterm_id { get; set; } //changed
         public string? hbl_software_name { get; set; }
         public string? hbl_an_sent { get; set; }
         public string? hbl_an_sent_by { get; set; }
@@ -215,7 +215,7 @@ namespace Database.Models.Cargo
         public DateTime? rec_edited_date { get; set; }
         public int rec_company_id { get; set; }
         public int rec_branch_id { get; set; }
-        
+
 
         [ForeignKey("hbl_mbl_id")]
         public cargo_masterm? master { get; set; }
@@ -253,16 +253,16 @@ namespace Database.Models.Cargo
         [ForeignKey("hbl_pofd_id")] //
         public mast_param? pofd { get; set; }
 
-        [ForeignKey("hbl_careof_id")]
-        public mast_customerm? careof { get; set; }
+        [ForeignKey("hbl_careof_id")]//
+        public mast_customerm? careof { get; set; } //changed param to cust.
 
-        [ForeignKey("hbl_format_id")]
+        [ForeignKey("hbl_format_id")]//
         public mast_param? format { get; set; }
-        
-        [ForeignKey("hbl_telex_released_id")]
+
+        [ForeignKey("hbl_telex_released_id")] //changed
         public mast_param? telexrelease { get; set; }
-        
-        [ForeignKey("hbl_paid_status_id")]//
+
+        [ForeignKey("hbl_paid_status_id")] //changed
         public mast_param? paidstatus { get; set; }
 
         [ForeignKey("hbl_draft_format_id")]//
@@ -270,11 +270,13 @@ namespace Database.Models.Cargo
 
         [ForeignKey("hbl_uom_id")]
         public mast_param? packageunit { get; set; }
-        
-        [ForeignKey("hbl_incoterm_id")]
+
+        [ForeignKey("hbl_incoterm_id")] //changed
         public mast_param? incoterm { get; set; }
-      
-      
+
+
+
+
         [ForeignKey("rec_company_id")]
         public mast_companym? company { get; set; }
 

@@ -102,6 +102,7 @@ namespace Common.DTO.SeaImport
         public string? hbl_sub_house { get; set; } = "";
         public string? hbl_isf_no { get; set; } = "";
         public int? hbl_telex_released_id { get; set; } = 0;
+        public string? hbl_telex_released_code { get; set; } = "";
         public string? hbl_telex_released_name { get; set; } = "";
         public string? hbl_mov_dad { get; set; } = "";
         public string? hbl_bl_req { get; set; } = "";

@@ -137,6 +137,8 @@ namespace SeaImport.Repositories
                     mbl_pod_name = e.pod!.param_name,
                     mbl_pod_eta = Lib.FormatDate(e.mbl_pod_eta, Lib.outputDateFormat),
                     mbl_cntr_type = e.mbl_cntr_type,
+                    mbl_teu = e.mbl_cntr_type == "LCL" ? 0 : e.mbl_teu,
+                    mbl_cbm_tot = e.mbl_cbm_tot,
                     mbl_handled_name = e.handledby!.param_name,
 
                     rec_created_by = e.rec_created_by,
@@ -177,7 +179,7 @@ namespace SeaImport.Repositories
                     mbl_agent_name = e.agent!.cust_name,
                     mbl_liner_id = e.mbl_liner_id,
                     mbl_liner_name = e.liner!.param_name,
-                    mbl_coloader_id =e.mbl_coloader_id,
+                    mbl_coloader_id = e.mbl_coloader_id,
                     mbl_coloader_name = e.coloader!.param_name,
                     mbl_handled_id = e.mbl_handled_id,
                     mbl_handled_name = e.handledby!.param_name,
@@ -303,16 +305,25 @@ namespace SeaImport.Repositories
                             hbl_client_type = e.consignee!.cust_nomination,
                             hbl_packages = e.hbl_packages,
                             hbl_handled_name = e.handledby!.param_name,
+                            hbl_telex_released_code = e.telexrelease!.param_code,
                             hbl_telex_released_name = e.telexrelease!.param_name,
                             hbl_frt_status_name = e.hbl_frt_status_name,
                             hbl_ship_term_name = e.shipterm!.param_name,
-                            rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateFormat),
+                            rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                             rec_created_by = e.rec_created_by,
                         });
 
             var records = await query.ToListAsync();
 
             return records;
+        }
+        // to get cbm total from container table
+        public decimal? GetCbmTotal(cargo_sea_importm_dto record_dto)
+        {
+            decimal? cbmTotal = 0;
+            if (record_dto.master_cntr != null)//|| record_dto.master_cntr!.Any()
+                cbmTotal = record_dto.master_cntr.Sum(c => c.cntr_cbm);
+            return cbmTotal;
         }
 
         public async Task<cargo_sea_importm_dto> SaveAsync(int id, string mode, cargo_sea_importm_dto record_dto)
@@ -352,8 +363,8 @@ namespace SeaImport.Repositories
             string type = "";
             string cntr_no = "";
             string unit = "";
-            DateTime? etd_date = Lib.ParseDate(record_dto.mbl_pol_etd!)?? null;
-            DateTime? eta_date = Lib.ParseDate(record_dto.mbl_pod_eta!)?? null;
+            DateTime? etd_date = Lib.ParseDate(record_dto.mbl_pol_etd!) ?? null;
+            DateTime? eta_date = Lib.ParseDate(record_dto.mbl_pod_eta!) ?? null;
 
 
             if (Lib.IsBlank(record_dto.mbl_agent_name))
@@ -370,10 +381,10 @@ namespace SeaImport.Repositories
                 str += "Shipping Type Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_pol_name))
                 str += "POL Cannot Be Blank!";
-            
-                if (Lib.IsBlank(record_dto.mbl_pol_etd))
-                    str += "ETD Cannot Be Blank!";
-            
+
+            if (Lib.IsBlank(record_dto.mbl_pol_etd))
+                str += "ETD Cannot Be Blank!";
+
             if (Lib.IsBlank(record_dto.mbl_pod_name))
                 str += "Port.Discharge Cannot Be Blank!";
             if (eta_date < etd_date)
@@ -392,10 +403,10 @@ namespace SeaImport.Repositories
             {
                 if (Lib.IsBlank(rec.cntr_type_name))
                     type = "Type Cannot Be Blank!";
-                if(!CommonLib.IsValidContainerNumber(rec.cntr_no!))
+                if (!CommonLib.IsValidContainerNumber(rec.cntr_no!))
                     cntr_no = $"Invalid Container Number: {rec.cntr_no}";
-                    if (Lib.IsBlank(rec.cntr_no))
-                        cntr_no = "Cntr No Cannot Be Blank!";
+                if (Lib.IsBlank(rec.cntr_no))
+                    cntr_no = "Cntr No Cannot Be Blank!";
                 if (Lib.IsBlank(rec.cntr_packages_unit_name))
                     unit = "Unit Cannot Be Blank";
             }
@@ -502,10 +513,9 @@ namespace SeaImport.Repositories
                 Record.mbl_ref_date = Lib.ParseDate(record_dto.mbl_ref_date!);
                 if (Record.mbl_shipment_stage_id != record_dto.mbl_shipment_stage_id)
                 {
-                    Record.mbl_shipment_stage_id = record_dto.mbl_shipment_stage_id;
+                                     Record.mbl_shipment_stage_id = record_dto.mbl_shipment_stage_id;
 
-                    //to update all house shipstages under this master
-                    // await CommonLib.UpdateHouseShipmentStage(context, Record.mbl_id, record_dto.mbl_shipment_stage_id);
+                    await CommonLib.UpdateHouseShipmentStage(context, Record.mbl_id, record_dto.mbl_shipment_stage_id);
                 }
                 Record.mbl_no = record_dto.mbl_no;
 
@@ -541,7 +551,7 @@ namespace SeaImport.Repositories
                     Record.mbl_ship_term_id = record_dto.mbl_ship_term_id;
 
                 Record.mbl_cntr_type = record_dto.mbl_cntr_type;
-                
+
                 if (Lib.IsZero(record_dto.mbl_incoterm_id))
                     Record.mbl_incoterm_id = null;
                 else
@@ -558,7 +568,7 @@ namespace SeaImport.Repositories
                 else
                     Record.mbl_pod_id = record_dto.mbl_pod_id;
                 Record.mbl_pod_eta = Lib.ParseDate(record_dto.mbl_pod_eta!);
-                
+
                 Record.mbl_place_delivery = record_dto.mbl_place_delivery;
 
                 Record.mbl_pofd_eta = Lib.ParseDate(record_dto.mbl_pofd_eta!);
@@ -611,6 +621,7 @@ namespace SeaImport.Repositories
                 Record.mbl_45 = record_dto.mbl_45;
                 Record.mbl_teu = record_dto.mbl_teu;
                 Record.mbl_container_tot = record_dto.mbl_container_tot;
+                Record.mbl_cbm_tot = GetCbmTotal(record_dto);
 
                 if (mode == "add")
                     await context.cargo_masterm.AddAsync(Record);
@@ -843,6 +854,7 @@ namespace SeaImport.Repositories
             var old_record_dto = new cargo_sea_importm_dto
             {
                 mbl_id = old_record.mbl_id,
+                mbl_cfno = old_record.mbl_cfno,
                 mbl_refno = old_record.mbl_refno,
                 mbl_ref_date = Lib.FormatDate(old_record.mbl_ref_date, Lib.outputDateFormat),
                 mbl_shipment_stage_name = old_record.shipstage?.param_name,
@@ -863,13 +875,14 @@ namespace SeaImport.Repositories
                 mbl_place_delivery = old_record.mbl_place_delivery,
                 mbl_pofd_eta = Lib.FormatDate(old_record.mbl_pofd_eta, Lib.outputDateFormat),
                 mbl_country_name = old_record.country?.param_name,
+                mbl_vessel_code = old_record.vessel?.param_code,
                 mbl_vessel_name = old_record.mbl_vessel_name,
                 mbl_voyage = old_record.mbl_voyage,
                 mbl_status_name = old_record.mblstatus?.param_name,
                 mbl_is_sea_waybill = old_record.mbl_is_sea_waybill,
-                mbl_ombl_sent_on = Lib.FormatDate(old_record.mbl_ombl_sent_on,Lib.outputDateFormat),
+                mbl_ombl_sent_on = Lib.FormatDate(old_record.mbl_ombl_sent_on, Lib.outputDateFormat),
                 mbl_ombl_sent_ampm = old_record.mbl_ombl_sent_ampm,
-                mbl_of_sent_on = Lib.FormatDate(old_record.mbl_of_sent_on,Lib.outputDateFormat),
+                mbl_of_sent_on = Lib.FormatDate(old_record.mbl_of_sent_on, Lib.outputDateFormat),
                 mbl_cargo_loc_code = old_record.cargoloc?.cust_code,
                 mbl_cargo_loc_name = old_record.mbl_cargo_loc_name,
                 mbl_cargo_loc_add1 = old_record.mbl_cargo_loc_add1,
@@ -890,31 +903,48 @@ namespace SeaImport.Repositories
                 .PrimaryKey("mbl_id", record_dto.mbl_id)
                 .RefNo(record_dto.mbl_refno!)
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
+                .TrackColumn("mbl_cfno", "CF No")
                 .TrackColumn("mbl_refno", "Reference No")
-                .TrackColumn("mbl_ref_date", "Reference Date")
+                .TrackColumn("mbl_ref_date", "Reference Date", "date")
                 .TrackColumn("mbl_shipment_stage_name", "Shipment Stage Name")
                 .TrackColumn("mbl_no", "MBL No")
-                .TrackColumn("mbl_sub_houseno", "Sub House No")
-                .TrackColumn("mbl_liner_bookingno", "Liner Booking No")
                 .TrackColumn("mbl_agent_name", "Agent Name")
                 .TrackColumn("mbl_liner_name", "Liner Name")
+                .TrackColumn("mbl_coloader_name", "Coloader Name")
                 .TrackColumn("mbl_handled_name", "Handled By Name")
                 .TrackColumn("mbl_salesman_name", "Salesman Name")
                 .TrackColumn("mbl_frt_status_name", "Freight Status Name")
                 .TrackColumn("mbl_ship_term_name", "Shipping Term Name")
-                .TrackColumn("mbl_cntr_type", "Shipping Type")
-                .TrackColumn("mbl_direct", "Direct Shipment")
-                .TrackColumn("mbl_place_delivery", "Place of Delivery")
+                .TrackColumn("mbl_cntr_type", "Container Type")
+                .TrackColumn("mbl_incoterm_name", "Incoterm Name")
                 .TrackColumn("mbl_pol_name", "Port of Loading")
                 .TrackColumn("mbl_pol_etd", "ETD (POL)", "date")
                 .TrackColumn("mbl_pod_name", "Port of Discharge")
                 .TrackColumn("mbl_pod_eta", "ETA (POD)", "date")
-                .TrackColumn("mbl_pofd_name", "Place of Final Delivery")
+                .TrackColumn("mbl_place_delivery", "Place of Delivery")
                 .TrackColumn("mbl_pofd_eta", "ETA (POFD)", "date")
                 .TrackColumn("mbl_country_name", "Country Name")
+                .TrackColumn("mbl_vessel_code", "Vessel Code")
                 .TrackColumn("mbl_vessel_name", "Vessel Name")
                 .TrackColumn("mbl_voyage", "Voyage")
-                .TrackColumn("mbl_book_slno", "Booking Serial No")
+                .TrackColumn("mbl_status_name", "Status Name")
+                .TrackColumn("mbl_is_sea_waybill", "Sea Waybill")
+                .TrackColumn("mbl_ombl_sent_on", "OMBL Sent On", "date")
+                .TrackColumn("mbl_ombl_sent_ampm", "OMBL AM/PM")
+                .TrackColumn("mbl_of_sent_on", "OF Sent On", "date")
+                .TrackColumn("mbl_cargo_loc_code", "Cargo Location Code")
+                .TrackColumn("mbl_cargo_loc_name", "Cargo Location Name")
+                .TrackColumn("mbl_cargo_loc_add1", "Cargo Loc Address 1")
+                .TrackColumn("mbl_cargo_loc_add2", "Cargo Loc Address 2")
+                .TrackColumn("mbl_cargo_loc_add3", "Cargo Loc Address 3")
+                .TrackColumn("mbl_cargo_loc_add4", "Cargo Loc Address 4")
+                .TrackColumn("mbl_devan_loc_code", "Devan Location Code")
+                .TrackColumn("mbl_devan_loc_name", "Devan Location Name")
+                .TrackColumn("mbl_devan_loc_add1", "Devan Loc Address 1")
+                .TrackColumn("mbl_devan_loc_add2", "Devan Loc Address 2")
+                .TrackColumn("mbl_devan_loc_add3", "Devan Loc Address 3")
+                .TrackColumn("mbl_devan_loc_add4", "Devan Loc Address 4")
+
 
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
@@ -942,7 +972,7 @@ namespace SeaImport.Repositories
                 cntr_return_date = Lib.FormatDate(record.cntr_return_date, Lib.outputDateFormat),
                 cntr_lfd = Lib.FormatDate(record.cntr_lfd, Lib.outputDateFormat),
                 cntr_discharge_date = Lib.FormatDate(record.cntr_discharge_date, Lib.outputDateFormat),
-                // cntr_order = record.cntr_order
+                cntr_order = record.cntr_order
             }).ToList();
 
             await new LogHistorym<cargo_container_dto>(context)
@@ -966,7 +996,7 @@ namespace SeaImport.Repositories
                 .TrackColumn("cntr_return_date", "Return Date")
                 .TrackColumn("cntr_lfd", "LFD")
                 .TrackColumn("cntr_discharge_date", "Discharge Date")
-                // .TrackColumn("cntr_order", "Order", "int")
+                .TrackColumn("cntr_order", "Order", "int")
                 .SetRecords(old_records_dto, record_dto.master_cntr!)
                 .LogChangesAsync();
 
