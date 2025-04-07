@@ -62,14 +62,14 @@ CREATE TABLE IF NOT EXISTS cargo_housem (
     hbl_it_port3 varchar(60) NULL,
     hbl_it_pcs3 int4 NULL,
     hbl_it_wt3 numeric(14,3) NULL,
-    hbl_telex_released varchar(1) NULL,
+    hbl_telex_released_id int4 NULL,
     hbl_place_delivery varchar(60) NULL,
     hbl_place_final varchar(60) NULL,
     hbl_pld_eta date NULL,
     hbl_plf_eta date NULL,
-    hbl_frt_status_name varchar(60) NULL,
+    hbl_frt_status_name varchar(60) NULL, 
     hbl_ship_term_id int4 NULL,
-    hbl_uom varchar(10) NULL,
+    hbl_uom_id int4 NULL,
     hbl_pcs int4 NULL,
     hbl_packages int4 NULL,
     hbl_cbm numeric(14,3) NULL,
@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS cargo_housem (
     hbl_pono varchar(100) NULL,
     hbl_boeno varchar(60) NULL,
     hbl_format_id int4 NULL,
-    hbl_paid_status varchar(30) NULL,
+    hbl_paid_status_id int4 NULL,
     hbl_bl_status varchar(20) NULL,
     hbl_cargo_release_status varchar(20) NULL,
     hbl_shipment_stage_id int4 NULL,
@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS cargo_housem (
     hbl_delivery_date date NULL,
     hbl_custom_clear_date date NULL,
     hbl_container_tot int4 NULL,
-    hbl_incoterm varchar(15) NULL,
+    hbl_incoterm_id int4 NULL,
     hbl_software_name varchar(15) NULL,
     hbl_an_sent varchar(1) NULL,
     hbl_an_sent_by varchar(15) NULL,
@@ -276,6 +276,26 @@ BEGIN
     -- Check and create index IX_cargo_housem_hbl_draft_format_id
     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_housem_hbl_draft_format_id') THEN
         CREATE INDEX "IX_cargo_housem_hbl_draft_format_id" ON cargo_housem USING btree (hbl_draft_format_id);
+    END IF;
+
+    -- Check and create index IX_cargo_housem_hbl_telex_released_id
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_housem_hbl_telex_released_id') THEN
+        CREATE INDEX "IX_cargo_housem_hbl_telex_released_id" ON cargo_housem USING btree (hbl_telex_released_id);
+    END IF;
+
+    -- Check and create index IX_cargo_housem_hbl_hbl_paid_status_id
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_housem_hbl_hbl_paid_status_id') THEN
+        CREATE INDEX "IX_cargo_housem_hbl_paid_status_id" ON cargo_housem USING btree (hbl_paid_status_id);
+    END IF;
+
+    -- Check and create index IX_cargo_housem_hbl_incoterm_id
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_housem_hbl_incoterm_id') THEN
+        CREATE INDEX "IX_cargo_housem_hbl_incoterm_id" ON cargo_housem USING btree (hbl_incoterm_id);
+    END IF;
+
+    -- Check and create index IX_cargo_housem_hbl_uom_id
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_housem_hbl_hbl_uom_id') THEN
+        CREATE INDEX "IX_cargo_housem_hbl_uom_id" ON cargo_housem USING btree (hbl_uom_id);
     END IF;
 
     -- Check and create index IX_cargo_housem_rec_branch_id

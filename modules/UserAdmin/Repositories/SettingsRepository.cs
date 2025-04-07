@@ -322,6 +322,12 @@ namespace UserAdmin.Repositories
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIREXPORT-MASTER-PREFIX", "", "STRING", "", "", "", "", 11);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIREXPORT-MASTER-STARTING-NO", "", "INT", "", "", "", "",12);
 
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIRIMPORT-MASTER-PREFIX", "", "STRING", "", "", "", "", 24);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIRIMPORT-MASTER-STARTING-NO", "", "INT", "", "", "", "",25);
+
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIRIMPORT-HOUSE-PREFIX", "", "STRING", "", "", "", "", 26);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIRIMPORT-HOUSE-STARTING-NO", "", "INT", "", "", "", "",27);
+
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIREXPORT-HOUSE-PREFIX", "", "STRING", "", "", "", "", 13);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIREXPORT-HOUSE-STARTING-NO", "", "INT", "", "", "", "",14);
             

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.JsonPatch.Helpers;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Npgsql;
 using System.Xml.Linq;
+using Database.Models.Masters;
 
 
 namespace Database.Lib.Repositories
@@ -174,6 +175,40 @@ namespace Database.Lib.Repositories
             catch (Exception)
             {
                 throw;
+            }
+        }
+
+
+        public async Task<mast_customerm> GetCustomerAsync(int id)
+        {
+            try
+            {
+                IQueryable<mast_customerm> query = context.mast_customerm;
+                query = query.Where(f => f.cust_id == id);
+
+                var Record = await query.Select(e => new mast_customerm
+                {
+                    cust_id = e.cust_id,
+                    cust_code = e.cust_code,
+                    cust_name = e.cust_name,
+                    cust_address1 = e.cust_address1,
+                    cust_address2 = e.cust_address2,
+                    cust_address3 = e.cust_address3,
+                    cust_contact = e.cust_contact,
+                    cust_tel = e.cust_tel,
+                    cust_fax = e.cust_fax,
+                    cust_email = e.cust_email,
+                    cust_nomination = e.cust_nomination,
+                    cust_is_parent = e.cust_is_parent,
+                    cust_chb_id = e.cust_chb_id,
+                    rec_company_id = e.rec_company_id
+                }).FirstOrDefaultAsync();
+
+                return Record!;
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
             }
         }
 

@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS cargo_masterm (
     mbl_frt_status_name varchar(60) NULL,
     mbl_ship_term_id int4 NULL,
     mbl_cntr_type varchar(60) NULL,
-    mbl_telex_released varchar(10) NULL,
+    mbl_telex_released varchar(60) NULL,
     mbl_it_no varchar(60) NULL,
     mbl_it_date date NULL,
     mbl_it_port varchar(60) NULL,
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS cargo_masterm (
     mbl_shipment_stage_id int4 NULL,
     mbl_salesman_id int4 NULL,
     mbl_rotation_no varchar(60) NULL,
-    mbl_status varchar(50) NULL,
+    mbl_status_id int4 NULL,
     mbl_is_sea_waybill varchar(10) NULL,
     mbl_ombl_sent_on date NULL,
     mbl_pending_status varchar(10) NULL,
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS cargo_masterm (
     mbl_customer_id int4 NULL,
     mbl_software_name varchar(15) NULL,
     mbl_it_tot varchar(10) NULL,
-    mbl_incoterm varchar(15) NULL,
+    mbl_incoterm_id int4 NULL,
     mbl_bo_status varchar(15) NULL,
     mbl_bo_attended_code varchar(15) NULL,
     mbl_bo_attended_date date NULL,
@@ -232,6 +232,16 @@ BEGIN
     -- Check and create index IX_cargo_masterm_mbl_shipment_stage_id
     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_masterm_mbl_shipment_stage_id') THEN
         CREATE INDEX "IX_cargo_masterm_mbl_shipment_stage_id" ON cargo_masterm USING btree (mbl_shipment_stage_id);
+    END IF;
+
+    -- Check and create index IX_cargo_masterm_mbl_status_id
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_masterm_mbl_status_id') THEN
+        CREATE INDEX "IX_cargo_masterm_mbl_status_id" ON cargo_masterm USING btree (mbl_status_id);
+    END IF;
+
+    -- Check and create index IX_cargo_masterm_mbl_incoterm_id
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_masterm_mbl_incoterm_id') THEN
+        CREATE INDEX "IX_cargo_masterm_mbl_incoterm_id" ON cargo_masterm USING btree (mbl_incoterm_id);
     END IF;
 
     -- Check and create index IX_cargo_masterm_rec_branch_id
