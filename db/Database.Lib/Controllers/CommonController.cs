@@ -45,6 +45,21 @@ namespace Database.Lib.Controllers
                 return BadRequest(Ex.Message.ToString());
             }
         }
+        
+        [HttpGet]
+        [Route("GetCustomerAsync")]
+        public async  Task<IActionResult> GetCustomerAsync(int id)
+        {
+            try
+            {
+                var record = await mRepository.GetCustomerAsync(id);
+                return Ok(record);  
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Ex.Message.ToString());
+            }
+        }
 
         [HttpGet]
         [Route("GetCustomerAsync")]

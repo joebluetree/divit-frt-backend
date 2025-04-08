@@ -8,29 +8,27 @@ using Database.Models.Masters;
 using Database.Models.BaseTables;
 using Common.Lib;
 
-using Common.DTO.SeaExport;
 using Database.Models.Cargo;
-using SeaExport.Interfaces;
 using System.Threading.Tasks.Dataflow;
 using System.Numerics;
+using SeaImport.Interfaces;
+using Common.DTO.SeaImport;
 
 //Name : Sourav V
-//Created Date : 03/03/2025
+//Created Date : 01/04/2025
 //Remark : this file defines functions like Save, Delete, getList and getRecords which save/retrieve data
-//version v1-03-03-2025: added full repository
-//        v2-10-03-2025: edited mbl_id reference 
-//        v3-15-03-2025: added function UpdateHouse and GetTeuValue
-//        v4-18-03-2025: modified SaveMarksandDesc for updating logHistory
+//version v1-01-04-2025: added full repository
 
-namespace SeaExport.Repositories
+
+namespace SeaImport.Repositories
 {
-    public class SeaExporthRepository : ISeaExporthRepository
+    public class SeaImporthRepository : ISeaImporthRepository
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
         private DateTime log_date;
-        private string shbl_mode = "SEA EXPORT";
-        public SeaExporthRepository(AppDbContext _context, IAuditLog _auditLog)
+        private string shbl_mode = "SEA IMPORT";
+        public SeaImporthRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
             this.auditLog = _auditLog;
@@ -117,7 +115,7 @@ namespace SeaExport.Repositories
                     .Skip(StartRow)
                     .Take(_page.pageSize);
 
-                var Records = await query.Select(e => new cargo_sea_exporth_dto
+                var Records = await query.Select(e => new cargo_sea_importh_dto
                 {
                     hbl_id = e.hbl_id,
                     hbl_mbl_refno = e.master!.mbl_refno,
@@ -125,7 +123,7 @@ namespace SeaExport.Repositories
                     hbl_houseno = e.hbl_houseno,
                     hbl_shipper_name = e.hbl_shipper_name,
                     hbl_consignee_name = e.hbl_consignee_name,
-                    hbl_pcs = e.hbl_pcs,
+                    hbl_packages = e.hbl_packages,
                     hbl_handled_name = e.handledby!.param_name,
                     hbl_mbl_pol_etd = Lib.FormatDate(e.master!.mbl_pol_etd, Lib.outputDateFormat),
                     hbl_mbl_pod_eta = Lib.FormatDate(e.master!.mbl_pod_eta, Lib.outputDateFormat),
@@ -146,7 +144,7 @@ namespace SeaExport.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
-        public async Task<cargo_sea_exporth_dto?> GetRecordAsync(int id)
+        public async Task<cargo_sea_importh_dto?> GetRecordAsync(int id)
         {
             try
             {
@@ -155,7 +153,7 @@ namespace SeaExport.Repositories
 
                 query = query.Where(f => f.hbl_id == id);
 
-                var Record = await query.Select(e => new cargo_sea_exporth_dto
+                var Record = await query.Select(e => new cargo_sea_importh_dto
                 {
                     hbl_id = e.hbl_id,
                     hbl_mbl_id = e.hbl_mbl_id,
@@ -182,6 +180,14 @@ namespace SeaExport.Repositories
                     hbl_consignee_add3 = e.hbl_consignee_add3,
                     hbl_consignee_add4 = e.hbl_consignee_add4,
                     hbl_consignee_add5 = e.hbl_consignee_add5,
+                    hbl_location_id = e.hbl_location_id,
+                    hbl_location_code = e.location!.cust_code,
+                    hbl_location_name = e.hbl_location_name,
+                    hbl_location_add1 = e.hbl_location_add1,
+                    hbl_location_add2 = e.hbl_location_add2,
+                    hbl_location_add3 = e.hbl_location_add3,
+                    hbl_location_add4 = e.hbl_location_add4,
+                    hbl_location_add5 = e.hbl_location_add5,
                     hbl_notify_id = e.hbl_notify_id,
                     hbl_notify_code = e.notify!.cust_code,
                     hbl_notify_name = e.hbl_notify_name,
@@ -190,62 +196,71 @@ namespace SeaExport.Repositories
                     hbl_notify_add3 = e.hbl_notify_add3,
                     hbl_notify_add4 = e.hbl_notify_add4,
                     hbl_notify_add5 = e.hbl_notify_add5,
-
-                    hbl_exp_ref1 = e.hbl_exp_ref1,
-                    hbl_exp_ref2 = e.hbl_exp_ref2,
-                    hbl_exp_ref3 = e.hbl_exp_ref3,
-                    hbl_agent_id = e.hbl_agent_id,//from master
+                    hbl_careof_id = e.hbl_careof_id,
+                    hbl_careof_name = e.careof!.cust_name,
+                    hbl_agent_id = e.hbl_agent_id,
                     hbl_agent_name = e.agent!.cust_name,
-                    hbl_origin = e.hbl_origin,
-                    hbl_rout1 = e.hbl_rout1,
-                    hbl_rout2 = e.hbl_rout2,
-                    hbl_rout3 = e.hbl_rout3,
-                    hbl_rout4 = e.hbl_rout4,
-                    hbl_pre_carriage = e.hbl_pre_carriage,
-                    hbl_place_receipt = e.hbl_place_receipt,
-
-                    hbl_pol_name = e.hbl_pol_name,//from master
-                    hbl_pod_name = e.hbl_pod_name,//from master
-                    hbl_place_delivery = e.hbl_place_delivery,//from master
-                    hbl_pofd_name = e.hbl_pofd_name,
-                    hbl_type_move = e.hbl_type_move,
-                    hbl_is_cntrized = e.hbl_is_cntrized,
-                    hbl_frt_status_name = e.hbl_frt_status_name,
-                    hbl_handled_id = e.hbl_handled_id,
-                    hbl_handled_name = e.handledby!.param_name,
-                    hbl_salesman_id = e.hbl_salesman_id,
-                    hbl_salesman_name = e.salesman!.param_name,
-                    hbl_goods_nature = e.hbl_goods_nature,
-                    hbl_commodity = e.hbl_commodity,
-                    hbl_is_arranged = e.hbl_is_arranged,
-                    hbl_obl_telex = e.hbl_obl_telex,
-                    hbl_obl_slno = e.hbl_obl_slno,
-                    hbl_format_id = e.hbl_format_id,
-                    hbl_format_name = e.format!.param_name,
-                    hbl_draft_format_id = e.hbl_draft_format_id,
-                    hbl_draft_format_name = e.draftformat!.param_name,
-
+                    hbl_cha_id = e.hbl_cha_id,
+                    hbl_cha_code = e.cha!.cust_code,
+                    hbl_cha_name = e.hbl_cha_name,
+                    hbl_cha_attn = e.hbl_cha_attn,
+                    hbl_cha_tel = e.hbl_cha_tel,
+                    hbl_cha_fax = e.hbl_cha_fax,
+                    hbl_place_delivery = e.hbl_place_delivery,
+                    hbl_pld_eta = Lib.FormatDate(e.hbl_pld_eta, Lib.outputDateFormat),
+                    hbl_place_final = e.hbl_place_final,
+                    hbl_plf_eta = Lib.FormatDate(e.hbl_plf_eta, Lib.outputDateFormat),
+                    hbl_it_no = e.hbl_it_no,
+                    hbl_is_itshipment = e.hbl_is_itshipment,
+                    hbl_it_port = e.hbl_it_port,
+                    hbl_it_date = Lib.FormatDate(e.hbl_it_date, Lib.outputDateFormat),
+                    hbl_packages = e.hbl_packages,
+                    hbl_uom_id = e.hbl_uom_id,
+                    hbl_uom_name = e.packageunit!.param_name,
                     hbl_lbs = e.hbl_lbs,
                     hbl_weight = e.hbl_weight,
                     hbl_cft = e.hbl_cft,
                     hbl_cbm = e.hbl_cbm,
                     hbl_pcs = e.hbl_pcs,
-                    hbl_packages = e.hbl_packages,
-                    hbl_uom_id = e.hbl_uom_id,
-                    hbl_uom_name = e.packageunit!.param_name,
-                    hbl_print_kgs = e.hbl_print_kgs,
-                    hbl_print_lbs = e.hbl_print_lbs,
-                    hbl_clean = e.hbl_clean,
+                    hbl_commodity = e.hbl_commodity,
+                    hbl_ship_term_id = e.hbl_ship_term_id,
+                    hbl_ship_term_name = e.shipterm!.param_name,
+                    hbl_incoterm_id = e.hbl_incoterm_id,
+                    hbl_incoterm_name = e.incoterm!.param_name,
+                    hbl_pono = e.hbl_pono,
+                    hbl_invoiceno = e.hbl_invoiceno,
+                    hbl_ams_fileno = e.hbl_ams_fileno,
+                    hbl_sub_house = e.hbl_sub_house,
+                    hbl_isf_no = e.hbl_isf_no,
+                    hbl_telex_released_id = e.hbl_telex_released_id,
+                    hbl_telex_released_name = e.telexrelease!.param_name,
+                    hbl_mov_dad = e.hbl_mov_dad,
+                    hbl_bl_req = e.hbl_bl_req,
+                    hbl_book_slno = e.hbl_book_slno,
+                    hbl_is_pl = e.hbl_is_pl,
+                    hbl_is_ci = e.hbl_is_ci,
+                    hbl_is_carr_an = e.hbl_is_carr_an,
+                    hbl_custom_reles_status = e.hbl_custom_reles_status,
+                    hbl_custom_clear_date = Lib.FormatDate(e.hbl_custom_clear_date, Lib.outputDateFormat),
+                    hbl_is_delivery = e.hbl_is_delivery,
+                    hbl_paid_status_id = e.hbl_paid_status_id,
+                    hbl_paid_status_name = e.paidstatus!.param_name,
+                    hbl_bl_status = e.hbl_bl_status,
+                    hbl_cargo_release_status = e.hbl_cargo_release_status,
+                    hbl_frt_status_name = e.hbl_frt_status_name,
+                    hbl_handled_id = e.hbl_handled_id,
+                    hbl_handled_name = e.handledby!.param_name,
+                    hbl_salesman_id = e.hbl_salesman_id,
+                    hbl_salesman_name = e.salesman!.param_name,
+
                     hbl_remark1 = e.hbl_remark1,
                     hbl_remark2 = e.hbl_remark2,
                     hbl_remark3 = e.hbl_remark3,
-                    hbl_by1 = e.hbl_by1,
-                    hbl_by2 = e.hbl_by2,
-                    hbl_issued_place = e.hbl_issued_place,
-                    hbl_issued_date = Lib.FormatDate(e.hbl_issued_date, Lib.outputDateFormat),
+                    hbl_lfd_date = Lib.FormatDate(e.hbl_lfd_date, Lib.outputDateFormat),
+                    hbl_go_date = Lib.FormatDate(e.hbl_go_date, Lib.outputDateFormat),
+                    hbl_pickup_date = Lib.FormatDate(e.hbl_pickup_date, Lib.outputDateFormat),
+                    hbl_empty_ret_date = Lib.FormatDate(e.hbl_empty_ret_date, Lib.outputDateFormat),
                     hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateFormat),
-                    hbl_originals = e.hbl_originals,
-
                     rec_version = e.rec_version,
 
                     rec_created_by = e.rec_created_by,
@@ -352,7 +367,7 @@ namespace SeaExport.Repositories
 
             return records;
         }
-        public async Task GetCargoDesc(cargo_sea_exporth_dto Record)
+        public async Task GetCargoDesc(cargo_sea_importh_dto Record)
         {
             //setting initial value to null or new,
             for (int i = 1; i <= 17; i++)
@@ -381,7 +396,7 @@ namespace SeaExport.Repositories
                 Record.GetType().GetProperty($"marks{markGroup.desc_ctr}")?.SetValue(Record, markGroup);
             }
         }
-        public async Task<cargo_sea_exporth_dto?> GetDefaultData(int id)
+        public async Task<cargo_sea_importh_dto?> GetDefaultData(int id)
         {
             try
             {
@@ -389,62 +404,56 @@ namespace SeaExport.Repositories
 
                 query = query.Where(f => f.mbl_id == id && f.mbl_mode == shbl_mode);
 
-                var Record = await query.Select(e => new cargo_sea_exporth_dto
+                var Record = await query.Select(e => new cargo_sea_importh_dto
                 {
                     hbl_mbl_id = e.mbl_id,
                     hbl_shipment_stage_id = e.mbl_shipment_stage_id,
                     hbl_shipment_stage_name = e.shipstage!.param_name,
+                    hbl_location_id = e.mbl_cargo_loc_id,
+                    hbl_location_code = e.cargoloc!.cust_code,
+                    hbl_location_name = e.mbl_cargo_loc_name,
+                    hbl_location_add1 = e.mbl_cargo_loc_add1,
+                    hbl_location_add2 = e.mbl_cargo_loc_add2,
+                    hbl_location_add3 = e.mbl_cargo_loc_add3,
+                    hbl_location_add4 = e.mbl_cargo_loc_add4,                    
                     hbl_mbl_refno = e.mbl_refno,
                     hbl_agent_id = e.mbl_agent_id,
                     hbl_agent_name = e.agent!.cust_name,
-                    hbl_pol_name = e.pol!.param_name,
-                    hbl_pod_name = e.pod!.param_name,
                     hbl_place_delivery = e.mbl_place_delivery,
                     hbl_handled_id = e.mbl_handled_id,
                     hbl_handled_name = e.handledby!.param_name,
                     hbl_salesman_id = e.mbl_salesman_id,
                     hbl_salesman_name = e.salesman!.param_name,
-                    hbl_by1 = e.handledby!.param_name,
-                    hbl_issued_date = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateFormat),
-                    marks1 = new cargo_desc_dto
+                    
+                    marks9 = new cargo_desc_dto
                     {
-                        desc_description = e.mbl_cntr_type == "FCL" || e.mbl_cntr_type == "CONSOLE" ? "SAID TO CONTAIN" :
-                              e.mbl_cntr_type == "LCL" ? "SHIPPERS'S LOAD, COUNT, AND SEALED" :
-                              ""
+                        desc_description = "QUANTITY/QUALITY AS PER SHIPPER'S DECLARATION"
+                    },
+                    marks10 = new cargo_desc_dto
+                    {
+                        desc_description = "CARRIER NOT RESPONSIBLE FOR PACKING OF CARGO" 
+                    },
 
-                    },
-                    marks2 = new cargo_desc_dto
-                    {
-                        desc_description = e.mbl_cntr_type == "LCL" ? "SAID TO CONTAIN" : ""
-                    },
-                    hbl_notify_name = "SAME AS CONSIGNEE",
                     rec_branch_id = e.rec_branch_id,
                     rec_company_id = e.rec_company_id,
                 }).FirstOrDefaultAsync();
-                
-                var caption = new List<string> {"DEFAULT-DRAFT-FORMAT","DEFAULT-BLANK-FORMAT"};
-
-                var settings =await context.mast_settings
-                .Where(f => f.rec_company_id == Record!.rec_company_id && f.rec_branch_id == Record.rec_branch_id && caption.Contains(f.caption!))
-                .ToListAsync();
-
-                var blank_format_id = settings.FirstOrDefault(s=>s.caption == "DEFAULT-BLANK-FORMAT")?.value;
-                var blank_format_name = settings.FirstOrDefault(s=>s.caption == "DEFAULT-BLANK-FORMAT")?.name;
-                var draft_format_id = settings.FirstOrDefault(s=>s.caption == "DEFAULT-DRAFT-FORMAT")?.value;
-                var draft_format_name = settings.FirstOrDefault(s=>s.caption == "DEFAULT-DRAFT-FORMAT")?.name;
 
                 if(Record!=null){
-                    Record.hbl_format_id = Lib.StringToInteger(blank_format_id!);
-                    Record.hbl_format_name = blank_format_name;
-                    Record.hbl_draft_format_id = Lib.StringToInteger(draft_format_id!);
-                    Record.hbl_draft_format_name = draft_format_name;
+                    Record.hbl_bl_req = $"* ENDORSED ORIGINAL B/L REQUIRED";
                 }
 
                 if (Record == null)
                     throw new Exception("No Data Found");
-
-                Record.house_cntr = await GetMastCntrAsync(id);
-
+                if(Record!=null)
+                {
+                    var DefaultCntr = await GetMastCntrAsync(id);
+                    Record.hbl_uom_id = DefaultCntr.FirstOrDefault()?.cntr_packages_unit_id ?? 0;
+                    Record.hbl_uom_name = DefaultCntr.FirstOrDefault()?.cntr_packages_unit_name ?? "";
+                    Record.hbl_packages = DefaultCntr.Sum(c=>c.cntr_pieces);
+                    Record.hbl_weight = DefaultCntr.Sum(c=> c.cntr_weight);
+                    Record.hbl_cbm = DefaultCntr.Sum(c=> c.cntr_cbm);
+                    Record.house_cntr = DefaultCntr;
+                }
                 return Record;
             }
             catch (Exception Ex)
@@ -453,14 +462,14 @@ namespace SeaExport.Repositories
             }
         }
 
-        public async Task<cargo_sea_exporth_dto> SaveAsync(int id, string mode, cargo_sea_exporth_dto record_dto) //string mark,string package,string desc,int ctr,
+        public async Task<cargo_sea_importh_dto> SaveAsync(int id, string mode, cargo_sea_importh_dto record_dto) //string mark,string package,string desc,int ctr,
         {
             try
             {
                 log_date = DbLib.GetDateTime();
 
                 context.Database.BeginTransaction();
-                cargo_sea_exporth_dto _Record = await SaveParentAsync(id, mode, record_dto);
+                cargo_sea_importh_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await saveCntrAsync(_Record.hbl_id, mode, _Record);
                 _Record = await SaveCargoDesc(_Record.hbl_id, mode, record_dto);
                 await CommonLib.SaveMasterSummary(this.context, record_dto.hbl_mbl_id);
@@ -484,7 +493,7 @@ namespace SeaExport.Repositories
         }
 
 
-        private Boolean AllValid(string mode, cargo_sea_exporth_dto record_dto, ref string error)
+        private Boolean AllValid(string mode, cargo_sea_importh_dto record_dto, ref string error)
         {
             Boolean bRet = true;
 
@@ -526,17 +535,17 @@ namespace SeaExport.Repositories
             {
                 if (Lib.IsBlank(rec.cntr_type_name))
                     type = "Type Cannot Be Blank!";
-                if(!CommonLib.IsValidContainerNumber(rec.cntr_no!))
+                if (!CommonLib.IsValidContainerNumber(rec.cntr_no!))
                     cntr_no = $"Invalid Container Number: {rec.cntr_no}";
-                    if (Lib.IsBlank(rec.cntr_no))
-                        cntr_no = "Cntr No Cannot Be Blank!";
+                if (Lib.IsBlank(rec.cntr_no))
+                    cntr_no = "Cntr No Cannot Be Blank!";
                 if (Lib.IsBlank(rec.cntr_packages_unit_name))
                     unit = "Unit Cannot Be Blank";
             }
 
             if (type != "")
                 str += type;
-                
+
             if (cntr_no != "")
                 str += cntr_no;
             if (unit != "")
@@ -551,7 +560,7 @@ namespace SeaExport.Repositories
             return bRet;
         }
 
-        public async Task<cargo_sea_exporth_dto> SaveParentAsync(int id, string mode, cargo_sea_exporth_dto record_dto)
+        public async Task<cargo_sea_importh_dto> SaveParentAsync(int id, string mode, cargo_sea_importh_dto record_dto)
         {
 
             cargo_housem? Record;
@@ -567,22 +576,22 @@ namespace SeaExport.Repositories
                 if (mode == "add")
                 {
 
-                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "SEA-EXP-HOUSE-PREFIX,SEA-EXP-HOUSE-STARTING-NO");
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "SEA-IMP-HOUSE-PREFIX,SEA-IMP-HOUSE-STARTING-NO");
 
                     var DefaultCfNo = 0;
                     var Defaultprefix = "";
 
-                    if (result.ContainsKey("SEA-EXP-HOUSE-STARTING-NO"))
+                    if (result.ContainsKey("SEA-IMP-HOUSE-STARTING-NO"))
                     {
-                        DefaultCfNo = Lib.StringToInteger(result["SEA-EXP-HOUSE-STARTING-NO"]);
+                        DefaultCfNo = Lib.StringToInteger(result["SEA-IMP-HOUSE-STARTING-NO"]);
                     }
-                    if (result.ContainsKey("SEA-EXP-HOUSE-PREFIX"))
+                    if (result.ContainsKey("SEA-IMP-HOUSE-PREFIX"))
                     {
-                        Defaultprefix = result["SEA-EXP-HOUSE-PREFIX"].ToString();
+                        Defaultprefix = result["SEA-IMP-HOUSE-PREFIX"].ToString();
                     }
                     if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
                     {
-                        throw new Exception("Missing Sea Export master Prefix/Starting-Number in Branch Settings");
+                        throw new Exception("Missing Sea Import master Prefix/Starting-Number in Branch Settings");
                     }
 
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
@@ -610,7 +619,6 @@ namespace SeaExport.Repositories
                 else
                 {
                     Record = await context.cargo_housem
-                        // .Include(c => c.master)
                         .Include(c => c.shipstage)
                         .Include(c => c.shipper)
                         .Include(c => c.consignee)
@@ -678,29 +686,92 @@ namespace SeaExport.Repositories
                 Record.hbl_notify_add4 = record_dto.hbl_notify_add4;
                 Record.hbl_notify_add5 = record_dto.hbl_notify_add5;
 
-                Record.hbl_exp_ref1 = record_dto.hbl_exp_ref1;
-                Record.hbl_exp_ref2 = record_dto.hbl_exp_ref2;
-                Record.hbl_exp_ref3 = record_dto.hbl_exp_ref3;
+                if (Lib.IsZero(record_dto.hbl_location_id))
+                    Record.hbl_location_id = null;
+                else
+                    Record.hbl_location_id = record_dto.hbl_location_id;
+                Record.hbl_location_name = record_dto.hbl_location_name;
+                Record.hbl_location_add1 = record_dto.hbl_location_add1;
+                Record.hbl_location_add2 = record_dto.hbl_location_add2;
+                Record.hbl_location_add3 = record_dto.hbl_location_add3;
+                Record.hbl_location_add4 = record_dto.hbl_location_add4;
+                Record.hbl_location_add5 = record_dto.hbl_location_add5;
+
+                if (Lib.IsZero(record_dto.hbl_careof_id))
+                    Record.hbl_careof_id = null;
+                else
+                    Record.hbl_careof_id = record_dto.hbl_careof_id;
 
                 if (Lib.IsZero(record_dto.hbl_agent_id))
                     Record.hbl_agent_id = null;
                 else
                     Record.hbl_agent_id = record_dto.hbl_agent_id;
-                Record.hbl_agent_name = record_dto.hbl_agent_name;
-                Record.hbl_origin = record_dto.hbl_origin;
-                Record.hbl_rout1 = record_dto.hbl_rout1;
-                Record.hbl_rout2 = record_dto.hbl_rout2;
-                Record.hbl_rout3 = record_dto.hbl_rout3;
-                Record.hbl_rout4 = record_dto.hbl_rout4;
-                Record.hbl_pre_carriage = record_dto.hbl_pre_carriage;
-                Record.hbl_place_receipt = record_dto.hbl_place_receipt;
-                Record.hbl_pol_name = record_dto.hbl_pol_name;
-                Record.hbl_pod_name = record_dto.hbl_pod_name;
+
+                if (Lib.IsZero(record_dto.hbl_cha_id))
+                    Record.hbl_cha_id = null;
+                else
+                    Record.hbl_cha_id = record_dto.hbl_cha_id;
+
+                Record.hbl_cha_name = record_dto.hbl_cha_name;
+                Record.hbl_cha_attn = record_dto.hbl_cha_attn;
+                Record.hbl_cha_tel = record_dto.hbl_cha_tel;
+                Record.hbl_cha_fax = record_dto.hbl_cha_fax;
+
                 Record.hbl_place_delivery = record_dto.hbl_place_delivery;
-                Record.hbl_pofd_name = record_dto.hbl_pofd_name;
-                Record.hbl_type_move = record_dto.hbl_type_move;
-                Record.hbl_is_cntrized = record_dto.hbl_is_cntrized;
+                Record.hbl_pld_eta = Lib.ParseDate(record_dto.hbl_pld_eta!);
                 Record.hbl_frt_status_name = record_dto.hbl_frt_status_name;
+                Record.hbl_plf_eta = Lib.ParseDate(record_dto.hbl_plf_eta!);
+                Record.hbl_it_no = record_dto.hbl_it_no;
+                Record.hbl_is_itshipment = record_dto.hbl_is_itshipment;
+                Record.hbl_it_port = record_dto.hbl_it_port;
+                Record.hbl_it_date = Lib.ParseDate(record_dto.hbl_it_date!);
+                Record.hbl_lbs = record_dto.hbl_lbs;
+                Record.hbl_weight = record_dto.hbl_weight;
+                Record.hbl_cft = record_dto.hbl_cft;
+                Record.hbl_cbm = record_dto.hbl_cbm;
+                Record.hbl_pcs = record_dto.hbl_pcs;
+                Record.hbl_packages = record_dto.hbl_packages;
+
+                if (Lib.IsZero(record_dto.hbl_uom_id))
+                    Record.hbl_uom_id = null;
+                else
+                    Record.hbl_uom_id = record_dto.hbl_uom_id;
+                Record.hbl_commodity = record_dto.hbl_commodity;
+
+                if (Lib.IsZero(record_dto.hbl_ship_term_id))
+                    Record.hbl_ship_term_id = null;
+                else
+                    Record.hbl_ship_term_id = record_dto.hbl_ship_term_id;
+
+                if (Lib.IsZero(record_dto.hbl_incoterm_id))
+                    Record.hbl_incoterm_id = null;
+                else
+                    Record.hbl_incoterm_id = record_dto.hbl_incoterm_id;
+
+                Record.hbl_pono = record_dto.hbl_pono;
+                Record.hbl_invoiceno = record_dto.hbl_invoiceno;
+                Record.hbl_ams_fileno = record_dto.hbl_ams_fileno;
+                Record.hbl_sub_house = record_dto.hbl_sub_house;
+                Record.hbl_isf_no = record_dto.hbl_isf_no;
+                if (Lib.IsZero(record_dto.hbl_telex_released_id))
+                    Record.hbl_telex_released_id = null;
+                else
+                    Record.hbl_telex_released_id = record_dto.hbl_telex_released_id;
+                
+                Record.hbl_mov_dad = record_dto.hbl_mov_dad;
+                Record.hbl_bl_req = record_dto.hbl_bl_req;
+                Record.hbl_book_slno = record_dto.hbl_book_slno;
+                Record.hbl_is_pl = record_dto.hbl_is_pl;
+                Record.hbl_is_ci = record_dto.hbl_is_ci;
+                Record.hbl_is_carr_an = record_dto.hbl_is_carr_an;
+                Record.hbl_custom_reles_status = record_dto.hbl_custom_reles_status;
+                Record.hbl_custom_clear_date = Lib.ParseDate(record_dto.hbl_custom_clear_date!);
+                Record.hbl_is_delivery = record_dto.hbl_is_delivery;
+                Record.hbl_paid_status_id = record_dto.hbl_paid_status_id;
+                Record.hbl_bl_status = record_dto.hbl_bl_status;
+                Record.hbl_cargo_release_status = record_dto.hbl_cargo_release_status;
+
+
 
                 if (Lib.IsZero(record_dto.hbl_handled_id))
                     Record.hbl_handled_id = null;
@@ -710,44 +781,15 @@ namespace SeaExport.Repositories
                     Record.hbl_salesman_id = null;
                 else
                     Record.hbl_salesman_id = record_dto.hbl_salesman_id;
-                Record.hbl_goods_nature = record_dto.hbl_goods_nature;
-                Record.hbl_commodity = record_dto.hbl_commodity;
-                Record.hbl_is_arranged = record_dto.hbl_is_arranged;
-                Record.hbl_obl_telex = record_dto.hbl_obl_telex;
-                Record.hbl_obl_slno = record_dto.hbl_obl_slno;
-                if (Lib.IsZero(record_dto.hbl_format_id))
-                    Record.hbl_format_id = null;
-                else
-                    Record.hbl_format_id = record_dto.hbl_format_id;
 
-                if (Lib.IsZero(record_dto.hbl_draft_format_id))
-                    Record.hbl_draft_format_id = null;
-                else
-                    Record.hbl_draft_format_id = record_dto.hbl_draft_format_id;
-
-                Record.hbl_lbs = record_dto.hbl_lbs;
-                Record.hbl_weight = record_dto.hbl_weight;
-                Record.hbl_cft = record_dto.hbl_cft;
-                Record.hbl_cbm = record_dto.hbl_cbm;
-                Record.hbl_pcs = record_dto.hbl_pcs;
-                Record.hbl_packages = record_dto.hbl_packages;
-                if (Lib.IsZero(record_dto.hbl_uom_id))
-                    Record.hbl_uom_id = null;
-                else
-                    Record.hbl_uom_id = record_dto.hbl_uom_id;
-
-                Record.hbl_print_kgs = record_dto.hbl_print_kgs;
-                Record.hbl_print_lbs = record_dto.hbl_print_lbs;
-                Record.hbl_clean = record_dto.hbl_clean;
                 Record.hbl_remark1 = record_dto.hbl_remark1;
                 Record.hbl_remark2 = record_dto.hbl_remark2;
                 Record.hbl_remark3 = record_dto.hbl_remark3;
-                Record.hbl_by1 = record_dto.hbl_by1;
-                Record.hbl_by2 = record_dto.hbl_by2;
-                Record.hbl_issued_place = record_dto.hbl_issued_place;
-                Record.hbl_issued_date = Lib.ParseDate(record_dto.hbl_issued_date!);
+                Record.hbl_lfd_date = Lib.ParseDate(record_dto.hbl_lfd_date!);
+                Record.hbl_go_date = Lib.ParseDate(record_dto.hbl_go_date!);
+                Record.hbl_pickup_date = Lib.ParseDate(record_dto.hbl_pickup_date!);
+                Record.hbl_empty_ret_date = Lib.ParseDate(record_dto.hbl_empty_ret_date!);
                 Record.hbl_delivery_date = Lib.ParseDate(record_dto.hbl_delivery_date!);
-                Record.hbl_originals = record_dto.hbl_originals;
 
 
                 if (mode == "add")
@@ -796,7 +838,7 @@ namespace SeaExport.Repositories
             return CfNo;
         }
 
-        public async Task<cargo_sea_exporth_dto> saveCntrAsync(int id, string mode, cargo_sea_exporth_dto record_dto)
+        public async Task<cargo_sea_importh_dto> saveCntrAsync(int id, string mode, cargo_sea_importh_dto record_dto)
         {
             cargo_container? record;
             List<cargo_container_dto> records_dto;
@@ -827,7 +869,7 @@ namespace SeaExport.Repositories
                 //Add or Edit Records cntr
                 foreach (var rec in records_dto)
                 {
-                    
+
                     if (rec.cntr_id == 0)
                     {
                         record = new cargo_container();
@@ -883,7 +925,7 @@ namespace SeaExport.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
-        public async Task<cargo_sea_exporth_dto> SaveCargoDesc(int id, string mode, cargo_sea_exporth_dto record_dto)
+        public async Task<cargo_sea_importh_dto> SaveCargoDesc(int id, string mode, cargo_sea_importh_dto record_dto)
         {
             try
             {
@@ -920,7 +962,7 @@ namespace SeaExport.Repositories
             }
         }
 
-        public async Task<cargo_sea_exporth_dto> SaveMarksandNumber(int id, string mode, List<cargo_desc_dto?> marks, cargo_sea_exporth_dto record_dto)
+        public async Task<cargo_sea_importh_dto> SaveMarksandNumber(int id, string mode, List<cargo_desc_dto?> marks, cargo_sea_importh_dto record_dto)
         {
             cargo_desc? Record;
             // Boolean bOk = true;
@@ -1091,9 +1133,9 @@ namespace SeaExport.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
-        public async Task logHistory(cargo_housem old_record, cargo_sea_exporth_dto record_dto)
+        public async Task logHistory(cargo_housem old_record, cargo_sea_importh_dto record_dto)
         {
-            var old_record_dto = new cargo_sea_exporth_dto
+            var old_record_dto = new cargo_sea_importh_dto
             {
                 hbl_id = old_record.hbl_id,
                 hbl_houseno = old_record.hbl_houseno,
@@ -1113,6 +1155,13 @@ namespace SeaExport.Repositories
                 hbl_consignee_add3 = old_record.hbl_consignee_add3,
                 hbl_consignee_add4 = old_record.hbl_consignee_add4,
                 hbl_consignee_add5 = old_record.hbl_consignee_add5,
+                hbl_location_code = old_record.location?.cust_code,
+                hbl_location_name = old_record.hbl_location_name,
+                hbl_location_add1 = old_record.hbl_location_add1,
+                hbl_location_add2 = old_record.hbl_location_add2,
+                hbl_location_add3 = old_record.hbl_location_add3,
+                hbl_location_add4 = old_record.hbl_location_add4,
+                hbl_location_add5 = old_record.hbl_location_add5,
                 hbl_notify_code = old_record.notify?.cust_code,
                 hbl_notify_name = old_record.hbl_notify_name,
                 hbl_notify_add1 = old_record.hbl_notify_add1,
@@ -1120,33 +1169,21 @@ namespace SeaExport.Repositories
                 hbl_notify_add3 = old_record.hbl_notify_add3,
                 hbl_notify_add4 = old_record.hbl_notify_add4,
                 hbl_notify_add5 = old_record.hbl_notify_add5,
-                hbl_exp_ref1 = old_record.hbl_exp_ref1,
-                hbl_exp_ref2 = old_record.hbl_exp_ref2,
-                hbl_exp_ref3 = old_record.hbl_exp_ref3,
+                hbl_careof_name = old_record.careof?.cust_name,
                 hbl_agent_name = old_record.agent?.cust_name,
-                hbl_origin = old_record.hbl_origin,
-                hbl_rout1 = old_record.hbl_rout1,
-                hbl_rout2 = old_record.hbl_rout2,
-                hbl_rout3 = old_record.hbl_rout3,
-                hbl_rout4 = old_record.hbl_rout4,
-                hbl_pre_carriage = old_record.hbl_pre_carriage,
-                hbl_place_receipt = old_record.hbl_place_receipt,
-                hbl_pol_name = old_record.hbl_pol_name,
-                hbl_pod_name = old_record.hbl_pod_name,
+                hbl_cha_code = old_record.cha?.cust_code,
+                hbl_cha_name = old_record.hbl_cha_name,
+                hbl_cha_attn = old_record.hbl_cha_attn,
+                hbl_cha_tel = old_record.hbl_cha_tel,
+                hbl_cha_fax = old_record.hbl_cha_fax,
+                hbl_place_final = old_record.hbl_place_final,
                 hbl_place_delivery = old_record.hbl_place_delivery,
-                hbl_pofd_name = old_record.hbl_pofd_name,
-                hbl_type_move = old_record.hbl_type_move,
-                hbl_is_cntrized = old_record.hbl_is_cntrized,
-                hbl_frt_status_name = old_record.hbl_frt_status_name,
-                hbl_handled_name = old_record.handledby?.param_name,
-                hbl_salesman_name = old_record.salesman?.param_name,
-                hbl_goods_nature = old_record.hbl_goods_nature,
-                hbl_commodity = old_record.hbl_commodity,
-                hbl_is_arranged = old_record.hbl_is_arranged,
-                hbl_obl_telex = old_record.hbl_obl_telex,
-                hbl_obl_slno = old_record.hbl_obl_slno,
-                hbl_format_name = old_record.format?.param_name,
-                hbl_draft_format_name = old_record.draftformat?.param_name,
+                hbl_pld_eta = Lib.FormatDate(old_record.hbl_pld_eta, Lib.outputDateFormat),
+                hbl_plf_eta = Lib.FormatDate(old_record.hbl_plf_eta, Lib.outputDateFormat),
+                hbl_it_no = old_record.hbl_it_no,
+                hbl_is_itshipment = old_record.hbl_is_itshipment,
+                hbl_it_port = old_record.hbl_it_port,
+                hbl_it_date = Lib.FormatDate(old_record.hbl_it_date, Lib.outputDateFormat),
                 hbl_lbs = old_record.hbl_lbs,
                 hbl_weight = old_record.hbl_weight,
                 hbl_cft = old_record.hbl_cft,
@@ -1154,25 +1191,47 @@ namespace SeaExport.Repositories
                 hbl_pcs = old_record.hbl_pcs,
                 hbl_packages = old_record.hbl_packages,
                 hbl_uom_name = old_record.packageunit?.param_name,
-                hbl_print_kgs = old_record.hbl_print_kgs,
-                hbl_print_lbs = old_record.hbl_print_lbs,
-                hbl_clean = old_record.hbl_clean,
+                hbl_commodity = old_record.hbl_commodity,
+                hbl_frt_status_name = old_record.hbl_frt_status_name,
+                hbl_handled_name = old_record.handledby?.param_name,
+                hbl_salesman_name = old_record.salesman?.param_name,
+                hbl_ship_term_name = old_record.shipterm?.param_name,
+                hbl_incoterm_name = old_record.incoterm?.param_name,
+                hbl_pono = old_record.hbl_pono,
+                hbl_invoiceno = old_record.hbl_invoiceno,
+                hbl_ams_fileno = old_record.hbl_ams_fileno,
+                hbl_sub_house = old_record.hbl_sub_house,
+                hbl_isf_no = old_record.hbl_isf_no,
+                hbl_telex_released_name = old_record.telexrelease?.param_name,
+                hbl_mov_dad = old_record.hbl_mov_dad,
+                hbl_bl_req = old_record.hbl_bl_req,
+                hbl_book_slno = old_record.hbl_book_slno,
+                hbl_is_pl = old_record.hbl_is_pl,
+                hbl_is_ci = old_record.hbl_is_ci,
+                hbl_is_carr_an = old_record.hbl_is_carr_an,
+                hbl_custom_reles_status = old_record.hbl_custom_reles_status,
+                hbl_custom_clear_date = Lib.FormatDate(old_record.hbl_custom_clear_date,Lib.outputDateFormat),
+                hbl_is_delivery = old_record.hbl_is_delivery,
+                hbl_paid_status_name = old_record.paidstatus?.param_name,
+                hbl_bl_status = old_record.hbl_bl_status,
+                hbl_cargo_release_status = old_record.hbl_cargo_release_status,
                 hbl_remark1 = old_record.hbl_remark1,
                 hbl_remark2 = old_record.hbl_remark2,
                 hbl_remark3 = old_record.hbl_remark3,
-                hbl_by1 = old_record.hbl_by1,
-                hbl_by2 = old_record.hbl_by2,
-                hbl_issued_place = old_record.hbl_issued_place,
-                hbl_issued_date = Lib.FormatDate(old_record.hbl_issued_date, Lib.outputDateFormat),
+                hbl_lfd_date = Lib.FormatDate(old_record.hbl_lfd_date, Lib.outputDateFormat),
+                hbl_go_date = Lib.FormatDate(old_record.hbl_go_date, Lib.outputDateFormat),
+                hbl_pickup_date = Lib.FormatDate(old_record.hbl_pickup_date, Lib.outputDateFormat),
+                hbl_empty_ret_date = Lib.FormatDate(old_record.hbl_empty_ret_date, Lib.outputDateFormat),
                 hbl_delivery_date = Lib.FormatDate(old_record.hbl_delivery_date, Lib.outputDateFormat),
-                hbl_originals = old_record.hbl_originals,
+
 
             };
-            await new LogHistorym<cargo_sea_exporth_dto>(context)
+            await new LogHistorym<cargo_sea_importh_dto>(context)
             .Table("cargo_housem", log_date)
             .PrimaryKey("hbl_id", record_dto.hbl_id)
             .RefNo(record_dto.hbl_houseno!)
             .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
+            .TrackColumn("hbl_id", "HBL ID")
             .TrackColumn("hbl_houseno", "House No")
             .TrackColumn("hbl_bltype", "BL Type")
             .TrackColumn("hbl_shipment_stage_name", "Shipment Stage Name")
@@ -1190,6 +1249,13 @@ namespace SeaExport.Repositories
             .TrackColumn("hbl_consignee_add3", "Consignee Address 3")
             .TrackColumn("hbl_consignee_add4", "Consignee Address 4")
             .TrackColumn("hbl_consignee_add5", "Consignee Address 5")
+            .TrackColumn("hbl_location_code", "Location Code")
+            .TrackColumn("hbl_location_name", "Location Name")
+            .TrackColumn("hbl_location_add1", "Location Address 1")
+            .TrackColumn("hbl_location_add2", "Location Address 2")
+            .TrackColumn("hbl_location_add3", "Location Address 3")
+            .TrackColumn("hbl_location_add4", "Location Address 4")
+            .TrackColumn("hbl_location_add5", "Location Address 5")
             .TrackColumn("hbl_notify_code", "Notify Code")
             .TrackColumn("hbl_notify_name", "Notify Name")
             .TrackColumn("hbl_notify_add1", "Notify Address 1")
@@ -1197,33 +1263,20 @@ namespace SeaExport.Repositories
             .TrackColumn("hbl_notify_add3", "Notify Address 3")
             .TrackColumn("hbl_notify_add4", "Notify Address 4")
             .TrackColumn("hbl_notify_add5", "Notify Address 5")
-            .TrackColumn("hbl_exp_ref1", "Export Ref 1")
-            .TrackColumn("hbl_exp_ref2", "Export Ref 2")
-            .TrackColumn("hbl_exp_ref3", "Export Ref 3")
             .TrackColumn("hbl_agent_name", "Agent Name")
-            .TrackColumn("hbl_origin", "Origin")
-            .TrackColumn("hbl_rout1", "Routing 1")
-            .TrackColumn("hbl_rout2", "Routing 2")
-            .TrackColumn("hbl_rout3", "Routing 3")
-            .TrackColumn("hbl_rout4", "Routing 4")
-            .TrackColumn("hbl_pre_carriage", "Pre-Carriage")
-            .TrackColumn("hbl_place_receipt", "Place of Receipt")
-            .TrackColumn("hbl_pol_name", "Port of Loading")
-            .TrackColumn("hbl_pod_name", "Port of Discharge")
+            .TrackColumn("hbl_cha_code", "CHA Code")
+            .TrackColumn("hbl_cha_name", "CHA Name")
+            .TrackColumn("hbl_cha_attn", "CHA Attention")
+            .TrackColumn("hbl_cha_tel", "CHA Telephone")
+            .TrackColumn("hbl_cha_fax", "CHA Fax")
+            .TrackColumn("hbl_place_final", "Final Place")
             .TrackColumn("hbl_place_delivery", "Place of Delivery")
-            .TrackColumn("hbl_pofd_name", "Place of Final Delivery")
-            .TrackColumn("hbl_type_move", "Type of Move")
-            .TrackColumn("hbl_is_cntrized", "Is Containerized")
-            .TrackColumn("hbl_frt_status_name", "Freight Status")
-            .TrackColumn("hbl_handled_name", "Handled By")
-            .TrackColumn("hbl_salesman_name", "Salesman Name")
-            .TrackColumn("hbl_goods_nature", "Nature of Goods")
-            .TrackColumn("hbl_commodity", "Commodity")
-            .TrackColumn("hbl_is_arranged", "Is Arranged")
-            .TrackColumn("hbl_obl_telex", "OBL Telex")
-            .TrackColumn("hbl_obl_slno", "OBL Serial No")
-            .TrackColumn("hbl_format_name", "Format Name")
-            .TrackColumn("hbl_draft_format_name", "Draft Format Name")
+            .TrackColumn("hbl_pld_eta", "PLD ETA")
+            .TrackColumn("hbl_plf_eta", "PLF ETA")
+            .TrackColumn("hbl_it_no", "IT No")
+            .TrackColumn("hbl_is_itshipment", "Is IT Shipment")
+            .TrackColumn("hbl_it_port", "IT Port")
+            .TrackColumn("hbl_it_date", "IT Date")
             .TrackColumn("hbl_lbs", "Weight (lbs)", "decimal")
             .TrackColumn("hbl_weight", "Weight (kgs)", "decimal")
             .TrackColumn("hbl_cft", "CFT", "decimal")
@@ -1231,23 +1284,43 @@ namespace SeaExport.Repositories
             .TrackColumn("hbl_pcs", "Pieces", "int")
             .TrackColumn("hbl_packages", "Packages", "int")
             .TrackColumn("hbl_uom_name", "Unit of Measure")
-            .TrackColumn("hbl_print_kgs", "Print in KGs")
-            .TrackColumn("hbl_print_lbs", "Print in LBS")
-            .TrackColumn("hbl_clean", "Clean B/L")
+            .TrackColumn("hbl_commodity", "Commodity")
+            .TrackColumn("hbl_frt_status_name", "Freight Status")
+            .TrackColumn("hbl_handled_name", "Handled By")
+            .TrackColumn("hbl_salesman_name", "Salesman Name")
+            .TrackColumn("hbl_ship_term_name", "Shipping Term")
+            .TrackColumn("hbl_incoterm_name", "Incoterm")
+            .TrackColumn("hbl_pono", "PO No")
+            .TrackColumn("hbl_invoiceno", "Invoice No")
+            .TrackColumn("hbl_ams_fileno", "AMS File No")
+            .TrackColumn("hbl_sub_house", "Sub House")
+            .TrackColumn("hbl_isf_no", "ISF No")
+            .TrackColumn("hbl_telex_released_name", "Telex Released")
+            .TrackColumn("hbl_mov_dad", "Movement DAD")
+            .TrackColumn("hbl_bl_req", "BL Requirement")
+            .TrackColumn("hbl_book_slno", "Booking Serial No")
+            .TrackColumn("hbl_is_pl", "Is PL")
+            .TrackColumn("hbl_is_ci", "Is CI")
+            .TrackColumn("hbl_is_carr_an", "Is Carrier AN")
+            .TrackColumn("hbl_custom_reles_status", "Custom Release Status")
+            .TrackColumn("hbl_custom_clear_date", "Custom Clearance Date")
+            .TrackColumn("hbl_is_delivery", "Delivery")
+            .TrackColumn("hbl_paid_status", "Paid Status")
+            .TrackColumn("hbl_bl_status", "BL Status")
+            .TrackColumn("hbl_cargo_release_status", "Cargo Release Status")
             .TrackColumn("hbl_remark1", "Remark 1")
             .TrackColumn("hbl_remark2", "Remark 2")
             .TrackColumn("hbl_remark3", "Remark 3")
-            .TrackColumn("hbl_by1", "Issued By 1")
-            .TrackColumn("hbl_by2", "Issued By 2")
-            .TrackColumn("hbl_issued_place", "Issued Place")
-            .TrackColumn("hbl_issued_date", "Issued Date", "date")
-            .TrackColumn("hbl_delivery_date", "Delivery Date", "date")
-            .TrackColumn("hbl_originals", "Number of Originals", "int")
+            .TrackColumn("hbl_lfd_date", "LFD Date")
+            .TrackColumn("hbl_go_date", "GO Date")
+            .TrackColumn("hbl_pickup_date", "Pickup Date")
+            .TrackColumn("hbl_empty_ret_date", "Empty Return Date")
+            .TrackColumn("hbl_delivery_date", "Delivery Date")
 
             .SetRecord(old_record_dto, record_dto)
             .LogChangesAsync();
         }
-        public async Task logHistoryDetail(List<cargo_container> old_records, cargo_sea_exporth_dto record_dto)
+        public async Task logHistoryDetail(List<cargo_container> old_records, cargo_sea_importh_dto record_dto)
         {
 
             var old_records_dto = old_records.Select(record => new cargo_container_dto
@@ -1261,7 +1334,6 @@ namespace SeaExport.Repositories
                 cntr_pieces = record.cntr_pieces,
                 cntr_packages_unit_name = record.packunit?.param_name,
                 cntr_packages = record.cntr_packages,
-                // cntr_teu = record.cntr_teu,
                 cntr_cbm = record.cntr_cbm,
                 cntr_weight_uom = record.cntr_weight_uom,
                 cntr_weight = record.cntr_weight,
@@ -1287,7 +1359,6 @@ namespace SeaExport.Repositories
                 .TrackColumn("cntr_pieces", "Pieces")
                 .TrackColumn("cntr_packages_unit_name", "Packages Unit")
                 .TrackColumn("cntr_packages", "Packages")
-                // .TrackColumn("cntr_teu", "TEU", "decimal")
                 .TrackColumn("cntr_cbm", "CBM", "decimal")
                 .TrackColumn("cntr_weight_uom", "Weight UOM")
                 .TrackColumn("cntr_weight", "Weight", "decimal")
@@ -1297,6 +1368,7 @@ namespace SeaExport.Repositories
                 .TrackColumn("cntr_return_date", "Return Date")
                 .TrackColumn("cntr_lfd", "LFD")
                 .TrackColumn("cntr_discharge_date", "Discharge Date")
+                .TrackColumn("cntr_order", "Order", "int")
                 .SetRecords(old_records_dto, record_dto.house_cntr!)
                 .LogChangesAsync();
 

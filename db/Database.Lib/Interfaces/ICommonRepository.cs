@@ -16,6 +16,7 @@ namespace Database.Lib.Interfaces
         Task<DataContainer> GetBranchSettings(int id, string caption = "");
         Task<mast_customerm> GetCustomerAsync(int id);
 
+
     }
 
 

@@ -214,4 +214,3 @@ namespace Database.Models.Cargo
         public mast_branchm? branch { get; set; }
     }
 }
-
