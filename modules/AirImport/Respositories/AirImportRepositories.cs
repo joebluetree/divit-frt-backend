@@ -344,18 +344,18 @@ namespace AirImport.Repositories
 
                 if (mode == "add")
                 {
-                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "AIRIMPORT-MASTER-PREFIX,AIRIMPORT-MASTER-STARTING-NO");// 
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "AIR-IMP-MASTER-PREFIX,AIR-IMP-MASTER-STARTING-NO");// 
 
                     var DefaultCfNo = 0;
                     var Defaultprefix = "";
 
-                    if (result.ContainsKey("AIRIMPORT-MASTER-STARTING-NO"))
+                    if (result.ContainsKey("AIR-IMP-MASTER-STARTING-NO"))
                     {
-                        DefaultCfNo = Lib.StringToInteger(result["AIRIMPORT-MASTER-STARTING-NO"]);
+                        DefaultCfNo = Lib.StringToInteger(result["AIR-IMP-MASTER-STARTING-NO"]);
                     }
-                    if (result.ContainsKey("AIRIMPORT-MASTER-PREFIX"))
+                    if (result.ContainsKey("AIR-IMP-MASTER-PREFIX"))
                     {
-                        Defaultprefix = result["AIRIMPORT-MASTER-PREFIX"].ToString();
+                        Defaultprefix = result["AIR-IMP-MASTER-PREFIX"]?.ToString();
                     }
                     if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
                     {

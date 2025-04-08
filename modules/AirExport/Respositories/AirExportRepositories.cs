@@ -343,18 +343,18 @@ namespace AirExport.Repositories
 
                 if (mode == "add")
                 {
-                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "AIREXPORT-MASTER-PREFIX,AIREXPORT-MASTER-STARTING-NO");// 
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "AIR-EXP-MASTER-PREFIX,AIR-EXP-MASTER-STARTING-NO");// 
 
                     var DefaultCfNo = 0;
                     var Defaultprefix = "";
 
-                    if (result.ContainsKey("AIREXPORT-MASTER-STARTING-NO"))
+                    if (result.ContainsKey("AIR-EXP-MASTER-STARTING-NO"))
                     {
-                        DefaultCfNo = Lib.StringToInteger(result["AIREXPORT-MASTER-STARTING-NO"]);
+                        DefaultCfNo = Lib.StringToInteger(result["AIR-EXP-MASTER-STARTING-NO"]);
                     }
-                    if (result.ContainsKey("AIREXPORT-MASTER-PREFIX"))
+                    if (result.ContainsKey("AIR-EXP-MASTER-PREFIX"))
                     {
-                        Defaultprefix = result["AIREXPORT-MASTER-PREFIX"].ToString();
+                        Defaultprefix = result["AIR-EXP-MASTER-PREFIX"]?.ToString();
                     }
                     if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
                     {
