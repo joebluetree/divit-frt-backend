@@ -18,6 +18,7 @@ using Common.DTO.SeaImport;
 //Created Date : 01/04/2025
 //Remark : this file defines functions like Save, Delete, getList and getRecords which save/retrieve data
 //version v1-01-04-2025: added full repository
+//        v2-08-04-2025: hbl_houseno updated branchsettings removed
 
 
 namespace SeaImport.Repositories
@@ -579,20 +580,6 @@ namespace SeaImport.Repositories
                     var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "SEA-IMP-HOUSE-PREFIX,SEA-IMP-HOUSE-STARTING-NO");
 
                     var DefaultCfNo = 0;
-                    var Defaultprefix = "";
-
-                    if (result.ContainsKey("SEA-IMP-HOUSE-STARTING-NO"))
-                    {
-                        DefaultCfNo = Lib.StringToInteger(result["SEA-IMP-HOUSE-STARTING-NO"]);
-                    }
-                    if (result.ContainsKey("SEA-IMP-HOUSE-PREFIX"))
-                    {
-                        Defaultprefix = result["SEA-IMP-HOUSE-PREFIX"].ToString();
-                    }
-                    if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
-                    {
-                        throw new Exception("Missing Sea Import master Prefix/Starting-Number in Branch Settings");
-                    }
 
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
                     if (Lib.IsZero(iNextNo))
@@ -600,13 +587,11 @@ namespace SeaImport.Repositories
                         throw new Exception("Ref Number Cannot Be Generated");
                     }
 
-                    string sqtn_no = $"{Defaultprefix}{iNextNo}";  // to set ref no: by adding propper prefix
                     string stype = shbl_mode;
 
                     Record = new cargo_housem();
 
                     Record.hbl_cfno = iNextNo;
-                    Record.hbl_houseno = sqtn_no;
                     Record.hbl_mode = stype;
                     Record.hbl_mbl_id = record_dto.hbl_mbl_id;
 
@@ -647,6 +632,7 @@ namespace SeaImport.Repositories
                 if (mode == "edit")
                     await logHistory(Record, record_dto);
 
+                Record.hbl_houseno = record_dto.hbl_houseno;
                 if (Lib.IsZero(record_dto.hbl_shipment_stage_id))
                     Record.hbl_shipment_stage_id = null;
                 else
@@ -1031,7 +1017,7 @@ namespace SeaImport.Repositories
                         Record.desc_parent_id = id;
 
                         if (mode == "edit")
-                            await logHistoryCargoDesc(Record, NewRecord_dto, record_dto.hbl_houseno!, record_dto.hbl_id);//,record_dto.rec_version
+                            await logHistoryCargoDesc(Record, NewRecord_dto, record_dto.hbl_houseno!, record_dto.hbl_id);
 
                         Record.desc_ctr = NewRecord_dto.desc_ctr;
                         Record.desc_mark = NewRecord_dto.desc_mark;
@@ -1043,7 +1029,7 @@ namespace SeaImport.Repositories
                     else
                     {
                         Record = await context.cargo_desc
-                            .Where(f => f.desc_parent_id == id && f.desc_id == desc_id)//&& f.desc_id == desc_id
+                            .Where(f => f.desc_parent_id == id && f.desc_id == desc_id)
                             .FirstOrDefaultAsync();
 
                         if (Record == null)
@@ -1053,16 +1039,15 @@ namespace SeaImport.Repositories
                         {
 
 
-                            await logHistoryCargoDesc(Record, NewRecord_dto, record_dto.hbl_houseno!, record_dto.hbl_id);//,record_dto.rec_version
+                            await logHistoryCargoDesc(Record, NewRecord_dto, record_dto.hbl_houseno!, record_dto.hbl_id);
 
-                            // Record.desc_ctr = NewRecord_dto.desc_ctr;
                             Record.desc_mark = NewRecord_dto.desc_mark;
                             Record.desc_package = NewRecord_dto.desc_package;
                             Record.desc_description = NewRecord_dto.desc_description;
 
                             Record.rec_edited_by = record_dto.rec_created_by;
                             Record.rec_edited_date = DbLib.GetDateTime();
-                            // Record.rec_version =record_dto.rec_version;
+
                         }
                     }
 
@@ -1079,7 +1064,6 @@ namespace SeaImport.Repositories
 
                     await context.SaveChangesAsync();
 
-                    // record_dto.rec_version = Record.rec_version;
                     if (DescMode == "add")
                         desc_id = Record.desc_id;
 
