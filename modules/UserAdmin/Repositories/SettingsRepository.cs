@@ -315,12 +315,15 @@ namespace UserAdmin.Repositories
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-EXP-MASTER-STARTING-NO", "", "INT", "", "", "", "",12);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-MASTER-PREFIX", "", "STRING", "", "", "", "", 13);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-MASTER-STARTING-NO", "", "INT", "", "", "", "",14);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-EXP-HOUSE-PREFIX", "", "STRING", "", "", "", "", 15);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-EXP-HOUSE-STARTING-NO", "", "INT", "", "", "", "",16);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-HOUSE-PREFIX", "", "STRING", "", "", "", "", 17);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-HOUSE-STARTING-NO", "", "INT", "", "", "", "",18);
 
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-IMP-MASTER-PREFIX", "", "STRING", "", "", "", "", 19);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-IMP-MASTER-STARTING-NO", "", "INT", "", "", "", "",20);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-IMP-MASTER-PREFIX", "", "STRING", "", "", "", "", 23);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-IMP-MASTER-STARTING-NO", "", "INT", "", "", "", "",24);
-
 
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "DEFAULT-BLANK-FORMAT", "", "TABLE", "param,hbl-format,param_id,param_code, param_name", "", "", "", 26);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "DEFAULT-DRAFT-FORMAT", "", "TABLE", "param,hbl-format,param_id,param_code, param_name", "", "", "", 27);        
