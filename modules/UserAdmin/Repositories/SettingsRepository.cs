@@ -311,23 +311,19 @@ namespace UserAdmin.Repositories
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-AIR-STARTING-NO", "", "INT", "", "", "", "", 8);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-FCL-PREFIX", "", "STRING", "", "", "", "", 9);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-FCL-STARTING-NO", "", "INT", "", "", "", "",10);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIREXPORT-MASTER-PREFIX", "", "STRING", "", "", "", "", 11);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIREXPORT-MASTER-STARTING-NO", "", "INT", "", "", "", "",12);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-EXP-MASTER-PREFIX", "", "STRING", "", "", "", "", 11);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-EXP-MASTER-STARTING-NO", "", "INT", "", "", "", "",12);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-MASTER-PREFIX", "", "STRING", "", "", "", "", 13);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-MASTER-STARTING-NO", "", "INT", "", "", "", "",14);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIREXPORT-HOUSE-PREFIX", "", "STRING", "", "", "", "", 15);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIREXPORT-HOUSE-STARTING-NO", "", "INT", "", "", "", "",16);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-EXP-HOUSE-PREFIX", "", "STRING", "", "", "", "", 15);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-EXP-HOUSE-STARTING-NO", "", "INT", "", "", "", "",16);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-HOUSE-PREFIX", "", "STRING", "", "", "", "", 17);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-HOUSE-STARTING-NO", "", "INT", "", "", "", "",18);
 
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-IMP-MASTER-PREFIX", "", "STRING", "", "", "", "", 19);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-IMP-MASTER-STARTING-NO", "", "INT", "", "", "", "",20);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-IMP-HOUSE-PREFIX", "", "STRING", "", "", "", "", 21);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-IMP-HOUSE-STARTING-NO", "", "INT", "", "", "", "",22);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIRIMPORT-MASTER-PREFIX", "", "STRING", "", "", "", "", 23);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIRIMPORT-MASTER-STARTING-NO", "", "INT", "", "", "", "",24);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIRIMPORT-HOUSE-PREFIX", "", "STRING", "", "", "", "", 25);
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIRIMPORT-HOUSE-STARTING-NO", "", "INT", "", "", "", "",26);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-IMP-MASTER-PREFIX", "", "STRING", "", "", "", "", 23);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-IMP-MASTER-STARTING-NO", "", "INT", "", "", "", "",24);
 
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "DEFAULT-BLANK-FORMAT", "", "TABLE", "param,hbl-format,param_id,param_code, param_name", "", "", "", 26);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "DEFAULT-DRAFT-FORMAT", "", "TABLE", "param,hbl-format,param_id,param_code, param_name", "", "", "", 27);        
