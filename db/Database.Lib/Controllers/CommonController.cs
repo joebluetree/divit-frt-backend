@@ -61,6 +61,21 @@ namespace Database.Lib.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetCustomerAsync")]
+        public async Task<IActionResult> GetCustomerAsync(int id)
+        {
+            try
+            {
+                var RetData = await mRepository.GetCustomerAsync(id);
+                return Ok(RetData);
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Lib.getErrorMessage(Ex));
+            }
+        }
+
 
     }
 }

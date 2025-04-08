@@ -1,0 +1,39 @@
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 64, 'PAID_STATUS', 'NIL', 'NIL', 1, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 64);
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 65, 'PAID_STATUS', 'CREDIT', 'CREDIT', 2, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 65);
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 66, 'PAID_STATUS', 'PAID', 'PAID', 3, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 66);
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 67, 'PAID_STATUS', 'PAID BY CHECK', 'PAID BY CHECK', 4, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 67);
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 68, 'PAID_STATUS', 'PAID BY WIRE', 'PAID BY WIRE', 5, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 68);
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 69, 'PAID_STATUS', 'CHECK COPY ACCEPTED', 'CHECK COPY ACCEPTED', 6, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 69);
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 70, 'PAID_STATUS', 'PAID BY OTHERS', 'PAID BY OTHERS', 7, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 70);
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 71, 'PAID_STATUS', 'NOT PAID', 'NOT PAID', 8, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 71);

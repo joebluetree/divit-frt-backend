@@ -34,6 +34,8 @@ using SeaImport.Repositories;
 
 using AirExport.Interfaces;
 using AirExport.Repositories;
+using AirImport.Interfaces;
+using AirImport.Repositories;
 
 
 
@@ -106,6 +108,10 @@ builder.Services.AddScoped<IAcctmRepository, AcctmRepository>();
 //AirExport
 builder.Services.AddScoped<IAirExportRepository, AirExportRepository>();
 builder.Services.AddScoped<IAirExportHRepository, AirExportHRepository>();
+
+//AirImport
+builder.Services.AddScoped<IAirImportRepository, AirImportRepository>();
+builder.Services.AddScoped<IAirImportHRepository, AirImportHRepository>();
 
 //Tnt
 builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();
