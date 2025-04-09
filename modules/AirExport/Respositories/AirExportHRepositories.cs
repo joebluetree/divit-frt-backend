@@ -570,18 +570,18 @@ namespace AirExport.Repositories
 
                 if (mode == "add")
                 {
-                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "AIREXPORT-HOUSE-PREFIX,AIREXPORT-HOUSE-STARTING-NO");//Call the branch settings for the prefix and suffix. 
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "AIR-EXP-HOUSE-PREFIX,AIR-EXP-HOUSE-STARTING-NO");//Call the branch settings for the prefix and suffix. 
 
                     var DefaultCfNo = 0;
                     var Defaultprefix = "";
                     // Check if the result contains the required keys and values from Branch Settings
-                    if (result.ContainsKey("AIREXPORT-HOUSE-STARTING-NO"))
+                    if (result.ContainsKey("AIR-EXP-HOUSE-STARTING-NO"))
                     {
-                        DefaultCfNo = Lib.StringToInteger(result["AIREXPORT-HOUSE-STARTING-NO"]);
+                        DefaultCfNo = Lib.StringToInteger(result["AIR-EXP-HOUSE-STARTING-NO"]);
                     }
-                    if (result.ContainsKey("AIREXPORT-HOUSE-PREFIX"))
+                    if (result.ContainsKey("AIR-EXP-HOUSE-PREFIX"))
                     {
-                        Defaultprefix = result["AIREXPORT-HOUSE-PREFIX"].ToString();
+                        Defaultprefix = result["AIR-EXP-HOUSE-PREFIX"]?.ToString();
                     }
                     if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
                     {

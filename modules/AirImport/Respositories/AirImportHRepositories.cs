@@ -471,15 +471,11 @@ namespace AirImport.Repositories
                 if (mode == "add")
                 {
 
-                    var DefaultCfNo = 0;
+                    var DefaultCfNo = 1; //initialize one
 
                     //Getting the Cfno from using the GetNextCfno() function
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
-                    if (Lib.IsZero(iNextNo))
-                    {
-                        throw new Exception("House Number Cannot Be Generated");
-                    }
-
+                    
                     Record = new cargo_housem();  //Assigning the values to the database elements
                     Record.hbl_cfno = iNextNo;
                     Record.hbl_mode = hbl_mode;
