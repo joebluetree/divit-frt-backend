@@ -487,13 +487,17 @@ namespace SeaImport.Repositories
                         .Include(c => c.salesman)
                         .Include(c => c.handledby)
                         .Include(c => c.shipstage)
+                        .Include(c => c.coloader)
+                        .Include(c => c.incoterm)
+                        .Include(c => c.mblstatus)
                         .Include(c => c.agent)
                         .Include(c => c.liner)
                         .Include(c => c.pol)
                         .Include(c => c.pod)
-                        .Include(c => c.pofd)
                         .Include(c => c.vessel)
                         .Include(c => c.shipterm)
+                        .Include(c => c.cargoloc)
+                        .Include(c => c.devanloc)
                         .Where(f => f.mbl_id == id)
                         .FirstOrDefaultAsync();
 
@@ -513,7 +517,7 @@ namespace SeaImport.Repositories
                 Record.mbl_ref_date = Lib.ParseDate(record_dto.mbl_ref_date!);
                 if (Record.mbl_shipment_stage_id != record_dto.mbl_shipment_stage_id)
                 {
-                                     Record.mbl_shipment_stage_id = record_dto.mbl_shipment_stage_id;
+                    Record.mbl_shipment_stage_id = record_dto.mbl_shipment_stage_id;
 
                     await CommonLib.UpdateHouseShipmentStage(context, Record.mbl_id, record_dto.mbl_shipment_stage_id);
                 }

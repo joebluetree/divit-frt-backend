@@ -115,6 +115,7 @@ namespace Common.DTO.SeaImport
         public string? hbl_is_delivery { get; set; } = "";
         public int? hbl_paid_status_id { get; set; } = 0;
         public string? hbl_paid_status_name { get; set; } = "";
+        public string? hbl_paid_remarks { get; set; } = "";
         public string? hbl_bl_status { get; set; } = "";
         public string? hbl_cargo_release_status { get; set; } = "";
         public int? hbl_salesman_id { get; set; } = 0;
