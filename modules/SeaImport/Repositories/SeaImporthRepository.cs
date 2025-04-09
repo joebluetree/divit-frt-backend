@@ -246,6 +246,7 @@ namespace SeaImport.Repositories
                     hbl_is_delivery = e.hbl_is_delivery,
                     hbl_paid_status_id = e.hbl_paid_status_id,
                     hbl_paid_status_name = e.paidstatus!.param_name,
+                    hbl_paid_remarks = e.hbl_paid_remarks,
                     hbl_bl_status = e.hbl_bl_status,
                     hbl_cargo_release_status = e.hbl_cargo_release_status,
                     hbl_frt_status_name = e.hbl_frt_status_name,
@@ -579,7 +580,7 @@ namespace SeaImport.Repositories
 
                     var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "SEA-IMP-HOUSE-PREFIX,SEA-IMP-HOUSE-STARTING-NO");
 
-                    var DefaultCfNo = 0;
+                    var DefaultCfNo = 1;
 
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
                     if (Lib.IsZero(iNextNo))
@@ -606,9 +607,15 @@ namespace SeaImport.Repositories
                     Record = await context.cargo_housem
                         .Include(c => c.shipstage)
                         .Include(c => c.shipper)
+                        .Include(c => c.shipterm)
                         .Include(c => c.consignee)
                         .Include(c => c.notify)
+                        .Include(c => c.careof)
+                        .Include(c => c.location)
                         .Include(c => c.agent)
+                        .Include(c => c.cha)
+                        .Include(c => c.incoterm)
+                        .Include(c => c.telexrelease)
                         .Include(c => c.salesman)
                         .Include(c => c.handledby)
                         .Include(c => c.format)
@@ -703,6 +710,7 @@ namespace SeaImport.Repositories
                 Record.hbl_cha_tel = record_dto.hbl_cha_tel;
                 Record.hbl_cha_fax = record_dto.hbl_cha_fax;
 
+                Record.hbl_place_final = record_dto.hbl_place_final;
                 Record.hbl_place_delivery = record_dto.hbl_place_delivery;
                 Record.hbl_pld_eta = Lib.ParseDate(record_dto.hbl_pld_eta!);
                 Record.hbl_frt_status_name = record_dto.hbl_frt_status_name;
@@ -754,9 +762,9 @@ namespace SeaImport.Repositories
                 Record.hbl_custom_clear_date = Lib.ParseDate(record_dto.hbl_custom_clear_date!);
                 Record.hbl_is_delivery = record_dto.hbl_is_delivery;
                 Record.hbl_paid_status_id = record_dto.hbl_paid_status_id;
+                Record.hbl_paid_remarks = record_dto.hbl_paid_remarks;
                 Record.hbl_bl_status = record_dto.hbl_bl_status;
                 Record.hbl_cargo_release_status = record_dto.hbl_cargo_release_status;
-
 
 
                 if (Lib.IsZero(record_dto.hbl_handled_id))
@@ -1197,6 +1205,7 @@ namespace SeaImport.Repositories
                 hbl_custom_clear_date = Lib.FormatDate(old_record.hbl_custom_clear_date,Lib.outputDateFormat),
                 hbl_is_delivery = old_record.hbl_is_delivery,
                 hbl_paid_status_name = old_record.paidstatus?.param_name,
+                hbl_paid_remarks = old_record.hbl_paid_remarks,
                 hbl_bl_status = old_record.hbl_bl_status,
                 hbl_cargo_release_status = old_record.hbl_cargo_release_status,
                 hbl_remark1 = old_record.hbl_remark1,
@@ -1290,6 +1299,7 @@ namespace SeaImport.Repositories
             .TrackColumn("hbl_custom_clear_date", "Custom Clearance Date")
             .TrackColumn("hbl_is_delivery", "Delivery")
             .TrackColumn("hbl_paid_status", "Paid Status")
+            .TrackColumn("hbl_paid_remarks", "Paid Remarks")
             .TrackColumn("hbl_bl_status", "BL Status")
             .TrackColumn("hbl_cargo_release_status", "Cargo Release Status")
             .TrackColumn("hbl_remark1", "Remark 1")
