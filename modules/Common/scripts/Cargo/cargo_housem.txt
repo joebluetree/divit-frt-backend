@@ -283,7 +283,9 @@ BEGIN
         CREATE INDEX "IX_cargo_housem_hbl_telex_released_id" ON cargo_housem USING btree (hbl_telex_released_id);
     END IF;
 
-    -- Check and create index IX_cargo_housem_hbl_paid_status_id
+
+    -- Check and create index IX_cargo_housem_hbl_hbl_paid_status_id
+
     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_housem_hbl_paid_status_id') THEN
         CREATE INDEX "IX_cargo_housem_hbl_paid_status_id" ON cargo_housem USING btree (hbl_paid_status_id);
     END IF;

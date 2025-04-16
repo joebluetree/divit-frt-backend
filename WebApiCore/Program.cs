@@ -117,7 +117,14 @@ builder.Services.AddScoped<IAirImportHRepository, AirImportHRepository>();
 
 
 
+
 builder.Services.AddScoped<IMemoRepository, MemoRepository>();
+
+
+//CommonShipment
+builder.Services.AddScoped<IFollowUpRepository, FollowUpRepository>();
+
+
 
 //Tnt
 builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();
