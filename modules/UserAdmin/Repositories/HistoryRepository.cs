@@ -93,7 +93,7 @@ public class HistoryRepository : IHistoryRepository
             if (!Lib.IsBlank(log_table))
                 query = query.Where(w => w.log_table!.ToUpper().Contains(log_table!));
 
-            if (Lib.IsBlank(log_desc))
+            if (!Lib.IsBlank(log_desc))
                 query = query.Where(w => w.log_desc!.ToUpper().Contains(log_desc!));
 
             if (!Lib.IsZero(log_table_row_id))
