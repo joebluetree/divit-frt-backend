@@ -1,0 +1,41 @@
+
+INSERT INTO mast_param (param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 117, 'FOLLOWUP', 'WAIT_ACTUAL_CHECK', 'WAITING FOR THE ACTUAL CHECK', 1, 'ADMIN', NOW(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 117);
+
+INSERT INTO mast_param (param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 118, 'FOLLOWUP', 'WAIT_ACTUAL_HBL', 'WAITING FOR THE ACTUAL HBL', 2, 'ADMIN', NOW(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 118);
+
+INSERT INTO mast_param (param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 119, 'FOLLOWUP', 'ASK_ARRIVAL_NOTICE', 'ASK CARRIER FOR ARRIVAL NOTICE', 3, 'ADMIN', NOW(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 119);
+
+INSERT INTO mast_param (param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 120, 'FOLLOWUP', 'DISCHRGD_LFD', 'DISCHARGED & LFD', 4, 'ADMIN', NOW(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 120);
+
+INSERT INTO mast_param (param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 121, 'FOLLOWUP', 'PU_ER', 'P/U & E/R', 5, 'ADMIN', NOW(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 121);
+
+INSERT INTO mast_param (param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 122, 'FOLLOWUP', 'REQ_TELEX_RELEASE', 'REQUEST TELEX RELEASE', 6, 'ADMIN', NOW(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 122);
+
+INSERT INTO mast_param (param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 123, 'FOLLOWUP', 'CHK_CARRIER_REL', 'CHECK FOR CARRIER RELEASE', 7, 'ADMIN', NOW(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 123);
+
+INSERT INTO mast_param (param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 124, 'FOLLOWUP', 'REQ_PAY_CONSIGNEE', 'REQUEST PAYMENT FROM CONSIGNEE', 8, 'ADMIN', NOW(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 124);
+
+INSERT INTO mast_param (param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 125, 'FOLLOWUP', 'SEND_ARR_NOTICE', 'SEND ARRIVAL NOTICE', 9, 'ADMIN', NOW(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 125);
+
+INSERT INTO mast_param (param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 126, 'FOLLOWUP', 'REQ_REL_ORDER', 'REQUEST RELEASE ORDER FROM CONSIGNEE', 10, 'ADMIN', NOW(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 126);
+

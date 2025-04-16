@@ -36,6 +36,8 @@ using AirExport.Interfaces;
 using AirExport.Repositories;
 using AirImport.Interfaces;
 using AirImport.Repositories;
+using CommonShipment.Interfaces;
+using CommonShipment.Repositories;
 
 
 
@@ -112,6 +114,10 @@ builder.Services.AddScoped<IAirExportHRepository, AirExportHRepository>();
 //AirImport
 builder.Services.AddScoped<IAirImportRepository, AirImportRepository>();
 builder.Services.AddScoped<IAirImportHRepository, AirImportHRepository>();
+
+//CommonShipment
+builder.Services.AddScoped<IFollowUpRepository, FollowUpRepository>();
+
 
 //Tnt
 builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();

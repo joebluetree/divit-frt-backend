@@ -5,6 +5,7 @@ using Database.Models.Accounts;
 using Database.Models.TnT;
 using Database.Models.Marketing;
 using Database.Models.Cargo;
+using Database.Models.CommonShipment;
 
 namespace Database
 {
@@ -49,6 +50,9 @@ namespace Database
 
         public DbSet<cargo_container> cargo_container { get; set; } = null!;
         public DbSet<cargo_desc> cargo_desc { get; set; } = null!;
+
+        //CommonShipment
+        public DbSet<cargo_followup> cargo_followup { get; set; } = null!;
 
 
         //Accounts
