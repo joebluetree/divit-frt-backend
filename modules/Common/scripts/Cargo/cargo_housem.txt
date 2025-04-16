@@ -284,7 +284,7 @@ BEGIN
     END IF;
 
     -- Check and create index IX_cargo_housem_hbl_hbl_paid_status_id
-    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_housem_hbl_hbl_paid_status_id') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_housem_hbl_paid_status_id') THEN
         CREATE INDEX "IX_cargo_housem_hbl_paid_status_id" ON cargo_housem USING btree (hbl_paid_status_id);
     END IF;
 
@@ -294,7 +294,7 @@ BEGIN
     END IF;
 
     -- Check and create index IX_cargo_housem_hbl_uom_id
-    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_housem_hbl_hbl_uom_id') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_housem_hbl_uom_id') THEN
         CREATE INDEX "IX_cargo_housem_hbl_uom_id" ON cargo_housem USING btree (hbl_uom_id);
     END IF;
 
