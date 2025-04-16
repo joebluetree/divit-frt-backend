@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <Folder Include="Accounts\" />
-    <Folder Include="CommonShipment\" />
   </ItemGroup>
 
 </Project>

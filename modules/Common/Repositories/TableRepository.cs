@@ -97,6 +97,8 @@ namespace Common.Repositories
             files.Add("Masters\\mast_param_mbl-status.txt");
             files.Add("Masters\\mast_param_paid-status.txt");
             files.Add("Masters\\mast_param_telex-release.txt");
+            files.Add("Masters\\mast_param_memo-remarks.txt");
+            files.Add("Masters\\mast_param_followup.txt");
             files.Add("Masters\\mast_param_newid.txt");
             files.Add("UserAdmin\\mast_mail_serverm.txt");
 
@@ -118,10 +120,14 @@ namespace Common.Repositories
             files.Add("Cargo\\cargo_masterm.txt");
             files.Add("Cargo\\cargo_housem.txt");
             files.Add("Cargo\\cargo_container.txt");
+            files.Add("Cargo\\cargo_desc.txt");
 
             files.Add("TnT\\tnt_trackm.txt");
             files.Add("TnT\\tnt_trackd.txt");
             files.Add("TnT\\tnt_tracking_data.txt");
+
+            files.Add("CommonShipment\\cargo_memo.txt");
+            files.Add("CommomShipment\\cargo_followup.txt");
             
         }
     }
