@@ -1,0 +1,29 @@
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 128, 'MEMO REMARK', 'ARRIVAL NOTICE SENT', 'ARRIVAL NOTICE SENT', 1, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 128);
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 129, 'MEMO REMARK', 'DO SENT', 'DO SENT', 2, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 129);
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 130, 'MEMO REMARK', 'ISF FILED AND ACC', 'ISF FILED AND ACCEPTED', 3, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 130);
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 131, 'MEMO REMARK', 'CUSTOMS RELEASED', 'CUSTOMS RELEASED', 4, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 131);
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 132, 'MEMO REMARK', 'FREIGHT RELEASED', 'FREIGHT RELEASED', 5, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 132);
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 133, 'MEMO REMARK', 'INVOICE SENT', 'INVOICE SENT', 6, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 133);
