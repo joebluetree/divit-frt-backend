@@ -118,7 +118,7 @@ builder.Services.AddScoped<IAirImportHRepository, AirImportHRepository>();
 //CommonShipment
 builder.Services.AddScoped<IFollowUpRepository, FollowUpRepository>();
 builder.Services.AddScoped<IMemoRepository, MemoRepository>();
-builder.Services.AddScoped<IDelvOrderRepository, DelvOrderRepository>();
+builder.Services.AddScoped<IDeliveryOrderRepository, DeliveryOrderRepository>();
 
 
 

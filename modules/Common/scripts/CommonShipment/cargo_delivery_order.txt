@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS cargo_delivery_order (
     do_truck_tel varchar(60) NULL,
     do_truck_fax varchar(60) NULL,
     do_truck_cc varchar(60) NULL,
-    do_doup varchar(60) NULL,
+    do_pickup varchar(60) NULL,
     do_addr1 varchar(60) NULL,
     do_addr2 varchar(60) NULL,
     do_addr3 varchar(120) NULL,

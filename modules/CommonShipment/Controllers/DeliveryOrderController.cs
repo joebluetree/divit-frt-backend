@@ -16,11 +16,11 @@ namespace Marketing.Controllers
     //version V1 - 17/04/2025
 
     [Authorize]
-    [Route("api/CommonShipment")]
-    public class DelvOrderController : Controller
+    [Route("api/CommonShipment/deliveryorder")]
+    public class DeliveryOrderController : Controller
     {
-        private readonly IDelvOrderRepository mRepository;
-        public DelvOrderController(IDelvOrderRepository Repository)
+        private readonly IDeliveryOrderRepository mRepository;
+        public DeliveryOrderController(IDeliveryOrderRepository Repository)
         {
             this.mRepository = Repository;
         }
@@ -55,20 +55,20 @@ namespace Marketing.Controllers
             }
         }
 
-        // [HttpGet]
-        // [Route("GetDefaultDataAsync")]
-        // public async Task<IActionResult> GetDefaultDataAsync(int id)
-        // {
-        //     try
-        //     {
-        //         var RetData = await mRepository.GetDefaultDataAsync(id);
-        //         return Ok(RetData);
-        //     }
-        //     catch (Exception Ex)
-        //     {
-        //         return BadRequest(Lib.getErrorMessage(Ex));
-        //     }
-        // }
+        [HttpGet]
+        [Route("GetDefaultDataAsync")]
+        public async Task<IActionResult> GetDefaultDataAsync(int id,string parent_type)
+        {
+            try
+            {
+                var RetData = await mRepository.GetDefaultDataAsync(id,parent_type);
+                return Ok(RetData);
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Lib.getErrorMessage(Ex));
+            }
+        }
 
         [HttpPost]
         [Route("SaveAsync")]

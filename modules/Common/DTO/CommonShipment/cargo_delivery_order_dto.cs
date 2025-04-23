@@ -1,3 +1,4 @@
+using Common.DTO.SeaExport;
 using Common.UserAdmin.DTO;
 using Database.Models.BaseTables;
 using System.ComponentModel.DataAnnotations;
@@ -103,5 +104,6 @@ namespace Common.DTO.CommonShipment
         public string? do_category { get; set; } = "";
         public string? do_is_delivery_sent { get; set; } = "";
         public string? do_delivery_date { get; set; } = "";
+        public List<cargo_container_dto>? deliveryorder_cntr { get; set; }
     }
 }
