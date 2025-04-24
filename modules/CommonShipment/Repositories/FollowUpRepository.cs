@@ -154,8 +154,8 @@ namespace CommonShipment.Repositories
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
                 }).FirstOrDefaultAsync();
 
-                // if (Record == null)
-                //     throw new Exception("No House Found");
+                if (Record == null)
+                    throw new Exception("No Record Found");
                 return Record;
             }
             catch (Exception Ex)
@@ -209,7 +209,7 @@ namespace CommonShipment.Repositories
                             cf_user_id = e.cf_user_id,
                             cf_user_name = e.user!.user_name,
                             cf_remarks = e.cf_remarks,
-                            cf_followup_date = Lib.FormatDate(e.cf_followup_date, Lib.outputDateTimeFormat),
+                            cf_followup_date = Lib.FormatDate(e.cf_followup_date, Lib.outputDateFormat),
                             cf_assigned_id = e.cf_assigned_id,
                             cf_assigned_name = e.assigned!.user_name,
                             cf_handled_id = e.master.mbl_handled_id,

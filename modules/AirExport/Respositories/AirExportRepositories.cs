@@ -55,8 +55,6 @@ namespace AirExport.Repositories
                     mbl_refno = data["mbl_refno"].ToString();
                 if (data.ContainsKey("mbl_from_date"))
                     mbl_from_date = data["mbl_from_date"].ToString();
-                if (data.ContainsKey("mbl_from_date"))
-                    mbl_from_date = data["mbl_from_date"].ToString();
                 if (data.ContainsKey("mbl_to_date"))
                     mbl_to_date = data["mbl_to_date"].ToString();
 

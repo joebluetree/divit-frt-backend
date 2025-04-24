@@ -123,6 +123,7 @@ builder.Services.AddScoped<IMemoRepository, MemoRepository>();
 
 //CommonShipment
 builder.Services.AddScoped<IFollowUpRepository, FollowUpRepository>();
+builder.Services.AddScoped<IMessengerSlipRepository, MessengerSlipRepository>();
 
 
 
