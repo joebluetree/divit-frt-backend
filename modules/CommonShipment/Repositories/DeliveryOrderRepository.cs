@@ -44,10 +44,24 @@ namespace CommonShipment.Repositories
 
                 var action = data["action"].ToString();
                 if (action == null)
+
                     action = "search";
 
+                var do_from_date = "";
+                var do_to_date = "";
+                var do_order_no = "";
                 var company_id = 0;
                 var branch_id = 0;
+
+                DateTime? from_date = null;
+                DateTime? to_date = null;
+
+                if (data.ContainsKey("do_from_date"))
+                    do_from_date = data["do_from_date"].ToString();
+                if (data.ContainsKey("do_to_date"))
+                    do_to_date = data["do_to_date"].ToString();
+                if (data.ContainsKey("do_order_no"))
+                    do_order_no = data["do_order_no"].ToString();
 
                 if (data.ContainsKey("rec_company_id"))
                     company_id = int.Parse(data["rec_company_id"].ToString()!);
@@ -66,7 +80,20 @@ namespace CommonShipment.Repositories
                 IQueryable<cargo_delivery_order> query = context.cargo_delivery_order;
 
                 query = query.Where(w => w.rec_company_id == company_id);
-                query = query.Where(w => w.rec_branch_id == branch_id);
+                query = query.Where(w => w.rec_branch_id == branch_id && w.do_category == "GENERAL");
+
+                if (!Lib.IsBlank(do_from_date))
+                {
+                    from_date = Lib.ParseDate(do_from_date!);
+                    query = query.Where(w => w.do_order_date >= from_date);
+                }
+                if (!Lib.IsBlank(do_to_date))
+                {
+                    to_date = Lib.ParseDate(do_to_date!);
+                    query = query.Where(w => w.do_order_date <= to_date);
+                }
+                if (!Lib.IsBlank(do_order_no))
+                    query = query.Where(w => w.do_order_no!.Contains(do_order_no!));
 
                 if (action == "SEARCH")
                 {
@@ -82,7 +109,7 @@ namespace CommonShipment.Repositories
                 int StartRow = Lib.getStartRow(_page.currentPageNo, _page.pageSize);
 
                 query = query
-                    .OrderBy(c => c.do_date)
+                    .OrderBy(c => c.do_order_date)
                     .Skip(StartRow)
                     .Take(_page.pageSize);
 
@@ -91,9 +118,11 @@ namespace CommonShipment.Repositories
                     do_id = e.do_id,
                     do_cfno = e.do_cfno,
                     do_order_no = e.do_order_no,
+                    do_truck_name = e.do_truck_name,
+                    do_from_name = e.do_from_name,
+                    do_to_name = e.do_to_name,
                     do_parent_id = e.do_parent_id,
-                    do_truck_id = e.do_truck_id,
-                    do_truck_code = e.truck!.cust_code,
+                    do_order_date = Lib.FormatDate(e.do_order_date, Lib.outputDateFormat),
 
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
@@ -111,18 +140,20 @@ namespace CommonShipment.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
-        public async Task<cargo_delivery_order_dto?> GetRecordAsync(int id)
+        public async Task<cargo_delivery_order_dto?> GetRecordAsync(int id, string parent_type)
         {
             try
             {
                 IQueryable<cargo_delivery_order> query = context.cargo_delivery_order;
 
-                query = query.Where(f => f.do_parent_id == id);
+                query = query.Where(f => f.do_parent_id == id && f.do_category == parent_type);
+
 
                 var Record = await query.Select(e => new cargo_delivery_order_dto
                 {
                     do_id = e.do_id,
                     do_cfno = e.do_cfno,
+                    do_order_no = e.do_order_no,
                     do_parent_id = e.do_parent_id,
                     do_truck_id = e.do_truck_id,
                     do_truck_code = e.truck!.cust_code,
@@ -191,9 +222,8 @@ namespace CommonShipment.Repositories
                     do_terms_ship = e.do_terms_ship,
                     do_vessel = e.do_vessel,
                     do_voyage = e.do_voyage,
-                    do_freight = e.do_freight,// use split
-                    do_export_doc = e.do_export_doc,// use split
-                    do_order_no = e.do_order_no,
+                    do_freight = e.do_freight,
+                    do_export_doc = e.do_export_doc,
                     do_order_date = Lib.FormatDate(e.do_order_date, Lib.outputDateFormat),
                     do_category = e.do_category,
                     do_is_delivery_sent = e.do_is_delivery_sent,
@@ -239,20 +269,18 @@ namespace CommonShipment.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+     
         public async Task<List<cargo_container_dto>> GetMastCntrAsync(int id)
         {
             var query = from e in context.cargo_container
-                        .Where(a => a.cntr_mbl_id == id ||a.cntr_hbl_id == id)
+                        .Where(a => a.cntr_mbl_id == id && a.cntr_catg == "M" || a.cntr_hbl_id == id && a.cntr_catg == "H")
                         .OrderBy(o => o.cntr_order)
                         select (new cargo_container_dto
                         {
                             // cntr_id = e.cntr_id,
                             cntr_hbl_id = e.cntr_hbl_id,
                             cntr_mbl_id = e.cntr_mbl_id,
-                            cntr_catg = e.cntr_catg,
                             cntr_no = e.cntr_no,
-                            cntr_type_id = e.cntr_type_id,
-                            cntr_type_name = e.cntrtype!.param_name,
                             cntr_sealno = e.cntr_sealno,
                             cntr_order = e.cntr_order,
                         });
@@ -261,16 +289,19 @@ namespace CommonShipment.Repositories
 
             return records;
         }
+        // to get default data from a parent table
         public async Task<cargo_delivery_order_dto?> GetDefaultDataAsync(int id, string parent_type)
         {
             try
             {
                 cargo_delivery_order_dto? Record = null;
+
+                // to fetch data from Master table (here only sea)
                 if (parent_type == "SEA-IMPORT-M")
                 {
                     var query = context.cargo_masterm
                         .Where(f => f.mbl_id == id);
-                    
+
                     Record = await query
                         .Select(e => new cargo_delivery_order_dto
                         {
@@ -285,15 +316,18 @@ namespace CommonShipment.Repositories
                             do_voyage = e.mbl_voyage,
 
                             do_category = parent_type,
-                            // do_category = e.mbl_mode,
                             rec_branch_id = e.rec_branch_id,
                             rec_company_id = e.rec_company_id,
                         })
                         .FirstOrDefaultAsync();
 
                     Record!.deliveryorder_cntr = await GetMastCntrAsync(id);
+
                 }
-                if (parent_type == "SEA-IMPORT-H" ||parent_type == "AIR-IMPORT-H")
+
+                //To fetch data from House (sea & air) 
+
+                if (parent_type == "SEA-IMPORT-H" || parent_type == "AIR-IMPORT-H")
                 {
                     var query = context.cargo_housem
                         .Where(f => f.hbl_id == id);
@@ -302,7 +336,7 @@ namespace CommonShipment.Repositories
                         .Select(e => new cargo_delivery_order_dto
                         {
                             do_parent_id = e.hbl_id,
-                            do_order_no = e.hbl_houseno,
+                            do_order_no = e.master!.mbl_refno,
                             do_pickup = e.hbl_location_name,
                             do_addr1 = e.hbl_location_add1,
                             do_addr2 = e.hbl_location_add2,
@@ -340,7 +374,7 @@ namespace CommonShipment.Repositories
 
                     Record!.deliveryorder_cntr = await GetMastCntrAsync(id);
                 }
-
+                Record!.do_remark_1 = "PLEASE CONTACT CONSIGNEE FOR DELIVERY APPOINTMENT!";
                 return Record;
             }
             catch (Exception Ex)
@@ -400,6 +434,26 @@ namespace CommonShipment.Repositories
                 if (!AllValid(mode, record_dto, ref error))
                     throw new Exception(error);
 
+                // for GENERAL type add ref no
+                if (record_dto.do_parent_id == 0)
+                {
+                    // record_dto.do_parent_id = id;
+                    record_dto.do_category = "GENERAL";
+
+                    var DefaultCfNo = 1; //default serial no
+                    var Defaultprefix = "P";
+
+                    int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
+                    if (Lib.IsZero(iNextNo))
+                    {
+                        throw new Exception("Ref Number Cannot Be Generated");
+                    }
+
+                    record_dto.do_cfno = iNextNo;
+                    record_dto.do_order_no = $"{Defaultprefix}{iNextNo}";
+                }
+
+
                 var do_freight = $"{record_dto.do_is_exw},{record_dto.do_is_fob},{record_dto.do_is_fca},{record_dto.do_is_cpu},{record_dto.do_is_ddu},{record_dto.do_is_frt_others},{record_dto.do_freight_remark}";
                 var do_export_doc = $"{record_dto.do_is_comm_inv},{record_dto.do_is_lc},{record_dto.do_is_coo},{record_dto.do_is_pl},{record_dto.do_is_expdec},{record_dto.do_is_exp_others},{record_dto.do_export_doc_remark}";
 
@@ -413,6 +467,8 @@ namespace CommonShipment.Repositories
                     Record.rec_created_by = record_dto.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
                     Record.rec_locked = "N";
+
+                    Record.do_cfno = record_dto.do_cfno;
 
                 }
                 else
@@ -440,7 +496,6 @@ namespace CommonShipment.Repositories
                 if (mode == "edit")
                     await logHistory(Record, record_dto);
 
-                Record.do_cfno = record_dto.do_cfno;
                 Record.do_parent_id = record_dto.do_parent_id;
                 Record.do_truck_id = record_dto.do_truck_id;
                 Record.do_truck_name = record_dto.do_truck_name;
@@ -504,11 +559,9 @@ namespace CommonShipment.Repositories
                 Record.do_terms_ship = record_dto.do_terms_ship;
                 Record.do_vessel = record_dto.do_vessel;
                 Record.do_voyage = record_dto.do_voyage;
-                // Record.do_freight = record_dto.do_freight; // use split
-                // Record.do_export_doc = record_dto.do_export_doc; // use split
 
-                Record.do_freight = do_freight;
-                Record.do_export_doc = do_export_doc; // save as list using comma
+                Record.do_freight = do_freight; //save as coma(,) seprated varchar
+                Record.do_export_doc = do_export_doc;
 
                 Record.do_order_no = record_dto.do_order_no;
                 Record.do_order_date = Lib.ParseDate(record_dto.do_order_date!);
@@ -523,7 +576,15 @@ namespace CommonShipment.Repositories
                 await context.SaveChangesAsync();
 
                 record_dto.do_id = Record.do_id;
+                record_dto.do_order_no = Record.do_order_no;
 
+                if (record_dto.do_category == "GENERAL")
+                {                
+                    Record.do_parent_id = Record.do_id;
+                    await context.SaveChangesAsync();
+                }
+                record_dto.do_parent_id = Record.do_parent_id;
+                
                 if (mode == "add")
                 {
                     record_dto.rec_created_by = Record.rec_created_by;
@@ -574,7 +635,18 @@ namespace CommonShipment.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+        //generate next cf no only for general do_category
+        public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)
+        {
+            var CfNo = context.cargo_delivery_order
+            .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id)
+            .Select(e => e.do_cfno)
+            .DefaultIfEmpty()
+            .Max();
 
+            CfNo = CfNo == 0 ? DefaultCfNo : CfNo + 1;
+            return CfNo ?? 0;
+        }
         public async Task logHistory(cargo_delivery_order old_record, cargo_delivery_order_dto record_dto)
         {
 
@@ -593,7 +665,7 @@ namespace CommonShipment.Repositories
                 do_addr1 = old_record.do_addr1,
                 do_addr2 = old_record.do_addr2,
                 do_addr3 = old_record.do_addr3,
-                do_date = Lib.FormatDate(old_record.do_date, Lib.outputDateTimeFormat),
+                do_date = Lib.FormatDate(old_record.do_date, Lib.outputDateFormat),
                 do_time = old_record.do_time,
                 do_attn = old_record.do_attn,
                 do_tel = old_record.do_tel,
@@ -669,16 +741,16 @@ namespace CommonShipment.Repositories
                 do_is_exp_others = CommonLib.SplitString(old_record.do_export_doc, 5),
                 do_export_doc_remark = CommonLib.SplitString(old_record.do_export_doc, 6),
 
-                do_order_no = old_record.do_order_no,
-                do_order_date = Lib.FormatDate(old_record.do_order_date, Lib.outputDateTimeFormat),
+                // do_order_no = old_record.do_order_no,
+                do_order_date = Lib.FormatDate(old_record.do_order_date, Lib.outputDateFormat),
                 do_category = old_record.do_category,
                 do_is_delivery_sent = old_record.do_is_delivery_sent,
-                do_delivery_date = Lib.FormatDate(old_record.do_delivery_date, Lib.outputDateTimeFormat)
+                do_delivery_date = Lib.FormatDate(old_record.do_delivery_date, Lib.outputDateFormat)
             };
 
             await new LogHistorym<cargo_delivery_order_dto>(context)
                 .Table("cargo_delivery_order", log_date)
-                .PrimaryKey("do_parent_id", record_dto.do_parent_id??0)
+                .PrimaryKey("do_parent_id", record_dto.do_parent_id ?? 0)
                 .RefNo(record_dto.do_order_no!)
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
 
@@ -691,17 +763,15 @@ namespace CommonShipment.Repositories
                 .TrackColumn("do_addr1", "Address 1")
                 .TrackColumn("do_addr2", "Address 2")
                 .TrackColumn("do_addr3", "Address 3")
-                .TrackColumn("do_date", "DO Date")
+                .TrackColumn("do_date", "Pick-Up Date")
                 .TrackColumn("do_time", "DO Time")
-                .TrackColumn("do_attn", "Attn")
-                .TrackColumn("do_tel", "Tel")
-
+                .TrackColumn("do_attn", "Attention")
+                .TrackColumn("do_tel", "Telephone")
                 .TrackColumn("do_from_name", "From Name")
                 .TrackColumn("do_from_addr1", "From Addr1")
                 .TrackColumn("do_from_addr2", "From Addr2")
                 .TrackColumn("do_from_addr3", "From Addr3")
                 .TrackColumn("do_from_addr4", "From Addr4")
-
                 .TrackColumn("do_to_name", "To Name")
                 .TrackColumn("do_to_addr1", "To Addr1")
                 .TrackColumn("do_to_addr2", "To Addr2")
@@ -710,38 +780,33 @@ namespace CommonShipment.Repositories
 
                 .TrackColumn("do_uom1_name", "UOM1")
                 .TrackColumn("do_desc1", "Desc1")
-                .TrackColumn("do_tot_piece1", "Pieces1","decimal")
-                .TrackColumn("do_wt1", "Weight1","decimal")
-                .TrackColumn("do_cbm_cft1", "CBM1","decimal")
-
+                .TrackColumn("do_tot_piece1", "Pieces1", "decimal")
+                .TrackColumn("do_wt1", "Weight1", "decimal")
+                .TrackColumn("do_cbm_cft1", "CBM1", "decimal")
                 .TrackColumn("do_uom2_name", "UOM2")
                 .TrackColumn("do_desc2", "Desc2")
-                .TrackColumn("do_tot_piece2", "Pieces2","decimal")
-                .TrackColumn("do_wt2", "Weight2","decimal")
-                .TrackColumn("do_cbm_cft2", "CBM2","decimal")
-
+                .TrackColumn("do_tot_piece2", "Pieces2", "decimal")
+                .TrackColumn("do_wt2", "Weight2", "decimal")
+                .TrackColumn("do_cbm_cft2", "CBM2", "decimal")
                 .TrackColumn("do_uom3_name", "UOM3")
                 .TrackColumn("do_desc3", "Desc3")
-                .TrackColumn("do_tot_piece3", "Pieces3","decimal")
-                .TrackColumn("do_wt3", "Weight3","decimal")
-                .TrackColumn("do_cbm_cft3", "CBM3","decimal")
-
+                .TrackColumn("do_tot_piece3", "Pieces3", "decimal")
+                .TrackColumn("do_wt3", "Weight3", "decimal")
+                .TrackColumn("do_cbm_cft3", "CBM3", "decimal")
                 .TrackColumn("do_uom4_name", "UOM4")
                 .TrackColumn("do_desc4", "Desc4")
-                .TrackColumn("do_tot_piece4", "Pieces4","decimal")
-                .TrackColumn("do_wt4", "Weight4","decimal")
-                .TrackColumn("do_cbm_cft4", "CBM4","decimal")
+                .TrackColumn("do_tot_piece4", "Pieces4", "decimal")
+                .TrackColumn("do_wt4", "Weight4", "decimal")
+                .TrackColumn("do_cbm_cft4", "CBM4", "decimal")
 
                 .TrackColumn("do_remark_1", "Remark 1")
                 .TrackColumn("do_remark_2", "Remark 2")
                 .TrackColumn("do_remark_3", "Remark 3")
                 .TrackColumn("do_remark_4", "Remark 4")
-
                 .TrackColumn("do_danger_goods", "Danger Goods")
                 .TrackColumn("do_terms_ship", "Shipping Terms")
                 .TrackColumn("do_vessel", "Vessel")
                 .TrackColumn("do_voyage", "Voyage")
-                .TrackColumn("do_freight", "Freight")
 
                 .TrackColumn("do_is_exw", "Frt-EXW")
                 .TrackColumn("do_is_fob", "Frt-FOB")
@@ -753,16 +818,13 @@ namespace CommonShipment.Repositories
 
                 .TrackColumn("do_is_comm_inv", "Exp-Commercial Invoice")
                 .TrackColumn("do_is_lc", "Exp-Copy of L/C")
-                .TrackColumn("do_is_coo", "Exp Certificate of Origin")
-                .TrackColumn("do_is_pl", "Exp Packing List")
+                .TrackColumn("do_is_coo", "Exp-Certificate of Origin")
+                .TrackColumn("do_is_pl", "Exp-Packing List")
                 .TrackColumn("do_is_expdec", "Exp-Export Declaration")
                 .TrackColumn("do_is_exp_others", "Exp-Others")
                 .TrackColumn("do_export_doc_remark", "Export Doc Remark")
 
-                .TrackColumn("do_export_doc", "Export Doc")
-                .TrackColumn("do_order_no", "Order No")
                 .TrackColumn("do_order_date", "Order Date")
-                .TrackColumn("do_category", "Category")
                 .TrackColumn("do_is_delivery_sent", "Delivery Sent")
                 .TrackColumn("do_delivery_date", "Delivery Date")
 

@@ -42,11 +42,11 @@ namespace Marketing.Controllers
 
         [HttpGet]
         [Route("GetRecordAsync")]
-        public async Task<IActionResult> GetRecordAsync(int id)
+        public async Task<IActionResult> GetRecordAsync(int id, string parent_type)
         {
             try
             {
-                var RetData = await mRepository.GetRecordAsync(id);
+                var RetData = await mRepository.GetRecordAsync(id, parent_type);
                 return Ok(RetData);
             }
             catch (Exception Ex)

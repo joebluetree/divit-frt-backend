@@ -94,6 +94,9 @@ namespace Database.Models.Cargo
         public int rec_branch_id { get; set; }
 
         
+        // [ForeignKey("do_parent_id")]
+        // public cargo_housem? parent { get; set; }
+
         [ForeignKey("do_truck_id")]
         public mast_customerm? truck { get; set; }
         

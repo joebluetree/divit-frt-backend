@@ -505,6 +505,8 @@ namespace SeaImport.Repositories
             string cntr_no = "";
 
 
+            if (Lib.IsBlank(record_dto.hbl_houseno))
+                str += "House No Cannot Be Blank!";
             if (Lib.IsZero(record_dto.hbl_shipment_stage_id))
                 str += "Stage Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.hbl_shipper_code))
