@@ -1,22 +1,23 @@
-using System;
-using Common.DTO.CommonShipment;
-using CommonShipment.Interfaces;
-using Database.Lib;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Database.Lib;
+using CommonShipment.Interfaces;
+using Common.DTO.CommonShipment;
 
 namespace CommonShipment.Controllers
 {
     //Name : Alen Cherian
-    //Date : 09/04/2025
-    //Command :  Api Controller for the Follow Up.
+    //Date : 22/04/2025
+    //Command :  Api Controller for the MessengerSlip.
+
 
     [Authorize]
-    [Route("api/CommonShipment/Followup")]
-    public class FollowUpController : Controller
+    [Route("api/CommonShipment/MessengerSlip")]
+    public class MessengerSlipController : Controller
     {
-        private readonly IFollowUpRepository mRepository;
-        public FollowUpController(IFollowUpRepository Repository)
+        private readonly IMessengerSlipRepository mRepository;
+        public MessengerSlipController(IMessengerSlipRepository Repository)
         {
             this.mRepository = Repository;
         }
@@ -81,9 +82,10 @@ namespace CommonShipment.Controllers
             }
         }
 
+
         [HttpPost]
         [Route("SaveAsync")]
-        public async Task<IActionResult> SaveAsync(int id, string mode, [FromBody] cargo_followup_dto rec)
+        public async Task<IActionResult> SaveAsync(int id, string mode, [FromBody] cargo_slip_dto rec)
         {
             try
             {

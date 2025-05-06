@@ -55,8 +55,6 @@ namespace AirExport.Repositories
                     mbl_refno = data["mbl_refno"].ToString();
                 if (data.ContainsKey("mbl_from_date"))
                     mbl_from_date = data["mbl_from_date"].ToString();
-                if (data.ContainsKey("mbl_from_date"))
-                    mbl_from_date = data["mbl_from_date"].ToString();
                 if (data.ContainsKey("mbl_to_date"))
                     mbl_to_date = data["mbl_to_date"].ToString();
 
@@ -476,6 +474,8 @@ namespace AirExport.Repositories
         {
             try
             {
+                context.Database.BeginTransaction();
+                
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
                 RetData.Add("id", id);
                 var _Record = await context.cargo_masterm
@@ -489,15 +489,15 @@ namespace AirExport.Repositories
                 }
                 else
                 {
-                    var air_exporth = context.cargo_housem
-                    .Where(c => c.hbl_mbl_id == id);
-                    if (air_exporth.Any())
-                    {
-                        context.cargo_housem.RemoveRange(air_exporth);
+                    await CommonLib.DeleteHouses( context, id );
+                    await CommonLib.DeleteMessengerSlip( context, id );
+                    await CommonLib.DeleteFollowUp( context, id );
 
-                    }
                     context.Remove(_Record);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
+
+                    context.Database.CommitTransaction();
+
                     RetData.Add("status", true);
                     RetData.Add("message", "");
                 }
@@ -505,6 +505,7 @@ namespace AirExport.Repositories
             }
             catch (Exception)
             {
+                context.Database.RollbackTransaction();
                 throw;
             }
         }

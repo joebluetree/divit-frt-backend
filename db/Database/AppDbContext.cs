@@ -59,6 +59,7 @@ namespace Database
         //CommonShipment
         public DbSet<cargo_memo> cargo_memo { get; set; } = null!;
         public DbSet<cargo_followup> cargo_followup { get; set; } = null!;
+        public DbSet<cargo_slip> cargo_slip { get; set; } = null!;
 
 
 
