@@ -267,6 +267,8 @@ namespace UserAdmin.Repositories
         {
             try
             {
+                context.Database.BeginTransaction();
+
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
                 RetData.Add("id", id);
                 var _Record = await context.mast_mail_serverm
@@ -281,7 +283,10 @@ namespace UserAdmin.Repositories
                 else
                 {
                     context.Remove(_Record);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
+
+                    context.Database.CommitTransaction();
+
                     RetData.Add("status", true);
                     RetData.Add("message", "");
                 }
@@ -289,6 +294,7 @@ namespace UserAdmin.Repositories
             }
             catch (Exception)
             {
+                context.Database.RollbackTransaction();
                 throw;
             }
         }

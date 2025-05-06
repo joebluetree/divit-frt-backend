@@ -811,6 +811,8 @@ namespace AirImport.Repositories
         {
             try
             {
+                context.Database.BeginTransaction();
+                
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
                 RetData.Add("id", id);
                 var _Record = await context.cargo_housem
@@ -834,6 +836,9 @@ namespace AirImport.Repositories
                     context.Remove(_Record);
                     context.SaveChanges();
                     await CommonLib.SaveMasterSummary(this.context, mbl_id);
+
+                    context.Database.CommitTransaction();
+
                     RetData.Add("status", true);
                     RetData.Add("message", "");
                 }
@@ -841,6 +846,7 @@ namespace AirImport.Repositories
             }
             catch (Exception)
             {
+                context.Database.RollbackTransaction();
                 throw;
             }
         }

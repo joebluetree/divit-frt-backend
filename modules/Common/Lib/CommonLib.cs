@@ -172,6 +172,7 @@ namespace Common.Lib
                 context.cargo_followup.RemoveRange(followup);
             }
         }
+
         public static async Task DeleteDeliveryOrder(AppDbContext _context, int id)
         {
             context = _context;
@@ -196,6 +197,21 @@ namespace Common.Lib
                 context.cargo_desc.RemoveRange(descriptions);
             }
         }
+
+
+        public static async Task DeleteMessengerSlip(AppDbContext _context, int id)
+        {
+            context = _context;
+
+            var MessengerSlip = await context.cargo_slip
+                .Where(c => c.cs_mbl_id == id).ToListAsync();
+            if (MessengerSlip.Any())
+            {
+                context.cargo_slip.RemoveRange(MessengerSlip);
+            }
+        }
+
+
         public static async Task DeleteHouses(AppDbContext _context, int id)
         {
             context = _context;
@@ -209,14 +225,19 @@ namespace Common.Lib
 
             if (houseid.Any())
             {
+
                 
                 await DeleteDesc(context, id);
+                
+                // Delete cargo_housem records by creating stub entities
 
                 context.cargo_housem.RemoveRange(houses);
                 // Save all changes
                 await context.SaveChangesAsync();
             }
         }
+
+  
         public static async Task DeleteContainer(AppDbContext _context, int id)
         {
             context = _context;
@@ -241,6 +262,7 @@ namespace Common.Lib
                 context.cargo_memo.RemoveRange(_Memo);
             }
         }
+
 
     }
 
