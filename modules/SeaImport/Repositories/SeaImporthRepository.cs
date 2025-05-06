@@ -505,6 +505,8 @@ namespace SeaImport.Repositories
             string cntr_no = "";
 
 
+            if (Lib.IsBlank(record_dto.hbl_houseno))
+                str += "House No Cannot Be Blank!";
             if (Lib.IsZero(record_dto.hbl_shipment_stage_id))
                 str += "Stage Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.hbl_shipper_code))
@@ -1092,6 +1094,7 @@ namespace SeaImport.Repositories
         {
             try
             {
+                context.Database.BeginTransaction();
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
                 RetData.Add("id", id);
                 var _Record = await context.cargo_housem
@@ -1104,12 +1107,12 @@ namespace SeaImport.Repositories
                 }
                 else
                 {
-                    var _Container = context.cargo_container
-                    .Where(c => c.cntr_hbl_id == id);
-                    if (_Container.Any())
-                    {
-                        context.cargo_container.RemoveRange(_Container);
-                    }
+
+                    await CommonLib.DeleteContainer(context, id);
+                    await CommonLib.DeleteDesc(context, id);
+                    await CommonLib.DeleteDeliveryOrder(context, id);
+                    await CommonLib.DeleteMemo(context, id);
+
                     var mbl_id = _Record.hbl_mbl_id;
                     context.Remove(_Record);
                     context.SaveChanges();
@@ -1118,6 +1121,7 @@ namespace SeaImport.Repositories
                     RetData.Add("status", true);
                     RetData.Add("message", "");
                 }
+                context.Database.CommitTransaction();
                 return RetData;
             }
             catch (Exception Ex)

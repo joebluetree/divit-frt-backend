@@ -51,15 +51,14 @@ namespace Database
         public DbSet<cargo_container> cargo_container { get; set; } = null!;
         public DbSet<cargo_desc> cargo_desc { get; set; } = null!;
 
-
-        
-        
-        
-
         //CommonShipment
         public DbSet<cargo_memo> cargo_memo { get; set; } = null!;
         public DbSet<cargo_followup> cargo_followup { get; set; } = null!;
+
+        public DbSet<cargo_delivery_order> cargo_delivery_order { get; set; } = null!;
+
         public DbSet<cargo_slip> cargo_slip { get; set; } = null!;
+
 
 
 

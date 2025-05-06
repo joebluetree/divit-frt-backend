@@ -173,6 +173,32 @@ namespace Common.Lib
             }
         }
 
+        public static async Task DeleteDeliveryOrder(AppDbContext _context, int id)
+        {
+            context = _context;
+
+            var _deliveryOrders = await context.cargo_delivery_order
+                .Where(c => c.do_parent_id == id).ToListAsync();
+
+            if (_deliveryOrders.Any())
+            {
+                context.cargo_delivery_order.RemoveRange(_deliveryOrders);
+            }
+        }
+        public static async Task DeleteDesc(AppDbContext _context, int id)
+        {
+            context = _context;
+
+            var descriptions =await  context.cargo_desc
+                .Where(c => c.desc_parent_id == id).ToListAsync();
+
+            if (descriptions.Any())
+            {
+                context.cargo_desc.RemoveRange(descriptions);
+            }
+        }
+
+
         public static async Task DeleteMessengerSlip(AppDbContext _context, int id)
         {
             context = _context;
@@ -184,6 +210,7 @@ namespace Common.Lib
                 context.cargo_slip.RemoveRange(MessengerSlip);
             }
         }
+
 
         public static async Task DeleteHouses(AppDbContext _context, int id)
         {
@@ -198,20 +225,41 @@ namespace Common.Lib
 
             if (houseid.Any())
             {
-                // Delete cargo_desc records where desc_parent_id matches house IDs
-                var descriptions = await context.cargo_desc
-                    .Where(c => houseid.Contains(c.desc_parent_id))
-                    .ToListAsync();
 
-                if (descriptions.Any())
-                {
-                    context.cargo_desc.RemoveRange(descriptions);
-                }
-
+                
+                await DeleteDesc(context, id);
+                
                 // Delete cargo_housem records by creating stub entities
+
                 context.cargo_housem.RemoveRange(houses);
                 // Save all changes
                 await context.SaveChangesAsync();
+            }
+        }
+
+  
+        public static async Task DeleteContainer(AppDbContext _context, int id)
+        {
+            context = _context;
+
+            var containers = await context.cargo_container
+                .Where(c => c.cntr_hbl_id == id).ToListAsync();
+
+            if (containers.Any())
+            {
+                context.cargo_container.RemoveRange(containers);
+            }
+        }
+        public static async Task DeleteMemo(AppDbContext _context, int id)
+        {
+            context = _context;
+            
+            var _Memo = await context.cargo_memo
+                .Where(c => c.memo_parent_id == id).ToListAsync();
+
+            if ( _Memo.Any())
+            {
+                context.cargo_memo.RemoveRange(_Memo);
             }
         }
 
