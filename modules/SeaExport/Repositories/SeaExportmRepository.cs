@@ -754,19 +754,10 @@ namespace SeaExport.Repositories
                 }
                 else
                 {
-                    var _Container = context.cargo_container
-                    .Where(c => c.cntr_mbl_id == id);
-                    if (_Container.Any())
-                    {
-                        context.cargo_container.RemoveRange(_Container);
-                    }
-
-                    var _House = context.cargo_housem
-                    .Where(c => c.hbl_mbl_id == id);
-                    if (_House.Any())
-                    {
-                        context.cargo_housem.RemoveRange(_House);
-                    }
+                    await CommonLib.DeleteContainer(context, id);
+                    await CommonLib.DeleteHouses(context, id);
+                    await CommonLib.DeleteDesc(context, id);
+                    await CommonLib.DeleteMemo(context, id);
 
                     context.Remove(_Record);
                     context.SaveChanges();

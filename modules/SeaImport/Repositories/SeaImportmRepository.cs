@@ -825,11 +825,11 @@ namespace SeaImport.Repositories
                 }
                 else
                 {
-                    await CommonLib.DeleteContainerAsync(context, id);
-                    await CommonLib.DeleteHouseAsync(context, id);
-                    await CommonLib.DeleteDescAsync(context, id);
-                    await CommonLib.DeleteDOAsync(context, id);
-                    await CommonLib.DeleteMemoAsync(context, id);
+                    await CommonLib.DeleteContainer(context, id);
+                    await CommonLib.DeleteHouses(context, id);
+                    await CommonLib.DeleteDesc(context, id);
+                    await CommonLib.DeleteDeliveryOrder(context, id);
+                    await CommonLib.DeleteMemo(context, id);
 
                     context.Remove(_Record);
                     context.SaveChanges();

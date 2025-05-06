@@ -144,85 +144,7 @@ namespace Common.Lib
             return Regex.IsMatch(cntr_no, @"^[A-Z]{4}\d{7}$");
         }
 
-        //TO Delete House from a master
-        public static async Task DeleteHouseAsync(AppDbContext _context, int id)
-        {
-            context = _context;
 
-            var _Houses = await context.cargo_housem
-                .Where(c => c.hbl_mbl_id == id)
-                .ToListAsync();
-
-            if (_Houses.Any())
-            {                
-                var houseIds = _Houses.Select(h => h.hbl_id).ToList();
-
-                var descriptions = await context.cargo_desc
-                    .Where(d => houseIds.Contains(d.desc_parent_id))
-                    .ToListAsync();
-
-                if (descriptions.Any())
-                {
-                    context.cargo_desc.RemoveRange(descriptions);
-                }
-
-                context.cargo_housem.RemoveRange(_Houses);
-                await context.SaveChangesAsync();
-            }
-        }
-
-        public static async Task DeleteContainerAsync(AppDbContext _context, int id)
-        {
-            context = _context;
-
-            var containers = context.cargo_container
-                .Where(c => c.cntr_hbl_id == id);
-
-            if (await containers.AnyAsync())
-            {
-                context.cargo_container.RemoveRange(containers);
-                await context.SaveChangesAsync();
-            }
-        }
-        public static async Task DeleteDescAsync(AppDbContext _context, int id)
-        {
-            context = _context;
-
-            var descriptions = context.cargo_desc
-                .Where(c => c.desc_parent_id == id);
-
-            if (await descriptions.AnyAsync())
-            {
-                context.cargo_desc.RemoveRange(descriptions);
-                await context.SaveChangesAsync();
-            }
-        }
-        public static async Task DeleteDOAsync(AppDbContext _context, int id)
-        {
-            context = _context;
-
-            var _deliveryOrders = context.cargo_delivery_order
-                .Where(c => c.do_parent_id == id);
-
-            if (await _deliveryOrders.AnyAsync())
-            {
-                context.cargo_delivery_order.RemoveRange(_deliveryOrders);
-                await context.SaveChangesAsync();
-            }
-        }
-        public static async Task DeleteMemoAsync(AppDbContext _context, int id)
-        {
-            context = _context;
-            
-            var _Memo = context.cargo_memo
-                .Where(c => c.memo_parent_id == id);
-
-            if (await _Memo.AnyAsync())
-            {
-                context.cargo_memo.RemoveRange(_Memo);
-                await context.SaveChangesAsync();
-            }
-        }
         public static string SplitString(string? data, int iPos, char SplitChar = ',')
         {
             string str = "";
@@ -237,6 +159,87 @@ namespace Common.Lib
             }
 
             return str;
+        }
+
+        public static async Task DeleteFollowUp(AppDbContext _context, int id)
+        {
+            context = _context;
+
+            var followup = await context.cargo_followup
+                .Where(c => c.cf_mbl_id == id).ToListAsync();
+            if (followup.Any())
+            {
+                context.cargo_followup.RemoveRange(followup);
+            }
+        }
+        public static async Task DeleteDeliveryOrder(AppDbContext _context, int id)
+        {
+            context = _context;
+
+            var _deliveryOrders = await context.cargo_delivery_order
+                .Where(c => c.do_parent_id == id).ToListAsync();
+
+            if (_deliveryOrders.Any())
+            {
+                context.cargo_delivery_order.RemoveRange(_deliveryOrders);
+            }
+        }
+        public static async Task DeleteDesc(AppDbContext _context, int id)
+        {
+            context = _context;
+
+            var descriptions =await  context.cargo_desc
+                .Where(c => c.desc_parent_id == id).ToListAsync();
+
+            if (descriptions.Any())
+            {
+                context.cargo_desc.RemoveRange(descriptions);
+            }
+        }
+        public static async Task DeleteHouses(AppDbContext _context, int id)
+        {
+            context = _context;
+
+            // Get all house IDs under the given mbl_id
+            var houses = await context.cargo_housem
+                .Where(c => c.hbl_mbl_id == id)
+                .ToListAsync();
+
+            var houseid = houses.Select(c => c.hbl_id).ToList();
+
+            if (houseid.Any())
+            {
+                
+                await DeleteDesc(context, id);
+
+                context.cargo_housem.RemoveRange(houses);
+                // Save all changes
+                await context.SaveChangesAsync();
+            }
+        }
+        public static async Task DeleteContainer(AppDbContext _context, int id)
+        {
+            context = _context;
+
+            var containers = await context.cargo_container
+                .Where(c => c.cntr_hbl_id == id).ToListAsync();
+
+            if (containers.Any())
+            {
+                context.cargo_container.RemoveRange(containers);
+            }
+        }
+        public static async Task DeleteMemo(AppDbContext _context, int id)
+        {
+            context = _context;
+            
+            var _Memo = await context.cargo_memo
+                .Where(c => c.memo_parent_id == id).ToListAsync();
+
+            if ( _Memo.Any())
+            {
+                context.cargo_memo.RemoveRange(_Memo);
+            }
         }
 
     }
