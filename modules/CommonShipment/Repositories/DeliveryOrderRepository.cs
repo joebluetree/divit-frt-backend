@@ -109,7 +109,7 @@ namespace CommonShipment.Repositories
                 int StartRow = Lib.getStartRow(_page.currentPageNo, _page.pageSize);
 
                 query = query
-                    .OrderBy(c => c.do_order_date)
+                    .OrderBy(c => c.do_order_no)
                     .Skip(StartRow)
                     .Take(_page.pageSize);
 
@@ -437,7 +437,6 @@ namespace CommonShipment.Repositories
                 // for GENERAL type add ref no
                 if (record_dto.do_parent_id == 0)
                 {
-                    // record_dto.do_parent_id = id;
                     record_dto.do_category = "GENERAL";
 
                     var DefaultCfNo = 1; //default serial no
@@ -565,7 +564,11 @@ namespace CommonShipment.Repositories
 
                 Record.do_order_no = record_dto.do_order_no;
                 Record.do_order_date = Lib.ParseDate(record_dto.do_order_date!);
-                Record.do_category = record_dto.do_category;
+                if(!Lib.IsBlank(record_dto.do_category))
+                    Record.do_category = record_dto.do_category;
+                else                    
+                    Record.do_category = "GENERAL";
+                
                 Record.do_is_delivery_sent = record_dto.do_is_delivery_sent;
                 Record.do_delivery_date = Lib.ParseDate(record_dto.do_delivery_date!);
 

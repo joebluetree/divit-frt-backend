@@ -1094,6 +1094,7 @@ namespace SeaImport.Repositories
         {
             try
             {
+                context.Database.BeginTransaction();
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
                 RetData.Add("id", id);
                 var _Record = await context.cargo_housem
@@ -1106,12 +1107,12 @@ namespace SeaImport.Repositories
                 }
                 else
                 {
-                    var _Container = context.cargo_container
-                    .Where(c => c.cntr_hbl_id == id);
-                    if (_Container.Any())
-                    {
-                        context.cargo_container.RemoveRange(_Container);
-                    }
+
+                    await CommonLib.DeleteContainerAsync(context, id);
+                    await CommonLib.DeleteDescAsync(context, id);
+                    await CommonLib.DeleteDOAsync(context, id);
+                    await CommonLib.DeleteMemoAsync(context, id);
+
                     var mbl_id = _Record.hbl_mbl_id;
                     context.Remove(_Record);
                     context.SaveChanges();
@@ -1120,6 +1121,7 @@ namespace SeaImport.Repositories
                     RetData.Add("status", true);
                     RetData.Add("message", "");
                 }
+                context.Database.CommitTransaction();
                 return RetData;
             }
             catch (Exception Ex)

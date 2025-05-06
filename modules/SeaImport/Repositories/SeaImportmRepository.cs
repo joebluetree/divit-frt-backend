@@ -825,19 +825,11 @@ namespace SeaImport.Repositories
                 }
                 else
                 {
-                    var _Container = context.cargo_container
-                    .Where(c => c.cntr_mbl_id == id);
-                    if (_Container.Any())
-                    {
-                        context.cargo_container.RemoveRange(_Container);
-                    }
-
-                    var _House = context.cargo_housem
-                    .Where(c => c.hbl_mbl_id == id);
-                    if (_House.Any())
-                    {
-                        context.cargo_housem.RemoveRange(_House);
-                    }
+                    await CommonLib.DeleteContainerAsync(context, id);
+                    await CommonLib.DeleteHouseAsync(context, id);
+                    await CommonLib.DeleteDescAsync(context, id);
+                    await CommonLib.DeleteDOAsync(context, id);
+                    await CommonLib.DeleteMemoAsync(context, id);
 
                     context.Remove(_Record);
                     context.SaveChanges();

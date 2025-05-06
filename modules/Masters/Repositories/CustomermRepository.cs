@@ -742,7 +742,6 @@ namespace Masters.Repositories
                     if (_Contact.Any())
                     {
                         context.mast_contactm.RemoveRange(_Contact);
-
                     }
                     context.Remove(_Record);
                     context.SaveChanges();
