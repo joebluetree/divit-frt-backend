@@ -10,8 +10,9 @@ namespace CommonShipment.Interfaces
     public interface IMessengerSlipRepository
     {
         Task<Dictionary<string, object>> GetListAsync(Dictionary<string, object> data);
-        Task<cargo_slip_dto?> GetRecordAsync(int id);
+        Task<cargo_slip_dto?> GetRecordAsync(int id, string parent_type);
         Task<cargo_slip_dto?> GetDefaultDataAsync(int id);
+        Task<List<cargo_slip_dto>> GetDetailsAsync(int id, string parent_type);
         Task<cargo_slip_dto> SaveAsync(int id, string mode, cargo_slip_dto record);
         Task<cargo_slip_dto> SaveParentAsync(int id, string mode, cargo_slip_dto record);
         Task<Dictionary<string, object>> DeleteAsync(int id);

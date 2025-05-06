@@ -4,6 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Database.Models.Cargo;
 using Database.Models.UserAdmin;
 
+//Name : Alen Cherian
+//Date : 09/04/2025
+//Command :  Create Model for the Follow Up.
+//version 1.0
+
 namespace Database.Models.CommonShipment
 {
     public class cargo_followup
@@ -12,6 +17,7 @@ namespace Database.Models.CommonShipment
         public int cf_id { get; set; }
         public int cf_mbl_id { get; set; }
         public int? cf_user_id { get; set; }
+        public string? cf_mode { get; set; }
         public string? cf_remarks { get; set; }
         public DateTime? cf_followup_date { get; set; }
         public int? cf_assigned_id { get; set; }

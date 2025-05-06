@@ -19,14 +19,12 @@ namespace Database.Models.CommonShipment
         public int cs_id { get; set; }
         public int? cs_slno { get; set; }
         public string? cs_refno { get; set; }
-        public int cs_mbl_id { get; set; }
+        public int? cs_mbl_id { get; set; }
         public string? cs_mode { get; set; }
         public DateTime? cs_date { get; set; }
+        public string? cs_time { get; set; }
         public string? cs_ampm { get; set; }
         public int? cs_to_id { get; set; }
-        public string? cs_to_name { get; set; }
-        public string? cs_to_tel { get; set; }
-        public string? cs_to_fax { get; set; }
         public int? cs_from_id { get; set; }
         public string? cs_is_drop { get; set; }
         public string? cs_is_pick { get; set; }

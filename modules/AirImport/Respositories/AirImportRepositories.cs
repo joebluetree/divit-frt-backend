@@ -492,13 +492,9 @@ namespace AirImport.Repositories
                 }
                 else
                 {
-                    var air_exporth = context.cargo_housem
-                    .Where(c => c.hbl_mbl_id == id);
-                    if (air_exporth.Any())
-                    {
-                        context.cargo_housem.RemoveRange(air_exporth);
-
-                    }
+                    await CommonLib.DeleteHouses( context, id );
+                    await CommonLib.DeleteMessengerSlip( context, id );
+                    await CommonLib.DeleteFollowUp( context, id );
                     context.Remove(_Record);
                     context.SaveChanges();
                     RetData.Add("status", true);

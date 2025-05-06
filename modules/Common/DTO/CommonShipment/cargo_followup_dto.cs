@@ -10,6 +10,7 @@ namespace Common.DTO.CommonShipment
         public int cf_mbl_id { get; set; }
         public string? cf_mbl_refno  { get; set; }
         public string? cf_mbl_ref_date { get; set; }
+        public string? cf_mode { get; set; }
         public int? cf_user_id { get; set; }
         public string? cf_user_name  { get; set; }
         public string? cf_remarks { get; set; }

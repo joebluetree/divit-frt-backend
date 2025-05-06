@@ -161,6 +161,61 @@ namespace Common.Lib
             return str;
         }
 
+        public static async Task DeleteFollowUp(AppDbContext _context, int id)
+        {
+            context = _context;
+
+            var followup = await context.cargo_followup
+                .Where(c => c.cf_mbl_id == id).ToListAsync();
+            if (followup.Any())
+            {
+                context.cargo_followup.RemoveRange(followup);
+            }
+        }
+
+        public static async Task DeleteMessengerSlip(AppDbContext _context, int id)
+        {
+            context = _context;
+
+            var MessengerSlip = await context.cargo_slip
+                .Where(c => c.cs_mbl_id == id).ToListAsync();
+            if (MessengerSlip.Any())
+            {
+                context.cargo_slip.RemoveRange(MessengerSlip);
+            }
+        }
+
+        public static async Task DeleteHouses(AppDbContext _context, int id)
+        {
+            context = _context;
+
+            // Get all house IDs under the given mbl_id
+            var houses = await context.cargo_housem
+                .Where(c => c.hbl_mbl_id == id)
+                .ToListAsync();
+
+            var houseid = houses.Select(c => c.hbl_id).ToList();
+
+            if (houseid.Any())
+            {
+                // Delete cargo_desc records where desc_parent_id matches house IDs
+                var descriptions = await context.cargo_desc
+                    .Where(c => houseid.Contains(c.desc_parent_id))
+                    .ToListAsync();
+
+                if (descriptions.Any())
+                {
+                    context.cargo_desc.RemoveRange(descriptions);
+                }
+
+                // Delete cargo_housem records by creating stub entities
+                context.cargo_housem.RemoveRange(houses);
+                // Save all changes
+                await context.SaveChangesAsync();
+            }
+        }
+
+
     }
 
 }

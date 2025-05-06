@@ -15,6 +15,7 @@ namespace CommonShipment.Repositories
     //Date : 09/04/2025
     //Command :  Create Repository for the Follow Up.
     //version 1.0
+    //version 2.0 : Added parent type (cf_mode)
 
     public class FollowUpRepository : IFollowUpRepository
     {
@@ -71,9 +72,6 @@ namespace CommonShipment.Repositories
                 IQueryable<cargo_followup> query = context.cargo_followup;
                 query = query.Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id);
 
-                // if (!Lib.IsBlank(hbl_houseno))
-                //     query = query.Where(w => w.hbl_houseno!.Contains(hbl_houseno!));
-
 
                 if (action == "SEARCH")
                 {
@@ -98,6 +96,7 @@ namespace CommonShipment.Repositories
                     cf_id = e.cf_id,
                     cf_mbl_id = e.cf_mbl_id,
                     cf_mbl_refno = e.master!.mbl_refno,
+                    cf_mode = e.cf_mode,
                     cf_assigned_id = e.cf_assigned_id,
                     cf_assigned_name = e.assigned!.user_name,
                     cf_followup_date = Lib.FormatDate(e.cf_followup_date, Lib.outputDateFormat),
@@ -120,13 +119,13 @@ namespace CommonShipment.Repositories
             }
         }
 
-        public async Task<cargo_followup_dto?> GetRecordAsync(int id)
+        public async Task<cargo_followup_dto?> GetRecordAsync(int id, string parent_type)
         {
             try
             {
                 IQueryable<cargo_followup> query = context.cargo_followup;
 
-                query = query.Where(f => f.cf_id == id);
+                query = query.Where(f => f.cf_id == id && f.cf_mode == parent_type);
 
 
                 var Record = await query.Select(e => new cargo_followup_dto
@@ -136,6 +135,7 @@ namespace CommonShipment.Repositories
                     cf_mbl_id = e.cf_mbl_id,
                     cf_mbl_refno = e.master!.mbl_refno,
                     cf_mbl_ref_date = Lib.FormatDate(e.master!.mbl_ref_date, Lib.outputDateFormat),
+                    cf_mode = e.cf_mode,
                     cf_user_id = e.cf_user_id,
                     cf_user_name = e.user!.user_name,
                     cf_remarks = e.cf_remarks,
@@ -178,6 +178,7 @@ namespace CommonShipment.Repositories
                     {
                         cf_mbl_id = e.mbl_id,
                         cf_mbl_refno = e.mbl_refno,
+                        cf_mode = e.mbl_mode,
                         cf_mbl_ref_date = Lib.FormatDate(e.mbl_ref_date, Lib.outputDateFormat),
                         cf_handled_id = e.mbl_handled_id,
                         cf_handled_name = e.handledby!.param_name,
@@ -195,16 +196,17 @@ namespace CommonShipment.Repositories
             }
         }
 
-        public async Task<List<cargo_followup_dto>> GetDetailsAsync(int id)
+        public async Task<List<cargo_followup_dto>> GetDetailsAsync(int id, string parent_type)
         {
             var query = from e in context.cargo_followup
-                        .Where(e => e.cf_mbl_id == id)
+                        .Where(e => e.cf_mbl_id == id && e.cf_mode == parent_type)
                         .OrderBy(e => e.cf_followup_date)
                         select (new cargo_followup_dto
                         {
                             cf_id = e.cf_id,
                             cf_mbl_id = e.cf_mbl_id,
                             cf_mbl_refno = e.master!.mbl_refno,
+                            cf_mode = e.cf_mode,
                             cf_mbl_ref_date = Lib.FormatDate(e.master.mbl_ref_date, Lib.outputDateFormat),
                             cf_user_id = e.cf_user_id,
                             cf_user_name = e.user!.user_name,
@@ -285,6 +287,7 @@ namespace CommonShipment.Repositories
                     Record.cf_mbl_id = record_dto.cf_mbl_id;
                     Record.cf_user_id = record_dto.cf_user_id;
                     Record.cf_assigned_id = record_dto.cf_assigned_id;
+                    Record.cf_mode = record_dto.cf_mode;
 
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_branch_id = record_dto.rec_branch_id;
@@ -307,7 +310,7 @@ namespace CommonShipment.Repositories
 
                     //concurency checking code by using rec_version
                     context.Entry(Record).Property(p => p.rec_version).OriginalValue = record_dto.rec_version;
-                    Record.rec_version++; 
+                    Record.rec_version++;
                     Record.rec_edited_by = record_dto.rec_created_by;
                     Record.rec_edited_date = DbLib.GetDateTime();
                 }
@@ -391,10 +394,11 @@ namespace CommonShipment.Repositories
                 cf_id = old_record.cf_id,
                 cf_mbl_id = old_record.cf_mbl_id,
                 cf_mbl_refno = old_record.master!.mbl_refno,
+                cf_mode = old_record.cf_mode,
                 cf_mbl_ref_date = Lib.FormatDate(old_record.master!.mbl_ref_date, Lib.outputDateFormat),
                 cf_user_name = old_record.user!.user_name,
                 cf_remarks = old_record.cf_remarks,
-                // cf_assigned_name = old_record.assigned!.user_name, //handled
+                cf_assigned_name = old_record.assigned!.user_name, //handled
                 cf_followup_date = Lib.FormatDate(old_record.cf_followup_date, Lib.outputDateFormat),
 
             };
@@ -404,12 +408,12 @@ namespace CommonShipment.Repositories
                 .PrimaryKey("cf_mbl_id", record_dto.cf_mbl_id)
                 .RefNo(record_dto.cf_mbl_refno!)
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
-
+                .TrackColumn("cf_mode", "Masters Mode")
                 .TrackColumn("cf_mbl_refno", "Masters Ref No")
                 .TrackColumn("cf_mbl_ref_date", "Ref Date")
                 .TrackColumn("cf_user_name", "User Name")
                 .TrackColumn("cf_remarks", "Notes")
-                // .TrackColumn("cf_assigned_name", "Asssigned To")
+                .TrackColumn("cf_assigned_name", "Asssigned To")
                 .TrackColumn("cf_followup_date", "Follow up date")
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();

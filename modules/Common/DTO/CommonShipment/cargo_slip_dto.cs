@@ -6,11 +6,13 @@ namespace Common.DTO.CommonShipment
     public class cargo_slip_dto : basetable_dto
     {
         public int cs_id { get; set; }
-        public int cs_mbl_id { get; set; }
+        public int? cs_mbl_id { get; set; }
         public int? cs_slno { get; set; }
         public string? cs_refno { get; set; }
         public string? cs_mode { get; set; }
+        public string? cs_mbl_no { get; set; }
         public string? cs_date { get; set; }
+        public string? cs_time { get; set; }
         public string? cs_ampm { get; set; }
         public int? cs_to_id { get; set; }
         public string? cs_to_code { get; set;}
