@@ -38,6 +38,8 @@ using AirImport.Interfaces;
 using AirImport.Repositories;
 using CommonShipment.Interfaces;
 using CommonShipment.Repositories;
+using OtherOp.Interfaces;
+using OtherOp.Repositories;
 
 
 
@@ -115,12 +117,13 @@ builder.Services.AddScoped<IAirExportHRepository, AirExportHRepository>();
 builder.Services.AddScoped<IAirImportRepository, AirImportRepository>();
 builder.Services.AddScoped<IAirImportHRepository, AirImportHRepository>();
 
+//Other
+builder.Services.AddScoped<IOtherOpRepository, OtherOpRepository>();
+
 //CommonShipment
 builder.Services.AddScoped<IFollowUpRepository, FollowUpRepository>();
-
 builder.Services.AddScoped<IMemoRepository, MemoRepository>();
 builder.Services.AddScoped<IDeliveryOrderRepository, DeliveryOrderRepository>();
-
 builder.Services.AddScoped<IMessengerSlipRepository, MessengerSlipRepository>();
 
 

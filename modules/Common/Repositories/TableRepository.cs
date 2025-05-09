@@ -129,6 +129,7 @@ namespace Common.Repositories
             files.Add("CommonShipment\\cargo_memo.txt");
             files.Add("CommomShipment\\cargo_followup.txt");
             files.Add("CommomShipment\\cargo_slip.txt");
+            files.Add("CommomShipment\\cargo_delivery_order.txt");
             
         }
     }

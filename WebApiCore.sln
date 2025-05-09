@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirImport", "modules\AirImp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonShipment", "modules\CommonShipment\CommonShipment.csproj", "{9E8E59D7-6BF4-4F73-A2FC-64F793733AA6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtherOp", "modules\OtherOp\OtherOp.csproj", "{D802B9A4-8AF9-44DA-B36B-16E24D93B30E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,10 @@ Global
 		{9E8E59D7-6BF4-4F73-A2FC-64F793733AA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E8E59D7-6BF4-4F73-A2FC-64F793733AA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E8E59D7-6BF4-4F73-A2FC-64F793733AA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D802B9A4-8AF9-44DA-B36B-16E24D93B30E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D802B9A4-8AF9-44DA-B36B-16E24D93B30E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D802B9A4-8AF9-44DA-B36B-16E24D93B30E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D802B9A4-8AF9-44DA-B36B-16E24D93B30E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,5 +135,6 @@ Global
 		{826BF6F2-1619-477F-8564-D6BABB34F978} = {8519589D-AB1B-469C-8255-C1972856B5F7}
 		{9C296A84-5FE4-445B-8BA0-19D4B35339B2} = {8519589D-AB1B-469C-8255-C1972856B5F7}
 		{9E8E59D7-6BF4-4F73-A2FC-64F793733AA6} = {8519589D-AB1B-469C-8255-C1972856B5F7}
+		{D802B9A4-8AF9-44DA-B36B-16E24D93B30E} = {8519589D-AB1B-469C-8255-C1972856B5F7}
 	EndGlobalSection
 EndGlobal

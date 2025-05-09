@@ -109,7 +109,7 @@ namespace CommonShipment.Repositories
                 int StartRow = Lib.getStartRow(_page.currentPageNo, _page.pageSize);
 
                 query = query
-                    .OrderBy(c => c.do_order_no)
+                    .OrderBy(c => c.do_order_date)
                     .Skip(StartRow)
                     .Take(_page.pageSize);
 
