@@ -942,12 +942,8 @@ namespace AirExport.Repositories
                 }
                 else
                 {
-                    var desc = context.cargo_desc
-                        .Where(c => c.desc_parent_id == id);
-                    if (desc.Any())
-                    {
-                        context.cargo_desc.RemoveRange(desc);
-                    }
+                    await CommonLib.DeleteDesc(context, id);
+                    
                     context.Remove(_Record);
                     await context.SaveChangesAsync();
                     await CommonLib.SaveMasterSummary(this.context, mbl_id);

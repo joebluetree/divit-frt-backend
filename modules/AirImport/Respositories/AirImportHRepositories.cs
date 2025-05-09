@@ -827,14 +827,12 @@ namespace AirImport.Repositories
                 }
                 else
                 {
-                    var desc = context.cargo_desc
-                        .Where(c => c.desc_parent_id == id);
-                    if (desc.Any())
-                    {
-                        context.cargo_desc.RemoveRange(desc);
-                    }
+                    await CommonLib.DeleteDesc(context, id);
+                    await CommonLib.DeleteDeliveryOrder(context, id);
+                    await CommonLib.DeleteMemo(context, id);
+
                     context.Remove(_Record);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                     await CommonLib.SaveMasterSummary(this.context, mbl_id);
 
                     context.Database.CommitTransaction();
