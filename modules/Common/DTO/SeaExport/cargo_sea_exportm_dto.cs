@@ -12,6 +12,7 @@ namespace Common.DTO.SeaExport
     {
         public int mbl_id { get; set; } = 0;
         public int? mbl_cfno { get; set; } = 0;
+        public string? mbl_mode { get; set; } = "";
         public string? mbl_refno { get; set; } = "";
         public string? mbl_ref_date { get; set; } = "";
         public int? mbl_shipment_stage_id { get; set; } = 0;

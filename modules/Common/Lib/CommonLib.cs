@@ -243,7 +243,7 @@ namespace Common.Lib
             context = _context;
 
             var containers = await context.cargo_container
-                .Where(c => c.cntr_hbl_id == id).ToListAsync();
+                .Where(c => c.cntr_hbl_id == id||c.cntr_mbl_id == id).ToListAsync();
 
             if (containers.Any())
             {

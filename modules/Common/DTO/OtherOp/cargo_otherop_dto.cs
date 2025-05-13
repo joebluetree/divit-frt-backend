@@ -15,6 +15,7 @@ namespace Common.DTO.OtherOp
         public int oth_hbl_id { get; set; } = 0;
         public int? oth_parent_id { get; set; } = 0;
         public int? oth_cfno { get; set; } = 0;
+        public string? oth_mode { get; set; } = "";
         public string? oth_refno { get; set; } = "";
         public string? oth_ref_date { get; set; } = "";
         public int? oth_shipment_stage_id { get; set; } = 0;
@@ -82,6 +83,12 @@ namespace Common.DTO.OtherOp
         public string? oth_it_no { get; set; } = "";
         public string? oth_it_date { get; set; }= "";
         public string? oth_it_port { get; set; } = "";
+        public decimal? oth_teu { get; set; } = 0;
+        public decimal? oth_20 { get; set; } = 0;
+        public decimal? oth_40 { get; set; } = 0;
+        public decimal? oth_40hq { get; set; } = 0;
+        public decimal? oth_45 { get; set; } = 0;
+        public int? oth_container_tot { get; set; } = 0;
         public List<cargo_container_dto>? otherop_cntr { get; set; }
         public cargo_otherop_dto? otherop_house { get; set; }
 

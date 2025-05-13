@@ -118,8 +118,10 @@ namespace OtherOp.Repositories
                     oth_agent_name = e.agent!.cust_name,
                     oth_liner_name = e.liner!.param_name,
                     oth_pol_name = e.pol!.param_name,
-
-
+                    oth_pol_etd = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateFormat),
+                    oth_pod_name = e.pod!.param_name,
+                    oth_pod_eta = Lib.FormatDate(e.mbl_pod_eta, Lib.outputDateFormat),
+                    oth_handled_name = e.handledby!.param_name,
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                     rec_edited_by = e.rec_edited_by,
@@ -148,6 +150,7 @@ namespace OtherOp.Repositories
                 {
                     oth_id = e.mbl_id,
                     oth_cfno = e.mbl_cfno,
+                    oth_mode = e.mbl_mode,
                     oth_refno = e.mbl_refno,
                     oth_ref_date = Lib.FormatDate(e.mbl_ref_date, Lib.outputDateFormat),
                     oth_shipment_stage_id = e.mbl_shipment_stage_id,
@@ -186,7 +189,7 @@ namespace OtherOp.Repositories
                 if (Record == null)
                     throw new Exception("No Data Found");
 
-                Record.otherop_cntr = await getCntrAsync(Record.oth_id);
+                Record.otherop_cntr = await getCntrAsync(Record.oth_id, "M");
                 Record.otherop_house = await GetHouseAsync(Record.oth_id);
                 // await GetHouseAsync(Record.oth_id);
                 return Record;
@@ -197,10 +200,10 @@ namespace OtherOp.Repositories
             }
         }
 
-        public async Task<List<cargo_container_dto>> getCntrAsync(int id)
+        public async Task<List<cargo_container_dto>> getCntrAsync(int id, string cntr_catg)
         {
             var query = from e in context.cargo_container
-                        .Where(a => a.cntr_mbl_id == id && a.cntr_catg == "M")
+                        .Where(a => a.cntr_mbl_id == id && a.cntr_catg == cntr_catg)
                         .OrderBy(o => o.cntr_order)
                         select (new cargo_container_dto
                         {
@@ -304,6 +307,7 @@ namespace OtherOp.Repositories
                             rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
                         };
             var records = await query.FirstOrDefaultAsync();
+            records!.otherop_cntr = await getCntrAsync(records.oth_id, "H");
             return records;
         }
         // to get cbm total from container table
@@ -324,11 +328,11 @@ namespace OtherOp.Repositories
 
                 context.Database.BeginTransaction();
                 cargo_otherop_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record = await saveCntrAsync(_Record.oth_id, mode, _Record);
+                _Record = await saveCntrAsync(_Record.oth_id, "M", mode, _Record);
                 _Record = await SaveHouseAsync(_Record.oth_id, mode, _Record);
 
-                _Record.otherop_cntr = await getCntrAsync(_Record.oth_id);
-                // _Record.master_house = await GetHouseAsync(_Record.mbl_id);
+                _Record.otherop_cntr = await getCntrAsync(_Record.oth_id, "M");
+
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -380,23 +384,18 @@ namespace OtherOp.Repositories
                 if (Lib.IsBlank(record_dto.oth_pod_eta))
                     str += "ETA Cannot Be Blank!";
             }
-            if (Lib.IsBlank(record_dto.oth_country_name))
-                str += "Dest.Country Cannot Be Blank!";
-            if (Lib.IsBlank(record_dto.oth_vessel_name))
-                str += "Vessel Cannot Be Blank!";
-            if (Lib.IsBlank(record_dto.oth_voyage))
-                str += "Voyage Cannot Be Blank!";
-            // foreach (cargo_container_dto rec in record_dto.master_cntr!)
-            // {
-            //     if (Lib.IsBlank(rec.cntr_type_name))
-            //         type = "Type Cannot Be Blank!";
-            //     if (!CommonLib.IsValidContainerNumber(rec.cntr_no!))
-            //         cntr_no = $"Invalid Container Number: {rec.cntr_no}";
-            //     if (Lib.IsBlank(rec.cntr_no))
-            //         cntr_no = "Cntr No Cannot Be Blank!";
-            //     if (Lib.IsBlank(rec.cntr_packages_unit_name))
-            //         unit = "Unit Cannot Be Blank";
-            // }
+
+            foreach (cargo_container_dto rec in record_dto.otherop_cntr!)
+            {
+                if (Lib.IsBlank(rec.cntr_type_name))
+                    type = "Type Cannot Be Blank!";
+                if (!CommonLib.IsValidContainerNumber(rec.cntr_no!))
+                    cntr_no = $"Invalid Container Number: {rec.cntr_no}";
+                if (Lib.IsBlank(rec.cntr_no))
+                    cntr_no = "Cntr No Cannot Be Blank!";
+                if (Lib.IsBlank(rec.cntr_packages_unit_name))
+                    unit = "Unit Cannot Be Blank";
+            }
 
             if (type != "")
                 str += type;
@@ -428,22 +427,22 @@ namespace OtherOp.Repositories
                 if (mode == "add")
                 {
 
-                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "SEA-IMP-MASTER-PREFIX,SEA-IMP-MASTER-STARTING-NO");// 
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "OTHER-OPERATION-PREFIX,OTHER-OPERATION-STARTING-NO");// 
 
                     var DefaultCfNo = 0;
                     var Defaultprefix = "";
 
-                    if (result.ContainsKey("SEA-IMP-MASTER-STARTING-NO"))
+                    if (result.ContainsKey("OTHER-OPERATION-STARTING-NO"))
                     {
-                        DefaultCfNo = Lib.StringToInteger(result["SEA-IMP-MASTER-STARTING-NO"]);
+                        DefaultCfNo = Lib.StringToInteger(result["OTHER-OPERATION-STARTING-NO"]);
                     }
-                    if (result.ContainsKey("SEA-IMP-MASTER-PREFIX"))
+                    if (result.ContainsKey("OTHER-OPERATION-PREFIX"))
                     {
-                        Defaultprefix = result["SEA-IMP-MASTER-PREFIX"].ToString();
+                        Defaultprefix = result["OTHER-OPERATION-PREFIX"].ToString();
                     }
                     if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
                     {
-                        throw new Exception("Missing Sea Import master Prefix/Starting-Number in Branch Settings");
+                        throw new Exception("Missing Other Operation Prefix/Starting-Number in Branch Settings");
                     }
 
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
@@ -476,6 +475,7 @@ namespace OtherOp.Repositories
                         .Include(c => c.salesman)
                         .Include(c => c.handledby)
                         .Include(c => c.shipstage)
+                        .Include(c => c.agent)
                         .Include(c => c.liner)
                         .Include(c => c.pol)
                         .Include(c => c.pod)
@@ -522,21 +522,22 @@ namespace OtherOp.Repositories
                 Record.mbl_shipper_id = record_dto.oth_shipper_id;
                 Record.mbl_consignee_id = record_dto.oth_consignee_id;
 
-                // UpdateCntrCount(record_dto);
+                UpdateCntrCount(record_dto);
 
-                // Record.mbl_20 = record_dto.oth_20;
-                // Record.mbl_40 = record_dto.oth_40;
-                // Record.mbl_40hq = record_dto.oth_40hq;
-                // Record.mbl_45 = record_dto.oth_45;
-                // Record.mbl_teu = record_dto.oth_teu;
-                // Record.mbl_container_tot = record_dto.oth_container_tot;
-                // Record.mbl_cbm_tot = GetCbmTotal(record_dto);
+                Record.mbl_20 = record_dto.oth_20;
+                Record.mbl_40 = record_dto.oth_40;
+                Record.mbl_40hq = record_dto.oth_40hq;
+                Record.mbl_45 = record_dto.oth_45;
+                Record.mbl_teu = record_dto.oth_teu;
+                Record.mbl_container_tot = record_dto.oth_container_tot;
+                Record.mbl_cbm_tot = GetCbmTotal(record_dto);
 
                 if (mode == "add")
                     await context.cargo_masterm.AddAsync(Record);
 
                 await context.SaveChangesAsync();
 
+                record_dto.oth_mode = Record.mbl_mode;
                 record_dto.oth_id = Record.mbl_id;
                 record_dto.oth_refno = Record.mbl_refno;
                 if (mode == "add")
@@ -575,7 +576,7 @@ namespace OtherOp.Repositories
             return CfNo;
         }
 
-        public async Task<cargo_otherop_dto> saveCntrAsync(int id, string mode, cargo_otherop_dto record_dto)
+        public async Task<cargo_otherop_dto> saveCntrAsync(int id, string cntr_catg, string mode, cargo_otherop_dto record_dto)
         {
             cargo_container? record;
             List<cargo_container_dto> records_dto;
@@ -588,7 +589,7 @@ namespace OtherOp.Repositories
                 records = await context.cargo_container
                     .Include(c => c.cntrtype)
                     .Include(c => c.packunit)
-                    .Where(w => w.cntr_mbl_id == id && w.cntr_catg == "M")
+                    .Where(w => w.cntr_catg == cntr_catg && w.cntr_mbl_id == id)
                     .ToListAsync();
 
                 if (mode == "edit")
@@ -599,7 +600,9 @@ namespace OtherOp.Repositories
                 {
                     var rec = records_dto.Find(f => f.cntr_id == existing_record.cntr_id);
                     if (rec == null)
+                    {
                         context.cargo_container.Remove(existing_record);
+                    }
                 }
 
                 //Add or Edit Records cntr
@@ -615,13 +618,13 @@ namespace OtherOp.Repositories
                         record.rec_created_date = DbLib.GetDateTime();
                         record.rec_locked = "N";
 
-                        record.cntr_catg = "M";
+                        record.cntr_catg = cntr_catg;
                     }
                     else
                     {
                         record = records.Find(f => f.cntr_id == rec.cntr_id);
                         if (record == null)
-                            throw new Exception("Container Detail Record Not Found " + rec.cntr_id.ToString());
+                            throw new Exception("Container Detail Record Not Found " + rec.cntr_catg!.ToString());
 
                         record.rec_edited_by = record_dto.rec_created_by;
                         record.rec_edited_date = DbLib.GetDateTime();
@@ -678,6 +681,9 @@ namespace OtherOp.Repositories
                 else
                 {
                     record = await context.cargo_housem
+                        .Include(c => c.shipper)
+                        .Include(c => c.consignee)
+                        .Include(c => c.location)
                         .Where(f => f.hbl_id == record_dto.oth_hbl_id)
                         .FirstOrDefaultAsync();
 
@@ -687,6 +693,9 @@ namespace OtherOp.Repositories
                     record.rec_edited_by = record_dto.rec_created_by;
                     record.rec_edited_date = DbLib.GetDateTime();
                 }
+
+                if (mode == "edit")
+                    await logHistoryHouse(record, record_dto);
 
                 record.hbl_mbl_id = id;
                 record.hbl_houseno = record_dto.oth_hbl_no;
@@ -745,6 +754,8 @@ namespace OtherOp.Repositories
 
                 await context.SaveChangesAsync();
 
+                await SaveCntrHouseAsync(record.hbl_mbl_id, record.hbl_id, mode, record_dto);
+
                 record_dto.oth_hbl_id = record.hbl_id;
                 return record_dto;
             }
@@ -754,62 +765,139 @@ namespace OtherOp.Repositories
             }
         }
 
-        // public cargo_otherop_dto UpdateCntrCount(cargo_otherop_dto record_dto)
-        // {
-        //     try
-        //     {
+        public cargo_otherop_dto UpdateCntrCount(cargo_otherop_dto record_dto)
+        {
+            try
+            {
+                int oth_40hq = 0;
+                int oth_40 = 0;
+                int oth_20 = 0;
+                int oth_45 = 0;
+                decimal oth_teu = 0;
+                int oth_container_tot = 0;
 
-        //         int mbl_40hq = 0;
-        //         int mbl_40 = 0;
-        //         int mbl_20 = 0;
-        //         int mbl_45 = 0;
-        //         decimal mbl_teu = 0;
-        //         int mbl_container_tot = 0;
+                foreach (var cntr in record_dto.otherop_cntr!)
+                {
+                    var containerType = cntr.cntr_type_name;
 
-        //         foreach (var cntr in record_dto.otherop_cntr!)
-        //         {
-        //             var containerType = cntr.cntr_type_name;
+                    if (containerType!.Contains("20"))
+                    {
+                        oth_20++;
+                        oth_teu += 1.0m;
+                    }
+                    if (containerType.Contains("40"))
+                    {
+                        if (containerType!.Contains("HC"))
+                        {
+                            oth_40hq++;
+                            oth_teu += 2.25m;
+                        }
+                        else
+                        {
+                            oth_40++;
+                            oth_teu += 2.0m;
+                        }
 
-        //             if (containerType!.Contains("20"))
-        //             {
-        //                 mbl_20++;
-        //                 mbl_teu += 1.0m;
-        //             }
-        //             if (containerType.Contains("40"))
-        //             {
-        //                 if (containerType!.Contains("HC"))
-        //                 {
-        //                     mbl_40hq++;
-        //                     mbl_teu += 2.25m;
-        //                 }
-        //                 else
-        //                 {
-        //                     mbl_40++;
-        //                     mbl_teu += 2.0m;
-        //                 }
+                    }
+                    if (containerType.Contains("45"))
+                    {
+                        oth_45++;
+                        oth_teu += 2.5m;
+                    }
+                    oth_container_tot++;
+                }
+                record_dto.oth_20 = oth_20;
+                record_dto.oth_40 = oth_40;
+                record_dto.oth_40hq = oth_40hq;
+                record_dto.oth_45 = oth_45;
+                record_dto.oth_teu = oth_teu;
+                record_dto.oth_container_tot = oth_container_tot;
 
-        //             }
-        //             if (containerType.Contains("45"))
-        //             {
-        //                 mbl_45++;
-        //                 mbl_teu += 2.5m;
-        //             }
-        //             mbl_container_tot++;
-        //         }
-        //         record_dto.oth_20 = mbl_20;
-        //         record_dto.oth_40 = mbl_40;
-        //         record_dto.oth_40hq = mbl_40hq;
-        //         record_dto.oth_45 = mbl_45;
-        //         record_dto.oth_teu = mbl_teu;
-        //         record_dto.oth_container_tot = mbl_container_tot;
+                return record_dto;
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
+            }
+        }
+        public async Task SaveCntrHouseAsync(int mbl_id, int hbl_id, string mode, cargo_otherop_dto record_dto)
+        {
+            try
+            {
+                var records_dto = record_dto.otherop_cntr!;
 
-        //         return record_dto;
-        //     }
-        //     catch (Exception Ex)
-        //     {
-        //         throw new Exception(Ex.Message.ToString());
-        //     }
-        // }
+                // Get all containers (H and M) for the mblId in one query
+                var allCntrs = await context.cargo_container
+                    .Where(c => c.cntr_mbl_id == mbl_id)
+                    .ToListAsync();
+
+                // Split in-memory into house and master containers
+                var houseCntrs = allCntrs.Where(c => c.cntr_catg == "H" && c.cntr_hbl_id == hbl_id).ToList();
+                var masterCntrs = allCntrs.Where(c => c.cntr_catg == "M").ToList();
+
+                foreach (var m in masterCntrs)
+                {
+                    cargo_container? record;
+                    // Try to find existing house container with same cntr_no under this HBL
+                    record = houseCntrs.FirstOrDefault(h => h.cntr_no == m.cntr_no);
+
+                    if (record == null)
+                    {
+                        record = new cargo_container();
+                        record.rec_company_id = m.rec_company_id;
+                        record.rec_branch_id = m.rec_branch_id;
+                        record.rec_created_by = record_dto.rec_created_by;
+                        record.rec_created_date = DbLib.GetDateTime();
+                        record.rec_locked = "N";
+                        record.cntr_catg = "H";
+                    }
+                    else
+                    {
+                        record.rec_edited_by = record_dto.rec_created_by;
+                        record.rec_edited_date = DbLib.GetDateTime();
+                    }
+
+                    record.cntr_mbl_id = mbl_id;
+                    record.cntr_hbl_id = hbl_id;
+                    record.cntr_no = m.cntr_no;
+                    record.cntr_type_id = m.cntr_type_id;
+                    record.cntr_sealno = m.cntr_sealno;
+                    record.cntr_movement = m.cntr_movement;
+                    record.cntr_pieces = m.cntr_pieces;
+                    record.cntr_packages_unit_id = m.cntr_packages_unit_id;
+                    record.cntr_teu = m.cntr_teu;
+                    record.cntr_cbm = m.cntr_cbm;
+                    record.cntr_weight_uom = m.cntr_weight_uom;
+                    record.cntr_weight = m.cntr_weight;
+                    record.cntr_rider = m.cntr_rider;
+                    record.cntr_tare_weight = m.cntr_tare_weight;
+                    record.cntr_pick_date = m.cntr_pick_date;
+                    record.cntr_return_date = m.cntr_return_date;
+                    record.cntr_lfd = m.cntr_lfd;
+                    record.cntr_discharge_date = m.cntr_discharge_date;
+                    record.cntr_order = m.cntr_order;
+
+                    // Only add to DB context if it's a new record (not found above)
+                    if (record.cntr_id == 0)
+                        await context.cargo_container.AddAsync(record);
+                }
+
+                foreach (var rec in houseCntrs)
+                {
+                    bool existsInMaster = masterCntrs.Any(m => m.cntr_no == rec.cntr_no);
+                    if (!existsInMaster)
+                    {
+                        context.cargo_container.Remove(rec);
+                    }
+                }
+
+                context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error copying master containers to house: " + ex.Message);
+            }
+        }
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
@@ -826,9 +914,9 @@ namespace OtherOp.Repositories
                 }
                 else
                 {
+
                     await CommonLib.DeleteContainer(context, id);
                     await CommonLib.DeleteHouses(context, id);
-                    await CommonLib.DeleteDesc(context, id);
                     await CommonLib.DeleteDeliveryOrder(context, id);
                     await CommonLib.DeleteMemo(context, id);
 
@@ -851,14 +939,17 @@ namespace OtherOp.Repositories
             var old_record_dto = new cargo_otherop_dto
             {
                 oth_id = old_record.mbl_id,
-                oth_cfno = old_record.mbl_cfno,
                 oth_refno = old_record.mbl_refno,
                 oth_ref_date = Lib.FormatDate(old_record.mbl_ref_date, Lib.outputDateFormat),
                 oth_shipment_stage_name = old_record.shipstage?.param_name,
                 oth_mbl_no = old_record.mbl_no,
+                oth_agent_id = old_record.mbl_agent_id,
                 oth_agent_name = old_record.agent?.cust_name,
+                oth_liner_id = old_record.mbl_liner_id,
                 oth_liner_name = old_record.liner?.param_name,
+                oth_handled_id = old_record.mbl_handled_id,
                 oth_handled_name = old_record.handledby?.param_name,
+                oth_salesman_id = old_record.mbl_salesman_id,
                 oth_salesman_name = old_record.salesman?.param_name,
                 oth_mbl_frt_status = old_record.mbl_frt_status_name,
                 oth_pol_name = old_record.pol?.param_name,
@@ -877,63 +968,153 @@ namespace OtherOp.Repositories
                 .PrimaryKey("mbl_id", record_dto.oth_id)
                 .RefNo(record_dto.oth_refno!)
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
-                .TrackColumn("mbl_cfno", "CF No")
-                .TrackColumn("mbl_refno", "Reference No")
-                .TrackColumn("mbl_ref_date", "Reference Date", "date")
-                .TrackColumn("mbl_shipment_stage_name", "Shipment Stage Name")
-                .TrackColumn("mbl_no", "MBL No")
-                .TrackColumn("mbl_agent_name", "Agent Name")
-                .TrackColumn("mbl_liner_name", "Liner Name")
-                .TrackColumn("mbl_coloader_name", "Coloader Name")
-                .TrackColumn("mbl_handled_name", "Handled By Name")
-                .TrackColumn("mbl_salesman_name", "Salesman Name")
-                .TrackColumn("mbl_frt_status_name", "Freight Status Name")
-                .TrackColumn("mbl_ship_term_name", "Shipping Term Name")
-                .TrackColumn("mbl_cntr_type", "Container Type")
-                .TrackColumn("mbl_incoterm_name", "Incoterm Name")
-                .TrackColumn("mbl_pol_name", "Port of Loading")
-                .TrackColumn("mbl_pol_etd", "ETD (POL)", "date")
-                .TrackColumn("mbl_pod_name", "Port of Discharge")
-                .TrackColumn("mbl_pod_eta", "ETA (POD)", "date")
-                .TrackColumn("mbl_place_delivery", "Place of Delivery")
-                .TrackColumn("mbl_pofd_eta", "ETA (POFD)", "date")
-                .TrackColumn("mbl_country_name", "Country Name")
-                .TrackColumn("mbl_vessel_name", "Vessel Name")
-                .TrackColumn("mbl_voyage", "Voyage")
-                .TrackColumn("mbl_status_name", "Status Name")
-                .TrackColumn("mbl_is_sea_waybill", "Sea Waybill")
-                .TrackColumn("mbl_ombl_sent_on", "OMBL Sent On", "date")
-                .TrackColumn("mbl_ombl_sent_ampm", "OMBL AM/PM")
-                .TrackColumn("mbl_of_sent_on", "OF Sent On", "date")
-                .TrackColumn("mbl_cargo_loc_code", "Cargo Location Code")
-                .TrackColumn("mbl_cargo_loc_name", "Cargo Location Name")
-                .TrackColumn("mbl_cargo_loc_add1", "Cargo Loc Address 1")
-                .TrackColumn("mbl_cargo_loc_add2", "Cargo Loc Address 2")
-                .TrackColumn("mbl_cargo_loc_add3", "Cargo Loc Address 3")
-                .TrackColumn("mbl_cargo_loc_add4", "Cargo Loc Address 4")
-                .TrackColumn("mbl_devan_loc_code", "Devan Location Code")
-                .TrackColumn("mbl_devan_loc_name", "Devan Location Name")
-                .TrackColumn("mbl_devan_loc_add1", "Devan Loc Address 1")
-                .TrackColumn("mbl_devan_loc_add2", "Devan Loc Address 2")
-                .TrackColumn("mbl_devan_loc_add3", "Devan Loc Address 3")
-                .TrackColumn("mbl_devan_loc_add4", "Devan Loc Address 4")
-
+                .TrackColumn("oth_refno", "Reference No")
+                .TrackColumn("oth_ref_date", "Reference Date", "date")
+                .TrackColumn("oth_shipment_stage_name", "Shipment Stage Name")
+                .TrackColumn("oth_mbl_no", "MBL No")
+                .TrackColumn("oth_agent_name", "Agent Name")
+                .TrackColumn("oth_liner_name", "Liner Name")
+                .TrackColumn("oth_handled_name", "Handled By Name")
+                .TrackColumn("oth_salesman_name", "Salesman Name")
+                .TrackColumn("oth_mbl_frt_status", "Freight Status Name")
+                .TrackColumn("oth_pol_name", "Port of Loading")
+                .TrackColumn("oth_pol_etd", "ETD (POL)", "date")
+                .TrackColumn("oth_pod_name", "Port of Discharge")
+                .TrackColumn("oth_pod_eta", "ETA (POD)", "date")
+                .TrackColumn("oth_place_delivery", "Place of Delivery")
+                .TrackColumn("oth_country_name", "Country Name")
+                .TrackColumn("oth_vessel_name", "Vessel Name")
+                .TrackColumn("oth_voyage", "Voyage")
 
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
 
         }
+        public async Task logHistoryHouse(cargo_housem old_record, cargo_otherop_dto record_dto)
+        {
+            var old_record_dto = new cargo_otherop_dto
+            {
+                oth_hbl_no = old_record.hbl_houseno,
+                oth_bltype = old_record.hbl_bltype,
+
+                oth_shipper_id = old_record.hbl_shipper_id,
+                oth_shipper_code = old_record.shipper?.cust_code,
+                oth_shipper_name = old_record.hbl_shipper_name,
+                oth_shipper_add1 = old_record.hbl_shipper_add1,
+                oth_shipper_add2 = old_record.hbl_shipper_add2,
+                oth_shipper_add3 = old_record.hbl_shipper_add3,
+                oth_shipper_add4 = old_record.hbl_shipper_add4,
+
+                oth_consignee_id = old_record.hbl_consignee_id,
+                oth_consignee_code = old_record.consignee?.cust_code,
+                oth_consignee_name = old_record.hbl_consignee_name,
+                oth_consignee_add1 = old_record.hbl_consignee_add1,
+                oth_consignee_add2 = old_record.hbl_consignee_add2,
+                oth_consignee_add3 = old_record.hbl_consignee_add3,
+                oth_consignee_add4 = old_record.hbl_consignee_add4,
+
+                oth_location_id = old_record.hbl_location_id,
+                oth_location_code = old_record.location?.cust_code,
+                oth_location_name = old_record.hbl_location_name,
+                oth_location_add1 = old_record.hbl_location_add1,
+                oth_location_add2 = old_record.hbl_location_add2,
+                oth_location_add3 = old_record.hbl_location_add3,
+                oth_location_add4 = old_record.hbl_location_add4,
+
+                oth_it_no = old_record.hbl_it_no,
+                oth_it_date = Lib.FormatDate(old_record.hbl_it_date, Lib.outputDateFormat),
+                oth_it_port = old_record.hbl_it_port,
+
+                oth_hbl_frt_status = old_record.hbl_frt_status_name,
+                oth_packages = old_record.hbl_packages,
+                oth_cbm = old_record.hbl_cbm,
+                oth_weight = old_record.hbl_weight,
+                oth_chwt = old_record.hbl_chwt,
+                oth_lbs = old_record.hbl_lbs,
+                oth_cft = old_record.hbl_cft,
+                oth_chwt_lbs = old_record.hbl_chwt_lbs,
+                oth_commodity = old_record.hbl_commodity,
+
+                oth_handled_id = old_record.hbl_handled_id,
+                oth_salesman_id = old_record.hbl_salesman_id,
+                oth_isf_no = old_record.hbl_isf_no,
+                oth_lfd_date = Lib.FormatDate(old_record.hbl_lfd_date, Lib.outputDateFormat),
+                oth_shipment_stage_id = old_record.hbl_shipment_stage_id,
+
+                oth_is_pl = old_record.hbl_is_pl,
+                oth_is_ci = old_record.hbl_is_ci,
+                oth_is_carr_an = old_record.hbl_is_carr_an,
+
+                oth_custom_reles_status = old_record.hbl_custom_reles_status,
+                oth_is_delivery = old_record.hbl_is_delivery
+            };
+
+            await new LogHistorym<cargo_otherop_dto>(context)
+                .Table("cargo_masterm", log_date)
+                .PrimaryKey("hbl_id", record_dto.oth_id)
+                .RefNo(record_dto.oth_refno!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
+
+                .TrackColumn("oth_hbl_no", "House No")
+                .TrackColumn("oth_bltype", "BL Type")
+
+                .TrackColumn("oth_shipper_name", "Shipper Name")
+                .TrackColumn("oth_shipper_add1", "Shipper Address 1")
+                .TrackColumn("oth_shipper_add2", "Shipper Address 2")
+                .TrackColumn("oth_shipper_add3", "Shipper Address 3")
+                .TrackColumn("oth_shipper_add4", "Shipper Address 4")
+
+                .TrackColumn("oth_consignee_name", "Consignee Name")
+                .TrackColumn("oth_consignee_add1", "Consignee Address 1")
+                .TrackColumn("oth_consignee_add2", "Consignee Address 2")
+                .TrackColumn("oth_consignee_add3", "Consignee Address 3")
+                .TrackColumn("oth_consignee_add4", "Consignee Address 4")
+
+                .TrackColumn("oth_location_name", "Location Name")
+                .TrackColumn("oth_location_add1", "Location Address 1")
+                .TrackColumn("oth_location_add2", "Location Address 2")
+                .TrackColumn("oth_location_add3", "Location Address 3")
+                .TrackColumn("oth_location_add4", "Location Address 4")
+
+                .TrackColumn("oth_it_no", "IT No")
+                .TrackColumn("oth_it_date", "IT Date", "date")
+                .TrackColumn("oth_it_port", "IT Port")
+
+                .TrackColumn("oth_hbl_frt_status", "Freight Status")
+                .TrackColumn("oth_packages", "Packages", "decimal")
+                .TrackColumn("oth_cbm", "CBM", "decimal")
+                .TrackColumn("oth_weight", "Weight", "decimal")
+                .TrackColumn("oth_chwt", "Chargeable Weight", "decimal")
+                .TrackColumn("oth_lbs", "LBS", "decimal")
+                .TrackColumn("oth_cft", "CFT", "decimal")
+                .TrackColumn("oth_chwt_lbs", "Chargeable Weight (LBS)", "decimal")
+                .TrackColumn("oth_commodity", "Commodity")
+
+                .TrackColumn("oth_isf_no", "ISF No")
+                .TrackColumn("oth_lfd_date", "LFD Date", "date")
+                .TrackColumn("oth_shipment_stage_id", "Shipment Stage")
+
+                .TrackColumn("oth_is_pl", "Packing List")
+                .TrackColumn("oth_is_ci", "Commercial Invoice")
+                .TrackColumn("oth_is_carr_an", "Carrier AN")
+
+                .TrackColumn("oth_custom_reles_status", "Custom Release Status")
+                .TrackColumn("oth_is_delivery", "Delivery Status")
+
+
+                .SetRecord(old_record_dto, record_dto)
+                .LogChangesAsync();
+        }
+
         public async Task logHistoryCntrDetail(List<cargo_container> old_records, cargo_otherop_dto record_dto)
         {
 
             var old_records_dto = old_records.Select(record => new cargo_container_dto
             {
                 cntr_id = record.cntr_id,
-                cntr_catg = record.cntr_catg,
                 cntr_no = record.cntr_no,
                 cntr_type_name = record.cntrtype?.param_name,
                 cntr_sealno = record.cntr_sealno,
-                cntr_movement = record.cntr_movement,
                 cntr_pieces = record.cntr_pieces,
                 cntr_packages_unit_name = record.packunit?.param_name,
                 cntr_cbm = record.cntr_cbm,
@@ -953,11 +1134,9 @@ namespace OtherOp.Repositories
                 .PrimaryKey("cntr_id", record_dto.oth_id)
                 .RefNo(record_dto.oth_refno!)
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
-                .TrackColumn("cntr_catg", "Category")
                 .TrackColumn("cntr_no", "Container No")
                 .TrackColumn("cntr_type_name", "Container Type Name")
                 .TrackColumn("cntr_sealno", "Seal No")
-                .TrackColumn("cntr_movement", "Movement")
                 .TrackColumn("cntr_pieces", "Pieces", "int")
                 .TrackColumn("cntr_packages_unit_name", "Packages Unit")
                 .TrackColumn("cntr_cbm", "CBM", "decimal")

@@ -14,10 +14,12 @@ using CommonShipment.Interfaces;
 using Common.DTO.CommonShipment;
 using Common.DTO.SeaExport;
 
+
 //Name : Sourav V
 //Created Date : 17/04/2025
 //Remark : this file defines functions like Save, Delete, getList and getRecords which save/retrieve data
 //version v1-17-04-2025: added full repository
+// v2- 13/05/2025 : GetDetail service added
 
 namespace CommonShipment.Repositories
 {
@@ -269,7 +271,7 @@ namespace CommonShipment.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
-     
+
         public async Task<List<cargo_container_dto>> GetMastCntrAsync(int id)
         {
             var query = from e in context.cargo_container
@@ -374,6 +376,46 @@ namespace CommonShipment.Repositories
 
                     Record!.deliveryorder_cntr = await GetMastCntrAsync(id);
                 }
+
+                if (parent_type == "OTHERS")
+                {
+                    var query = context.cargo_housem
+                        .Where(f => f.hbl_mbl_id == id && f.hbl_mode == parent_type);
+
+                    Record = await query
+                        .Select(e => new cargo_delivery_order_dto
+                        {
+                            do_parent_id = e.hbl_mbl_id,
+                            do_order_no = e.master!.mbl_refno,
+                            do_from_id = e.hbl_shipper_id,
+                            do_from_code = e.shipper!.cust_code,
+                            do_from_name = e.hbl_shipper_name,
+                            do_from_addr1 = e.hbl_shipper_add1,
+                            do_from_addr2 = e.hbl_shipper_add2,
+                            do_from_addr3 = e.hbl_shipper_add3,
+                            do_from_addr4 = e.hbl_shipper_add4,
+                            do_to_id = e.hbl_consignee_id,
+                            do_to_code = e.consignee!.cust_code,
+                            do_to_name = e.hbl_consignee_name,
+                            do_to_addr1 = e.hbl_consignee_add1,
+                            do_to_addr2 = e.hbl_consignee_add2,
+                            do_to_addr3 = e.hbl_consignee_add3,
+                            do_to_addr4 = e.hbl_consignee_add4,
+
+                            do_desc1 = e.hbl_commodity,
+                            do_tot_piece1 = e.hbl_packages,
+                            do_uom1_name = e.packageunit!.param_name,
+                            do_cbm_cft1 = e.hbl_cbm,
+                            do_wt1 = e.hbl_weight,
+
+                            do_category = parent_type,
+                            rec_branch_id = e.rec_branch_id,
+                            rec_company_id = e.rec_company_id,
+                        })
+                        .FirstOrDefaultAsync();
+
+                    Record!.deliveryorder_cntr = await GetMastCntrAsync(id);
+                }
                 Record!.do_remark_1 = "PLEASE CONTACT CONSIGNEE FOR DELIVERY APPOINTMENT!";
                 return Record;
             }
@@ -382,6 +424,33 @@ namespace CommonShipment.Repositories
                 throw new Exception(Ex.Message, Ex);
             }
         }
+
+        public async Task<List<cargo_delivery_order_dto>> GetDetailsAsync(int id, string parent_type)
+        {
+            var query = from e in context.cargo_delivery_order
+                .Where(e => e.do_parent_id == id && e.do_category == parent_type)
+                .OrderBy(e => e.do_order_date)
+                        select new cargo_delivery_order_dto
+                        {
+                            do_id = e.do_id,
+                            do_cfno = e.do_cfno,
+                            do_order_no = e.do_order_no,
+                            do_truck_name = e.do_truck_name,
+                            do_from_name = e.do_from_name,
+                            do_to_name = e.do_to_name,
+                            do_parent_id = e.do_parent_id,
+                            do_order_date = Lib.FormatDate(e.do_order_date, Lib.outputDateFormat),
+
+                            rec_created_by = e.rec_created_by,
+                            rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
+                            rec_edited_by = e.rec_edited_by,
+                            rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
+                        };
+
+            var records = await query.ToListAsync();
+            return records;
+        }
+
         private Boolean AllValid(string mode, cargo_delivery_order_dto record_dto, ref string error)
         {
             Boolean bRet = true;
@@ -564,11 +633,11 @@ namespace CommonShipment.Repositories
 
                 Record.do_order_no = record_dto.do_order_no;
                 Record.do_order_date = Lib.ParseDate(record_dto.do_order_date!);
-                if(!Lib.IsBlank(record_dto.do_category))
+                if (!Lib.IsBlank(record_dto.do_category))
                     Record.do_category = record_dto.do_category;
-                else                    
+                else
                     Record.do_category = "GENERAL";
-                
+
                 Record.do_is_delivery_sent = record_dto.do_is_delivery_sent;
                 Record.do_delivery_date = Lib.ParseDate(record_dto.do_delivery_date!);
 
@@ -582,12 +651,12 @@ namespace CommonShipment.Repositories
                 record_dto.do_order_no = Record.do_order_no;
 
                 if (record_dto.do_category == "GENERAL")
-                {                
+                {
                     Record.do_parent_id = Record.do_id;
                     await context.SaveChangesAsync();
                 }
                 record_dto.do_parent_id = Record.do_parent_id;
-                
+
                 if (mode == "add")
                 {
                     record_dto.rec_created_by = Record.rec_created_by;

@@ -170,6 +170,7 @@ namespace SeaImport.Repositories
                 {
                     mbl_id = e.mbl_id,
                     mbl_cfno = e.mbl_cfno,
+                    mbl_mode = e.mbl_mode,
                     mbl_refno = e.mbl_refno,
                     mbl_ref_date = Lib.FormatDate(e.mbl_ref_date, Lib.outputDateFormat),
                     mbl_shipment_stage_id = e.mbl_shipment_stage_id,
@@ -465,14 +466,13 @@ namespace SeaImport.Repositories
                         throw new Exception("Ref Number Cannot Be Generated");
                     }
 
-                    string sqtn_no = $"{Defaultprefix}{iNextNo}";  // for setting quote no by adding propper prefix (here QL - Quotation LCL)
-                    string stype = smbl_mode;
+                    string sqtn_no = $"{Defaultprefix}{iNextNo}";  // for setting quote no by adding propper prefix 
 
                     Record = new cargo_masterm();
 
                     Record.mbl_cfno = iNextNo;
                     Record.mbl_refno = sqtn_no;
-                    Record.mbl_mode = stype;
+                    Record.mbl_mode = smbl_mode;
 
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_branch_id = record_dto.rec_branch_id;
@@ -523,94 +523,39 @@ namespace SeaImport.Repositories
                 }
                 Record.mbl_no = record_dto.mbl_no;
 
-                if (Lib.IsZero(record_dto.mbl_agent_id))
-                    Record.mbl_agent_id = null;
-                else
-                    Record.mbl_agent_id = record_dto.mbl_agent_id;
-
-                if (Lib.IsZero(record_dto.mbl_liner_id))
-                    Record.mbl_liner_id = null;
-                else
-                    Record.mbl_liner_id = record_dto.mbl_liner_id;
-
-                if (Lib.IsZero(record_dto.mbl_coloader_id))
-                    Record.mbl_coloader_id = null;
-                else
-                    Record.mbl_coloader_id = record_dto.mbl_coloader_id;
-
-                if (Lib.IsZero(record_dto.mbl_handled_id))
-                    Record.mbl_handled_id = null;
-                else
-                    Record.mbl_handled_id = record_dto.mbl_handled_id;
-
-                if (Lib.IsZero(record_dto.mbl_salesman_id))
-                    Record.mbl_salesman_id = null;
-                else
-                    Record.mbl_salesman_id = record_dto.mbl_salesman_id;
-
+                Record.mbl_agent_id = record_dto.mbl_agent_id;
+                Record.mbl_liner_id = record_dto.mbl_liner_id;
+                Record.mbl_coloader_id = record_dto.mbl_coloader_id;
+                Record.mbl_handled_id = record_dto.mbl_handled_id;
+                Record.mbl_salesman_id = record_dto.mbl_salesman_id;
                 Record.mbl_frt_status_name = record_dto.mbl_frt_status_name;
-                if (Lib.IsZero(record_dto.mbl_ship_term_id))
-                    Record.mbl_ship_term_id = null;
-                else
-                    Record.mbl_ship_term_id = record_dto.mbl_ship_term_id;
+                Record.mbl_ship_term_id = record_dto.mbl_ship_term_id;
 
                 Record.mbl_cntr_type = record_dto.mbl_cntr_type;
-
-                if (Lib.IsZero(record_dto.mbl_incoterm_id))
-                    Record.mbl_incoterm_id = null;
-                else
-                    Record.mbl_incoterm_id = record_dto.mbl_incoterm_id;
-
-                if (Lib.IsZero(record_dto.mbl_pol_id))
-                    Record.mbl_pol_id = null;
-                else
-                    Record.mbl_pol_id = record_dto.mbl_pol_id;
+                Record.mbl_incoterm_id = record_dto.mbl_incoterm_id;
+                Record.mbl_pol_id = record_dto.mbl_pol_id;
                 Record.mbl_pol_etd = Lib.ParseDate(record_dto.mbl_pol_etd!);
-
-                if (Lib.IsZero(record_dto.mbl_pod_id))
-                    Record.mbl_pod_id = null;
-                else
-                    Record.mbl_pod_id = record_dto.mbl_pod_id;
+                Record.mbl_pod_id = record_dto.mbl_pod_id;
                 Record.mbl_pod_eta = Lib.ParseDate(record_dto.mbl_pod_eta!);
 
                 Record.mbl_place_delivery = record_dto.mbl_place_delivery;
 
                 Record.mbl_pofd_eta = Lib.ParseDate(record_dto.mbl_pofd_eta!);
-
-                if (Lib.IsZero(record_dto.mbl_country_id))
-                    Record.mbl_country_id = null;
-                else
-                    Record.mbl_country_id = record_dto.mbl_country_id;
-
-                if (Lib.IsZero(record_dto.mbl_vessel_id))
-                    Record.mbl_vessel_id = null;
-                else
-                    Record.mbl_vessel_id = record_dto.mbl_vessel_id;
+                Record.mbl_country_id = record_dto.mbl_country_id;
+                Record.mbl_vessel_id = record_dto.mbl_vessel_id;
                 Record.mbl_vessel_name = record_dto.mbl_vessel_name;
                 Record.mbl_voyage = record_dto.mbl_voyage;
-
-                if (Lib.IsZero(record_dto.mbl_status_id))
-                    Record.mbl_status_id = null;
-                else
-                    Record.mbl_status_id = record_dto.mbl_status_id;
+                Record.mbl_status_id = record_dto.mbl_status_id;
                 Record.mbl_ombl_sent_on = Lib.ParseDate(record_dto.mbl_of_sent_on!);
                 Record.mbl_ombl_sent_ampm = record_dto.mbl_ombl_sent_ampm;
                 Record.mbl_of_sent_on = Lib.ParseDate(record_dto.mbl_of_sent_on!);
-
-                if (Lib.IsZero(record_dto.mbl_cargo_loc_id))
-                    Record.mbl_cargo_loc_id = null;
-                else
-                    Record.mbl_cargo_loc_id = record_dto.mbl_cargo_loc_id;
+                Record.mbl_cargo_loc_id = record_dto.mbl_cargo_loc_id;
                 Record.mbl_cargo_loc_name = record_dto.mbl_cargo_loc_name;
                 Record.mbl_cargo_loc_add1 = record_dto.mbl_cargo_loc_add1;
                 Record.mbl_cargo_loc_add2 = record_dto.mbl_cargo_loc_add2;
                 Record.mbl_cargo_loc_add3 = record_dto.mbl_cargo_loc_add3;
                 Record.mbl_cargo_loc_add4 = record_dto.mbl_cargo_loc_add4;
-
-                if (Lib.IsZero(record_dto.mbl_devan_loc_id))
-                    Record.mbl_devan_loc_id = null;
-                else
-                    Record.mbl_devan_loc_id = record_dto.mbl_devan_loc_id;
+                Record.mbl_devan_loc_id = record_dto.mbl_devan_loc_id;
                 Record.mbl_devan_loc_name = record_dto.mbl_devan_loc_name;
                 Record.mbl_devan_loc_add1 = record_dto.mbl_devan_loc_add1;
                 Record.mbl_devan_loc_add2 = record_dto.mbl_devan_loc_add2;
