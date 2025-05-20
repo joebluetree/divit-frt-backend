@@ -1058,6 +1058,8 @@ namespace SeaExport.Repositories
         {
             try
             {
+                context.Database.BeginTransaction();
+
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
                 RetData.Add("id", id);
                 var _Record = await context.cargo_housem
@@ -1079,14 +1081,17 @@ namespace SeaExport.Repositories
                     context.SaveChanges();
                     await CommonLib.SaveMasterSummary(this.context, mbl_id);
 
+                    context.Database.CommitTransaction();
+
                     RetData.Add("status", true);
                     RetData.Add("message", "");
                 }
                 return RetData;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
-                throw new Exception(Ex.Message.ToString());
+                context.Database.RollbackTransaction();
+                throw;
             }
         }
         public async Task logHistory(cargo_housem old_record, cargo_sea_exporth_dto record_dto)

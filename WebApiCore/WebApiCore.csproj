@@ -37,6 +37,7 @@
     <ProjectReference Include="..\modules\Common\Common.csproj" />
     <ProjectReference Include="..\modules\Marketing\Marketing.csproj" />
     <ProjectReference Include="..\modules\Masters\Masters.csproj" />
+    <ProjectReference Include="..\modules\OtherOp\OtherOp.csproj" />
     <ProjectReference Include="..\modules\SeaExport\SeaExport.csproj" />
     <ProjectReference Include="..\modules\SeaImport\SeaImport.csproj" />
     <ProjectReference Include="..\modules\Test\Test.csproj" />

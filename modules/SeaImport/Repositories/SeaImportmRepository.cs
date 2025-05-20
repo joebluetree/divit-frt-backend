@@ -170,6 +170,7 @@ namespace SeaImport.Repositories
                 {
                     mbl_id = e.mbl_id,
                     mbl_cfno = e.mbl_cfno,
+                    mbl_mode = e.mbl_mode,
                     mbl_refno = e.mbl_refno,
                     mbl_ref_date = Lib.FormatDate(e.mbl_ref_date, Lib.outputDateFormat),
                     mbl_shipment_stage_id = e.mbl_shipment_stage_id,
@@ -262,7 +263,6 @@ namespace SeaImport.Repositories
                             cntr_type_id = e.cntr_type_id,
                             cntr_type_name = e.cntrtype!.param_name,
                             cntr_sealno = e.cntr_sealno,
-                            cntr_movement = e.cntr_movement,
                             cntr_pieces = e.cntr_pieces,
                             cntr_packages_unit_id = e.cntr_packages_unit_id,
                             cntr_packages_unit_name = e.packunit!.param_name,
@@ -465,14 +465,13 @@ namespace SeaImport.Repositories
                         throw new Exception("Ref Number Cannot Be Generated");
                     }
 
-                    string sqtn_no = $"{Defaultprefix}{iNextNo}";  // for setting quote no by adding propper prefix (here QL - Quotation LCL)
-                    string stype = smbl_mode;
+                    string sqtn_no = $"{Defaultprefix}{iNextNo}";  // for setting quote no by adding propper prefix 
 
                     Record = new cargo_masterm();
 
                     Record.mbl_cfno = iNextNo;
                     Record.mbl_refno = sqtn_no;
-                    Record.mbl_mode = stype;
+                    Record.mbl_mode = smbl_mode;
 
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_branch_id = record_dto.rec_branch_id;
@@ -523,94 +522,39 @@ namespace SeaImport.Repositories
                 }
                 Record.mbl_no = record_dto.mbl_no;
 
-                if (Lib.IsZero(record_dto.mbl_agent_id))
-                    Record.mbl_agent_id = null;
-                else
-                    Record.mbl_agent_id = record_dto.mbl_agent_id;
-
-                if (Lib.IsZero(record_dto.mbl_liner_id))
-                    Record.mbl_liner_id = null;
-                else
-                    Record.mbl_liner_id = record_dto.mbl_liner_id;
-
-                if (Lib.IsZero(record_dto.mbl_coloader_id))
-                    Record.mbl_coloader_id = null;
-                else
-                    Record.mbl_coloader_id = record_dto.mbl_coloader_id;
-
-                if (Lib.IsZero(record_dto.mbl_handled_id))
-                    Record.mbl_handled_id = null;
-                else
-                    Record.mbl_handled_id = record_dto.mbl_handled_id;
-
-                if (Lib.IsZero(record_dto.mbl_salesman_id))
-                    Record.mbl_salesman_id = null;
-                else
-                    Record.mbl_salesman_id = record_dto.mbl_salesman_id;
-
+                Record.mbl_agent_id = record_dto.mbl_agent_id;
+                Record.mbl_liner_id = record_dto.mbl_liner_id;
+                Record.mbl_coloader_id = record_dto.mbl_coloader_id;
+                Record.mbl_handled_id = record_dto.mbl_handled_id;
+                Record.mbl_salesman_id = record_dto.mbl_salesman_id;
                 Record.mbl_frt_status_name = record_dto.mbl_frt_status_name;
-                if (Lib.IsZero(record_dto.mbl_ship_term_id))
-                    Record.mbl_ship_term_id = null;
-                else
-                    Record.mbl_ship_term_id = record_dto.mbl_ship_term_id;
+                Record.mbl_ship_term_id = record_dto.mbl_ship_term_id;
 
                 Record.mbl_cntr_type = record_dto.mbl_cntr_type;
-
-                if (Lib.IsZero(record_dto.mbl_incoterm_id))
-                    Record.mbl_incoterm_id = null;
-                else
-                    Record.mbl_incoterm_id = record_dto.mbl_incoterm_id;
-
-                if (Lib.IsZero(record_dto.mbl_pol_id))
-                    Record.mbl_pol_id = null;
-                else
-                    Record.mbl_pol_id = record_dto.mbl_pol_id;
+                Record.mbl_incoterm_id = record_dto.mbl_incoterm_id;
+                Record.mbl_pol_id = record_dto.mbl_pol_id;
                 Record.mbl_pol_etd = Lib.ParseDate(record_dto.mbl_pol_etd!);
-
-                if (Lib.IsZero(record_dto.mbl_pod_id))
-                    Record.mbl_pod_id = null;
-                else
-                    Record.mbl_pod_id = record_dto.mbl_pod_id;
+                Record.mbl_pod_id = record_dto.mbl_pod_id;
                 Record.mbl_pod_eta = Lib.ParseDate(record_dto.mbl_pod_eta!);
 
                 Record.mbl_place_delivery = record_dto.mbl_place_delivery;
 
                 Record.mbl_pofd_eta = Lib.ParseDate(record_dto.mbl_pofd_eta!);
-
-                if (Lib.IsZero(record_dto.mbl_country_id))
-                    Record.mbl_country_id = null;
-                else
-                    Record.mbl_country_id = record_dto.mbl_country_id;
-
-                if (Lib.IsZero(record_dto.mbl_vessel_id))
-                    Record.mbl_vessel_id = null;
-                else
-                    Record.mbl_vessel_id = record_dto.mbl_vessel_id;
+                Record.mbl_country_id = record_dto.mbl_country_id;
+                Record.mbl_vessel_id = record_dto.mbl_vessel_id;
                 Record.mbl_vessel_name = record_dto.mbl_vessel_name;
                 Record.mbl_voyage = record_dto.mbl_voyage;
-
-                if (Lib.IsZero(record_dto.mbl_status_id))
-                    Record.mbl_status_id = null;
-                else
-                    Record.mbl_status_id = record_dto.mbl_status_id;
+                Record.mbl_status_id = record_dto.mbl_status_id;
                 Record.mbl_ombl_sent_on = Lib.ParseDate(record_dto.mbl_of_sent_on!);
                 Record.mbl_ombl_sent_ampm = record_dto.mbl_ombl_sent_ampm;
                 Record.mbl_of_sent_on = Lib.ParseDate(record_dto.mbl_of_sent_on!);
-
-                if (Lib.IsZero(record_dto.mbl_cargo_loc_id))
-                    Record.mbl_cargo_loc_id = null;
-                else
-                    Record.mbl_cargo_loc_id = record_dto.mbl_cargo_loc_id;
+                Record.mbl_cargo_loc_id = record_dto.mbl_cargo_loc_id;
                 Record.mbl_cargo_loc_name = record_dto.mbl_cargo_loc_name;
                 Record.mbl_cargo_loc_add1 = record_dto.mbl_cargo_loc_add1;
                 Record.mbl_cargo_loc_add2 = record_dto.mbl_cargo_loc_add2;
                 Record.mbl_cargo_loc_add3 = record_dto.mbl_cargo_loc_add3;
                 Record.mbl_cargo_loc_add4 = record_dto.mbl_cargo_loc_add4;
-
-                if (Lib.IsZero(record_dto.mbl_devan_loc_id))
-                    Record.mbl_devan_loc_id = null;
-                else
-                    Record.mbl_devan_loc_id = record_dto.mbl_devan_loc_id;
+                Record.mbl_devan_loc_id = record_dto.mbl_devan_loc_id;
                 Record.mbl_devan_loc_name = record_dto.mbl_devan_loc_name;
                 Record.mbl_devan_loc_add1 = record_dto.mbl_devan_loc_add1;
                 Record.mbl_devan_loc_add2 = record_dto.mbl_devan_loc_add2;
@@ -726,7 +670,6 @@ namespace SeaImport.Repositories
                     record.cntr_no = rec.cntr_no;
                     record.cntr_type_id = rec.cntr_type_id;
                     record.cntr_sealno = rec.cntr_sealno;
-                    record.cntr_movement = rec.cntr_movement;
                     record.cntr_pieces = rec.cntr_pieces;
                     record.cntr_packages_unit_id = rec.cntr_packages_unit_id;
                     record.cntr_teu = CommonLib.UpdateTeuValue(rec.cntr_type_name!);
@@ -814,6 +757,8 @@ namespace SeaImport.Repositories
         {
             try
             {
+                context.Database.BeginTransaction();
+
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
                 RetData.Add("id", id);
                 var _Record = await context.cargo_masterm
@@ -833,14 +778,18 @@ namespace SeaImport.Repositories
 
                     context.Remove(_Record);
                     context.SaveChanges();
+
+                    context.Database.CommitTransaction();
+                    
                     RetData.Add("status", true);
                     RetData.Add("message", "");
                 }
                 return RetData;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
-                throw new Exception(Ex.Message.ToString());
+                context.Database.RollbackTransaction();
+                throw;
             }
         }
 
@@ -956,7 +905,6 @@ namespace SeaImport.Repositories
                 cntr_no = record.cntr_no,
                 cntr_type_name = record.cntrtype?.param_name,
                 cntr_sealno = record.cntr_sealno,
-                cntr_movement = record.cntr_movement,
                 cntr_pieces = record.cntr_pieces,
                 cntr_packages_unit_name = record.packunit?.param_name,
                 cntr_cbm = record.cntr_cbm,
@@ -980,7 +928,6 @@ namespace SeaImport.Repositories
                 .TrackColumn("cntr_no", "Container No")
                 .TrackColumn("cntr_type_name", "Container Type Name")
                 .TrackColumn("cntr_sealno", "Seal No")
-                .TrackColumn("cntr_movement", "Movement")
                 .TrackColumn("cntr_pieces", "Pieces", "int")
                 .TrackColumn("cntr_packages_unit_name", "Packages Unit")
                 .TrackColumn("cntr_cbm", "CBM", "decimal")

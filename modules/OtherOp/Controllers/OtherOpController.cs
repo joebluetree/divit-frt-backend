@@ -1,26 +1,19 @@
+﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using Common.DTO.Masters;
 using Database.Lib;
-using Common.DTO.AirExport;
-using CommonShipment.Interfaces;
-using Common.DTO.CommonShipment;
+using OtherOp.Interfaces;
+using Common.DTO.OtherOp;
 
-namespace Marketing.Controllers
+namespace OtherOp.Controllers
 {
-
-    //Name : Sourav V
-    //Created Date : 17/04/2025
-    //Remark : Control function path
-    //version V1 - 17/04/2025
-
     [Authorize]
-    [Route("api/CommonShipment/deliveryorder")]
-    public class DeliveryOrderController : Controller
+    [Route("api/OtherOp/otherop")]
+    public class OtherOpController : Controller
     {
-        private readonly IDeliveryOrderRepository mRepository;
-        public DeliveryOrderController(IDeliveryOrderRepository Repository)
+        private readonly IOtherOpRepository mRepository;
+        public OtherOpController(IOtherOpRepository Repository)
         {
             this.mRepository = Repository;
         }
@@ -42,11 +35,25 @@ namespace Marketing.Controllers
 
         [HttpGet]
         [Route("GetRecordAsync")]
-        public async Task<IActionResult> GetRecordAsync(int id, string parent_type)
+        public async Task<IActionResult> GetRecordAsync(int id)
         {
             try
             {
-                var RetData = await mRepository.GetRecordAsync(id, parent_type);
+                var RetData = await mRepository.GetRecordAsync(id);
+                return Ok(RetData);
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Lib.getErrorMessage(Ex));
+            }
+        }
+        [HttpGet]
+        [Route("GetDefaultData")]
+        public async Task<IActionResult> GetDefaultData()
+        {
+            try
+            {
+                var RetData = await mRepository.GetDefaultData();
                 return Ok(RetData);
             }
             catch (Exception Ex)
@@ -55,38 +62,9 @@ namespace Marketing.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("GetDefaultDataAsync")]
-        public async Task<IActionResult> GetDefaultDataAsync(int id,string parent_type)
-        {
-            try
-            {
-                var RetData = await mRepository.GetDefaultDataAsync(id,parent_type);
-                return Ok(RetData);
-            }
-            catch (Exception Ex)
-            {
-                return BadRequest(Lib.getErrorMessage(Ex));
-            }
-        }
-
-        [HttpGet]
-        [Route("GetDetailsAsync")]
-        public async Task<IActionResult> GetDetailsAsync(int id, string parent_type)
-        {
-            try
-            {
-                var RetData = await mRepository.GetDetailsAsync(id, parent_type);
-                return Ok(RetData);
-            }
-            catch (Exception Ex)
-            {
-                return BadRequest(Lib.getErrorMessage(Ex));
-            }
-        }
         [HttpPost]
         [Route("SaveAsync")]
-        public async Task<IActionResult> SaveAsync(int id, string mode, [FromBody] cargo_delivery_order_dto rec)
+        public async Task<IActionResult> SaveAsync(int id, string mode, [FromBody] cargo_otherop_dto rec)
         {
             try
             {

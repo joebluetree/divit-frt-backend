@@ -168,6 +168,7 @@ namespace SeaExport.Repositories
                 {
                     mbl_id = e.mbl_id,
                     mbl_cfno = e.mbl_cfno,
+                    mbl_mode = e.mbl_mode,
                     mbl_refno = e.mbl_refno,
                     mbl_ref_date = Lib.FormatDate(e.mbl_ref_date, Lib.outputDateFormat),
                     mbl_shipment_stage_id = e.mbl_shipment_stage_id,
@@ -427,13 +428,12 @@ namespace SeaExport.Repositories
                     }
 
                     string sqtn_no = $"{Defaultprefix}{iNextNo}";  // for setting quote no by adding propper prefix (here QL - Quotation LCL)
-                    string stype = smbl_mode;
 
                     Record = new cargo_masterm();
 
                     Record.mbl_cfno = iNextNo;
                     Record.mbl_refno = sqtn_no;
-                    Record.mbl_mode = stype;
+                    Record.mbl_mode = smbl_mode;
 
                     Record.rec_company_id = record_dto.rec_company_id;
                     Record.rec_branch_id = record_dto.rec_branch_id;
@@ -743,6 +743,8 @@ namespace SeaExport.Repositories
         {
             try
             {
+                context.Database.BeginTransaction();
+
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
                 RetData.Add("id", id);
                 var _Record = await context.cargo_masterm
@@ -761,14 +763,18 @@ namespace SeaExport.Repositories
 
                     context.Remove(_Record);
                     context.SaveChanges();
+             
+                    context.Database.CommitTransaction();
+
                     RetData.Add("status", true);
                     RetData.Add("message", "");
                 }
                 return RetData;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
-                throw new Exception(Ex.Message.ToString());
+                context.Database.RollbackTransaction();
+                throw;
             }
         }
 
