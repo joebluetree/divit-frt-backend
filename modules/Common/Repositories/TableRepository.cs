@@ -101,6 +101,7 @@ namespace Common.Repositories
             files.Add("Masters\\mast_param_memo-remarks.txt");
             files.Add("Masters\\mast_param_followup.txt");
             files.Add("Masters\\mast_param_newid.txt");
+            files.Add("Masters\\mast_param_doctype.txt");
             files.Add("UserAdmin\\mast_mail_serverm.txt");
 
             files.Add("Masters\\mast_custmerm.txt");

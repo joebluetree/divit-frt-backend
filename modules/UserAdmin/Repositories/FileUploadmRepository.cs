@@ -8,6 +8,8 @@ using Database.Models.UserAdmin;
 using Common.DTO.UserAdmin;
 using Common.Lib;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 
 
 namespace UserAdmin.Repositories
@@ -40,12 +42,8 @@ namespace UserAdmin.Repositories
                 if (action == null)
                     action = "search";
 
-                var files_desc = "";
                 var company_id = 0;
                 var branch_id = 0;
-
-                if (data.ContainsKey("files_desc"))
-                    files_desc = data["files_desc"].ToString();
 
                 if (data.ContainsKey("rec_company_id"))
                     company_id = int.Parse(data["rec_company_id"].ToString()!);
@@ -66,9 +64,6 @@ namespace UserAdmin.Repositories
 
                 query = query.Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id);
 
-
-                if (!Lib.IsBlank(files_desc))
-                    query = query.Where(w => w.files_desc!.Contains(files_desc!));
 
                 if (action == "SEARCH")
                 {
@@ -94,12 +89,15 @@ namespace UserAdmin.Repositories
                     files_parent_id = e.files_parent_id,
                     files_slno = e.files_slno,
                     files_type = e.files_type,
-                    // files_desc = e.files_desc,
+                    files_desc = e.files_desc,
                     files_ref_no = e.files_ref_no,
                     files_path = e.files_path,
                     files_sub_id = e.files_sub_id,
                     files_size = e.files_size,
                     files_processed = e.files_processed,
+                    files_status = e.files_status,
+                    rec_deleted_by = e.rec_deleted_by,
+                    rec_deleted_date = Lib.FormatDate(e.rec_deleted_date, Lib.outputDateTimeFormat),
 
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
@@ -117,6 +115,7 @@ namespace UserAdmin.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+
         public async Task<mast_fileupload_dto?> GetRecordAsync(int id)
         {
             try
@@ -130,12 +129,15 @@ namespace UserAdmin.Repositories
                     files_parent_id = e.files_parent_id,
                     files_slno = e.files_slno,
                     files_type = e.files_type,
-                    // files_desc = e.files_desc,
+                    files_desc = e.files_desc,
                     files_ref_no = e.files_ref_no,
                     files_path = e.files_path,
                     files_sub_id = e.files_sub_id,
                     files_size = e.files_size,
                     files_processed = e.files_processed,
+                    files_status = e.files_status,
+                    rec_deleted_by = e.rec_deleted_by,
+                    rec_deleted_date = Lib.FormatDate(e.rec_deleted_date, Lib.outputDateTimeFormat),
 
                     rec_version = e.rec_version,
                     rec_created_by = e.rec_created_by,
@@ -155,23 +157,35 @@ namespace UserAdmin.Repositories
             }
         }
 
-        public async Task<List<mast_fileupload_dto>> GetDetailsAsync(int id, string parent_type)
+        public async Task<List<mast_fileupload_dto>> GetDetailsAsync(int id, string parent_type, string? files_status)
         {
-            var query = from e in context.mast_fileupload
-                        .Where(e => e.files_parent_id == id || e.files_parent_type == parent_type)
-                        .OrderBy(e => e.files_slno)
-                        select (new mast_fileupload_dto
+            // Base query
+            var baseQuery = context.mast_fileupload
+                .Where(e => e.files_parent_id == id && e.files_parent_type == parent_type);
+
+            // If files_status is not "D", filter only active records
+            if (files_status != "D")
+            {
+                baseQuery = baseQuery.Where(e => e.files_status == "N"); // Adjust "N" to match your active flag
+            }
+
+            // Now project to DTO
+            var query = from e in baseQuery.OrderBy(e => e.files_slno)
+                        select new mast_fileupload_dto
                         {
                             files_id = e.files_id,
                             files_parent_id = e.files_parent_id,
                             files_slno = e.files_slno,
                             files_type = e.files_type,
-                            // files_desc = e.files_desc,
+                            files_desc = e.files_desc,
                             files_ref_no = e.files_ref_no,
                             files_path = e.files_path,
                             files_sub_id = e.files_sub_id,
                             files_size = e.files_size,
                             files_processed = e.files_processed,
+                            files_status = e.files_status,
+                            rec_deleted_by = e.rec_deleted_by,
+                            rec_deleted_date = Lib.FormatDate(e.rec_deleted_date, Lib.outputDateTimeFormat),
 
                             rec_version = e.rec_version,
                             rec_branch_id = e.rec_branch_id,
@@ -180,18 +194,19 @@ namespace UserAdmin.Repositories
                             rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                             rec_edited_by = e.rec_edited_by,
                             rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
-                        });
+                        };
 
-            var records = await query.ToListAsync();
-            return records;
+            var record = await query.ToListAsync();
+            return record;
         }
 
-        public async Task<mast_fileupload_dto?> GetDefaultDataAsync(int id)
+
+        public async Task<mast_fileupload_dto?> GetDefaultDataAsync(int id, string parent_type)
         {
             try
             {
                 var query = context.cargo_masterm
-                    .Where(f => f.mbl_id == id);
+                    .Where(f => f.mbl_id == id && f.mbl_mode == parent_type);
 
                 var Record = await query
                     .Select(e => new mast_fileupload_dto
@@ -221,7 +236,6 @@ namespace UserAdmin.Repositories
                 log_date = DbLib.GetDateTime();
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);
-                // record_dto = await UploadFiles(record_dto.files_slno, record_dto, files);
                 context.Database.CommitTransaction();
                 return record_dto;
             }
@@ -241,10 +255,8 @@ namespace UserAdmin.Repositories
             Boolean bRet = true;
 
             string str = "";
-
-            // if (Lib.IsBlank(record_dto.mail_name))
-            //     str += "Name Cannot Be Blank!";
-
+            if (Lib.IsBlank(record_dto.files_type))
+                str += "Document Type Cannot Be Blank!";
 
             if (str != "")
             {
@@ -278,6 +290,7 @@ namespace UserAdmin.Repositories
                     Record.rec_created_by = record_dto.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
 
+
                     Record.files_parent_id = record_dto.files_parent_id;
                     Record.files_slno = iNextNo;
                     Record.files_parent_type = record_dto.files_parent_type;
@@ -300,12 +313,13 @@ namespace UserAdmin.Repositories
                     await logHistory(Record, record_dto);
 
                 Record.files_type = record_dto.files_type;
-                // Record.files_desc = record_dto.files_desc;
+                Record.files_desc = record_dto.files_desc;
                 Record.files_ref_no = record_dto.files_ref_no;
                 Record.files_path = record_dto.files_path;
                 Record.files_sub_id = record_dto.files_sub_id;
                 Record.files_size = record_dto.files_size;
                 Record.files_processed = record_dto.files_processed;
+                Record.files_status = record_dto.files_status;
 
                 if (mode == "add")
                     await context.mast_fileupload.AddAsync(Record);
@@ -330,62 +344,109 @@ namespace UserAdmin.Repositories
             }
         }
 
-        public async Task<mast_fileupload_dto> UploadFiles(int id, mast_fileupload_dto record_dto, List<IFormFile> files)
+        public async Task<List<mast_fileupload_dto>> UploadFilesAsync(List<IFormFile> files, mast_fileupload_dto record_dto)
         {
+            List<mast_fileupload_dto> uploadedFiles = new List<mast_fileupload_dto>();
+
             try
             {
                 if (files == null || files.Count == 0)
-                    throw new Exception("Files not uploaded");
+                    throw new Exception("No files uploaded");
+
+                if (Lib.IsBlank(record_dto.files_type))
+                    throw new Exception("Document Type Cannot be Blank");
 
                 DateTime? parsedDate = DbLib.GetDateTime();
                 if (parsedDate == null)
                     throw new Exception("Creation date is required");
 
-                // Get existing DB record
-                var record = await context.mast_fileupload.FirstOrDefaultAsync(x => x.files_id == id);
-                if (record == null)
-                    throw new Exception($"Record with ID {id} not found");
-
-                // Define folder path
                 string rootFolder = @"D:\files\2025";
-                string subFolder = parsedDate.Value.ToString("MMM-yyyy");
-                string targetFolder = Path.Combine(rootFolder, subFolder, id.ToString());
+                string subFolder = parsedDate.Value.ToString("MMM-yyyy").ToLower();
 
-                if (Directory.Exists(targetFolder))
-                    return record_dto;
-
-                Directory.CreateDirectory(targetFolder);
-
-                // Save files to folder
                 foreach (var file in files)
                 {
+                    // Step 1: Build file-specific DTO
+                    var fileDto = new mast_fileupload_dto
+                    {
+                        rec_company_id = record_dto.rec_company_id,
+                        rec_branch_id = record_dto.rec_branch_id,
+                        rec_created_by = record_dto.rec_created_by,
+                        files_parent_id = record_dto.files_parent_id,
+                        files_parent_type = record_dto.files_parent_type,
+                        files_ref_no = record_dto.files_ref_no,
+                        files_type = record_dto.files_type,
+                        files_desc = file.FileName,
+                        files_sub_id = record_dto.files_sub_id,
+                        files_processed = "N",
+                        files_size = file.Length.ToString(),
+                        files_status = "N",
+                    };
+
+                    // Step 2: Save parent record
+                    var savedDto = await SaveParentAsync(0, "add", fileDto);
+                    int newFilesId = savedDto.files_id;
+
+                    // Step 3: Create folder for this file using files_id
+                    string targetFolder = Path.Combine(rootFolder, subFolder, newFilesId.ToString());
+                    if (!Directory.Exists(targetFolder))
+                        Directory.CreateDirectory(targetFolder);
+
                     string filePath = Path.Combine(targetFolder, file.FileName);
+
+                    // Step 4: Save file to disk
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
                     }
-                    record.files_type = Path.GetExtension(file.FileName);
+
+                    // Step 5: Update DB record with path and metadata
+                    var record = await context.mast_fileupload.FirstOrDefaultAsync(x => x.files_id == newFilesId);
+                    if (record != null)
+                    {
+                        record.files_path = filePath;
+                        // record.files_type = Path.GetExtension(file.FileName);
+                        record.files_size = (file.Length / 1024.0).ToString("F2") + " KB";
+                        record.files_processed = "N";
+                        record.rec_created_date = parsedDate.Value;
+                    }
+
+                    uploadedFiles.Add(savedDto);
                 }
 
-                // Update existing record
-                record.files_path = Path.Combine(targetFolder); // relative path
-                record.files_size = files.Sum(f => f.Length).ToString();
-                record.files_processed = "N";
-                
                 await context.SaveChangesAsync();
-                record_dto.files_id = record.files_id;
-                record_dto.files_parent_id = record.files_parent_id;
-                record_dto.files_parent_type = record.files_parent_type;
-                record_dto.files_path = record.files_path;
-
-                return record_dto;
+                return uploadedFiles;
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                throw new Exception("UploadFiles failed: " + ex.Message, ex);
+                throw new Exception(Ex.Message.ToString());
             }
         }
 
+        public async Task<Dictionary<string, object>> GetDownloadFileAsync(int fileId)
+        {
+            var record = await context.mast_fileupload.FirstOrDefaultAsync(f => f.files_id == fileId);
+            if (record == null || string.IsNullOrEmpty(record.files_path) || !System.IO.File.Exists(record.files_path))
+            {
+                throw new FileNotFoundException("File not found.");
+            }
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(record.files_path, FileMode.Open, FileAccess.Read))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+
+            var contentType = "application/octet-stream";
+            new FileExtensionContentTypeProvider().TryGetContentType(record.files_path, out contentType);
+
+            return new Dictionary<string, object>
+            {
+                { "FileStream", memory },
+                { "FileName", Path.GetFileName(record.files_path) },
+                { "ContentType", contentType! }
+            };
+        }
 
         public int GetNextCfNo(int company_id, int? branch_id, int defaultCfNo)
         {
@@ -397,7 +458,40 @@ namespace UserAdmin.Repositories
             return cfNo == 0 ? defaultCfNo : cfNo + 1;
         }
 
+        public async Task<Dictionary<string, object>> DeleteDetailsAsync(int id, mast_fileupload_dto record_dto)
+        {
+            try
+            {
 
+                Dictionary<string, object> RetData = new Dictionary<string, object>();
+                RetData.Add("id", id);
+                var _Record = await context.mast_fileupload
+                    .Where(f => f.files_id == id)
+                    .FirstOrDefaultAsync();
+
+                if (_Record == null)
+                {
+                    RetData.Add("status", false);
+                    RetData.Add("message", "No Record Found");
+                }
+                else
+                {
+                    _Record.files_status = "D";
+                    _Record.rec_deleted_by = record_dto.rec_deleted_by;
+                    _Record.rec_deleted_date = DbLib.GetDateTime();
+                    // context.Remove(_Record);
+                    await context.SaveChangesAsync();
+
+                    RetData.Add("status", true);
+                    RetData.Add("message", "");
+                }
+                return RetData;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
@@ -444,7 +538,7 @@ namespace UserAdmin.Repositories
                 files_parent_type = old_record.files_parent_type,
                 files_slno = old_record.files_slno,
                 files_type = old_record.files_type,
-                // files_desc = old_record.files_desc,
+                files_desc = old_record.files_desc,
                 files_ref_no = old_record.files_ref_no,
                 files_path = old_record.files_path,
                 files_size = old_record.files_size,
@@ -459,8 +553,8 @@ namespace UserAdmin.Repositories
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
                 .TrackColumn("files_parent_type", "Parent Type")
                 .TrackColumn("files_slno", "Serial No")
-                .TrackColumn("files_type", "File Type")
-                // .TrackColumn("files_desc", "Description")
+                .TrackColumn("files_type", "Doc Type")
+                .TrackColumn("files_desc", "Description")
                 .TrackColumn("files_ref_no", "Reference No")
                 .TrackColumn("files_path", "File Path")
                 .TrackColumn("files_size", "File Size")

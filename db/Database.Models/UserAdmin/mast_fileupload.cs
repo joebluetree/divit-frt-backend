@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Database.Models.Cargo;
+using Database.Models.Masters;
 
 namespace Database.Models.UserAdmin
 {
@@ -20,6 +21,9 @@ namespace Database.Models.UserAdmin
         public int? files_sub_id { get; set; }
         public string? files_size { get; set; }
         public string? files_processed { get; set; }
+        public string? files_status { get; set; }
+        public string? rec_deleted_by { get; set; }
+        public DateTime? rec_deleted_date { get; set; }
 
         [ConcurrencyCheck]
         public int rec_version { get; set; }

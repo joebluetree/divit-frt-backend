@@ -16,6 +16,9 @@ public class mast_fileupload_dto: basetable_dto
         public int? files_sub_id { get; set; }
         public string? files_size { get; set; }
         public string? files_processed { get; set; }
+        public string? files_status { get; set; }
+        public string? rec_deleted_by { get; set; }
+        public string? rec_deleted_date { get; set; }
         public List<mast_fileupload_dto>? fileupload { get; set; }
 
 }

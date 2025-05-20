@@ -54,11 +54,11 @@ namespace UserAdmin.Controllers
 
         [HttpGet]
         [Route("GetDefaultDataAsync")]
-        public async Task<IActionResult> GetDefaultDataAsync(int id)
+        public async Task<IActionResult> GetDefaultDataAsync(int id, string parent_type)
         {
             try
             {
-                var RetData = await mRepository.GetDefaultDataAsync(id);
+                var RetData = await mRepository.GetDefaultDataAsync(id,parent_type);
                 return Ok(RetData);
             }
             catch (Exception Ex)
@@ -69,11 +69,11 @@ namespace UserAdmin.Controllers
 
         [HttpGet]
         [Route("GetDetailsAsync")]
-        public async Task<IActionResult> GetDetailsAsync(int id, string parent_type)
+        public async Task<IActionResult> GetDetailsAsync(int id, string parent_type, string files_status)
         {
             try
             {
-                var RetData = await mRepository.GetDetailsAsync(id, parent_type);
+                var RetData = await mRepository.GetDetailsAsync(id, parent_type, files_status);
                 return Ok(RetData);
             }
             catch (Exception Ex)
@@ -84,12 +84,27 @@ namespace UserAdmin.Controllers
 
         [HttpPost]
         [Route("UploadFiles")]
-        public async Task<IActionResult> UploadFiles(int id, mast_fileupload_dto record_dto, List<IFormFile> files)
+        public async Task<IActionResult> UploadFilesAsync( mast_fileupload_dto record_dto, List<IFormFile> files)
         {
             try
             {
-                var record = await mRepository.UploadFiles(id,record_dto, files);
+                var record = await mRepository.UploadFilesAsync(files , record_dto);
                 return Ok(record);
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Lib.getErrorMessage(Ex));
+            }
+        }
+
+        [HttpGet]
+        [Route("DownloadFiles")]
+        public async Task<IActionResult> GetDownloadFileAsync(int id)
+        {
+            try
+            {
+                var RetData = await mRepository.GetDownloadFileAsync(id);
+                return Ok(RetData);
             }
             catch (Exception Ex)
             {
@@ -126,6 +141,22 @@ namespace UserAdmin.Controllers
                 return BadRequest(Lib.getErrorMessage(Ex));
             }
         }
+
+        [HttpPost]
+        [Route("DeleteDetailsAsync")]
+        public async Task<IActionResult> DeleteDetailsAsync(int id, [FromBody] mast_fileupload_dto rec)
+        {
+            try
+            {
+                var RetData = await mRepository.DeleteDetailsAsync(id, rec);
+                return Ok(RetData);
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Lib.getErrorMessage(Ex));
+            }
+        }
+
 
     }
 }
