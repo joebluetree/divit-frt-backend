@@ -63,6 +63,7 @@ namespace Common.Repositories
             files.Add("UserAdmin\\mast_rightsm.txt");
             files.Add("UserAdmin\\mast_settings.txt");
             files.Add("UserAdmin\\mast_history.txt");
+            files.Add("UserAdmin\\mast_fileuploadm.txt");
 
             files.Add("Masters\\mast_param.txt");
             files.Add("Masters\\mast_param_air-carrier.txt");
@@ -100,6 +101,7 @@ namespace Common.Repositories
             files.Add("Masters\\mast_param_memo-remarks.txt");
             files.Add("Masters\\mast_param_followup.txt");
             files.Add("Masters\\mast_param_newid.txt");
+            files.Add("Masters\\mast_param_doctype.txt");
             files.Add("UserAdmin\\mast_mail_serverm.txt");
 
             files.Add("Masters\\mast_custmerm.txt");
