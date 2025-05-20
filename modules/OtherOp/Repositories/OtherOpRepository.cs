@@ -214,7 +214,6 @@ namespace OtherOp.Repositories
                             cntr_type_id = e.cntr_type_id,
                             cntr_type_name = e.cntrtype!.param_name,
                             cntr_sealno = e.cntr_sealno,
-                            cntr_movement = e.cntr_movement,
                             cntr_pieces = e.cntr_pieces,
                             cntr_packages_unit_id = e.cntr_packages_unit_id,
                             cntr_packages_unit_name = e.packunit!.param_name,
@@ -307,11 +306,36 @@ namespace OtherOp.Repositories
                             rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
                         };
             var records = await query.FirstOrDefaultAsync();
-            records!.otherop_cntr = await getCntrAsync(records.oth_id, "H");
+            // records!.otherop_cntr = await getCntrAsync(records.oth_id, "H");
             return records;
         }
-        // to get cbm total from container table
+        
+        public async Task<cargo_otherop_dto> GetDefaultData()
+        {
+            try
+            {
+                IQueryable<mast_param> query = context.mast_param;
 
+                query = query.Where(f => f.param_type == "SHIPSTAGE OTH" && f.param_name == "NIL");
+
+                var Record = await query.Select(e => new cargo_otherop_dto
+                {
+                    oth_shipment_stage_id = e.param_id,
+                    oth_shipment_stage_name = e.param_name,
+                }).FirstOrDefaultAsync();
+
+                if (Record == null)
+                    throw new Exception("Shipment Stage 'NIL' not found.");
+
+                return Record;
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
+            }
+        }
+
+        // to get cbm total from container table
         public decimal? GetCbmTotal(cargo_otherop_dto record_dto)
         {
             decimal? cbmTotal = 0;
@@ -358,32 +382,9 @@ namespace OtherOp.Repositories
             string type = "";
             string cntr_no = "";
             string unit = "";
-            DateTime? etd_date = Lib.ParseDate(record_dto.oth_pol_etd!) ?? null;
-            DateTime? eta_date = Lib.ParseDate(record_dto.oth_pod_eta!) ?? null;
 
-
-            if (Lib.IsBlank(record_dto.oth_agent_name))
-                str += "Master Agent Cannot Be Blank!";
-            if (Lib.IsBlank(record_dto.oth_shipment_stage_name))
-                str += "Shipment Stage Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.oth_handled_name))
                 str += "Handled By Cannot Be Blank!";
-            if (Lib.IsBlank(record_dto.oth_mbl_frt_status))
-                str += "Fright Status Cannot Be Blank!";
-            if (Lib.IsBlank(record_dto.oth_pol_name))
-                str += "POL Cannot Be Blank!";
-
-            if (Lib.IsBlank(record_dto.oth_pol_etd))
-                str += "ETD Cannot Be Blank!";
-
-            if (Lib.IsBlank(record_dto.oth_pod_name))
-                str += "Port.Discharge Cannot Be Blank!";
-            if (eta_date < etd_date)
-            {
-                str += "ETD Cannot be Greater than POD ETA";
-                if (Lib.IsBlank(record_dto.oth_pod_eta))
-                    str += "ETA Cannot Be Blank!";
-            }
 
             foreach (cargo_container_dto rec in record_dto.otherop_cntr!)
             {
@@ -499,12 +500,7 @@ namespace OtherOp.Repositories
                     await logHistory(Record, record_dto);
 
                 Record.mbl_ref_date = Lib.ParseDate(record_dto.oth_ref_date!);
-                if (Record.mbl_shipment_stage_id != record_dto.oth_shipment_stage_id)
-                {
-                    Record.mbl_shipment_stage_id = record_dto.oth_shipment_stage_id;
-
-                    await CommonLib.UpdateHouseShipmentStage(context, Record.mbl_id, record_dto.oth_shipment_stage_id);
-                }
+                Record.mbl_shipment_stage_id = record_dto.oth_shipment_stage_id;
                 Record.mbl_no = record_dto.oth_mbl_no;
                 Record.mbl_agent_id = record_dto.oth_agent_id;
                 Record.mbl_liner_id = record_dto.oth_liner_id;
@@ -540,11 +536,10 @@ namespace OtherOp.Repositories
                 record_dto.oth_mode = Record.mbl_mode;
                 record_dto.oth_id = Record.mbl_id;
                 record_dto.oth_refno = Record.mbl_refno;
-                if (mode == "add")
-                {
-                    record_dto.rec_created_by = Record.rec_created_by;
-                    record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
-                }
+
+                record_dto.rec_created_by = Record.rec_created_by;
+                record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
+
                 if (mode == "edit")
                 {
                     record_dto.rec_edited_by = Record.rec_edited_by;
@@ -634,7 +629,6 @@ namespace OtherOp.Repositories
                     record.cntr_no = rec.cntr_no;
                     record.cntr_type_id = rec.cntr_type_id;
                     record.cntr_sealno = rec.cntr_sealno;
-                    record.cntr_movement = rec.cntr_movement;
                     record.cntr_pieces = rec.cntr_pieces;
                     record.cntr_packages_unit_id = rec.cntr_packages_unit_id;
                     record.cntr_teu = CommonLib.UpdateTeuValue(rec.cntr_type_name!);
@@ -826,19 +820,19 @@ namespace OtherOp.Repositories
             {
                 var records_dto = record_dto.otherop_cntr!;
 
-                // Get all containers (H and M) for the mblId in one query
+                // Get all cntr (H and M) for the mbl_id in one query
                 var allCntrs = await context.cargo_container
                     .Where(c => c.cntr_mbl_id == mbl_id)
                     .ToListAsync();
 
-                // Split in-memory into house and master containers
+                // Split house and master cntr data in seprate var
                 var houseCntrs = allCntrs.Where(c => c.cntr_catg == "H" && c.cntr_hbl_id == hbl_id).ToList();
                 var masterCntrs = allCntrs.Where(c => c.cntr_catg == "M").ToList();
 
                 foreach (var m in masterCntrs)
                 {
                     cargo_container? record;
-                    // Try to find existing house container with same cntr_no under this HBL
+                    // to find existing house container with same cntr_no under this house
                     record = houseCntrs.FirstOrDefault(h => h.cntr_no == m.cntr_no);
 
                     if (record == null)
@@ -862,7 +856,6 @@ namespace OtherOp.Repositories
                     record.cntr_no = m.cntr_no;
                     record.cntr_type_id = m.cntr_type_id;
                     record.cntr_sealno = m.cntr_sealno;
-                    record.cntr_movement = m.cntr_movement;
                     record.cntr_pieces = m.cntr_pieces;
                     record.cntr_packages_unit_id = m.cntr_packages_unit_id;
                     record.cntr_teu = m.cntr_teu;
@@ -877,7 +870,6 @@ namespace OtherOp.Repositories
                     record.cntr_discharge_date = m.cntr_discharge_date;
                     record.cntr_order = m.cntr_order;
 
-                    // Only add to DB context if it's a new record (not found above)
                     if (record.cntr_id == 0)
                         await context.cargo_container.AddAsync(record);
                 }
@@ -903,6 +895,8 @@ namespace OtherOp.Repositories
         {
             try
             {
+                context.Database.BeginTransaction();
+
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
                 RetData.Add("id", id);
                 var _Record = await context.cargo_masterm
@@ -922,14 +916,18 @@ namespace OtherOp.Repositories
 
                     context.Remove(_Record);
                     context.SaveChanges();
+
+                    context.Database.CommitTransaction();
+
                     RetData.Add("status", true);
                     RetData.Add("message", "");
                 }
                 return RetData;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
-                throw new Exception(Ex.Message.ToString());
+                context.Database.RollbackTransaction();
+                throw;
             }
         }
 
@@ -973,7 +971,7 @@ namespace OtherOp.Repositories
                 .TrackColumn("oth_shipment_stage_name", "Shipment Stage Name")
                 .TrackColumn("oth_mbl_no", "MBL No")
                 .TrackColumn("oth_agent_name", "Agent Name")
-                .TrackColumn("oth_liner_name", "Liner Name")
+                .TrackColumn("oth_liner_name", "Carrier Name")
                 .TrackColumn("oth_handled_name", "Handled By Name")
                 .TrackColumn("oth_salesman_name", "Salesman Name")
                 .TrackColumn("oth_mbl_frt_status", "Freight Status Name")
@@ -1081,7 +1079,7 @@ namespace OtherOp.Repositories
                 .TrackColumn("oth_it_port", "IT Port")
 
                 .TrackColumn("oth_hbl_frt_status", "Freight Status")
-                .TrackColumn("oth_packages", "Packages", "decimal")
+                .TrackColumn("oth_packages", "Packages", "int")
                 .TrackColumn("oth_cbm", "CBM", "decimal")
                 .TrackColumn("oth_weight", "Weight", "decimal")
                 .TrackColumn("oth_chwt", "Chargeable Weight", "decimal")

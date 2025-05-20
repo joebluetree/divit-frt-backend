@@ -743,6 +743,8 @@ namespace SeaExport.Repositories
         {
             try
             {
+                context.Database.BeginTransaction();
+
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
                 RetData.Add("id", id);
                 var _Record = await context.cargo_masterm
@@ -761,14 +763,18 @@ namespace SeaExport.Repositories
 
                     context.Remove(_Record);
                     context.SaveChanges();
+             
+                    context.Database.CommitTransaction();
+
                     RetData.Add("status", true);
                     RetData.Add("message", "");
                 }
                 return RetData;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
-                throw new Exception(Ex.Message.ToString());
+                context.Database.RollbackTransaction();
+                throw;
             }
         }
 

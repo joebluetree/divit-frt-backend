@@ -1,0 +1,10 @@
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 138, 'SHIPSTAGE OI', 'NIL', 'NIL', 1, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 138);
+
+INSERT INTO mast_param
+(param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
+SELECT 139, 'SHIPSTAGE OI', 'Waiting For A/N', 'Waiting For Carrier's A/N', 2, 'ADMIN', now(), 1
+WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 139);

@@ -8,7 +8,6 @@ using System.ComponentModel;
 using Microsoft.VisualBasic;
 using System.Text.RegularExpressions;
 
-
 //Name : Sourav V
 //Created Date : 29/01/2025
 //Remark : this file defines common functions which is used in multiple repositories
@@ -189,7 +188,7 @@ namespace Common.Lib
         {
             context = _context;
 
-            var descriptions =await  context.cargo_desc
+            var descriptions = await context.cargo_desc
                 .Where(c => c.desc_parent_id == id).ToListAsync();
 
             if (descriptions.Any())
@@ -226,9 +225,9 @@ namespace Common.Lib
             if (houseid.Any())
             {
 
-                
+
                 await DeleteDesc(context, id);
-                
+
                 // Delete cargo_housem records by creating stub entities
 
                 context.cargo_housem.RemoveRange(houses);
@@ -237,13 +236,13 @@ namespace Common.Lib
             }
         }
 
-  
+
         public static async Task DeleteContainer(AppDbContext _context, int id)
         {
             context = _context;
 
             var containers = await context.cargo_container
-                .Where(c => c.cntr_hbl_id == id||c.cntr_mbl_id == id).ToListAsync();
+                .Where(c => c.cntr_hbl_id == id || c.cntr_mbl_id == id).ToListAsync();
 
             if (containers.Any())
             {
@@ -253,11 +252,11 @@ namespace Common.Lib
         public static async Task DeleteMemo(AppDbContext _context, int id)
         {
             context = _context;
-            
+
             var _Memo = await context.cargo_memo
                 .Where(c => c.memo_parent_id == id).ToListAsync();
 
-            if ( _Memo.Any())
+            if (_Memo.Any())
             {
                 context.cargo_memo.RemoveRange(_Memo);
             }

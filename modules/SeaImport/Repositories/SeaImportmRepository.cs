@@ -263,7 +263,6 @@ namespace SeaImport.Repositories
                             cntr_type_id = e.cntr_type_id,
                             cntr_type_name = e.cntrtype!.param_name,
                             cntr_sealno = e.cntr_sealno,
-                            cntr_movement = e.cntr_movement,
                             cntr_pieces = e.cntr_pieces,
                             cntr_packages_unit_id = e.cntr_packages_unit_id,
                             cntr_packages_unit_name = e.packunit!.param_name,
@@ -671,7 +670,6 @@ namespace SeaImport.Repositories
                     record.cntr_no = rec.cntr_no;
                     record.cntr_type_id = rec.cntr_type_id;
                     record.cntr_sealno = rec.cntr_sealno;
-                    record.cntr_movement = rec.cntr_movement;
                     record.cntr_pieces = rec.cntr_pieces;
                     record.cntr_packages_unit_id = rec.cntr_packages_unit_id;
                     record.cntr_teu = CommonLib.UpdateTeuValue(rec.cntr_type_name!);
@@ -759,6 +757,8 @@ namespace SeaImport.Repositories
         {
             try
             {
+                context.Database.BeginTransaction();
+
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
                 RetData.Add("id", id);
                 var _Record = await context.cargo_masterm
@@ -778,14 +778,18 @@ namespace SeaImport.Repositories
 
                     context.Remove(_Record);
                     context.SaveChanges();
+
+                    context.Database.CommitTransaction();
+                    
                     RetData.Add("status", true);
                     RetData.Add("message", "");
                 }
                 return RetData;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
-                throw new Exception(Ex.Message.ToString());
+                context.Database.RollbackTransaction();
+                throw;
             }
         }
 
@@ -901,7 +905,6 @@ namespace SeaImport.Repositories
                 cntr_no = record.cntr_no,
                 cntr_type_name = record.cntrtype?.param_name,
                 cntr_sealno = record.cntr_sealno,
-                cntr_movement = record.cntr_movement,
                 cntr_pieces = record.cntr_pieces,
                 cntr_packages_unit_name = record.packunit?.param_name,
                 cntr_cbm = record.cntr_cbm,
@@ -925,7 +928,6 @@ namespace SeaImport.Repositories
                 .TrackColumn("cntr_no", "Container No")
                 .TrackColumn("cntr_type_name", "Container Type Name")
                 .TrackColumn("cntr_sealno", "Seal No")
-                .TrackColumn("cntr_movement", "Movement")
                 .TrackColumn("cntr_pieces", "Pieces", "int")
                 .TrackColumn("cntr_packages_unit_name", "Packages Unit")
                 .TrackColumn("cntr_cbm", "CBM", "decimal")
