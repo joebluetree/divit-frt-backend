@@ -157,20 +157,26 @@ namespace UserAdmin.Repositories
             }
         }
 
-        public async Task<List<mast_fileupload_dto>> GetDetailsAsync(int id, string parent_type, string? files_status)
+        public async Task<List<mast_fileupload_dto>> GetDetailsAsync(int id, string parent_type, string? files_search)
         {
             // Base query
             var baseQuery = context.mast_fileupload
                 .Where(e => e.files_parent_id == id && e.files_parent_type == parent_type);
 
-            // If files_status is not "D", filter only active records
-            if (files_status != "D")
+            if (!Lib.IsBlank(files_search) && files_search!.ToUpper() != "NULL")
             {
-                baseQuery = baseQuery.Where(e => e.files_status == "N"); // Adjust "N" to match your active flag
+                var keyword = files_search.Trim().ToUpper(); // Convert search term to upper
+                baseQuery = baseQuery.Where(w =>
+                    (w.files_desc != null && w.files_desc.ToUpper().Contains(keyword)) ||
+                    (w.files_ref_no != null && w.files_ref_no.ToUpper().Contains(keyword)) ||
+                    (w.files_type != null && w.files_type.ToUpper().Contains(keyword))
+                );
             }
 
             // Now project to DTO
-            var query = from e in baseQuery.OrderBy(e => e.files_slno)
+            var query = from e in baseQuery
+                        .OrderBy(e => e.files_slno)
+                        .ThenBy(e => e.rec_created_date)
                         select new mast_fileupload_dto
                         {
                             files_id = e.files_id,
@@ -200,7 +206,6 @@ namespace UserAdmin.Repositories
             return record;
         }
 
-
         public async Task<mast_fileupload_dto?> GetDefaultDataAsync(int id, string parent_type)
         {
             try
@@ -219,7 +224,14 @@ namespace UserAdmin.Repositories
                     })
                     .FirstOrDefaultAsync();
 
-
+                if (Record == null)
+                {
+                    return new mast_fileupload_dto
+                    {
+                        files_parent_id = id,
+                        files_parent_type = parent_type,
+                    };
+                }
                 return Record;
             }
             catch (Exception Ex)
@@ -228,6 +240,35 @@ namespace UserAdmin.Repositories
             }
         }
 
+        public async Task<Dictionary<string, object>> GetDataListAsync(string data)
+        {
+            Dictionary<string, object> retData = new Dictionary<string, object>();
+
+            try
+            {
+                string subtable = data; 
+
+                if (string.IsNullOrEmpty(subtable))
+                    throw new Exception("Subtable parameter is required.");
+
+                var query = from rec in context.mast_param
+                            where rec.param_type!.ToUpper() == subtable
+                            select new
+                            {
+                                key = rec.param_code,
+                                value = rec.param_name
+                            };
+
+                var list = await query.OrderBy(x => x.value).ToListAsync();
+
+                retData["files_type"] = list;
+                return retData;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching data list", ex);
+            }
+        }
 
         public async Task<mast_fileupload_dto> SaveAsync(int id, string mode, mast_fileupload_dto record_dto)
         {
@@ -236,6 +277,7 @@ namespace UserAdmin.Repositories
                 log_date = DbLib.GetDateTime();
                 context.Database.BeginTransaction();
                 record_dto = await SaveParentAsync(id, mode, record_dto);
+                await CommonLib.SaveDocsSummary(this.context, record_dto.files_parent_id, record_dto.files_parent_type);
                 context.Database.CommitTransaction();
                 return record_dto;
             }
@@ -250,13 +292,14 @@ namespace UserAdmin.Repositories
                 throw;
             }
         }
+
         private Boolean AllValid(string mode, mast_fileupload_dto record_dto, ref string error)
         {
             Boolean bRet = true;
 
             string str = "";
-            if (Lib.IsBlank(record_dto.files_type))
-                str += "Document Type Cannot Be Blank!";
+            // if (Lib.IsBlank(record_dto.files_type))
+            //     str += "Document Type Cannot Be Blank!";
 
             if (str != "")
             {
@@ -326,8 +369,8 @@ namespace UserAdmin.Repositories
                 context.SaveChanges();
                 record_dto.files_id = Record.files_id;
                 record_dto.files_parent_id = Record.files_parent_id;
+                record_dto.files_parent_type = Record.files_parent_type;
                 record_dto.rec_version = Record.rec_version;
-                //Lib.AssignDates2DTO(id, mode, Record, record_dto);
                 record_dto.rec_created_by = Record.rec_created_by;
                 record_dto.rec_created_date = Lib.FormatDate(Record.rec_created_date, Lib.outputDateTimeFormat);
                 if (record_dto.files_id != 0)
@@ -352,9 +395,6 @@ namespace UserAdmin.Repositories
             {
                 if (files == null || files.Count == 0)
                     throw new Exception("No files uploaded");
-
-                if (Lib.IsBlank(record_dto.files_type))
-                    throw new Exception("Document Type Cannot be Blank");
 
                 DateTime? parsedDate = DbLib.GetDateTime();
                 if (parsedDate == null)
@@ -404,7 +444,6 @@ namespace UserAdmin.Repositories
                     if (record != null)
                     {
                         record.files_path = filePath;
-                        // record.files_type = Path.GetExtension(file.FileName);
                         record.files_size = (file.Length / 1024.0).ToString("F2") + " KB";
                         record.files_processed = "N";
                         record.rec_created_date = parsedDate.Value;
@@ -414,6 +453,7 @@ namespace UserAdmin.Repositories
                 }
 
                 await context.SaveChangesAsync();
+                await CommonLib.SaveDocsSummary(this.context, record_dto.files_parent_id, record_dto.files_parent_type);
                 return uploadedFiles;
             }
             catch (Exception Ex)
@@ -422,13 +462,17 @@ namespace UserAdmin.Repositories
             }
         }
 
-        public async Task<Dictionary<string, object>> GetDownloadFileAsync(int fileId)
+        //Service for download the files.
+        public async Task<FileDownloadResult_Dto> GetDownloadFileAsync(int files_id)
         {
-            var record = await context.mast_fileupload.FirstOrDefaultAsync(f => f.files_id == fileId);
-            if (record == null || string.IsNullOrEmpty(record.files_path) || !System.IO.File.Exists(record.files_path))
-            {
-                throw new FileNotFoundException("File not found.");
-            }
+
+            var record = await context.mast_fileupload.FirstOrDefaultAsync(x => x.files_id == files_id);
+
+            if (record == null || string.IsNullOrEmpty(record.files_path))
+                throw new FileNotFoundException("File record not found");
+
+            if (!System.IO.File.Exists(record.files_path))
+                throw new FileNotFoundException("Physical file not found");
 
             var memory = new MemoryStream();
             using (var stream = new FileStream(record.files_path, FileMode.Open, FileAccess.Read))
@@ -437,15 +481,22 @@ namespace UserAdmin.Repositories
             }
             memory.Position = 0;
 
-            var contentType = "application/octet-stream";
-            new FileExtensionContentTypeProvider().TryGetContentType(record.files_path, out contentType);
-
-            return new Dictionary<string, object>
+            return new FileDownloadResult_Dto
             {
-                { "FileStream", memory },
-                { "FileName", Path.GetFileName(record.files_path) },
-                { "ContentType", contentType! }
+                FileStream = memory,
+                ContentType = GetContentType(record.files_path),
+                FileName = Path.GetFileName(record.files_path)
             };
+        }
+
+        private string GetContentType(string path)
+        {
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(path, out var contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+            return contentType;
         }
 
         public int GetNextCfNo(int company_id, int? branch_id, int defaultCfNo)
@@ -457,6 +508,7 @@ namespace UserAdmin.Repositories
                 .Max() ?? 0;
             return cfNo == 0 ? defaultCfNo : cfNo + 1;
         }
+        //function for delete the fileuplads details of the table.
 
         public async Task<Dictionary<string, object>> DeleteDetailsAsync(int id, mast_fileupload_dto record_dto)
         {
@@ -479,8 +531,8 @@ namespace UserAdmin.Repositories
                     _Record.files_status = "D";
                     _Record.rec_deleted_by = record_dto.rec_deleted_by;
                     _Record.rec_deleted_date = DbLib.GetDateTime();
-                    // context.Remove(_Record);
                     await context.SaveChangesAsync();
+                    await CommonLib.SaveDocsSummary(this.context, record_dto.files_parent_id, record_dto.files_parent_type);
 
                     RetData.Add("status", true);
                     RetData.Add("message", "");
@@ -540,9 +592,6 @@ namespace UserAdmin.Repositories
                 files_type = old_record.files_type,
                 files_desc = old_record.files_desc,
                 files_ref_no = old_record.files_ref_no,
-                files_path = old_record.files_path,
-                files_size = old_record.files_size,
-                files_processed = old_record.files_processed,
 
             };
 
@@ -556,10 +605,6 @@ namespace UserAdmin.Repositories
                 .TrackColumn("files_type", "Doc Type")
                 .TrackColumn("files_desc", "Description")
                 .TrackColumn("files_ref_no", "Reference No")
-                .TrackColumn("files_path", "File Path")
-                .TrackColumn("files_size", "File Size")
-                .TrackColumn("files_processed", "Is Processed")
-
 
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();

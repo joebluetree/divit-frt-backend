@@ -58,7 +58,7 @@ namespace UserAdmin.Controllers
         {
             try
             {
-                var RetData = await mRepository.GetDefaultDataAsync(id,parent_type);
+                var RetData = await mRepository.GetDefaultDataAsync(id, parent_type);
                 return Ok(RetData);
             }
             catch (Exception Ex)
@@ -69,27 +69,12 @@ namespace UserAdmin.Controllers
 
         [HttpGet]
         [Route("GetDetailsAsync")]
-        public async Task<IActionResult> GetDetailsAsync(int id, string parent_type, string files_status)
+        public async Task<IActionResult> GetDetailsAsync(int id, string parent_type, string files_search)
         {
             try
             {
-                var RetData = await mRepository.GetDetailsAsync(id, parent_type, files_status);
+                var RetData = await mRepository.GetDetailsAsync(id, parent_type, files_search);
                 return Ok(RetData);
-            }
-            catch (Exception Ex)
-            {
-                return BadRequest(Lib.getErrorMessage(Ex));
-            }
-        }
-
-        [HttpPost]
-        [Route("UploadFiles")]
-        public async Task<IActionResult> UploadFilesAsync( mast_fileupload_dto record_dto, List<IFormFile> files)
-        {
-            try
-            {
-                var record = await mRepository.UploadFilesAsync(files , record_dto);
-                return Ok(record);
             }
             catch (Exception Ex)
             {
@@ -98,13 +83,47 @@ namespace UserAdmin.Controllers
         }
 
         [HttpGet]
-        [Route("DownloadFiles")]
-        public async Task<IActionResult> GetDownloadFileAsync(int id)
+        [Route("GetDataListAsync")]
+        public async Task<IActionResult> GetDataListAsync(string data)
         {
             try
             {
-                var RetData = await mRepository.GetDownloadFileAsync(id);
-                return Ok(RetData);
+                var result = await mRepository.GetDataListAsync(data);
+                return Ok(result);
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Lib.getErrorMessage(Ex));
+            }
+        }
+
+
+
+
+        [HttpPost]
+        [Route("UploadFiles")]
+        public async Task<IActionResult> UploadFilesAsync(mast_fileupload_dto record_dto, List<IFormFile> files)
+        {
+            try
+            {
+                var record = await mRepository.UploadFilesAsync(files, record_dto);
+                return Ok(record);
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Lib.getErrorMessage(Ex));
+            }
+        }
+
+
+        [HttpGet]
+        [Route("DownloadFiles")]
+        public async Task<IActionResult> GetDownloadFileAsync([FromQuery] int files_id)
+        {
+            try
+            {
+                var fileResult = await mRepository.GetDownloadFileAsync(files_id);
+                return File(fileResult.FileStream!, fileResult.ContentType!, fileResult.FileName);
             }
             catch (Exception Ex)
             {

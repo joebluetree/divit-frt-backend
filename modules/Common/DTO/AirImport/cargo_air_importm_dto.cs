@@ -49,6 +49,8 @@ public string? mbl_incoterm { get; set; }
 
 public string? mbl_stage_changed_date { get; set; }
 public string? mbl_an_sent_dt { get; set; }
+public int? rec_files_count { get; set; }
+public string? rec_files_attached { get; set; }
 
 public List<cargo_air_importh_dto>? air_import {get; set;}       
 

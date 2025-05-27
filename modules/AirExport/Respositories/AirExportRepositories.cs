@@ -235,6 +235,8 @@ namespace AirExport.Repositories
                     mbl_direct = e.mbl_direct,
                     mbl_vessel_name = e.mbl_vessel_name,
                     mbl_voyage = e.mbl_voyage,
+                    rec_files_count = e.rec_files_count,
+                    rec_files_attached = e.rec_files_attached,
 
                     rec_version = e.rec_version,
                     rec_branch_id = e.rec_branch_id,
