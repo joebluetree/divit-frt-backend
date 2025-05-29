@@ -227,6 +227,8 @@ namespace SeaImport.Repositories
                     mbl_devan_loc_add3 = e.mbl_devan_loc_add3,
                     mbl_devan_loc_add4 = e.mbl_devan_loc_add4,
 
+                    rec_files_count = e.rec_files_count,
+                    rec_files_attached = e.rec_files_attached,
                     rec_version = e.rec_version,
 
                     rec_created_by = e.rec_created_by,
