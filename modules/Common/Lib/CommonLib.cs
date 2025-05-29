@@ -273,6 +273,10 @@ namespace Common.Lib
             {
                 await UpdateCustomerDocCount(context, parent_id, parent_type);
             }
+            if (parent_type == "LCL"||parent_type == "FCL"||parent_type == "AIR")
+            {
+                await UpdateQtnmDocCount(context, parent_id, parent_type);
+            }
         }
 
         public static async Task UpdateOperationsDocCount(AppDbContext _context, int? parent_id, string? parent_type)
@@ -304,6 +308,24 @@ namespace Common.Lib
             var master_Record = context.mast_customerm
                 .FirstOrDefault(m => m.cust_id == parent_id && m.cust_row_type == parent_type);
 
+
+            if (master_Record != null)
+            {
+                master_Record.rec_files_count = FilesCount;
+                master_Record.rec_files_attached = "Y";
+                await context.SaveChangesAsync();
+            }
+        }
+        public static async Task UpdateQtnmDocCount(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+            int FilesCount = 0;
+            FilesCount = context.mast_fileupload
+                .Count(f => f.files_parent_id == parent_id && f.files_parent_type == parent_type && f.files_status == "N");
+
+            var master_Record = context.mark_qtnm
+                .Where(m => m.qtnm_id == parent_id && m.qtnm_type == parent_type)
+                .FirstOrDefault();
 
             if (master_Record != null)
             {

@@ -207,6 +207,8 @@ namespace SeaExport.Repositories
                     mbl_voyage = e.mbl_voyage,
                     mbl_book_slno = e.mbl_book_slno,
 
+                    rec_files_count = e.rec_files_count,
+                    rec_files_attached = e.rec_files_attached,
                     rec_version = e.rec_version,
 
                     rec_created_by = e.rec_created_by,
