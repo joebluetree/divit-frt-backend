@@ -95,6 +95,7 @@ namespace Database.Models.Masters
         public int? cust_branch_id { get; set; }
         public string? cust_protected { get; set; }
         public int? cust_cur_id { get; set; }
+        public string? rec_files_attached { get; set; }
 
         public Nullable<int> cust_parent_id { get; set; }
 

@@ -585,6 +585,7 @@ namespace Marketing.Repositories
         {
             try
             {
+                context.Database.BeginTransaction();
                 Dictionary<string, object> RetData = new Dictionary<string, object>();
                 RetData.Add("id", id);
                 var _Record = await context.mark_qtnm
@@ -607,6 +608,7 @@ namespace Marketing.Repositories
                     }
                     context.Remove(_Record);
                     context.SaveChanges();
+                    context.Database.CommitTransaction();
                     RetData.Add("status", true);
                     RetData.Add("message", "");
                 }
@@ -614,6 +616,7 @@ namespace Marketing.Repositories
             }
             catch (Exception Ex)
             {
+                context.Database.RollbackTransaction();
                 throw new Exception(Ex.Message.ToString());
             }
         }
