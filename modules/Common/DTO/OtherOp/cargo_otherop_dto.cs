@@ -89,6 +89,8 @@ namespace Common.DTO.OtherOp
         public decimal? oth_40hq { get; set; } = 0;
         public decimal? oth_45 { get; set; } = 0;
         public int? oth_container_tot { get; set; } = 0;
+        public int? rec_files_count { get; set; }
+        public string? rec_files_attached { get; set; }
         public List<cargo_container_dto>? otherop_cntr { get; set; }
         public cargo_otherop_dto? otherop_house { get; set; }
 
