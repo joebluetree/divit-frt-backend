@@ -268,6 +268,9 @@ namespace Masters.Repositories
                     cust_row_type = e.customer!.cust_row_type,
                     cust_is_parent = e.customer.cust_is_parent,
 
+                    rec_files_count = e.rec_files_count,
+                    rec_files_attached =e.rec_files_attached,
+
                     rec_version = e.rec_version,
 
                     rec_created_by = e.rec_created_by,

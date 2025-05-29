@@ -127,6 +127,7 @@ namespace UserAdmin.Repositories
                 {
                     files_id = e.files_id,
                     files_parent_id = e.files_parent_id,
+                    files_parent_type = e.files_parent_type,
                     files_slno = e.files_slno,
                     files_type = e.files_type,
                     files_desc = e.files_desc,
@@ -246,7 +247,7 @@ namespace UserAdmin.Repositories
 
             try
             {
-                string subtable = data; 
+                string subtable = data;
 
                 if (string.IsNullOrEmpty(subtable))
                     throw new Exception("Subtable parameter is required.");
@@ -298,9 +299,6 @@ namespace UserAdmin.Repositories
             Boolean bRet = true;
 
             string str = "";
-            // if (Lib.IsBlank(record_dto.files_type))
-            //     str += "Document Type Cannot Be Blank!";
-
             if (str != "")
             {
                 error = error + str;
@@ -337,6 +335,7 @@ namespace UserAdmin.Repositories
                     Record.files_parent_id = record_dto.files_parent_id;
                     Record.files_slno = iNextNo;
                     Record.files_parent_type = record_dto.files_parent_type;
+                    Record.files_status = record_dto.files_status;
                 }
                 else
                 {
@@ -354,15 +353,16 @@ namespace UserAdmin.Repositories
                 }
                 if (mode == "edit")
                     await logHistory(Record, record_dto);
-
+                if (Lib.IsBlank(record_dto.files_type))
+                {
+                    record_dto.files_type = "OTHERS";
+                }
                 Record.files_type = record_dto.files_type;
                 Record.files_desc = record_dto.files_desc;
                 Record.files_ref_no = record_dto.files_ref_no;
                 Record.files_path = record_dto.files_path;
                 Record.files_sub_id = record_dto.files_sub_id;
                 Record.files_size = record_dto.files_size;
-                Record.files_processed = record_dto.files_processed;
-                Record.files_status = record_dto.files_status;
 
                 if (mode == "add")
                     await context.mast_fileupload.AddAsync(Record);
