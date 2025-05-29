@@ -118,6 +118,7 @@ CREATE TABLE IF NOT EXISTS cargo_masterm (
     mbl_carrier_an_recd_dt date NULL,
     mbl_an_sent_dt date NULL,
     mbl_stage_changed_date date NULL,
+    rec_files_count int4 NULL,
     rec_year int4 NULL,     
     rec_version int4 DEFAULT 1 NOT NULL,
     rec_locked text NULL,

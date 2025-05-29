@@ -46,6 +46,8 @@ public string? mbl_3rdparty { get; set; }
 public string? mbl_direct { get; set; }
 public string? mbl_vessel_name { get; set; }
 public string? mbl_voyage { get; set; }
+public int? rec_files_count { get; set; }
+public string? rec_files_attached { get; set; }
 public List<cargo_air_exporth_dto>? air_export {get; set;}       
 
 }

@@ -262,6 +262,56 @@ namespace Common.Lib
             }
         }
 
+        public static async Task SaveDocsSummary(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+            if (parent_type == "AIR IMPORT" || parent_type == "AIR EXPORT" || parent_type == "OTHERS" || parent_type == "SEA EXPORT" || parent_type == "SEA IMPORT")
+            {
+                await UpdateOperationsDocCount(context, parent_id, parent_type);
+            }
+            if (parent_type == "CUSTOMER")
+            {
+                await UpdateCustomerDocCount(context, parent_id, parent_type);
+            }
+        }
+
+        public static async Task UpdateOperationsDocCount(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+            int FilesCount = 0;
+            FilesCount = context.mast_fileupload
+                .Count(f => f.files_parent_id == parent_id && f.files_parent_type == parent_type && f.files_status == "N");
+
+            var master_Record = context.cargo_masterm
+                .Where(m => m.mbl_id == parent_id && m.mbl_mode == parent_type)
+                .FirstOrDefault();
+
+            if (master_Record != null)
+            {
+                master_Record.rec_files_count = FilesCount;
+                master_Record.rec_files_attached = "Y";
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public static async Task UpdateCustomerDocCount(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+            int FilesCount = 0;
+            FilesCount = context.mast_fileupload
+                .Count(f => f.files_parent_id == parent_id && f.files_parent_type == parent_type && f.files_status == "N");
+
+            var master_Record = context.mast_customerm
+                .FirstOrDefault(m => m.cust_id == parent_id && m.cust_row_type == parent_type);
+
+
+            if (master_Record != null)
+            {
+                master_Record.rec_files_count = FilesCount;
+                master_Record.rec_files_attached = "Y";
+                await context.SaveChangesAsync();
+            }
+        }
 
     }
 

@@ -238,6 +238,8 @@ namespace AirImport.Repositories
 
                     mbl_an_sent_dt = Lib.FormatDate(e.mbl_an_sent_dt, Lib.outputDateFormat),
                     mbl_stage_changed_date = Lib.FormatDate(e.mbl_stage_changed_date, Lib.outputDateTimeFormat),
+                    rec_files_count = e.rec_files_count,
+                    rec_files_attached = e.rec_files_attached,
 
                     rec_version = e.rec_version,
                     rec_branch_id = e.rec_branch_id,
