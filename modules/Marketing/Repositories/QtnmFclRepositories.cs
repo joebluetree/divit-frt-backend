@@ -187,6 +187,8 @@ namespace Marketing.Repositories
                     qtnm_salesman_name = e.salesman!.param_name,
                     qtnm_move_type = e.qtnm_move_type,
                     qtnm_commodity = e.qtnm_commodity,
+                    rec_files_attached = e.rec_files_attached,
+                    rec_files_count = e.rec_files_count,
 
                     rec_version = e.rec_version,
                     rec_branch_id = e.rec_branch_id,

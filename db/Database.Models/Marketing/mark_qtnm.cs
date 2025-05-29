@@ -47,6 +47,8 @@ namespace Database.Models.Marketing
         public string? qtnm_trans_time { get; set; }
         public string? qtnm_routing { get; set; }
         public decimal qtnm_amt { get; set; }        
+        public string? rec_files_attached { get; set; }
+        public int? rec_files_count { get; set; } 
         
         [ForeignKey("qtnm_to_id")]
         public mast_customerm? customer { get; set; } 
