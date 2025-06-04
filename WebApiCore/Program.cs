@@ -85,6 +85,7 @@ builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
 builder.Services.AddScoped<IMailServermRepository, MailServermRepository>();
 builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
 builder.Services.AddScoped<IFileUploadmRepository, FileUploadmRepository>();
+builder.Services.AddScoped<IGenRemarkmRepository, GenRemarkmRepository>();
 
 //Masters
 builder.Services.AddScoped<IParamRepository, ParamRepository>();

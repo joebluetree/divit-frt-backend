@@ -34,7 +34,7 @@ namespace Marketing.Repositories
             this.context = _context;
             this.auditLog = _auditLog;
         }
-        
+
         public async Task<Dictionary<string, object>> GetListAsync(Dictionary<string, object> data)
         {
             try
@@ -202,6 +202,7 @@ namespace Marketing.Repositories
                     throw new Exception("No Qtn Found");
 
                 Record.qtnd_fcl = await GetDetailsAsync(Record.qtnm_id);
+                Record.remk_remarks = await CommonLib.GetRemarksDetailsAsync(context, Record.qtnm_id, Record.qtnm_type);
 
                 return Record;
             }
@@ -264,7 +265,9 @@ namespace Marketing.Repositories
                 context.Database.BeginTransaction();
                 mark_qtnm_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await SaveDetailsAsync(_Record.qtnm_id, mode, record_dto);
+                _Record = await CommonLib.SaveMarketingRemarksAsync(this.context, _Record.qtnm_id, _Record.qtnm_type, mode, record_dto);
                 _Record.qtnd_fcl = await GetDetailsAsync(_Record.qtnm_id);
+                _Record.remk_remarks = await CommonLib.GetRemarksDetailsAsync(this.context,_Record.qtnm_id, _Record.qtnm_type);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -309,7 +312,7 @@ namespace Marketing.Repositories
                     name = "POL Cannot Be Blank!";
             }
 
-            if(record_dto.qtnd_fcl == null || record_dto.qtnd_fcl.Count == 0)
+            if (record_dto.qtnd_fcl == null || record_dto.qtnd_fcl.Count == 0)
             {
                 str += "No data found in FCL Details";
             }
@@ -468,7 +471,7 @@ namespace Marketing.Repositories
                     .Where(w => w.qtnd_qtnm_id == id)
                     .ToListAsync();
 
-                if(mode == "edit")
+                if (mode == "edit")
                     await logHistoryDetail(records, record_dto);
 
                 int nextorder = 1;
@@ -545,7 +548,7 @@ namespace Marketing.Repositories
                 .DefaultIfEmpty()
                 .Max();
 
-            CfNo = CfNo == 0 ? DefaultCfNo : CfNo + 1; 
+            CfNo = CfNo == 0 ? DefaultCfNo : CfNo + 1;
             return CfNo;
         }
 
@@ -674,12 +677,12 @@ namespace Marketing.Repositories
                 .TrackColumn("qtnd_cntr_type", "Container Type")
                 .TrackColumn("qtnd_etd", "ETD")
                 .TrackColumn("qtnd_cutoff", "Cutoff")
-                .TrackColumn("qtnd_of", "OF","decimal")
-                .TrackColumn("qtnd_pss", "PSS","decimal")
-                .TrackColumn("qtnd_baf", "BAF","decimal")
-                .TrackColumn("qtnd_isps", "ISPS","decimal")
-                .TrackColumn("qtnd_haulage", "Haulage","decimal")
-                .TrackColumn("qtnd_ifs", "IFS","decimal")
+                .TrackColumn("qtnd_of", "OF", "decimal")
+                .TrackColumn("qtnd_pss", "PSS", "decimal")
+                .TrackColumn("qtnd_baf", "BAF", "decimal")
+                .TrackColumn("qtnd_isps", "ISPS", "decimal")
+                .TrackColumn("qtnd_haulage", "Haulage", "decimal")
+                .TrackColumn("qtnd_ifs", "IFS", "decimal")
                 .TrackColumn("qtnd_tot_amt", "Total Amount", "decimal")
                 .SetRecords(old_records_dto, record_dto.qtnd_fcl!)
                 .LogChangesAsync();
