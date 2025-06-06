@@ -263,6 +263,8 @@ namespace SeaImport.Repositories
                     hbl_pickup_date = Lib.FormatDate(e.hbl_pickup_date, Lib.outputDateFormat),
                     hbl_empty_ret_date = Lib.FormatDate(e.hbl_empty_ret_date, Lib.outputDateFormat),
                     hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateFormat),
+                    rec_memo_count = e.rec_memo_count,
+                    rec_memo_attached = e.rec_memo_attached,
                     rec_version = e.rec_version,
 
                     rec_created_by = e.rec_created_by,

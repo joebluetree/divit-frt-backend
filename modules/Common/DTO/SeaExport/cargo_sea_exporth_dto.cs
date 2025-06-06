@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 //Name : Sourav V
 //Created Date : 03/01/2025
 //Remark : this file defines data objects(variables) which transfer data from frontend to backend and vice-versa
+//version : 2 - memo_count and memo attached added
 
 namespace Common.DTO.SeaExport
 {
@@ -12,10 +13,10 @@ namespace Common.DTO.SeaExport
     {
         public int hbl_id { get; set; } = 0;
         public int hbl_mbl_id { get; set; } = 0;//fk
-        public string? hbl_mbl_refno { get; set; }= "";
-        public string? hbl_mbl_no { get; set; }= "";
-        public string? hbl_mbl_pol_etd { get; set; }= "";
-        public string? hbl_mbl_pod_eta { get; set; }= "";
+        public string? hbl_mbl_refno { get; set; } = "";
+        public string? hbl_mbl_no { get; set; } = "";
+        public string? hbl_mbl_pol_etd { get; set; } = "";
+        public string? hbl_mbl_pod_eta { get; set; } = "";
         public int hbl_cfno { get; set; } = 0;
         public string? hbl_houseno { get; set; } = "";
         public int? hbl_shipment_stage_id { get; set; } = 0;
@@ -55,7 +56,7 @@ namespace Common.DTO.SeaExport
         public string? hbl_consigned_to4 { get; set; } = "";
         public string? hbl_consigned_to5 { get; set; } = "";
         public string? hbl_place_delivery { get; set; } = "";
-        public string? hbl_frt_status_name { get; set;} = "";
+        public string? hbl_frt_status_name { get; set; } = "";
         public int? hbl_uom_id { get; set; } = 0;
         public string? hbl_uom_name { get; set; } = "";
         public int? hbl_pcs { get; set; } = 0;
@@ -109,11 +110,9 @@ namespace Common.DTO.SeaExport
         public int? hbl_format_id { get; set; } = 0;
         public string? hbl_format_name { get; set; } = "";
         public string? hbl_issued_place { get; set; } = "";
-        public int? hbl_draft_format_id { get; set;} = 0;
+        public int? hbl_draft_format_id { get; set; } = 0;
         public string? hbl_draft_format_name { get; set; } = "";
         public string? hbl_delivery_date { get; set; } = "";
-
-        
 
         // public int? desc_ctr { get; set; } = 0;
         // public int desc_id1 { get; set; } = 0;
@@ -174,7 +173,7 @@ namespace Common.DTO.SeaExport
         public int desc_parent_id { get; set; } = 0;
         public string? desc_parent_type { get; set; } = "";
         public List<cargo_container_dto>? house_cntr { get; set; }
-        
+
         public cargo_desc_dto? marks1 { get; set; }
         public cargo_desc_dto? marks2 { get; set; }
         public cargo_desc_dto? marks3 { get; set; }
@@ -192,8 +191,6 @@ namespace Common.DTO.SeaExport
         public cargo_desc_dto? marks15 { get; set; }
         public cargo_desc_dto? marks16 { get; set; }
         public cargo_desc_dto? marks17 { get; set; }
-        
-        
     }
 }
 

@@ -209,6 +209,8 @@ namespace SeaExport.Repositories
 
                     rec_files_count = e.rec_files_count,
                     rec_files_attached = e.rec_files_attached,
+                    rec_memo_count = e.rec_memo_count,
+                    rec_memo_attached = e.rec_memo_attached,
                     rec_version = e.rec_version,
 
                     rec_created_by = e.rec_created_by,
@@ -295,6 +297,30 @@ namespace SeaExport.Repositories
 
             return records;
         }
+            public async Task<cargo_sea_exportm_dto> GetDefaultData()
+            {
+                try
+                {
+                    IQueryable<mast_param> query = context.mast_param;
+
+                    query = query.Where(f => f.param_type == "SHIPSTAGE OE" && f.param_name == "NIL");
+
+                    var Record = await query.Select(e => new cargo_sea_exportm_dto
+                    {
+                        mbl_shipment_stage_id = e.param_id,
+                        mbl_shipment_stage_name = e.param_name,
+                    }).FirstOrDefaultAsync();
+
+                    if (Record == null)
+                        throw new Exception("Shipment Stage 'NIL' not found.");
+
+                    return Record;
+                }
+                catch (Exception Ex)
+                {
+                    throw new Exception(Ex.Message.ToString());
+                }
+            }
 
         public async Task<cargo_sea_exportm_dto> SaveAsync(int id, string mode, cargo_sea_exportm_dto record_dto)
         {

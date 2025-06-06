@@ -7,6 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using Microsoft.VisualBasic;
 using System.Text.RegularExpressions;
+using Common.DTO.UserAdmin;
+using Database.Models.UserAdmin;
+using Common.DTO.Marketing;
 
 //Name : Sourav V
 //Created Date : 29/01/2025
@@ -273,10 +276,15 @@ namespace Common.Lib
             {
                 await UpdateCustomerDocCount(context, parent_id, parent_type);
             }
-            if (parent_type == "LCL"||parent_type == "FCL"||parent_type == "AIR")
+            if (parent_type == "LCL" || parent_type == "FCL" || parent_type == "AIR")
             {
                 await UpdateQtnmDocCount(context, parent_id, parent_type);
             }
+            if (IsMemoType(parent_type!))
+            {
+                await UpdateMemoDocCount(context, parent_id, parent_type);
+            }
+
         }
 
         public static async Task UpdateOperationsDocCount(AppDbContext _context, int? parent_id, string? parent_type)
@@ -332,6 +340,173 @@ namespace Common.Lib
                 master_Record.rec_files_count = FilesCount;
                 master_Record.rec_files_attached = "Y";
                 await context.SaveChangesAsync();
+            }
+        }
+        public static async Task UpdateMemoDocCount(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+            int FilesCount = 0;
+            FilesCount = context.mast_fileupload
+                .Count(f => f.files_parent_id == parent_id && f.files_parent_type == parent_type && f.files_status == "N");
+
+            var master_Record = context.cargo_memo
+                .FirstOrDefault(m => m.memo_id == parent_id && m.memo_parent_type == parent_type);
+
+
+            if (master_Record != null)
+            {
+                // master_Record.rec_files_count = FilesCount;
+                master_Record.rec_files_attached = "Y";
+                await context.SaveChangesAsync();
+            }
+        }
+        public static async Task SaveMemoSummary(AppDbContext context, int? parent_id, string? parent_type)
+        {
+            int memoCount = context.cargo_memo
+                .Count(f => f.memo_parent_id == parent_id && f.memo_parent_type == parent_type);
+
+
+            string? Memo_type = GetMemoType(parent_type);
+
+            // Determine where to save the memo count and mapped type
+            if (parent_type == "SEAIMP-CNTR-MEMO" || parent_type == "AIRIMP-CNTR-MEMO" || parent_type == "SEAEXP-CNTR-MEMO" || parent_type == "OTH-CNTR-MEMO")
+            {
+
+                var masterRecord = context.cargo_masterm
+                    .FirstOrDefault(m => m.mbl_id == parent_id && m.mbl_mode == Memo_type);
+
+                if (masterRecord != null)
+                {
+                    masterRecord.rec_memo_count = memoCount;
+                    masterRecord.rec_memo_attached = (memoCount > 0) ? "Y" : "N";
+                    await context.SaveChangesAsync();
+                }
+            }
+            if (parent_type == "SEAIMP-SHIP-MEMO" || parent_type == "AIRIMP-SHIP-MEMO")
+            {
+                var houseRecord = context.cargo_housem
+                    .FirstOrDefault(h => h.hbl_id == parent_id && h.hbl_mode == Memo_type);
+
+                if (houseRecord != null)
+                {
+                    houseRecord.rec_memo_count = memoCount;
+                    houseRecord.rec_memo_attached = (memoCount > 0) ? "Y" : "N";
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
+        private static string? GetMemoType(string? parent_type)
+        {
+            string? result = null;
+
+            if (parent_type == "SEAIMP-CNTR-MEMO" || parent_type == "SEAIMP-SHIP-MEMO")
+                result = "SEA IMPORT";
+            if (parent_type == "AIRIMP-CNTR-MEMO" || parent_type == "AIRIMP-SHIP-MEMO")
+                result = "AIR IMPORT";
+            if (parent_type == "SEAEXP-CNTR-MEMO")
+                result = "SEA EXPORT";
+            if (parent_type == "OTH-CNTR-MEMO")
+                result = "OTHERS";
+
+            return result;
+        }
+        private static bool IsMemoType(string parentType)
+        {
+            var memoTypes = new List<string>
+            {
+                "OTH-CNTR-MEMO",
+                "SEAIMP-CNTR-MEMO",
+                "SEAIMP-SHIP-MEMO",
+                "AIREXP-CNTR-MEMO",
+                "SEAEXP-CNTR-MEMO",
+                "AIRIMP-CNTR-MEMO",
+                "AIRIMP-SHIP-MEMO",
+            };
+
+            return memoTypes.Contains(parentType);
+        }
+        public static async Task<List<gen_remarkm_dto>> GetRemarksDetailsAsync(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+            var query = from e in context.gen_remarkm
+                        .Where(e => e.remk_parent_id == parent_id && e.remk_parent_type == parent_type)
+                        .OrderBy(o => o.remk_order)
+                        select (new gen_remarkm_dto
+                        {
+                            remk_id = e.remk_id,
+                            remk_parent_id = e.remk_parent_id,
+                            remk_parent_type = e.remk_parent_type,
+                            remk_desc = e.remk_desc,
+                            remk_order = e.remk_order,
+
+                            rec_company_id = e.rec_company_id,
+                            rec_branch_id = e.rec_branch_id,
+                            rec_created_by = e.rec_created_by,
+                            rec_created_date = Database.Lib.Lib.FormatDate(e.rec_created_date, Database.Lib.Lib.outputDateTimeFormat),
+                            rec_edited_by = e.rec_edited_by,
+                            rec_edited_date = Database.Lib.Lib.FormatDate(e.rec_edited_date, Database.Lib.Lib.outputDateTimeFormat),
+                        });
+            var records = await query.ToListAsync();
+            return records;
+        }
+
+        public static async Task<mark_qtnm_dto> SaveMarketingRemarksAsync(AppDbContext _context, int? id, string? parent_type, string mode, mark_qtnm_dto record_dto)
+        {
+            context = _context;
+            gen_remarkm? record;
+            List<gen_remarkm_dto> records_dto;
+            List<gen_remarkm> records;
+            try
+            {
+                records_dto = record_dto.remk_remarks!;
+                records = await context.gen_remarkm
+                    .Where(w => w.remk_parent_id == id && w.remk_parent_type == parent_type)
+                    .ToListAsync();
+                int nextorder = 1;
+
+                // if (mode == "edit")
+                //     await logHistoryDetail(records, record_dto);
+
+
+                foreach (var existing_record in records)
+                {
+                    var rec = records_dto.Find(f => f.remk_id == existing_record.remk_id);
+                    if (rec == null)
+                        context.gen_remarkm.Remove(existing_record);
+                }
+
+                //Add or Edit Records 
+                foreach (var rec in records_dto)
+                {
+                    if (rec.remk_id == 0)
+                    {
+                        record = new gen_remarkm();
+                        record.rec_company_id = record_dto.rec_company_id;
+                        record.rec_branch_id = record_dto.rec_branch_id;
+                        record.rec_created_by = record_dto.rec_created_by;
+                        record.rec_created_date = DbLib.GetDateTime();
+                        record.remk_parent_id = id;
+                        record.remk_parent_type = parent_type;
+                    }
+                    else
+                    {
+                        record = records.Find(f => f.remk_id == rec.remk_id);
+                        if (record == null)
+                            throw new Exception("Detail Record Not Found " + rec.remk_id.ToString());
+                        record.rec_edited_by = record_dto.rec_created_by;
+                        record.rec_edited_date = DbLib.GetDateTime();
+                    }
+                    record.remk_desc = rec.remk_desc;
+                    record.remk_order = nextorder++;
+                    if (rec.remk_id == 0)
+                        await context.gen_remarkm.AddAsync(record);
+                }
+                context.SaveChanges();
+                return record_dto;
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
             }
         }
 

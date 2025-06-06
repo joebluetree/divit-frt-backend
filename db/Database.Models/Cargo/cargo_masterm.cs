@@ -131,6 +131,8 @@ namespace Database.Models.Cargo
         public int? mbl_zero_wt { get; set; }
         public string? mbl_loss_approved { get; set; }
         public int? rec_files_count { get; set; }
+        public string? rec_memo_attached { get; set; }
+        public int? rec_memo_count { get; set; }
 
         [ConcurrencyCheck]
         public int rec_version { get; set; }

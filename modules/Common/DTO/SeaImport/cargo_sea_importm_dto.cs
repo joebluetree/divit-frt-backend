@@ -79,6 +79,8 @@ namespace Common.DTO.SeaImport
         public decimal? mbl_cbm_tot { get; set; } = 0;
         public int? rec_files_count { get; set; }
         public string? rec_files_attached { get; set; }
+        public int? rec_memo_count { get; set; }
+        public string? rec_memo_attached { get; set; }        
         public List<cargo_container_dto>? master_cntr { get; set; }
         public List<cargo_sea_importh_dto>? master_house { get; set; }
 

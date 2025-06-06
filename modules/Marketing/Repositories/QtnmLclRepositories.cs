@@ -638,7 +638,7 @@ namespace Marketing.Repositories
                 qtnm_date = Lib.FormatDate(old_record.qtnm_date,Lib.outputDateFormat),
                 qtnm_quot_by = old_record.qtnm_quot_by,
                 qtnm_valid_date = Lib.FormatDate(old_record.qtnm_valid_date,Lib.outputDateFormat),
-                qtnm_salesman_name = old_record.salesman!.param_name,
+                qtnm_salesman_name = old_record.salesman?.param_name,
                 qtnm_move_type = old_record.qtnm_move_type,
                 qtnm_commodity = old_record.qtnm_commodity,
                 qtnm_package = old_record.qtnm_package,
