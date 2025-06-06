@@ -241,6 +241,7 @@ namespace Marketing.Repositories
                     throw new Exception("No Qtn Found");
 
                 Record.qtnd_lcl = await GetDetailsAsync(Record.qtnm_id);
+                Record.remk_remarks = await CommonLib.GetRemarksDetailsAsync(context, Record.qtnm_id, Record.qtnm_type);
 
                 return Record;
             }
@@ -288,7 +289,9 @@ namespace Marketing.Repositories
                 context.Database.BeginTransaction();
                 mark_qtnm_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await SaveDetailsAsync(_Record.qtnm_id, mode, _Record);
+                _Record = await CommonLib.SaveMarketingRemarksAsync(this.context, _Record.qtnm_id, _Record.qtnm_type, mode, record_dto);
                 _Record.qtnd_lcl = await GetDetailsAsync(_Record.qtnm_id);
+                _Record.remk_remarks = await CommonLib.GetRemarksDetailsAsync(this.context,_Record.qtnm_id, _Record.qtnm_type);
                 context.Database.CommitTransaction();
                 return _Record;
             }
