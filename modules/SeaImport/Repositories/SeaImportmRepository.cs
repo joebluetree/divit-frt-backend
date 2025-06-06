@@ -229,6 +229,8 @@ namespace SeaImport.Repositories
 
                     rec_files_count = e.rec_files_count,
                     rec_files_attached = e.rec_files_attached,
+                    rec_memo_count = e.rec_memo_count,
+                    rec_memo_attached = e.rec_memo_attached,
                     rec_version = e.rec_version,
 
                     rec_created_by = e.rec_created_by,
@@ -319,6 +321,30 @@ namespace SeaImport.Repositories
 
             return records;
         }
+        public async Task<cargo_sea_importm_dto> GetDefaultData()
+        {
+            try
+            {
+                IQueryable<mast_param> query = context.mast_param;
+
+                query = query.Where(f => f.param_type == "SHIPSTAGE OI" && f.param_name == "NIL");
+
+                var Record = await query.Select(e => new cargo_sea_importm_dto
+                {
+                    mbl_shipment_stage_id = e.param_id,
+                    mbl_shipment_stage_name = e.param_name,
+                }).FirstOrDefaultAsync();
+
+                if (Record == null)
+                    throw new Exception("Shipment Stage 'NIL' not found.");
+
+                return Record;
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
+            }
+        }
         // to get cbm total from container table
         public decimal? GetCbmTotal(cargo_sea_importm_dto record_dto)
         {
@@ -395,6 +421,11 @@ namespace SeaImport.Repositories
                 if (Lib.IsBlank(record_dto.mbl_pod_eta))
                     str += "ETA Cannot Be Blank!";
             }
+            if (!Lib.IsBlank(record_dto.mbl_ombl_sent_on))
+            {
+                if (Lib.IsBlank(record_dto.mbl_ombl_sent_ampm))
+                    str += "OMBL Sent Time Cannot Be Blank!";
+            }                
             if (Lib.IsBlank(record_dto.mbl_country_name))
                 str += "Dest.Country Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_vessel_name))
@@ -409,7 +440,7 @@ namespace SeaImport.Repositories
                     cntr_no = $"Invalid Container Number: {rec.cntr_no}";
                 if (Lib.IsBlank(rec.cntr_no))
                     cntr_no = "Cntr No Cannot Be Blank!";
-                if (Lib.IsBlank(rec.cntr_packages_unit_name))
+                if (Lib.IsBlank(rec.cntr_packages_unit_name))   
                     unit = "Unit Cannot Be Blank";
             }
 

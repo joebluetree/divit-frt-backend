@@ -128,7 +128,7 @@ namespace CommonShipment.Repositories
                     memo_remarks_code = e.remarks!.param_code,
                     memo_remarks_name = e.memo_remarks_name,
                     memo_date = Lib.FormatDate(e.memo_date, Lib.outputDateTimeFormat),
-
+                    rec_files_attached = e.rec_files_attached,
                     rec_version = e.rec_version,
 
                     rec_created_by = e.rec_created_by,
@@ -163,6 +163,7 @@ namespace CommonShipment.Repositories
                                 memo_remarks_id = e.memo_remarks_id,
                                 memo_remarks_code = e.remarks!.param_code,
                                 memo_remarks_name = e.memo_remarks_name,
+                                rec_files_attached = e.rec_files_attached,
                                 rec_created_by = e.rec_created_by,
                                 rec_branch_id = e.rec_branch_id,
                                 rec_company_id = e.rec_company_id,
@@ -199,6 +200,7 @@ namespace CommonShipment.Repositories
 
                 context.Database.BeginTransaction();
                 cargo_memo_dto _Record = await SaveParentAsync(id, mode, record_dto);
+                await CommonLib.SaveMemoSummary(this.context, record_dto.memo_parent_id, record_dto.memo_parent_type);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -312,7 +314,7 @@ namespace CommonShipment.Repositories
                 {
                     context.Remove(_Record);
                     context.SaveChanges();
-             
+                    await CommonLib.SaveMemoSummary(this.context, _Record.memo_parent_id, _Record.memo_parent_type);
                     context.Database.CommitTransaction();             
              
                     RetData.Add("status", true);

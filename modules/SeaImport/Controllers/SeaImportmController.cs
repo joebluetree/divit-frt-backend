@@ -49,6 +49,21 @@ namespace SeaImport.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetDefaultData")]
+        public async Task<IActionResult> GetDefaultData()
+        {
+            try
+            {
+                var RetData = await mRepository.GetDefaultData();
+                return Ok(RetData);
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Lib.getErrorMessage(Ex));
+            }
+        }
+        
         [HttpPost]
         [Route("SaveAsync")]
         public async Task<IActionResult> SaveAsync(int id, string mode, [FromBody] cargo_sea_importm_dto rec)

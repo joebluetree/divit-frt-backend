@@ -152,7 +152,8 @@ namespace Common.DTO.SeaImport
         public cargo_desc_dto? marks15 { get; set; }
         public cargo_desc_dto? marks16 { get; set; }
         public cargo_desc_dto? marks17 { get; set; }
-        
+        public int? rec_memo_count { get; set; }
+        public string? rec_memo_attached { get; set; }        
         
     }
 }
