@@ -10,6 +10,9 @@ CREATE TABLE IF NOT EXISTS mast_fileUpload (
     files_sub_id INT4 NULL,
     files_size VARCHAR(50) NULL,
     files_processed VARCHAR(10) NULL,
+    files_status VARCHAR(10) NULL,
+    rec_deleted_by VARCHAR(50) NULL,
+    rec_deleted_date TIMESTAMPTZ NULL,
 
     rec_version INT4 DEFAULT 1 NOT NULL,
     rec_locked VARCHAR(50) NULL,
@@ -26,12 +29,12 @@ CREATE TABLE IF NOT EXISTS mast_fileUpload (
 DO $$
 BEGIN
 
-    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_slip_rec_company_id') THEN
-        CREATE INDEX "IX_cargo_slip_rec_company_id" ON cargo_slip USING btree (rec_company_id);
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_fileUpload_rec_company_id') THEN
+        CREATE INDEX "IX_mast_fileUpload_rec_company_id" ON mast_fileUpload USING btree (rec_company_id);
     END IF;
 
-    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_cargo_slip_rec_branch_id') THEN
-        CREATE INDEX "IX_cargo_slip_rec_branch_id" ON cargo_slip USING btree (rec_branch_id);
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_fileUpload_rec_branch_id') THEN
+        CREATE INDEX "IX_mast_fileUpload_rec_branch_id" ON mast_fileUpload USING btree (rec_branch_id);
     END IF;
 
 END $$;

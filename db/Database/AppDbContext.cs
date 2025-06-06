@@ -28,6 +28,7 @@ namespace Database
         public DbSet<mast_settings> mast_settings { get; set; } = null!;
         public DbSet<mast_mail_serverm> mast_mail_serverm { get; set; } = null!;
         public DbSet<mast_fileupload> mast_fileupload { get; set; } = null!;
+        public DbSet<gen_remarkm> gen_remarkm { get; set; } = null!;
 
         //Masters
         public DbSet<mast_param> mast_param { get; set; } = null!;

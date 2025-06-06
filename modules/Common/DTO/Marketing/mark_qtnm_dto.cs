@@ -1,3 +1,4 @@
+using Common.DTO.UserAdmin;
 using Common.UserAdmin.DTO;
 using Database.Models.BaseTables;
 using Database.Models.Marketing;
@@ -61,7 +62,7 @@ namespace Common.DTO.Marketing
         public int? rec_files_count { get; set; }
         public string? rec_files_attached { get; set; }
         public List<mark_qtnd_fcl_dto>? qtnd_fcl {get; set;}             
-
+        public List<gen_remarkm_dto>? remk_remarks {get; set;}
 
         public List<mark_qtnd_lcl_dto>? qtnd_lcl {get; set;} 
         public List<mark_qtnd_air_dto>? qtnd_air {get; set;} 
