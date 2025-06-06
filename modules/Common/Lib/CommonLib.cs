@@ -10,7 +10,6 @@ using System.Text.RegularExpressions;
 using Common.DTO.UserAdmin;
 using Database.Models.UserAdmin;
 using Common.DTO.Marketing;
-using Npgsql.Replication;
 
 //Name : Sourav V
 //Created Date : 29/01/2025
@@ -281,6 +280,11 @@ namespace Common.Lib
             {
                 await UpdateQtnmDocCount(context, parent_id, parent_type);
             }
+            if (IsMemoType(parent_type!))
+            {
+                await UpdateMemoDocCount(context, parent_id, parent_type);
+            }
+
         }
 
         public static async Task UpdateOperationsDocCount(AppDbContext _context, int? parent_id, string? parent_type)
@@ -338,7 +342,89 @@ namespace Common.Lib
                 await context.SaveChangesAsync();
             }
         }
+        public static async Task UpdateMemoDocCount(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+            int FilesCount = 0;
+            FilesCount = context.mast_fileupload
+                .Count(f => f.files_parent_id == parent_id && f.files_parent_type == parent_type && f.files_status == "N");
 
+            var master_Record = context.cargo_memo
+                .FirstOrDefault(m => m.memo_id == parent_id && m.memo_parent_type == parent_type);
+
+
+            if (master_Record != null)
+            {
+                // master_Record.rec_files_count = FilesCount;
+                master_Record.rec_files_attached = "Y";
+                await context.SaveChangesAsync();
+            }
+        }
+        public static async Task SaveMemoSummary(AppDbContext context, int? parent_id, string? parent_type)
+        {
+            int memoCount = context.cargo_memo
+                .Count(f => f.memo_parent_id == parent_id && f.memo_parent_type == parent_type);
+
+
+            string? Memo_type = GetMemoType(parent_type);
+
+            // Determine where to save the memo count and mapped type
+            if (parent_type == "SEAIMP-CNTR-MEMO" || parent_type == "AIRIMP-CNTR-MEMO" || parent_type == "SEAEXP-CNTR-MEMO" || parent_type == "OTH-CNTR-MEMO")
+            {
+
+                var masterRecord = context.cargo_masterm
+                    .FirstOrDefault(m => m.mbl_id == parent_id && m.mbl_mode == Memo_type);
+
+                if (masterRecord != null)
+                {
+                    masterRecord.rec_memo_count = memoCount;
+                    masterRecord.rec_memo_attached = (memoCount > 0) ? "Y" : "N";
+                    await context.SaveChangesAsync();
+                }
+            }
+            if (parent_type == "SEAIMP-SHIP-MEMO" || parent_type == "AIRIMP-SHIP-MEMO")
+            {
+                var houseRecord = context.cargo_housem
+                    .FirstOrDefault(h => h.hbl_id == parent_id && h.hbl_mode == Memo_type);
+
+                if (houseRecord != null)
+                {
+                    houseRecord.rec_memo_count = memoCount;
+                    houseRecord.rec_memo_attached = (memoCount > 0) ? "Y" : "N";
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
+        private static string? GetMemoType(string? parent_type)
+        {
+            string? result = null;
+
+            if (parent_type == "SEAIMP-CNTR-MEMO" || parent_type == "SEAIMP-SHIP-MEMO")
+                result = "SEA IMPORT";
+            if (parent_type == "AIRIMP-CNTR-MEMO" || parent_type == "AIRIMP-SHIP-MEMO")
+                result = "AIR IMPORT";
+            if (parent_type == "SEAEXP-CNTR-MEMO")
+                result = "SEA EXPORT";
+            if (parent_type == "OTH-CNTR-MEMO")
+                result = "OTHERS";
+
+            return result;
+        }
+        private static bool IsMemoType(string parentType)
+        {
+            var memoTypes = new List<string>
+            {
+                "OTH-CNTR-MEMO",
+                "SEAIMP-CNTR-MEMO",
+                "SEAIMP-SHIP-MEMO",
+                "AIREXP-CNTR-MEMO",
+                "SEAEXP-CNTR-MEMO",
+                "AIRIMP-CNTR-MEMO",
+                "AIRIMP-SHIP-MEMO",
+            };
+
+            return memoTypes.Contains(parentType);
+        }
         public static async Task<List<gen_remarkm_dto>> GetRemarksDetailsAsync(AppDbContext _context, int? parent_id, string? parent_type)
         {
             context = _context;
