@@ -369,7 +369,7 @@ namespace Common.Lib
             string? Memo_type = GetMemoType(parent_type);
 
             // Determine where to save the memo count and mapped type
-            if (parent_type == "SEAIMP-CNTR-MEMO" || parent_type == "AIRIMP-CNTR-MEMO" || parent_type == "SEAEXP-CNTR-MEMO" || parent_type == "OTH-CNTR-MEMO")
+            if (parent_type == "SEAIMP-CNTR-MEMO" || parent_type == "AIRIMP-CNTR-MEMO" || parent_type == "SEAEXP-CNTR-MEMO" || parent_type == "AIREXP-CNTR-MEMO" || parent_type == "OTH-CNTR-MEMO")
             {
 
                 var masterRecord = context.cargo_masterm
@@ -405,6 +405,8 @@ namespace Common.Lib
                 result = "AIR IMPORT";
             if (parent_type == "SEAEXP-CNTR-MEMO")
                 result = "SEA EXPORT";
+            if (parent_type == "AIREXP-CNTR-MEMO")
+                result = "AIR EXPORT";
             if (parent_type == "OTH-CNTR-MEMO")
                 result = "OTHERS";
 

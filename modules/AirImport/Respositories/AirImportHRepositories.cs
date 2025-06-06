@@ -274,6 +274,8 @@ namespace AirImport.Repositories
                     hbl_place_final = e.hbl_place_final,
                     hbl_plf_eta = Lib.FormatDate(e.hbl_plf_eta, Lib.outputDateFormat),
                     hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateFormat),
+                    rec_memo_count = e.rec_memo_count,
+                    rec_memo_attached = e.rec_memo_attached,
 
                     rec_version = e.rec_version,
                     rec_company_id = e.rec_company_id,
