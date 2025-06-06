@@ -104,7 +104,8 @@ public class cargo_air_importh_dto : basetable_dto
     public int? hbl_incoterm_id { get; set; }
     public string? hbl_incoterm { get; set; }
     public string? hbl_invoiceno { get; set; }    
-
+    public int? rec_memo_count { get; set; }
+    public string? rec_memo_attached { get; set; }
     public int desc_parent_id { get; set; }
     public cargo_desc_dto? marks1 { get; set; }
     public cargo_desc_dto? marks2 { get; set; }
