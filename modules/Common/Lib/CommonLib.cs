@@ -8,8 +8,14 @@ using System.ComponentModel;
 using Microsoft.VisualBasic;
 using System.Text.RegularExpressions;
 using Common.DTO.UserAdmin;
+using Common.DTO.Common;
 using Database.Models.UserAdmin;
 using Common.DTO.Marketing;
+using System.Data;
+using System.Reflection;
+using Microsoft.AspNetCore.StaticFiles;
+using DataBase.Pdf;
+using Common.UserAdmin.DTO;
 
 //Name : Sourav V
 //Created Date : 29/01/2025
@@ -20,6 +26,7 @@ namespace Common.Lib
     public static class CommonLib
     {
         private static AppDbContext? context;
+
         public static Dictionary<string, object> GetBranchsettings(AppDbContext _context, int company_id, int? branch_id, string? caption)
         {
             context = _context;
@@ -276,7 +283,7 @@ namespace Common.Lib
             {
                 await UpdateCustomerDocCount(context, parent_id, parent_type);
             }
-            if (parent_type == "LCL" || parent_type == "FCL" || parent_type == "AIR")
+            if (parent_type == "LCL" || parent_type == "QUOTATION-FCL" || parent_type == "AIR")
             {
                 await UpdateQtnmDocCount(context, parent_id, parent_type);
             }
@@ -495,6 +502,7 @@ namespace Common.Lib
                         record = records.Find(f => f.remk_id == rec.remk_id);
                         if (record == null)
                             throw new Exception("Detail Record Not Found " + rec.remk_id.ToString());
+                        record.rec_version++;
                         record.rec_edited_by = record_dto.rec_created_by;
                         record.rec_edited_date = DbLib.GetDateTime();
                     }
@@ -510,6 +518,181 @@ namespace Common.Lib
             {
                 throw new Exception(Ex.Message.ToString());
             }
+        }
+
+        public static DataTable ToDataTable<T>(this IEnumerable<T> data)
+        {
+            var dataTable = new DataTable(typeof(T).Name);
+            if (data == null) return dataTable;
+
+            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (var prop in properties)
+            {
+                var columnType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+                dataTable.Columns.Add(prop.Name, columnType);
+            }
+
+            foreach (var item in data)
+            {
+                var values = new object[properties.Length];
+                for (var i = 0; i < properties.Length; i++)
+                    values[i] = properties[i].GetValue(item, null) ?? DBNull.Value;
+
+                dataTable.Rows.Add(values);
+            }
+
+            return dataTable;
+        }
+
+        public static async Task<FileDownloadResult_Dto> GetFileAsync(string filePath)
+        {
+            if (Database.Lib.Lib.IsBlank(filePath) || !System.IO.File.Exists(filePath))
+                throw new FileNotFoundException("File not found", filePath);
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+
+            var record = new FileDownloadResult_Dto
+            {
+                FileStream = memory,
+                ContentType = GetContentType(filePath),
+                FileName = Path.GetFileName(filePath),
+                FileType = Path.GetExtension(filePath)?.TrimStart('.'), // e.g., "pdf", "jpg"
+            };
+            return record;
+        }
+
+        public static string GetContentType(string path)
+        {
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(path, out var contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+            return contentType;
+        }
+
+        public static string GetSubFolderFromDate()
+        {
+            DateTime? parsedDate = DbLib.GetDateTime();
+            if (parsedDate == null)
+                throw new Exception("Creation date is required");
+
+            string subFolder = parsedDate.Value.ToString("yyyy-MMM").ToLower();
+            return subFolder;
+        }
+
+        public static float WriteBranchAddress(float startY, float colX, int Company_id, int Branch_id, AppDbContext _context, iPdfBase pdf)
+        {
+            context = _context;
+
+            int lineHeight = 15;
+            int rowWidth = 550;
+            float currentY = startY;
+
+            var branch = context.mast_branchm
+                .Where(w => w.branch_id == Branch_id && w.rec_company_id == Company_id)
+                .Select(e => new mast_branchm_dto
+                {
+                    branch_name = e.branch_name,
+                    branch_address1 = e.branch_address1,
+                    branch_address2 = e.branch_address2,
+                    branch_address3 = e.branch_address3,
+                })
+                .FirstOrDefault();
+
+            if (branch == null)
+                throw new Exception($"Branch not found with ID {Branch_id}");
+
+            pdf.AddText(currentY, colX, rowWidth, lineHeight, branch!.branch_name?.ToUpper() ?? "", new TextFormat { _Style = "B", _fontSize = 15 });
+            currentY += lineHeight;
+
+            if (!Database.Lib.Lib.IsBlank(branch!.branch_address1))
+            {
+                pdf.AddText(currentY, colX, rowWidth, lineHeight, branch.branch_address1!,new TextFormat { _Style = "B", _fontSize = 11 });
+                currentY += lineHeight;
+            }
+            if (!Database.Lib.Lib.IsBlank(branch!.branch_address2))
+            {
+                pdf.AddText(currentY, colX, rowWidth, lineHeight, branch.branch_address2!,new TextFormat { _Style = "B", _fontSize = 11 });
+                currentY += lineHeight;
+            }
+            if (!Database.Lib.Lib.IsBlank(branch!.branch_address3))
+            {
+                pdf.AddText(currentY, colX, rowWidth, lineHeight, branch.branch_address3!,new TextFormat { _Style = "B", _fontSize = 11 });
+                currentY += 5;
+            }
+            pdf.DrawHLine(currentY, colX, rowWidth);
+
+            return currentY;
+        }
+
+        public static float WriteCompanyAddress(float startY, float colX, int Company_id, AppDbContext _context, iPdfBase pdf)
+        {
+            context = _context;
+
+            int lineHeight = 15;
+            int rowWidth = 550;
+
+
+            var company = context.mast_companym
+                .Where(w => w.comp_id == Company_id)
+                .Select(e => new mast_companym_dto
+                {
+                    comp_name = e.comp_name,
+                    comp_address1 = e.comp_address1,
+                    comp_address2 = e.comp_address2,
+                    comp_address3 = e.comp_address3,
+                })
+                .FirstOrDefault();
+
+            if (company == null)
+                throw new Exception($"Company not found with ID {Company_id}");
+
+            float currentY = startY;
+
+            pdf.AddText(currentY, colX, rowWidth, lineHeight, company!.comp_name?.ToUpper() ?? "", new TextFormat { _Style = "B", _fontSize = 15 });
+            currentY += lineHeight;
+
+            if (!Database.Lib.Lib.IsBlank(company!.comp_address1))
+            {
+                pdf.AddText(currentY, colX, rowWidth, lineHeight, company.comp_address1!, new TextFormat { _Style = "B", _fontSize = 11 });
+                currentY += lineHeight;
+            }
+            if (!Database.Lib.Lib.IsBlank(company!.comp_address2))
+            {
+                pdf.AddText(currentY, colX, rowWidth, lineHeight, company.comp_address2!, new TextFormat { _Style = "B", _fontSize = 11 });
+                currentY += lineHeight;
+            }
+            if (!Database.Lib.Lib.IsBlank(company!.comp_address3))
+            {
+                pdf.AddText(currentY, colX, rowWidth, lineHeight, company.comp_address3!, new TextFormat { _Style = "B", _fontSize = 11 });
+                currentY += 5;
+            }
+            pdf.DrawHLine(currentY, colX, rowWidth);
+
+            return currentY;
+        }
+
+        public static bool PageHeaderCheck(float Row, int Line_Height, int Page_Height)
+        {
+            bool rec = false;
+            if ((Row + Line_Height) >= Page_Height) //|| i == (recordCount - 1)
+                rec = true;
+            return rec;
+        }
+
+        public static string GetBottomLine(int currentIndex, int recordCount)
+        {
+            string bottomLine = "";
+            if (currentIndex == recordCount - 1)
+                bottomLine = "B";
+            return bottomLine;
         }
 
     }

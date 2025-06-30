@@ -6,6 +6,7 @@ using Database.Models.BaseTables;
 using UserAdmin.Interfaces;
 using Database.Models.UserAdmin;
 using Common.DTO.UserAdmin;
+using Common.DTO.Common;
 using Common.Lib;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -396,12 +397,12 @@ namespace UserAdmin.Repositories
                 if (files == null || files.Count == 0)
                     throw new Exception("No files uploaded");
 
-                DateTime? parsedDate = DbLib.GetDateTime();
-                if (parsedDate == null)
-                    throw new Exception("Creation date is required");
+                // DateTime? parsedDate = DbLib.GetDateTime();
+                // if (parsedDate == null)
+                //     throw new Exception("Creation date is required");
 
-                string rootFolder = @"D:\files\2025";
-                string subFolder = parsedDate.Value.ToString("MMM-yyyy").ToLower();
+                // //string rootFolder = Lib.rootFolder;
+                // string subFolder = parsedDate.Value.ToString("yyyy-MMM").ToLower();
 
                 foreach (var file in files)
                 {
@@ -427,7 +428,7 @@ namespace UserAdmin.Repositories
                     int newFilesId = savedDto.files_id;
 
                     // Step 3: Create folder for this file using files_id
-                    string targetFolder = Path.Combine(rootFolder, subFolder, newFilesId.ToString());
+                    string targetFolder = Path.Combine(Lib.rootFolder, Lib.DocFolder , CommonLib.GetSubFolderFromDate(), newFilesId.ToString());
                     if (!Directory.Exists(targetFolder))
                         Directory.CreateDirectory(targetFolder);
 
@@ -446,7 +447,7 @@ namespace UserAdmin.Repositories
                         record.files_path = filePath;
                         record.files_size = (file.Length / 1024.0).ToString("F2") + " KB";
                         record.files_processed = "N";
-                        record.rec_created_date = parsedDate.Value;
+                        record.rec_created_date = DbLib.GetDateTime();
                     }
 
                     uploadedFiles.Add(savedDto);
@@ -463,40 +464,18 @@ namespace UserAdmin.Repositories
         }
 
         //Service for download the files.
-        public async Task<FileDownloadResult_Dto> GetDownloadFileAsync(int files_id)
+        public async Task<FileDownloadResult_Dto> GetDownloadFileAsync(Dictionary<string, object> data)
         {
+            var files_id = 0;
+            if (data.ContainsKey("files_id"))
+                    files_id = int.Parse(data["files_id"].ToString()!);
 
             var record = await context.mast_fileupload.FirstOrDefaultAsync(x => x.files_id == files_id);
 
             if (record == null || string.IsNullOrEmpty(record.files_path))
                 throw new FileNotFoundException("File record not found");
 
-            if (!System.IO.File.Exists(record.files_path))
-                throw new FileNotFoundException("Physical file not found");
-
-            var memory = new MemoryStream();
-            using (var stream = new FileStream(record.files_path, FileMode.Open, FileAccess.Read))
-            {
-                await stream.CopyToAsync(memory);
-            }
-            memory.Position = 0;
-
-            return new FileDownloadResult_Dto
-            {
-                FileStream = memory,
-                ContentType = GetContentType(record.files_path),
-                FileName = Path.GetFileName(record.files_path)
-            };
-        }
-
-        private string GetContentType(string path)
-        {
-            var provider = new FileExtensionContentTypeProvider();
-            if (!provider.TryGetContentType(path, out var contentType))
-            {
-                contentType = "application/octet-stream";
-            }
-            return contentType;
+            return await CommonLib.GetFileAsync(record.files_path);
         }
 
         public int GetNextCfNo(int company_id, int? branch_id, int defaultCfNo)

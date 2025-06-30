@@ -8,9 +8,16 @@ using Database.Lib.Interfaces;
 using Database.Models.Masters;
 using Database.Models.BaseTables;
 using Common.Lib;
+using Common.DTO.Common;
+using Database.Models.Cargo;
+using Masters.Printing;
 
 namespace Masters.Repositories
 {
+    //Name : Alen Cherian
+    //Date : 18/06/2025
+    //version 1.1 - Added Shipment Label Service(18/06/2025).
+
     public class ParamRepository : IParamRepository
     {
         private readonly AppDbContext context;
@@ -34,9 +41,12 @@ namespace Masters.Repositories
                 var action = data["action"].ToString();
                 if (action == null)
                     action = "search";
+                var title = data["title"].ToString();
                 var param_name = data["param_name"].ToString();
                 var param_type = data["param_type"].ToString();
+                var user_name = data["global_user_name"].ToString();
                 var company_id = int.Parse(data["rec_company_id"].ToString()!);
+                var branch_id = int.Parse(data["rec_branch_id"].ToString()!);
 
                 _page.currentPageNo = int.Parse(data["currentPageNo"].ToString()!);
                 _page.pages = int.Parse(data["pages"].ToString()!);
@@ -53,7 +63,7 @@ namespace Masters.Repositories
                     query = query.Where(w => w.param_name!.Contains(param_name));
 
 
-                if (action == "SEARCH")
+                if (action == "SEARCH" || action == "PRINT" || action == "EXCEL" || action == "PDF")
                 {
                     _page.rows = query.Count();
                     _page.pages = Lib.getTotalPages(_page.rows, _page.pageSize);
@@ -90,7 +100,23 @@ namespace Masters.Repositories
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
 
                 }).ToListAsync();
+                var fileDataList = new List<filesm>();
 
+                if (action == "PDF" || action == "PRINT")
+                {
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, param_name!, user_name!, branch_id, param_type!);
+                    fileDataList.Add(pdfResult);
+                }
+
+                if (action == "EXCEL" || action == "PRINT")
+                {
+                    var excelResult = ProcessExcelFileAsync(Records, title!);
+                    fileDataList.Add(excelResult);
+                }
+
+                RetData.Add("fileData", fileDataList);
+
+                RetData.Add("action", action);
                 RetData.Add("records", Records);
                 RetData.Add("page", _page);
 
@@ -262,7 +288,7 @@ namespace Masters.Repositories
                 param_type = old_record.param_type,
                 param_code = old_record.param_code,
                 param_name = old_record.param_name,
-                
+
                 param_value1 = old_record.param_value1,
                 param_value2 = old_record.param_value2,
                 param_value3 = old_record.param_value3,
@@ -274,7 +300,7 @@ namespace Masters.Repositories
             await new LogHistorym<mast_param_dto>(context)
                 .Table("mast_param", log_date)
                 .PrimaryKey("param_id", record_dto.param_id)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
                 .TrackColumn("param_type", "type")
                 .TrackColumn("param_code", "code")
                 .TrackColumn("param_name", "name")
@@ -313,6 +339,69 @@ namespace Masters.Repositories
             {
                 throw new Exception(Ex.Message.ToString());
             }
+        }
+
+
+        public filesm ProcessPdfFileAsync(List<mast_param_dto> Records, string title, int company_id, string name, string user_name, int branch_id, string param_type)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
+
+            ParamPdfFile bc = new ParamPdfFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                Name = name,
+                User_name = user_name,
+                Param_type = param_type
+            };
+            bc.Process();
+
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("File generation failed.");
+
+            var file = bc.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
+
+        public filesm ProcessExcelFileAsync(List<mast_param_dto> Records, string title)
+        {
+            var Dt_List = Records.ToDataTable();
+            if (Dt_List.Rows.Count <= 0)
+                throw new Exception("Excel List Records error");
+
+            ProcessExcelFile bc = new ProcessExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+            };
+            bc.Process();
+
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
+
+            var file = bc.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
         }
 
     }
