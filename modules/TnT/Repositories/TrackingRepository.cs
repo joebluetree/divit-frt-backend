@@ -1,4 +1,9 @@
-﻿using Database.Lib;
+﻿
+using System.Net.Http.Headers;
+using System.Text;
+
+
+using Database.Lib;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Common.DTO.Tnt;
@@ -399,44 +404,35 @@ namespace TnT.Repositories
         {
             try
             {
-                // Retrieve required settings from the data container
-                string apiUrl = dc.Get<string>("CNTR-TRACKING-ACCESS-TOKEN-URL");
+
+                string token_type = dc.Get<string>("CNTR-TRACKING-ACCESS-TOKEN-TYPE");
                 string header = dc.Get<string>("CNTR-TRACKING-ACCESS-TOKEN-HEADER1");
                 string accessToken = dc.Get<string>("CNTR-TRACKING-ACCESS-TOKEN");
                 string accessTokenExpiry = dc.Get<string>("CNTR-TRACKING-ACCESS-TOKEN-EXPIRY");
+
+                HttpResponseMessage response;
 
                 // Validate the header
                 if (string.IsNullOrWhiteSpace(header))
                     throw new HttpRequestException($"CNTR-TRACKING-ACCESS-TOKEN-HEADER1 Settings Not Set: {cntrno}");
 
+                //accessTokenExpiry = "";
+
                 // Check if the token is still valid
                 if (!string.IsNullOrWhiteSpace(accessTokenExpiry) && !string.IsNullOrWhiteSpace(accessToken))
                 {
                     DateTime expiryDate = DateTime.Parse(accessTokenExpiry);
-                    if (expiryDate > DbLib.GetDateTime())
+                    DateTime currentDate = DateTime.Now; // DbLib.GetDateTime();
+                    if (expiryDate > currentDate)
                     {
                         return accessToken; // Return the existing token if it hasn't expired
                     }
                 }
 
-                // Prepare the request headers and body
-                var keyValuePairs = header.Split(',')
-                                          .Select(h => h.Split('='))
-                                          .Where(data => data.Length == 2)
-                                          .Select(data => new KeyValuePair<string, string>(data[0], data[1]))
-                                          .ToList();
-
-                var content = new FormUrlEncodedContent(keyValuePairs);
-                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
-
-                HttpResponseMessage response;
-                using (var client = new HttpClient())
-                {
-                    client.DefaultRequestHeaders.Clear();
-                    client.DefaultRequestHeaders.Add("accept", "application/json");
-                    response = await client.PostAsync(apiUrl, content);
-                }
-                // Send the request
+                if (token_type == "ONEY")
+                    response = await GenerateToken_oney(dc, cntrno, carrier_id);
+                else
+                    response = await GenerateToken_General(dc, cntrno, carrier_id);
 
                 // Process the response
                 if (response.IsSuccessStatusCode)
@@ -445,7 +441,7 @@ namespace TnT.Repositories
                     var token = JsonConvert.DeserializeObject<access_token_event>(jsonResponse);
 
                     accessToken = token?.access_token!;
-                    DateTime expiryDate = DbLib.GetDateTime().AddSeconds(token!.expires_in);
+                    DateTime expiryDate = DbLib.GetDateTime().AddSeconds(token!.expires_in - 100);
 
                     // Update the token and expiry in the database
                     var tokenRecord = await context.mast_settings
@@ -475,12 +471,74 @@ namespace TnT.Repositories
                     throw new HttpRequestException($"Error fetching data: {response.ReasonPhrase} - {cntrno}");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Optionally, log the exception or rethrow it
                 throw;
             }
         }
+
+
+        public async Task<HttpResponseMessage> GenerateToken_General(DataContainer dc, string cntrno, int carrier_id)
+        {
+            // Retrieve required settings from the data container
+            string apiUrl = dc.Get<string>("CNTR-TRACKING-ACCESS-TOKEN-URL");
+            string header = dc.Get<string>("CNTR-TRACKING-ACCESS-TOKEN-HEADER1");
+
+            // Prepare the request headers and body
+            var keyValuePairs = header.Split(',')
+                                      .Select(h => h.Split('='))
+                                      .Where(data => data.Length == 2)
+                                      .Select(data => new KeyValuePair<string, string>(data[0], data[1]))
+                                      .ToList();
+
+            var content = new FormUrlEncodedContent(keyValuePairs);
+            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+            HttpResponseMessage response;
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("accept", "application/json");
+                response = await client.PostAsync(apiUrl, content);
+            }
+            // Send the request
+            return response;
+        }
+        public async Task<HttpResponseMessage> GenerateToken_oney(DataContainer dc, string cntrno, int carrier_id)
+        {
+            // Retrieve required settings from the data container
+
+            string apikey = dc.Get<string>("CNTR-TRACKING-CLIENT-ID");
+            string apisercret = dc.Get<string>("CNTR-TRACKING-CLIENT-SECRET");
+            string apiUrl = dc.Get<string>("CNTR-TRACKING-ACCESS-TOKEN-URL");
+            string header = dc.Get<string>("CNTR-TRACKING-ACCESS-TOKEN-HEADER1");
+
+            //string username = "tEhDMFUbuuaxIcTvNgpYrDGwnrl4AXzG";
+            //string password = "Uaixu68ylELVYPAZ";
+
+            // 2. Create the Base64-encoded string
+            string credentials = $"{apikey}:{apisercret}";
+            string base64Credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
+
+            // 3. Prepare HTTP client
+            using var client = new HttpClient();
+
+            // 4. Set headers
+            client.DefaultRequestHeaders.Add("apikey", apikey);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64Credentials);
+
+            // 5. Create empty JSON body
+            var content = new StringContent("{}", Encoding.UTF8, "application/json");
+
+            // 6. API endpoint with query string
+
+            // 7. Send POST request
+            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+
+            return response;
+        }
+
 
         void LogResonse(string prefix, string jsonResponse)
         {
@@ -494,36 +552,15 @@ namespace TnT.Repositories
                 HttpResponseMessage response;
                 var jsonResponse = "";
 
-                string key = "";
-                string value = "";
-                string[] data;
-                string baseUrl = dc.Get<string>("CNTR-TRACKING-API-URL");
-
-                var eventType = "TRANSPORT,EQUIPMENT";
-                string apiUrl = $"{baseUrl}" +
-                                $"?eventType={Uri.EscapeDataString(eventType)}" +
-                                $"&equipmentReference={Uri.EscapeDataString(cntrno)}";
-
-                string header = dc.Get<string>("CNTR-TRACKING-API-HEADER1");
-                if (header == "")
-                    throw new HttpRequestException($"CNTR-TRACKING-API-HEADER1 Settings Not Set : {cntrno}");
-
                 string token_type = dc.Get<string>("CNTR-TRACKING-ACCESS-TOKEN-TYPE");
                 string access_token = "";
                 if (token_type != "")
                     access_token = await GenerateToken(dc, cntrno, carrier_id);
-                httpClient.DefaultRequestHeaders.Clear();
-                httpClient.DefaultRequestHeaders.Add("accept", "application/json");
-                foreach (string str in header.Split(","))
-                {
-                    data = str.Split(":");
-                    if (data.Length == 2)
-                    {
-                        key = data[0]; value = data[1].Replace("{access_token}", access_token);
-                        httpClient.DefaultRequestHeaders.Add(key, value);
-                    }
-                }
-                response = await httpClient.GetAsync(apiUrl);
+
+                if (token_type == "ONEY")
+                    response = await GetTrackingDetailsOnline_Oney_Async(access_token, dc, id, cntrno, carrier_id, comp_id);
+                else
+                    response = await GetTrackingDetailsOnline_Default_Async(access_token, dc, id, cntrno, carrier_id, comp_id);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -546,6 +583,73 @@ namespace TnT.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+
+        public async Task<HttpResponseMessage> GetTrackingDetailsOnline_Default_Async(string access_token, DataContainer dc, int id, string cntrno, int carrier_id, int comp_id)
+        {
+            HttpResponseMessage response;
+
+            string key = "";
+            string value = "";
+            string[] data;
+            string baseUrl = dc.Get<string>("CNTR-TRACKING-API-URL");
+
+            var eventType = "TRANSPORT,EQUIPMENT";
+            string apiUrl = $"{baseUrl}" +
+                            $"?eventType={Uri.EscapeDataString(eventType)}" +
+                            $"&equipmentReference={Uri.EscapeDataString(cntrno)}";
+
+            string header = dc.Get<string>("CNTR-TRACKING-API-HEADER1");
+            if (header == "")
+                throw new HttpRequestException($"CNTR-TRACKING-API-HEADER1 Settings Not Set : {cntrno}");
+
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("accept", "application/json");
+            foreach (string str in header.Split(","))
+            {
+                data = str.Split(":");
+                if (data.Length == 2)
+                {
+                    key = data[0]; value = data[1].Replace("{access_token}", access_token);
+                    httpClient.DefaultRequestHeaders.Add(key, value);
+                }
+            }
+            response = await httpClient.GetAsync(apiUrl);
+            return response;
+        }
+
+        public async Task<HttpResponseMessage> GetTrackingDetailsOnline_Oney_Async(string access_token, DataContainer dc, int id, string cntrno, int carrier_id, int comp_id)
+        {
+            HttpResponseMessage response;
+            string baseUrl = dc.Get<string>("CNTR-TRACKING-API-URL");
+            string apikey = dc.Get<string>("CNTR-TRACKING-CLIENT-ID");
+
+            /*
+            var eventType = "TRANSPORT,EQUIPMENT";
+            string apiUrl = $"{baseUrl}" +
+                            $"?eventType={Uri.EscapeDataString(eventType)}" +
+                            $"&equipmentReference={Uri.EscapeDataString(cntrno)}";
+            */
+            var eventType = "EQUIPMENT";
+            string apiUrl = $"{baseUrl}" +
+                            $"?eventType={Uri.EscapeDataString(eventType)}" +
+                            $"&equipmentReference={Uri.EscapeDataString(cntrno)}";
+
+            /*
+            string apiUrl = $"{baseUrl}" +
+                            $"?equipmentReference={Uri.EscapeDataString(cntrno)}";
+            */
+
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("apikey", apikey);
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
+
+
+
+            response = await httpClient.GetAsync(apiUrl);
+            return response;
+
+        }
         public async Task<int> SaveTrackingDetailsToDatabase(DataContainer dc, string jsonResponse, int id, string cntrno, int carrier_id, int comp_id)
         {
             int trackd_id = 0;
@@ -555,10 +659,125 @@ namespace TnT.Repositories
                 trackd_id = await SaveTrackingDetailsToDatabaseApi_ShipsGo(jsonResponse, id, cntrno, carrier_id, comp_id);
             else if (api_version == "API-1")
                 trackd_id = await SaveTrackingDetailsToDatabaseApi_Version_1(jsonResponse, id, cntrno, carrier_id, comp_id);
+            else if (api_version == "API-2")
+                trackd_id = await SaveTrackingDetailsToDatabaseApi_Version_2(jsonResponse, id, cntrno, carrier_id, comp_id);
             else
                 trackd_id = await SaveTrackingDetailsToDatabaseApi(jsonResponse, id, cntrno, carrier_id, comp_id);
             return trackd_id;
         }
+
+        public async Task<int> SaveTrackingDetailsToDatabaseApi_Version_2(string jsonResponse, int id, string cntrno, int carrier_id, int comp_id)
+        {
+            tnt_tracking_data Record;
+            tnt_trackm? mTrackm;
+            tnt_trackd mTrackd;
+
+            IEnumerable<Common.DTO.Tnt2.TrackingEvent_Ver_2> trackingEvents;
+            if (string.IsNullOrWhiteSpace(jsonResponse))
+            {
+                trackingEvents = Enumerable.Empty<Common.DTO.Tnt2.TrackingEvent_Ver_2>();
+            }
+            else
+            {
+                trackingEvents = JsonConvert.DeserializeObject<IEnumerable<Common.DTO.Tnt2.TrackingEvent_Ver_2>>(jsonResponse) ?? Enumerable.Empty<Common.DTO.Tnt2.TrackingEvent_Ver_2>();
+            }
+
+
+            int trackd_id = 0;
+            try
+            {
+                var latestEventCreatedDateTime = trackingEvents!.Max(e => e.eventDateTime);
+
+                context.Database.BeginTransaction();
+
+                mTrackd = new tnt_trackd();
+                mTrackd.trackd_trackm_id = id;
+                mTrackd.rec_company_id = comp_id;
+                mTrackd.rec_locked = "N";
+                mTrackd.rec_created_by = "admin";
+                mTrackd.rec_created_date = DbLib.GetDateTime();
+
+                mTrackd.trackd_last_updated_on = latestEventCreatedDateTime.ToUniversalTime();
+                await context.tnt_trackd.AddAsync(mTrackd);
+                context.SaveChanges();
+
+                trackd_id = mTrackd.trackd_id;
+
+                mTrackm = await context.tnt_trackm
+                .Where(f => f.track_id == id)
+                .FirstOrDefaultAsync();
+
+
+                if (mTrackm == null)
+                    throw new Exception("Record Not Found");
+
+                mTrackm.track_trackd_id = trackd_id;
+                mTrackm.track_last_updated_on = latestEventCreatedDateTime.ToUniversalTime();
+                context.SaveChanges();
+
+                foreach (var e in trackingEvents)
+                {
+                    Record = new tnt_tracking_data();
+                    Record.tnt_trackm_id = id;
+                    Record.tnt_trackd_id = trackd_id;
+                    Record.rec_company_id = comp_id;
+                    Record.rec_created_by = "admin";
+                    Record.rec_created_date = DbLib.GetDateTime();
+
+                    Record.rec_locked = "N";
+
+                    DateTime utcTime = e.eventDateTime.Date;
+
+                    if (utcTime.Kind != DateTimeKind.Utc)
+                    {
+                        utcTime = DateTime.SpecifyKind(utcTime, DateTimeKind.Utc); // OR convert from IST if needed
+                    }
+
+
+                    //Record.tnt_eventCreatedDateTime = dt;
+                    //Record.tnt_eventDateTime = e.eventDateTime.Date;
+
+                    Record.tnt_eventCreatedDateTime = utcTime;
+                    Record.tnt_eventDateTime = utcTime;
+
+                    Record.tnt_eventCreatedDateTime_utc = utcTime;
+                    Record.tnt_eventDateTime_utc = utcTime;
+
+                    Record.tnt_container = e.equipmentReference; // e?.equipmentReference;
+
+                    Record.tnt_transport_mode = e?.transportCall?.modeOfTransport;
+
+                    Record.tnt_event_type = e?.eventClassifierCode;
+                    Record.tnt_event_confirm_status = "";
+                    Record.tnt_status_code = e!.eventType;
+                    Record.tnt_status_name = getStatus(e.eventType!);
+                    Record.tnt_port_code = e?.eventLocation?.UNLocationCode; //e?.transportCall?.UNLocationCode;
+                    Record.tnt_port_name = e?.eventLocation?.locationName; //e?.transportCall?.location?.locationName;
+                    Record.tnt_port_location = e.eventLocation?.locationName; //e?.transportCall?.location?.address?.na
+                    Record.tnt_vessel = ""; //;e?.transportCall?.vessel?.vesselName;
+                    Record.tnt_vessel_imon = ""; // e?.transportCall?.vessel?.vesselIMONumber;
+                    Record.tnt_voyage = e?.transportCall?.exportVoyageNumber; // e?.transportCall?.importVoyageNumber;
+                    Record.tnt_row_type = "";
+                    if (Record.tnt_transport_mode == "1")
+                        Record.tnt_transport_mode = "VESSEL";
+                    else if (e?.eventType == "GTOT" || e?.eventType == "GTIN")
+                        Record.tnt_transport_mode = "TRUCK";
+
+                    await context.tnt_tracking_data.AddAsync(Record);
+                    context.SaveChanges();
+
+                }
+                context.Database.CommitTransaction();
+                return trackd_id;
+            }
+            catch (Exception ex)
+            {
+                context.Database.RollbackTransaction();
+                throw;
+            }
+
+        }
+
         public async Task<int> SaveTrackingDetailsToDatabaseApi_Version_1(string jsonResponse, int id, string cntrno, int carrier_id, int comp_id)
         {
             tnt_tracking_data Record;
@@ -567,6 +786,8 @@ namespace TnT.Repositories
 
 
             //IEnumerable<TrackingEvent_Ver_1> trackingEvents = JsonConvert.DeserializeObject<IEnumerable<TrackingEvent_Ver_1>>(jsonResponse);
+
+            //Common.DTO.Tnt2.TrackingEvent_Ver_2
 
             IEnumerable<TrackingEvent_Ver_1> trackingEvents;
             if (string.IsNullOrWhiteSpace(jsonResponse))
@@ -590,6 +811,7 @@ namespace TnT.Repositories
                 mTrackd.trackd_trackm_id = id;
                 mTrackd.rec_created_by = "admin";
                 mTrackd.rec_company_id = comp_id;
+                mTrackd.rec_locked = "N";
                 mTrackd.trackd_last_updated_on = latestEventCreatedDateTime.UtcDateTime;
                 await context.tnt_trackd.AddAsync(mTrackd);
                 context.SaveChanges();
@@ -614,13 +836,27 @@ namespace TnT.Repositories
                     Record.tnt_trackm_id = id;
                     Record.tnt_trackd_id = trackd_id;
                     Record.rec_company_id = comp_id;
+                    Record.rec_created_date = DbLib.GetDateTime();
                     Record.rec_created_by = "admin";
 
-                    Record.tnt_eventCreatedDateTime = e.eventDateTime.Date;
-                    Record.tnt_eventDateTime = e.eventDateTime.Date;
-                    // UTC
-                    Record.tnt_eventCreatedDateTime_utc = e.eventDateTime.UtcDateTime;
-                    Record.tnt_eventDateTime_utc = e.eventDateTime.UtcDateTime;
+                    Record.rec_locked = "N";
+
+                    DateTime utcTime = e.eventDateTime.Date;
+
+                    if (utcTime.Kind != DateTimeKind.Utc)
+                    {
+                        utcTime = DateTime.SpecifyKind(utcTime, DateTimeKind.Utc); // OR convert from IST if needed
+                    }
+
+
+                    //Record.tnt_eventCreatedDateTime = dt;
+                    //Record.tnt_eventDateTime = e.eventDateTime.Date;
+
+                    Record.tnt_eventCreatedDateTime = utcTime;
+                    Record.tnt_eventDateTime = utcTime;
+
+                    Record.tnt_eventCreatedDateTime_utc = utcTime;
+                    Record.tnt_eventDateTime_utc = utcTime;
 
                     Record.tnt_container = e.equipmentReference; // e?.equipmentReference;
 
@@ -642,6 +878,8 @@ namespace TnT.Repositories
                     else if (e.eventTypeCode == "GTOT" || e.eventTypeCode == "GTIN")
                         Record.tnt_transport_mode = "TRUCK";
 
+
+
                     await context.tnt_tracking_data.AddAsync(Record);
                     context.SaveChanges();
 
@@ -649,7 +887,7 @@ namespace TnT.Repositories
                 context.Database.CommitTransaction();
                 return trackd_id;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 context.Database.RollbackTransaction();
                 throw;
@@ -1193,7 +1431,7 @@ namespace TnT.Repositories
             await new LogHistory<tnt_trackm>(context)
                 .Table("tnt_trackm", log_date)
                 .PrimaryKey("track_id", record_dto.track_id)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0 , record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
                 .TrackColumn("track_book_no", "booking-no")
                 .TrackColumn("track_cntr_no", "container-no")
                 .SetRecord(old_record, new_record)
