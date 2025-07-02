@@ -8,8 +8,15 @@ using System.ComponentModel;
 using Microsoft.VisualBasic;
 using System.Text.RegularExpressions;
 using Common.DTO.UserAdmin;
+using Common.DTO.Common;
 using Database.Models.UserAdmin;
 using Common.DTO.Marketing;
+using System.Data;
+using System.Reflection;
+using Microsoft.AspNetCore.StaticFiles;
+using DataBase.Pdf;
+using Common.UserAdmin.DTO;
+using Masters.Interfaces;
 
 //Name : Sourav V
 //Created Date : 29/01/2025
@@ -20,6 +27,7 @@ namespace Common.Lib
     public static class CommonLib
     {
         private static AppDbContext? context;
+
         public static Dictionary<string, object> GetBranchsettings(AppDbContext _context, int company_id, int? branch_id, string? caption)
         {
             context = _context;
@@ -276,7 +284,7 @@ namespace Common.Lib
             {
                 await UpdateCustomerDocCount(context, parent_id, parent_type);
             }
-            if (parent_type == "LCL" || parent_type == "FCL" || parent_type == "AIR")
+            if (parent_type == "QUOTATION-LCL" || parent_type == "QUOTATION-FCL" || parent_type == "QUOTATION-AIR")
             {
                 await UpdateQtnmDocCount(context, parent_id, parent_type);
             }
@@ -495,6 +503,7 @@ namespace Common.Lib
                         record = records.Find(f => f.remk_id == rec.remk_id);
                         if (record == null)
                             throw new Exception("Detail Record Not Found " + rec.remk_id.ToString());
+                        record.rec_version++;
                         record.rec_edited_by = record_dto.rec_created_by;
                         record.rec_edited_date = DbLib.GetDateTime();
                     }
@@ -510,6 +519,208 @@ namespace Common.Lib
             {
                 throw new Exception(Ex.Message.ToString());
             }
+        }
+
+        public static async Task SaveGenMemoSummary(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+            if (parent_type == "CUSTOMER-MEMO" || parent_type == "CUSTOMER-SOP"|| parent_type == "CUSTOMER-QTNM"|| parent_type == "CUSTOMER-ACC")
+            {
+                await UpdateCustomerMemoCount(context, parent_id, parent_type);
+            }
+        }
+        public static async Task UpdateCustomerMemoCount(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+
+            int custMemoCount = context.gen_remarkm
+                .Count(f => f.remk_parent_id == parent_id && f.remk_parent_type == parent_type);
+
+            var customer_Record = context.mast_customerm
+                .Where(m => m.cust_id == parent_id)// cust_id always unique and type only customer
+                .FirstOrDefault();
+
+            if (customer_Record != null)
+            {
+                if (parent_type == "CUSTOMER-MEMO")
+                {
+                    customer_Record.rec_memo_attached = (custMemoCount > 0) ? "Y" : "N";
+                }
+                if (parent_type == "CUSTOMER-SOP")
+                {
+                    customer_Record.rec_sop_attached = (custMemoCount > 0) ? "Y" : "N";
+                }
+                if (parent_type == "CUSTOMER-QTNM")
+                {
+                    customer_Record.rec_qtnm_attached = (custMemoCount > 0) ? "Y" : "N";
+                }
+                if (parent_type == "CUSTOMER-ACC")
+                {
+                    customer_Record.rec_acc_attached = (custMemoCount > 0) ? "Y" : "N";
+                }
+
+                await context.SaveChangesAsync();
+            }
+        }
+
+
+        public static async Task<FileDownloadResult_Dto> GetFileAsync(string filePath)
+        {
+            if (Database.Lib.Lib.IsBlank(filePath) || !System.IO.File.Exists(filePath))
+                throw new FileNotFoundException("File not found", filePath);
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+
+            var record = new FileDownloadResult_Dto
+            {
+                FileStream = memory,
+                ContentType = GetContentType(filePath),
+                FileName = Path.GetFileName(filePath),
+                FileType = Path.GetExtension(filePath)?.TrimStart('.'), // e.g., "pdf", "jpg"
+            };
+            return record;
+        }
+
+        public static string GetContentType(string path)
+        {
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(path, out var contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+            return contentType;
+        }
+
+        public static string GetSubFolderFromDate()
+        {
+            DateTime? parsedDate = DbLib.GetDateTime();
+            if (parsedDate == null)
+                throw new Exception("Creation date is required");
+
+            string subFolder = parsedDate.Value.ToString("yyyy-MMM").ToLower();
+            return subFolder;
+        }
+
+        public static address_details_dto GetCompanyAddress(AppDbContext dbContext, int companyId)
+        {
+            context = dbContext;
+
+            var record = context.mast_companym
+                .Where(w => w.comp_id == companyId)
+                .Select(e => new address_details_dto
+                {
+                    Name = e.comp_name,
+                    Address1 = e.comp_address1,
+                    Address2 = e.comp_address2,
+                    Address3 = e.comp_address3,
+                })
+                .FirstOrDefault();
+
+            return record!;
+
+        }
+
+        public static address_details_dto GetBranchAddress(AppDbContext dbContext, int companyId, int branchId)
+        {
+            context = dbContext;
+
+            var record = context.mast_branchm
+                .Where(w => w.branch_id == branchId && w.rec_company_id == companyId)
+                .Select(e => new address_details_dto
+                {
+                    Name = e.branch_name,
+                    Address1 = e.branch_address1,
+                    Address2 = e.branch_address2,
+                    Address3 = e.branch_address3,
+                })
+                .FirstOrDefault();
+            return record!;
+        }
+
+        public static float WriteBranchAddressPdf(float startY, float colX, int Company_id, int Branch_id, AppDbContext _context, iPdfBase pdf)
+        {
+            context = _context;
+
+            int lineHeight = 15;
+            int rowWidth = 500;
+            float currentY = startY;
+
+            var Address = GetBranchAddress(_context, Company_id, Branch_id); //
+
+            if (Address == null)
+                throw new Exception($"Address not found !");
+
+            pdf.AddText(currentY, colX, rowWidth, lineHeight, Address!.Name ?? "", new TextFormat { Style = "B", FontSize = 15 });
+            currentY += lineHeight;
+
+            if (!Database.Lib.Lib.IsBlank(Address!.Address1))
+            {
+                pdf.AddText(currentY, colX, rowWidth, lineHeight, Address.Address1!, new TextFormat { FontSize = 10 });
+                currentY += lineHeight;
+            }
+            if (!Database.Lib.Lib.IsBlank(Address!.Address2))
+            {
+                pdf.AddText(currentY, colX, rowWidth, lineHeight, Address.Address2!, new TextFormat { FontSize = 10 });
+                currentY += lineHeight;
+            }
+            if (!Database.Lib.Lib.IsBlank(Address!.Address3))
+            {
+                pdf.AddText(currentY, colX, rowWidth, lineHeight, Address.Address3!, new TextFormat { FontSize = 10 });
+                currentY += 5;
+            }
+
+            return currentY;
+        }
+
+        public static int WriteBranchAddressExcel(int rowIndex, int colIndex, int Company_id, int Branch_id, AppDbContext _context, IExcelBase excel)
+        {
+            context = _context;
+
+            var Address = GetBranchAddress(_context, Company_id, Branch_id);
+
+            if (Address == null)
+                throw new Exception($"Address not found !");
+
+            excel.CellValue(rowIndex, colIndex, Address.Name!, new CellFormat { Style = "B", FontSize = 15, ColumnWidth = 80, Merge = 1 });
+            rowIndex += 1;
+
+            if (!Database.Lib.Lib.IsBlank(Address!.Address1))
+            {
+                excel.CellValue(rowIndex, colIndex, Address.Address1!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = 1 });
+                rowIndex += 1;
+            }
+            if (!Database.Lib.Lib.IsBlank(Address!.Address2))
+            {
+                excel.CellValue(rowIndex, colIndex, Address.Address2!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = 1 });
+                rowIndex += 1;
+            }
+            if (!Database.Lib.Lib.IsBlank(Address!.Address3))
+            {
+                excel.CellValue(rowIndex, colIndex, Address.Address3!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = 1 });
+            }
+
+            return rowIndex;
+        }
+
+        public static bool IsPageBreak(float Row, int Line_Height, int Page_Height)
+        {
+            bool rec = false;
+            if ((Row + Line_Height) >= Page_Height)
+                rec = true;
+            return rec;
+        }
+
+        public static string IsLastRow(int currentIndex, int recordCount)
+        {
+            string bottomLine = "";
+            if (currentIndex == recordCount)
+                bottomLine = "B";
+            return bottomLine;
         }
 
     }

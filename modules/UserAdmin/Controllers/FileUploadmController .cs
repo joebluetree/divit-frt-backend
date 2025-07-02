@@ -116,13 +116,13 @@ namespace UserAdmin.Controllers
         }
 
 
-        [HttpGet]
+        [HttpPost]
         [Route("DownloadFiles")]
-        public async Task<IActionResult> GetDownloadFileAsync([FromQuery] int files_id)
+        public async Task<IActionResult> GetDownloadFileAsync([FromBody] Dictionary<string, object> data)
         {
             try
             {
-                var fileResult = await mRepository.GetDownloadFileAsync(files_id);
+                var fileResult = await mRepository.GetDownloadFileAsync(data);
                 return File(fileResult.FileStream!, fileResult.ContentType!, fileResult.FileName);
             }
             catch (Exception Ex)

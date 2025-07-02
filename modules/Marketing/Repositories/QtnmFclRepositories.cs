@@ -26,7 +26,7 @@ namespace Marketing.Repositories
 
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
-        string qtnm_type = "FCL";
+        string qtnm_type = "QUOTATION-FCL";
         private DateTime log_date;
 
         public QtnmFclRepository(AppDbContext _context, IAuditLog _auditLog)
@@ -229,7 +229,7 @@ namespace Marketing.Repositories
                             qtnd_pod_name = e.pod!.param_name,
                             qtnd_carrier_id = e.qtnd_carrier_id,
                             qtnd_carrier_code = e.carrier!.param_code,
-                            qtnd_carrier_name = e.carrier!.param_name,
+                            qtnd_carrier_name = e.qtnd_carrier_name,
                             qtnd_trans_time = e.qtnd_trans_time,
                             qtnd_routing = e.qtnd_routing,
                             qtnd_cntr_type = e.qtnd_cntr_type,
@@ -267,7 +267,7 @@ namespace Marketing.Repositories
                 _Record = await SaveDetailsAsync(_Record.qtnm_id, mode, record_dto);
                 _Record = await CommonLib.SaveMarketingRemarksAsync(this.context, _Record.qtnm_id, _Record.qtnm_type, mode, record_dto);
                 _Record.qtnd_fcl = await GetDetailsAsync(_Record.qtnm_id);
-                _Record.remk_remarks = await CommonLib.GetRemarksDetailsAsync(this.context,_Record.qtnm_id, _Record.qtnm_type);
+                _Record.remk_remarks = await CommonLib.GetRemarksDetailsAsync(this.context, _Record.qtnm_id, _Record.qtnm_type);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -420,6 +420,7 @@ namespace Marketing.Repositories
                 record_dto.qtnm_id = Record.qtnm_id;
                 record_dto.qtnm_no = Record.qtnm_no;
                 record_dto.qtnm_amt = Record.qtnm_amt;
+                record_dto.qtnm_type = Record.qtnm_type;
 
                 record_dto.rec_version = Record.rec_version;
                 // Lib.AssignDates2DTO(id, mode, Record, record_dto);

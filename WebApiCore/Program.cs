@@ -67,6 +67,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Common
 builder.Services.AddScoped<ITableRepository, TableRepository>();
+builder.Services.AddScoped<ICommonProcessRepository, CommonProcessRepository>();
 
 //User Admin
 builder.Services.AddSingleton<IHeaderRepository, HeaderRepository>();

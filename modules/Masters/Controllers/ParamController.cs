@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using Masters.Interfaces;
 using Common.DTO.Masters;
+using Database.Lib;
+using Microsoft.VisualBasic;
 
 namespace Masters.Controllers
 {
@@ -16,10 +18,10 @@ namespace Masters.Controllers
         {
             this.mRepository = Repository;
         }
-        
+
         [HttpPost]
         [Route("GetListAsync")]
-        public async Task<IActionResult> GetListAsync( [FromBody] Dictionary<string, object> data )
+        public async Task<IActionResult> GetListAsync([FromBody] Dictionary<string, object> data)
         {
             try
             {
@@ -41,18 +43,19 @@ namespace Masters.Controllers
                 var RetData = await mRepository.GetRecordAsync(id);
                 return Ok(RetData);
             }
-            catch (Exception Ex) {
+            catch (Exception Ex)
+            {
                 return BadRequest(Ex.Message.ToString());
             }
         }
 
         [HttpPost]
         [Route("SaveAsync")]
-        public async Task<IActionResult> SaveAsync(int id,string mode, [FromBody] mast_param_dto rec)
+        public async Task<IActionResult> SaveAsync(int id, string mode, [FromBody] mast_param_dto rec)
         {
             try
             {
-                var record = await mRepository.SaveAsync(id,mode, rec);
+                var record = await mRepository.SaveAsync(id, mode, rec);
                 return Ok(record);
             }
             catch (Exception Ex)
@@ -76,5 +79,36 @@ namespace Masters.Controllers
             }
         }
 
+        // [HttpPost]
+        // [Route("GetDownloadPdfAsync")]
+        // public async Task<IActionResult> GetDownloadPdfAsync([FromBody] Dictionary<string, object> data)
+        // {
+        //     try
+        //     {
+        //         var records = await this.mRepository.GetDownloadPdfAsync(data);
+        //         var RetData = File(records.FileStream!, records.ContentType!, records.FileName);
+        //         return RetData;
+        //     }
+        //     catch (Exception Ex)
+        //     {
+        //         return BadRequest(Lib.getErrorMessage(Ex));
+        //     }
+        // }
+        
+        // [HttpPost]
+        // [Route("GetDownloadExcelAsync")]
+        // public async Task<IActionResult> GetDownloadExcelAsync([FromBody] Dictionary<string, object> data)
+        // {
+        //     try
+        //     {
+        //         var records = await this.mRepository.GetDownloadExcelAsync(data);
+        //         var RetData = File(records.FileStream!, records.ContentType!, records.FileName);
+        //         return RetData;
+        //     }
+        //     catch (Exception Ex)
+        //     {
+        //         return BadRequest(Lib.getErrorMessage(Ex));
+        //     }
+        // }
     }
 }
