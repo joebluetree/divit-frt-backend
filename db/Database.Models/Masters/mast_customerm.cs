@@ -100,6 +100,10 @@ namespace Database.Models.Masters
         public int? rec_files_count { get; set; }
 
         public string? rec_files_attached { get; set; }
+        public string? rec_memo_attached { get; set; }
+        public string? rec_sop_attached { get; set; }
+        public string? rec_qtnm_attached { get; set; }
+        public string? rec_acc_attached { get; set; }
 
         public Nullable<int> cust_parent_id { get; set; }
 

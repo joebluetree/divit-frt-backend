@@ -1,4 +1,5 @@
-﻿using Database.Models.BaseTables;
+﻿using Common.DTO.UserAdmin;
+using Database.Models.BaseTables;
 
 
 
@@ -108,11 +109,15 @@ namespace Common.DTO.Masters
         public Nullable<int> cust_parent_id { get; set; }
         public string? cust_parent_name { get; set; } = "";
         public List<mast_contactm_dto>? cust_contacts { get; set; }
-
+        public List<gen_remarkm_dto>? cust_remarks { get; set; }
         public string? cust_est_dt { get; set; } = "";
-        
+
         public int? rec_files_count { get; set; }
         public string? rec_files_attached { get; set; }
+        public string? rec_memo_attached { get; set; }
+        public string? rec_sop_attached { get; set; }
+        public string? rec_qtnm_attached { get; set; }
+        public string? rec_acc_attached { get; set; }
 
     }
 }

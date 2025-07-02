@@ -23,7 +23,7 @@ namespace Marketing.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
-        private string sqtnm_type = "AIR";
+        private string sqtnm_type = "QUOTATION-AIR";
         private DateTime log_date;
 
         public QtnmAirRepository(AppDbContext _context, IAuditLog _auditLog)
@@ -82,7 +82,7 @@ namespace Marketing.Repositories
 
                 query = query.Where(w => w.rec_company_id == company_id);
                 query = query.Where(w => w.rec_branch_id == branch_id);
-                query = query.Where(w => w.qtnm_type == "AIR");
+                query = query.Where(w => w.qtnm_type == sqtnm_type);
 
 
                 if (!Lib.IsBlank(qtnm_from_date))
@@ -124,20 +124,20 @@ namespace Marketing.Repositories
                     qtnm_cfno = e.qtnm_cfno,
                     qtnm_type = e.qtnm_type,
                     qtnm_no = e.qtnm_no,
+                    qtnm_date = Lib.FormatDate(e.qtnm_date, Lib.outputDateFormat),
                     qtnm_to_id = e.qtnm_to_id,
                     qtnm_to_code = e.customer!.cust_code,
                     qtnm_to_name = e.qtnm_to_name,
-                    qtnm_to_addr1 = e.qtnm_to_addr1,
-                    qtnm_to_addr2 = e.qtnm_to_addr2,
-                    qtnm_to_addr3 = e.qtnm_to_addr3,
-                    qtnm_to_addr4 = e.qtnm_to_addr4,
-                    qtnm_date = Lib.FormatDate(e.qtnm_date, Lib.outputDateFormat),
+                    qtnm_pol_id = e.qtnm_pol_id,
+                    qtnm_pol_name = e.qtnm_pol_name,
+                    qtnm_pod_id = e.qtnm_pod_id,
+                    qtnm_pod_name = e.qtnm_pod_name,
                     qtnm_quot_by = e.qtnm_quot_by,
                     qtnm_valid_date = Lib.FormatDate(e.qtnm_valid_date, Lib.outputDateFormat),
                     qtnm_salesman_id = e.qtnm_salesman_id,
                     qtnm_salesman_name = e.salesman!.param_name,
                     qtnm_move_type = e.qtnm_move_type,
-                    qtnm_commodity = e.qtnm_commodity,
+                    qtnm_commodity = e.qtnm_commodity,                    
 
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
@@ -433,6 +433,7 @@ namespace Marketing.Repositories
                 context.SaveChanges();
                 record_dto.qtnm_id = Record.qtnm_id;
                 record_dto.qtnm_no = Record.qtnm_no;
+                record_dto.qtnm_type = Record.qtnm_type;
 
                 record_dto.rec_version = Record.rec_version;
                 // Lib.AssignDates2DTO(id, mode, Record, record_dto);
@@ -445,9 +446,9 @@ namespace Marketing.Repositories
                 }
                 return record_dto;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
-                throw new Exception(Ex.Message.ToString());
+                throw;
             }
 
         }

@@ -158,16 +158,17 @@ namespace UserAdmin.Repositories
             return records;
         }
 
-        public async Task<gen_remarkm_dto> SaveAsync(int id, string mode, gen_remarkm_dto record_dto)
+        public async Task<gen_remarkm_dto> SaveAsync(int id, string parent_type,string mode, gen_remarkm_dto record_dto)
         {
             try
             {
                 log_date = DbLib.GetDateTime();
 
                 context.Database.BeginTransaction();
-                gen_remarkm_dto _Record = await SaveParentAsync(id, mode, record_dto);
-                _Record = await SaveDetailsAsync(_Record.remk_id, _Record.remk_parent_type, mode, record_dto);
-                // _Record.rem_remarks = await GetDetailsAsync(_Record.rem_id);
+                // gen_remarkm_dto _Record = await SaveParentAsync(id, mode, record_dto);
+                gen_remarkm_dto _Record = await SaveDetailsAsync(id, parent_type, mode, record_dto);
+                _Record.remk_remarks = await GetDetailsAsync(id,parent_type);
+                await CommonLib.SaveGenMemoSummary(this.context, id, parent_type);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -267,11 +268,13 @@ namespace UserAdmin.Repositories
 
         }
 
-        public async Task<gen_remarkm_dto> SaveDetailsAsync(int? id, string? parent_type, string mode, gen_remarkm_dto record_dto)
+        public async Task<gen_remarkm_dto> SaveDetailsAsync(int id, string parent_type, string mode, gen_remarkm_dto record_dto)
         {
             gen_remarkm? record;
             List<gen_remarkm_dto> records_dto;
             List<gen_remarkm> records;
+            // string error = "";
+
             try
             {
                 records_dto = record_dto.remk_remarks!;
@@ -280,9 +283,11 @@ namespace UserAdmin.Repositories
                     .ToListAsync();
                 int nextorder = 1;
 
-                // if (mode == "edit")
-                //     await logHistoryDetail(records, record_dto);
+                // if (!AllValid(mode, record_dto, ref error))
+                //     throw new Exception(error);
 
+                if (mode == "edit")
+                    await logHistoryDetail(records, record_dto);
 
                 foreach (var existing_record in records)
                 {
@@ -311,6 +316,7 @@ namespace UserAdmin.Repositories
                         record.rec_edited_date = DbLib.GetDateTime();
                     }
                     record.remk_parent_id = id;
+                    record.remk_parent_type = parent_type;
                     record.remk_desc = rec.remk_desc;
                     record.remk_order = nextorder++;
                     if (rec.remk_id == 0)
@@ -352,7 +358,7 @@ namespace UserAdmin.Repositories
                     }
                     context.Remove(_Record);
                     await context.SaveChangesAsync();
-
+                    await CommonLib.SaveGenMemoSummary(this.context, _Record.remk_parent_id, _Record.remk_parent_type);
                     context.Database.CommitTransaction();
 
                     RetData.Add("status", true);

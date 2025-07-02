@@ -228,7 +228,7 @@ namespace UserAdmin.Repositories
         private async Task<List<mast_menum_dto>> getUserMenu(int user_id, int comp_id, int branch_id)
         {
 
-            var query = from a in context.mast_menum.Where(a => a.menu_visible == "Y")
+            var query = from a in context.mast_menum
                         from b in context.mast_rightsm.Where(w =>
                             a.menu_id == w.rights_menu_id
                             && w.rec_company_id == comp_id

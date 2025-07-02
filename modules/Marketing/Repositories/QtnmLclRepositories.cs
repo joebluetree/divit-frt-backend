@@ -21,7 +21,7 @@ namespace Marketing.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
-        private string sqtnm_type = "LCL";
+        private string sqtnm_type = "QUOTATION-LCL";
         private DateTime log_date;
 
         public QtnmLclRepository(AppDbContext _context, IAuditLog _auditLog)
@@ -485,6 +485,7 @@ namespace Marketing.Repositories
                 context.SaveChanges();
                 record_dto.qtnm_id = Record.qtnm_id;
                 record_dto.qtnm_no = Record.qtnm_no;
+                record_dto.qtnm_type = Record.qtnm_type;
                 record_dto.qtnm_amt = Record.qtnm_amt;
 
                 record_dto.rec_version = Record.rec_version;
@@ -498,9 +499,9 @@ namespace Marketing.Repositories
                 }
                 return record_dto;
             }
-            catch (Exception Ex)
+            catch (Exception)
             {
-                throw new Exception(Ex.Message.ToString());
+                throw;
             }
 
         }
