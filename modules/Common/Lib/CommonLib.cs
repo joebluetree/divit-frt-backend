@@ -16,6 +16,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.StaticFiles;
 using DataBase.Pdf;
 using Common.UserAdmin.DTO;
+using Masters.Interfaces;
 
 //Name : Sourav V
 //Created Date : 29/01/2025
@@ -283,7 +284,7 @@ namespace Common.Lib
             {
                 await UpdateCustomerDocCount(context, parent_id, parent_type);
             }
-            if (parent_type == "LCL" || parent_type == "QUOTATION-FCL" || parent_type == "AIR")
+            if (parent_type == "QUOTATION-LCL" || parent_type == "QUOTATION-FCL" || parent_type == "QUOTATION-AIR")
             {
                 await UpdateQtnmDocCount(context, parent_id, parent_type);
             }
@@ -520,30 +521,48 @@ namespace Common.Lib
             }
         }
 
-        public static DataTable ToDataTable<T>(this IEnumerable<T> data)
+        public static async Task SaveGenMemoSummary(AppDbContext _context, int? parent_id, string? parent_type)
         {
-            var dataTable = new DataTable(typeof(T).Name);
-            if (data == null) return dataTable;
-
-            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-            foreach (var prop in properties)
+            context = _context;
+            if (parent_type == "CUSTOMER-MEMO" || parent_type == "CUSTOMER-SOP"|| parent_type == "CUSTOMER-QTNM"|| parent_type == "CUSTOMER-ACC")
             {
-                var columnType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-                dataTable.Columns.Add(prop.Name, columnType);
+                await UpdateCustomerMemoCount(context, parent_id, parent_type);
             }
-
-            foreach (var item in data)
-            {
-                var values = new object[properties.Length];
-                for (var i = 0; i < properties.Length; i++)
-                    values[i] = properties[i].GetValue(item, null) ?? DBNull.Value;
-
-                dataTable.Rows.Add(values);
-            }
-
-            return dataTable;
         }
+        public static async Task UpdateCustomerMemoCount(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+
+            int custMemoCount = context.gen_remarkm
+                .Count(f => f.remk_parent_id == parent_id && f.remk_parent_type == parent_type);
+
+            var customer_Record = context.mast_customerm
+                .Where(m => m.cust_id == parent_id)// cust_id always unique and type only customer
+                .FirstOrDefault();
+
+            if (customer_Record != null)
+            {
+                if (parent_type == "CUSTOMER-MEMO")
+                {
+                    customer_Record.rec_memo_attached = (custMemoCount > 0) ? "Y" : "N";
+                }
+                if (parent_type == "CUSTOMER-SOP")
+                {
+                    customer_Record.rec_sop_attached = (custMemoCount > 0) ? "Y" : "N";
+                }
+                if (parent_type == "CUSTOMER-QTNM")
+                {
+                    customer_Record.rec_qtnm_attached = (custMemoCount > 0) ? "Y" : "N";
+                }
+                if (parent_type == "CUSTOMER-ACC")
+                {
+                    customer_Record.rec_acc_attached = (custMemoCount > 0) ? "Y" : "N";
+                }
+
+                await context.SaveChangesAsync();
+            }
+        }
+
 
         public static async Task<FileDownloadResult_Dto> GetFileAsync(string filePath)
         {
@@ -587,110 +606,119 @@ namespace Common.Lib
             return subFolder;
         }
 
-        public static float WriteBranchAddress(float startY, float colX, int Company_id, int Branch_id, AppDbContext _context, iPdfBase pdf)
+        public static address_details_dto GetCompanyAddress(AppDbContext dbContext, int companyId)
+        {
+            context = dbContext;
+
+            var record = context.mast_companym
+                .Where(w => w.comp_id == companyId)
+                .Select(e => new address_details_dto
+                {
+                    Name = e.comp_name,
+                    Address1 = e.comp_address1,
+                    Address2 = e.comp_address2,
+                    Address3 = e.comp_address3,
+                })
+                .FirstOrDefault();
+
+            return record!;
+
+        }
+
+        public static address_details_dto GetBranchAddress(AppDbContext dbContext, int companyId, int branchId)
+        {
+            context = dbContext;
+
+            var record = context.mast_branchm
+                .Where(w => w.branch_id == branchId && w.rec_company_id == companyId)
+                .Select(e => new address_details_dto
+                {
+                    Name = e.branch_name,
+                    Address1 = e.branch_address1,
+                    Address2 = e.branch_address2,
+                    Address3 = e.branch_address3,
+                })
+                .FirstOrDefault();
+            return record!;
+        }
+
+        public static float WriteBranchAddressPdf(float startY, float colX, int Company_id, int Branch_id, AppDbContext _context, iPdfBase pdf)
         {
             context = _context;
 
             int lineHeight = 15;
-            int rowWidth = 550;
+            int rowWidth = 500;
             float currentY = startY;
 
-            var branch = context.mast_branchm
-                .Where(w => w.branch_id == Branch_id && w.rec_company_id == Company_id)
-                .Select(e => new mast_branchm_dto
-                {
-                    branch_name = e.branch_name,
-                    branch_address1 = e.branch_address1,
-                    branch_address2 = e.branch_address2,
-                    branch_address3 = e.branch_address3,
-                })
-                .FirstOrDefault();
+            var Address = GetBranchAddress(_context, Company_id, Branch_id); //
 
-            if (branch == null)
-                throw new Exception($"Branch not found with ID {Branch_id}");
+            if (Address == null)
+                throw new Exception($"Address not found !");
 
-            pdf.AddText(currentY, colX, rowWidth, lineHeight, branch!.branch_name?.ToUpper() ?? "", new TextFormat { _Style = "B", _fontSize = 15 });
+            pdf.AddText(currentY, colX, rowWidth, lineHeight, Address!.Name ?? "", new TextFormat { Style = "B", FontSize = 15 });
             currentY += lineHeight;
 
-            if (!Database.Lib.Lib.IsBlank(branch!.branch_address1))
+            if (!Database.Lib.Lib.IsBlank(Address!.Address1))
             {
-                pdf.AddText(currentY, colX, rowWidth, lineHeight, branch.branch_address1!,new TextFormat { _Style = "B", _fontSize = 11 });
+                pdf.AddText(currentY, colX, rowWidth, lineHeight, Address.Address1!, new TextFormat { FontSize = 10 });
                 currentY += lineHeight;
             }
-            if (!Database.Lib.Lib.IsBlank(branch!.branch_address2))
+            if (!Database.Lib.Lib.IsBlank(Address!.Address2))
             {
-                pdf.AddText(currentY, colX, rowWidth, lineHeight, branch.branch_address2!,new TextFormat { _Style = "B", _fontSize = 11 });
+                pdf.AddText(currentY, colX, rowWidth, lineHeight, Address.Address2!, new TextFormat { FontSize = 10 });
                 currentY += lineHeight;
             }
-            if (!Database.Lib.Lib.IsBlank(branch!.branch_address3))
+            if (!Database.Lib.Lib.IsBlank(Address!.Address3))
             {
-                pdf.AddText(currentY, colX, rowWidth, lineHeight, branch.branch_address3!,new TextFormat { _Style = "B", _fontSize = 11 });
+                pdf.AddText(currentY, colX, rowWidth, lineHeight, Address.Address3!, new TextFormat { FontSize = 10 });
                 currentY += 5;
             }
-            pdf.DrawHLine(currentY, colX, rowWidth);
 
             return currentY;
         }
 
-        public static float WriteCompanyAddress(float startY, float colX, int Company_id, AppDbContext _context, iPdfBase pdf)
+        public static int WriteBranchAddressExcel(int rowIndex, int colIndex, int Company_id, int Branch_id, AppDbContext _context, IExcelBase excel)
         {
             context = _context;
 
-            int lineHeight = 15;
-            int rowWidth = 550;
+            var Address = GetBranchAddress(_context, Company_id, Branch_id);
 
+            if (Address == null)
+                throw new Exception($"Address not found !");
 
-            var company = context.mast_companym
-                .Where(w => w.comp_id == Company_id)
-                .Select(e => new mast_companym_dto
-                {
-                    comp_name = e.comp_name,
-                    comp_address1 = e.comp_address1,
-                    comp_address2 = e.comp_address2,
-                    comp_address3 = e.comp_address3,
-                })
-                .FirstOrDefault();
+            excel.CellValue(rowIndex, colIndex, Address.Name!, new CellFormat { Style = "B", FontSize = 15, ColumnWidth = 80, Merge = 1 });
+            rowIndex += 1;
 
-            if (company == null)
-                throw new Exception($"Company not found with ID {Company_id}");
-
-            float currentY = startY;
-
-            pdf.AddText(currentY, colX, rowWidth, lineHeight, company!.comp_name?.ToUpper() ?? "", new TextFormat { _Style = "B", _fontSize = 15 });
-            currentY += lineHeight;
-
-            if (!Database.Lib.Lib.IsBlank(company!.comp_address1))
+            if (!Database.Lib.Lib.IsBlank(Address!.Address1))
             {
-                pdf.AddText(currentY, colX, rowWidth, lineHeight, company.comp_address1!, new TextFormat { _Style = "B", _fontSize = 11 });
-                currentY += lineHeight;
+                excel.CellValue(rowIndex, colIndex, Address.Address1!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = 1 });
+                rowIndex += 1;
             }
-            if (!Database.Lib.Lib.IsBlank(company!.comp_address2))
+            if (!Database.Lib.Lib.IsBlank(Address!.Address2))
             {
-                pdf.AddText(currentY, colX, rowWidth, lineHeight, company.comp_address2!, new TextFormat { _Style = "B", _fontSize = 11 });
-                currentY += lineHeight;
+                excel.CellValue(rowIndex, colIndex, Address.Address2!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = 1 });
+                rowIndex += 1;
             }
-            if (!Database.Lib.Lib.IsBlank(company!.comp_address3))
+            if (!Database.Lib.Lib.IsBlank(Address!.Address3))
             {
-                pdf.AddText(currentY, colX, rowWidth, lineHeight, company.comp_address3!, new TextFormat { _Style = "B", _fontSize = 11 });
-                currentY += 5;
+                excel.CellValue(rowIndex, colIndex, Address.Address3!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = 1 });
             }
-            pdf.DrawHLine(currentY, colX, rowWidth);
 
-            return currentY;
+            return rowIndex;
         }
 
-        public static bool PageHeaderCheck(float Row, int Line_Height, int Page_Height)
+        public static bool IsPageBreak(float Row, int Line_Height, int Page_Height)
         {
             bool rec = false;
-            if ((Row + Line_Height) >= Page_Height) //|| i == (recordCount - 1)
+            if ((Row + Line_Height) >= Page_Height)
                 rec = true;
             return rec;
         }
 
-        public static string GetBottomLine(int currentIndex, int recordCount)
+        public static string IsLastRow(int currentIndex, int recordCount)
         {
             string bottomLine = "";
-            if (currentIndex == recordCount - 1)
+            if (currentIndex == recordCount)
                 bottomLine = "B";
             return bottomLine;
         }

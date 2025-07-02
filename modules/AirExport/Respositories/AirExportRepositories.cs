@@ -485,7 +485,7 @@ namespace AirExport.Repositories
                 var query = context.cargo_masterm
                             .Where(i => i.mbl_id == mbl_id && i.mbl_mode!.Contains(mbl_mode!));
 
-                var Record = await query.Select(e => new
+                var Record = query.Select(e => new cargo_air_exportm_dto
                 {
                     mbl_id = e.mbl_id,
                     mbl_refno = e.mbl_refno,
@@ -508,11 +508,11 @@ namespace AirExport.Repositories
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                     rec_edited_by = e.rec_edited_by,
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
-                }).ToListAsync();
+                }).ToList();
 
-                var Dt_List = Record.ToDataTable();
+                var Dt_List = Record;
 
-                if (Dt_List.Rows.Count <= 0)
+                if (Dt_List.Count <= 0)
                     throw new Exception(" Shipment label Records error");
                 ShipmentLabel bc = new ShipmentLabel();
                 bc.Dt_List = Dt_List;

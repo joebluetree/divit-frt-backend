@@ -18,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTO\Common\" />
     <Folder Include="DTO\Marketing\" />
 
     <Folder Include="scripts\CommonShipment\" />

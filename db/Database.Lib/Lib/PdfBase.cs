@@ -6,7 +6,6 @@ using System.Data;
 using System.IO;
 using System.Security.Cryptography;
 using System.Drawing;
-//using DataBase_Oracle.Connections;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 
@@ -29,12 +28,18 @@ namespace DataBase.Pdf
 
     public class TextFormat
     {
-        public string _Border { get; set; } = "";
-        public string _Style { get; set; } = "";     // e.g., "B", "I", "U"
-        public string _fontName { get; set; } = "Calibri";
-        public int _fontSize { get; set; } = 10;
-        public bool _indent { get; set; } = false;
+        public string Border { get; set; } = "";
+        public string Style { get; set; } = "";     // e.g., "B", "I", "U"
+        public string FontName { get; set; } = "Calibri";
+        public int FontSize { get; set; } = 10;
+        public bool Indent { get; set; } = false;
 
+    }
+
+    public class ColumnFormat
+    {
+        public float Left { get; set; } = 0;
+        public float Width { get; set; } = 0;
     }
 
     public class TextSharpPdf : iPdfBase
@@ -97,49 +102,49 @@ namespace DataBase.Pdf
             else
                 textToAdd = _Data.ToString()!; //
 
-            if (options!._fontName == "")
-                options._fontName = "Calibri";
+            if (options!.FontName == "")
+                options.FontName = "Calibri";
 
             PdfContentByte pcb = writer.DirectContent;
 
             int sAlign = Element.ALIGN_LEFT;
-            if (options._Style.IndexOf("C") >= 0)
+            if (options.Style.IndexOf("C") >= 0)
                 sAlign = Element.ALIGN_CENTER;
-            if (options._Style.IndexOf("R") >= 0)
+            if (options.Style.IndexOf("R") >= 0)
                 sAlign = Element.ALIGN_RIGHT;
-            if (options._Style.IndexOf("J") >= 0)
+            if (options.Style.IndexOf("J") >= 0)
                 sAlign = Element.ALIGN_JUSTIFIED;
 
             iTextSharp.text.Rectangle rect = new iTextSharp.text.Rectangle(_Col, (Page_Height - _Row), _Col + _rowWidth, (Page_Height - _Row) + _rowHeight);
-            if (options._Border.IndexOf("A") >= 0)
+            if (options.Border.IndexOf("A") >= 0)
             {
                 rect.Border = iTextSharp.text.Rectangle.LEFT_BORDER | iTextSharp.text.Rectangle.BOTTOM_BORDER | iTextSharp.text.Rectangle.RIGHT_BORDER | iTextSharp.text.Rectangle.TOP_BORDER;
                 rect.BorderWidth = 0.1f;
                 rect.BorderColor = BaseColor.BLACK;
             }
-            if (options._Border.IndexOf("L") >= 0)
+            if (options.Border.IndexOf("L") >= 0)
             {
                 rect.BorderWidthLeft = 0.1f;
                 rect.BorderColorLeft = BaseColor.BLACK;
             }
-            if (options._Border.IndexOf("B") >= 0)
+            if (options.Border.IndexOf("B") >= 0)
             {
                 rect.BorderWidthBottom = 0.1f;
                 rect.BorderColorBottom = BaseColor.BLACK;
             }
-            if (options._Border.IndexOf("R") >= 0)
+            if (options.Border.IndexOf("R") >= 0)
             {
                 rect.BorderWidthRight = 0.1f;
                 rect.BorderColorRight = BaseColor.BLACK;
             }
-            if (options._Border.IndexOf("T") >= 0)
+            if (options.Border.IndexOf("T") >= 0)
             {
                 rect.BorderWidthTop = 0.1f;
                 rect.BorderColorTop = BaseColor.BLACK;
             }
 
 
-            if (options._indent)
+            if (options.Indent)
             {
                 padding = 1f;
             }
@@ -148,7 +153,7 @@ namespace DataBase.Pdf
             pcb.Stroke();
 
             ColumnText ct = new ColumnText(pcb);
-            ct.SetSimpleColumn(new Phrase(textToAdd, GetFont(options._fontName, options._fontSize, options._Style)), rect.Left + padding, rect.Bottom , rect.Right, rect.Top, 12, sAlign);
+            ct.SetSimpleColumn(new Phrase(textToAdd, GetFont(options.FontName, options.FontSize, options.Style)), rect.Left + padding, rect.Bottom, rect.Right, rect.Top, 12, sAlign);
             ct.Go();
             //ColumnText.ShowTextAligned(pbover, sAlign, new Phrase(textToAdd, font), nCol + 1, (_pageHt - nRow) + 1, 0); 
         }

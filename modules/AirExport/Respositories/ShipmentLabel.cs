@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using Common.DTO.AirExport;
 using Common.Lib;
 using Database.Models.Cargo;
 using DataBase.Pdf;
@@ -11,7 +12,7 @@ namespace AirExport.Repositories
         iPdfBase pdf = null!;
         public List<filesm> fList = new List<filesm>();
         public string report_folder = "";
-        public DataTable Dt_List = new DataTable();
+        public List<cargo_air_exportm_dto> Dt_List { get; set; } = new List<cargo_air_exportm_dto>();
         public bool is_express_mode = false;
         private string Agent = "NEW AGENT"; //
         private string Carrier = "NEW CARRIER";
@@ -40,16 +41,16 @@ namespace AirExport.Repositories
             {
                 fList = new List<filesm>();
                 folderid = Guid.NewGuid().ToString().ToUpper();
-                foreach (DataRow dr in Dt_List.Rows)
+                foreach (var dr in Dt_List)
                 {
 
-                    Agent = dr["mbl_agent_name"].ToString()!;
-                    Carrier = dr["mbl_liner_name"].ToString()!;
-                    RefNo = dr["mbl_refno"].ToString()!;
-                    pod = dr["mbl_pod_name"].ToString()!;
-                    pol = dr["mbl_pol_name"].ToString()!;
-                    Handled = dr["mbl_handled_name"].ToString()!;
-                    ID = Database.Lib.Lib.StringToInteger(dr["mbl_id"].ToString()!);
+                    Agent = dr.mbl_agent_name!.ToString()!;
+                    Carrier = dr.mbl_liner_name!.ToString()!;
+                    RefNo = dr.mbl_refno!.ToString()!;
+                    pod = dr.mbl_pod_name!.ToString()!;
+                    pol = dr.mbl_pol_name!.ToString()!;
+                    Handled = dr.mbl_handled_name!.ToString()!;
+                    ID = Database.Lib.Lib.StringToInteger(dr.mbl_id.ToString()!);
 
                     File_Display_Name = $"{RefNo}";
 
@@ -87,27 +88,27 @@ namespace AirExport.Repositories
             float boxHeight = 25;
 
             // Header Title
-            pdf.AddText(Row, _Col + 1, boxWidth, boxHeight, "Shipment Label", new TextFormat { _Style = "BL", _fontSize = 13 });
+            pdf.AddText(Row, _Col + 1, boxWidth, boxHeight, "Shipment Label", new TextFormat { Style = "BL", FontSize = 13 });
             Row += boxHeight;
 
             // ID + RefNo block
-            pdf.AddText(Row, _Col + 2, boxWidth, boxHeight, $"ID: {ID}",new TextFormat { _fontSize = 9});
+            pdf.AddText(Row, _Col + 2, boxWidth, boxHeight, $"ID: {ID}", new TextFormat { FontSize = 9 });
             Row += boxHeight;
-            pdf.AddText(Row, _Col + 2, boxWidth, boxHeight, $"RefNo: {RefNo}",new TextFormat { _fontSize = 9});
+            pdf.AddText(Row, _Col + 2, boxWidth, boxHeight, $"RefNo: {RefNo}", new TextFormat { FontSize = 9 });
             Row += boxHeight;
 
             // Master Agent + Carrier block
-            pdf.AddText(Row, _Col + 2, boxWidth, boxHeight, $"Master Agent: {Agent}",new TextFormat { _fontSize = 9});
+            pdf.AddText(Row, _Col + 2, boxWidth, boxHeight, $"Master Agent: {Agent}", new TextFormat { FontSize = 9 });
             Row += boxHeight;
-            pdf.AddText(Row, _Col + 2, boxWidth, boxHeight, $"Carrier: {Carrier}", new TextFormat { _fontSize = 9});
+            pdf.AddText(Row, _Col + 2, boxWidth, boxHeight, $"Carrier: {Carrier}", new TextFormat { FontSize = 9 });
             Row += boxHeight;
-            pdf.AddText(Row, _Col + 2, boxWidth, boxHeight, $"Handled By: {Handled}", new TextFormat { _fontSize = 9});
+            pdf.AddText(Row, _Col + 2, boxWidth, boxHeight, $"Handled By: {Handled}", new TextFormat { FontSize = 9 });
             Row += boxHeight;
 
             // POD + POL block
-            pdf.AddText(Row, _Col + 2, boxWidth, boxHeight, $"POD: {pod}", new TextFormat { _fontSize = 9});
+            pdf.AddText(Row, _Col + 2, boxWidth, boxHeight, $"POD: {pod}", new TextFormat { FontSize = 9 });
             Row += boxHeight;
-            pdf.AddText(Row, _Col + 2, boxWidth, boxHeight, $"POL: {pol}", new TextFormat { _fontSize = 9});
+            pdf.AddText(Row, _Col + 2, boxWidth, boxHeight, $"POL: {pol}", new TextFormat { FontSize = 9 });
         }
 
 

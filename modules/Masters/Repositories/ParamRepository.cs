@@ -110,7 +110,7 @@ namespace Masters.Repositories
 
                 if (action == "EXCEL" || action == "PRINT")
                 {
-                    var excelResult = ProcessExcelFileAsync(Records, title!);
+                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, param_name!, user_name!, branch_id, param_type!);
                     fileDataList.Add(excelResult);
                 }
 
@@ -351,7 +351,7 @@ namespace Masters.Repositories
             ParamPdfFile bc = new ParamPdfFile
             {
                 Dt_List = Dt_List,
-                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
                 Title = title,
                 Company_id = company_id,
                 Branch_id = branch_id,
@@ -362,10 +362,10 @@ namespace Masters.Repositories
             };
             bc.Process();
 
-            if (bc.fList == null || !bc.fList.Any())
+            if (bc.FList == null || !bc.FList.Any())
                 throw new Exception("File generation failed.");
 
-            var file = bc.fList[0];
+            var file = bc.FList[0];
 
             var record = new filesm
             {
@@ -376,10 +376,10 @@ namespace Masters.Repositories
             return record;
         }
 
-        public filesm ProcessExcelFileAsync(List<mast_param_dto> Records, string title)
+        public filesm ProcessExcelFileAsync(List<mast_param_dto> Records, string title, int company_id, string name, string user_name, int branch_id, string param_type)
         {
-            var Dt_List = Records.ToDataTable();
-            if (Dt_List.Rows.Count <= 0)
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
                 throw new Exception("Excel List Records error");
 
             ProcessExcelFile bc = new ProcessExcelFile
@@ -387,6 +387,12 @@ namespace Masters.Repositories
                 Dt_List = Dt_List,
                 report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
                 Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                Name = name,
+                User_name = user_name,
+                Param_type = param_type
             };
             bc.Process();
 

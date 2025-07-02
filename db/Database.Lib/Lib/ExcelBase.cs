@@ -11,7 +11,6 @@ namespace Masters.Interfaces
         void CreateSheet(string sheetName);
         void CellValue(int rowIndex, int colIndex, object data, CellFormat? options = null);
         void AutoSizeColumns(int columnCount);
-
         void AutoSizeColumn(int columnNumber);
         void Save(string filePath);
     }
