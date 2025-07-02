@@ -1,19 +1,20 @@
-
+﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using UserAdmin.Interfaces;
-using Common.DTO.UserAdmin;
+using Common.DTO.Masters;
 using Database.Lib;
+using CommonShipment.Interfaces;
+using Common.DTO.CommonShipment;
 
-namespace UserAdmin.Controllers
+namespace CommonShipment.Controllers
 {
     [Authorize]
-    [Route("api/UserAdmin/genremark")]
-    public class GenRemarkmController : Controller
+    [Route("api/CommonShipment/devaninst")]
+    public class DevanInstController : Controller
     {
-        private readonly IGenRemarkmRepository mRepository;
-        public GenRemarkmController(IGenRemarkmRepository Repository)
+        private readonly IDevanInstRepository mRepository;
+        public DevanInstController(IDevanInstRepository Repository)
         {
             this.mRepository = Repository;
         }
@@ -26,21 +27,6 @@ namespace UserAdmin.Controllers
             {
                 var records = await this.mRepository.GetListAsync(data);
                 return Ok(records);
-            }
-            catch (Exception Ex)
-            {
-                return BadRequest(Lib.getErrorMessage(Ex));
-            }
-        }
-        
-        [HttpGet]
-        [Route("GetDetailsAsync")]
-        public async Task<IActionResult> GetDetailsAsync(int id, string parent_type)
-        {
-            try
-            {
-                var RetData = await mRepository.GetDetailsAsync(id, parent_type);
-                return Ok(RetData);
             }
             catch (Exception Ex)
             {
@@ -63,27 +49,28 @@ namespace UserAdmin.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("SaveAsync")]
-        public async Task<IActionResult> SaveAsync(int id, string parent_type,string mode, [FromBody] gen_remarkm_dto rec)
+        [HttpGet]
+        [Route("GetDefaultData")]
+        public async Task<IActionResult> GetDefaultData(int id, string parent_type)
         {
             try
             {
-                var record = await mRepository.SaveAsync(id, parent_type ,mode, rec);
-                return Ok(record);
+                var RetData = await mRepository.GetDefaultData(id, parent_type);
+                return Ok(RetData);
             }
             catch (Exception Ex)
             {
                 return BadRequest(Lib.getErrorMessage(Ex));
             }
         }
+
         [HttpPost]
-        [Route("SaveDetailsAsync")]
-        public async Task<IActionResult> SaveDetailsAsync(int id, string parent_type,string mode, [FromBody] gen_remarkm_dto rec)
+        [Route("SaveAsync")]
+        public async Task<IActionResult> SaveAsync(int id, string mode, [FromBody] cargo_devan_inst_dto rec)
         {
             try
             {
-                var record = await mRepository.SaveDetailsAsync(id, parent_type ,mode, rec);
+                var record = await mRepository.SaveAsync(id, mode, rec);
                 return Ok(record);
             }
             catch (Exception Ex)

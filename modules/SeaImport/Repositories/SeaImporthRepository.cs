@@ -28,7 +28,7 @@ namespace SeaImport.Repositories
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
         private DateTime log_date;
-        private string shbl_mode = "SEA IMPORT";
+        private string shbl_mode = "SEA IMPORT H";
         public SeaImporthRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;

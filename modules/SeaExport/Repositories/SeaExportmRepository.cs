@@ -587,6 +587,7 @@ namespace SeaExport.Repositories
 
                 record_dto.mbl_id = Record.mbl_id;
                 record_dto.mbl_refno = Record.mbl_refno;
+                record_dto.mbl_mode = Record.mbl_mode;
 
                 //Lib.AssignDates2DTO(record_dto.cust_id, mode, Record, record_dto);
 

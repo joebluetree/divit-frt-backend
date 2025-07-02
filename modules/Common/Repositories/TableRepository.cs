@@ -123,15 +123,18 @@ namespace Common.Repositories
             files.Add("Cargo\\cargo_housem.txt");
             files.Add("Cargo\\cargo_container.txt");
             files.Add("Cargo\\cargo_desc.txt");
+            files.Add("Cargo\\cargo_coo.txt");
 
             files.Add("TnT\\tnt_trackm.txt");
             files.Add("TnT\\tnt_trackd.txt");
             files.Add("TnT\\tnt_tracking_data.txt");
 
             files.Add("CommonShipment\\cargo_memo.txt");
-            files.Add("CommomShipment\\cargo_followup.txt");
-            files.Add("CommomShipment\\cargo_slip.txt");
-            files.Add("CommomShipment\\cargo_delivery_order.txt");
+            files.Add("CommonShipment\\cargo_followup.txt");
+            files.Add("CommonShipment\\cargo_slip.txt");
+            files.Add("CommonShipment\\cargo_delivery_order.txt");
+            files.Add("CommonShipment\\cargo_devan_inst.txt");
+            files.Add("CommonShipment\\cargo_custom_hold.txt");
             
         }
     }

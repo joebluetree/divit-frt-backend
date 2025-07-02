@@ -49,17 +49,17 @@ namespace Database
         //Cargo
         public DbSet<cargo_masterm> cargo_masterm { get; set; } = null!;
         public DbSet<cargo_housem> cargo_housem { get; set; } = null!;
-
+        public DbSet<cargo_coo> cargo_coo { get; set; } = null!;
         public DbSet<cargo_container> cargo_container { get; set; } = null!;
         public DbSet<cargo_desc> cargo_desc { get; set; } = null!;
 
         //CommonShipment
         public DbSet<cargo_memo> cargo_memo { get; set; } = null!;
+        public DbSet<cargo_devan_inst> cargo_devan_inst { get; set; } = null!;
         public DbSet<cargo_followup> cargo_followup { get; set; } = null!;
-
         public DbSet<cargo_delivery_order> cargo_delivery_order { get; set; } = null!;
-
         public DbSet<cargo_slip> cargo_slip { get; set; } = null!;
+        public DbSet<cargo_custom_hold> cargo_custom_hold { get; set; } = null!;
 
 
 

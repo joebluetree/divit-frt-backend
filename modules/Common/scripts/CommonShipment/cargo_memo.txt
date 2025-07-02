@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS cargo_memo (
     memo_remarks_name VARCHAR(200) NULL,
     memo_date timestamptz NULL,
     memo_memo  VARCHAR(50) NULL,
+    rec_files_count int4 NULL,
     rec_files_attached VARCHAR(10) NULL,
     
     rec_company_id int4 NOT NULL,

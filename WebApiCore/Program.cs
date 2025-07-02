@@ -40,6 +40,7 @@ using CommonShipment.Interfaces;
 using CommonShipment.Repositories;
 using OtherOp.Interfaces;
 using OtherOp.Repositories;
+using Cargo.Interfaces;
 
 
 
@@ -102,6 +103,7 @@ builder.Services.AddScoped<IQtnmAirRepository, QtnmAirRepository>();
 //Cargo
 builder.Services.AddScoped<ISeaExportmRepository, SeaExportmRepository>();
 builder.Services.AddScoped<ISeaExporthRepository, SeaExporthRepository>();
+builder.Services.AddScoped<ICargoCooRepository, CargoCooRepository>();
 
 //SeaImport
 builder.Services.AddScoped<ISeaImportmRepository, SeaImportmRepository>();
@@ -127,6 +129,8 @@ builder.Services.AddScoped<IFollowUpRepository, FollowUpRepository>();
 builder.Services.AddScoped<IMemoRepository, MemoRepository>();
 builder.Services.AddScoped<IDeliveryOrderRepository, DeliveryOrderRepository>();
 builder.Services.AddScoped<IMessengerSlipRepository, MessengerSlipRepository>();
+builder.Services.AddScoped<IDevanInstRepository, DevanInstRepository>();
+builder.Services.AddScoped<ICustomHoldRepository, CustomHoldRepository>();
 
 
 

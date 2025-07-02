@@ -269,7 +269,11 @@ namespace Masters.Repositories
                     cust_is_parent = e.customer.cust_is_parent,
 
                     rec_files_count = e.rec_files_count,
-                    rec_files_attached =e.rec_files_attached,
+                    rec_files_attached = e.rec_files_attached,
+                    rec_memo_attached = e.rec_memo_attached,
+                    rec_sop_attached = e.rec_sop_attached,
+                    rec_qtnm_attached = e.rec_qtnm_attached,
+                    rec_acc_attached = e.rec_acc_attached,
 
                     rec_version = e.rec_version,
 
@@ -283,7 +287,7 @@ namespace Masters.Repositories
                     throw new Exception("No Data Found");
 
                 Record.cust_contacts = await GetDetAsync(Record.cust_id);
-
+                // Record.cust_remarks = await CommonLib.GetCustRemarkDetailsAsync(context, Record.cust_id, Record.cust_type);
                 return Record;
             }
             catch (Exception Ex)
@@ -332,7 +336,9 @@ namespace Masters.Repositories
                 context.Database.BeginTransaction();
                 mast_customerm_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await saveDetAsync(_Record.cust_id, mode, _Record);
+                // _Record = await CommonLib.SaveCustomerRemarksAsync(this.context, _Record.cust_id, _Record.cust_type, mode, record_dto);
                 _Record.cust_contacts = await GetDetAsync(_Record.cust_id);
+                // _Record.cust_remarks = await CommonLib.GetCustRemarkDetailsAsync(this.context, _Record.cust_id, _Record.cust_type);
                 context.Database.CommitTransaction();
                 return record_dto;
             }

@@ -111,15 +111,36 @@ namespace Database.Lib
             return data1 == null ? data2 : data1;
         }
 
-        public static DateTime? ParseDate(string dateString)
+        public static DateTime? _ParseDate(string dateString)
         {
             if (string.IsNullOrEmpty(dateString))
                 return null;
             DateTime parsedDate;
-            bool success = DateTime.TryParseExact(dateString,BACK_END_DATE_FORMAT,CultureInfo.InvariantCulture, DateTimeStyles.None,out parsedDate);
-            if ( !success)
+            bool success = DateTime.TryParseExact(dateString, BACK_END_DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate);
+            if (!success)
                 return null;
             return DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc); // to set kind = utc
+            
+
+        }
+
+        public static DateTime? ParseDate(string dateString)
+        {
+            if (string.IsNullOrWhiteSpace(dateString))
+                return null;
+
+            // Normalize "2025-6-16" → "2025-06-16"
+            var parts = dateString.Split('-');
+            if (parts.Length == 3 && parts[0].Length == 4 && int.TryParse(parts[1], out var month) && int.TryParse(parts[2], out var day))
+            {
+                dateString = $"{parts[0]}-{month:D2}-{day:D2}";
+            }
+
+            if (DateTime.TryParseExact(dateString,BACK_END_DATE_FORMAT,CultureInfo.InvariantCulture,DateTimeStyles.None,out var parsedDate))
+            {
+                return DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
+            }
+            return null;
         }
 
 
