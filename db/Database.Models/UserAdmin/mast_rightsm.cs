@@ -17,6 +17,9 @@ namespace Database.Models.UserAdmin
         public string? rights_view { get; set; }
         public string? rights_delete { get; set; }
         public string? rights_print { get; set; }
+        public string? rights_pdf { get; set; }
+        public string? rights_excel { get; set; }
+        public string? rights_email { get; set; }
         public string? rights_doc_upload { get; set; }
         public string? rights_doc_view { get; set; }
         public string? rights_approver { get; set; }
