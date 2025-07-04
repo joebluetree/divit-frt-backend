@@ -29,7 +29,7 @@ namespace SeaExport.Repositories
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
         private DateTime log_date;
-        private string shbl_mode = "SEA EXPORT H";
+        private string shbl_mode = "SEA EXPORT";
         public SeaExporthRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;

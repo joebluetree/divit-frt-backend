@@ -11,6 +11,7 @@ using SeaExport.Interfaces;
 using Common.DTO.SeaExport;
 using Database.Models.Cargo;
 using System.Diagnostics.Eventing.Reader;
+using Common.DTO.Common;
 
 namespace SeaExport.Repositories
 {
@@ -610,6 +611,72 @@ namespace SeaExport.Repositories
             }
 
         }
+        public async Task<FileDownloadResult_Dto> GetShipmentLabelAsync(Dictionary<string, object> data)
+        {
+            try
+            {
+                Dictionary<string, object> RetData = new Dictionary<string, object>();
+                List<filesm> FList = new List<filesm>();
+
+                var mbl_id = 0;
+                var mbl_mode = "";
+                string reportFolder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate());
+
+                if (data.ContainsKey("mbl_id"))
+                    mbl_id = int.Parse(data["mbl_id"].ToString()!);
+
+                if (data.ContainsKey("mbl_mode"))
+                    mbl_mode = data["mbl_mode"].ToString();
+
+                var query = context.cargo_masterm
+                            .Where(i => i.mbl_id == mbl_id && i.mbl_mode!.Contains(mbl_mode!));
+
+                var Record = query.Select(e => new cargo_sea_exportm_dto
+                {
+                    mbl_id = e.mbl_id,
+                    mbl_refno = e.mbl_refno,
+                    mbl_ref_date = Lib.FormatDate(e.mbl_ref_date, Lib.outputDateFormat),
+                    mbl_no = e.mbl_no,
+                    mbl_agent_id = e.agent!.cust_id,
+                    mbl_agent_name = e.agent!.cust_name,
+                    mbl_liner_id = e.liner!.param_id,
+                    mbl_liner_name = e.liner!.param_name,
+                    mbl_pol_id = e.pol!.param_id,
+                    mbl_pol_name = e.pol!.param_name,
+                    mbl_pol_etd = Lib.FormatDate(e.mbl_pol_etd, Lib.outputDateFormat),
+                    mbl_pod_id = e.pod!.param_id,
+                    mbl_pod_name = e.pod!.param_name,
+                    mbl_pod_eta = Lib.FormatDate(e.mbl_pod_eta, Lib.outputDateFormat),
+                    mbl_handled_id = e.handledby!.param_id,
+                    mbl_handled_name = e.handledby!.param_name,
+
+                    rec_created_by = e.rec_created_by,
+                    rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
+                    rec_edited_by = e.rec_edited_by,
+                    rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
+                }).ToList();
+
+                var Dt_List = Record;
+
+                if (Dt_List.Count <= 0)
+                    throw new Exception(" Shipment label Records error");
+                ShipmentLabel bc = new ShipmentLabel();
+                bc.Dt_List = Dt_List;
+                bc.report_folder = reportFolder;
+                bc.Process();
+                FList = bc.fList;
+
+                RetData.Add("fileList", FList);
+                var filePath = FList[0].filename;
+                var record = await CommonLib.GetFileAsync(filePath!);
+                return record;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)
         {
             // int iDefaultCfNo = int.Parse(DefaultCfNo!);

@@ -77,6 +77,21 @@ namespace SeaExport.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("GetLabelAsync")]
+        public async Task<IActionResult> GetShipmentLabelAsync([FromBody] Dictionary<string, object> data)
+        {
+            try
+            {
+                var records = await this.mRepository.GetShipmentLabelAsync(data);
+                return File(records.FileStream!, records.ContentType!, records.FileName);
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Lib.getErrorMessage(Ex));
+            }
+        }
+
         [HttpGet]
         [Route("DeleteAsync")]
         public async Task<IActionResult> DeleteAsync(int id)
@@ -94,3 +109,4 @@ namespace SeaExport.Controllers
 
     }
 }
+
