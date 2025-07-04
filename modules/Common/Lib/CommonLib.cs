@@ -677,7 +677,7 @@ namespace Common.Lib
             return currentY;
         }
 
-        public static int WriteBranchAddressExcel(int rowIndex, int colIndex, int Company_id, int Branch_id, AppDbContext _context, IExcelBase excel)
+        public static int WriteBranchAddressExcel(int rowIndex, int colIndex, int col_count, int Company_id, int Branch_id, AppDbContext _context, IExcelBase excel)
         {
             context = _context;
 
@@ -686,22 +686,22 @@ namespace Common.Lib
             if (Address == null)
                 throw new Exception($"Address not found !");
 
-            excel.CellValue(rowIndex, colIndex, Address.Name!, new CellFormat { Style = "B", FontSize = 15, ColumnWidth = 80, Merge = 1 });
+            excel.CellValue(rowIndex, colIndex, Address.Name!, new CellFormat { Style = "B", FontSize = 15, ColumnWidth = 80, Merge = col_count });
             rowIndex += 1;
 
             if (!Database.Lib.Lib.IsBlank(Address!.Address1))
             {
-                excel.CellValue(rowIndex, colIndex, Address.Address1!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = 1 });
+                excel.CellValue(rowIndex, colIndex, Address.Address1!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = col_count });
                 rowIndex += 1;
             }
             if (!Database.Lib.Lib.IsBlank(Address!.Address2))
             {
-                excel.CellValue(rowIndex, colIndex, Address.Address2!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = 1 });
+                excel.CellValue(rowIndex, colIndex, Address.Address2!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = col_count });
                 rowIndex += 1;
             }
             if (!Database.Lib.Lib.IsBlank(Address!.Address3))
             {
-                excel.CellValue(rowIndex, colIndex, Address.Address3!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = 1 });
+                excel.CellValue(rowIndex, colIndex, Address.Address3!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = col_count });
             }
 
             return rowIndex;
