@@ -135,6 +135,9 @@ namespace UserAdmin.Repositories
                                 rights_delete = (string)Lib.ISNULL(b.rights_delete!, "N"),
                                 rights_view = (string)Lib.ISNULL(b.rights_view!, "N"),
                                 rights_print = (string)Lib.ISNULL(b.rights_print!, "N"),
+                                rights_pdf = (string)Lib.ISNULL(b.rights_pdf!, "N"),
+                                rights_excel = (string)Lib.ISNULL(b.rights_excel!, "N"),
+                                rights_email = (string)Lib.ISNULL(b.rights_email!, "N"),
                                 rights_doc_upload = (string)Lib.ISNULL(b.rights_doc_upload!, "N"),
                                 rights_doc_view = (string)Lib.ISNULL(b.rights_doc_view!, "N"),
                                 rights_approver = (string)Lib.ISNULL(b.rights_approver!, "N"),
@@ -271,6 +274,9 @@ namespace UserAdmin.Repositories
                         Record.rights_delete = Record_New.rights_delete;
                         Record.rights_view = Record_New.rights_view;
                         Record.rights_print = Record_New.rights_print;
+                        Record.rights_pdf = Record_New.rights_pdf;
+                        Record.rights_excel = Record_New.rights_excel;
+                        Record.rights_email = Record_New.rights_email;
                         Record.rights_doc_upload = Record_New.rights_doc_upload;
                         Record.rights_doc_view = Record_New.rights_doc_view;
                         Record.rights_approver = Record_New.rights_approver;
