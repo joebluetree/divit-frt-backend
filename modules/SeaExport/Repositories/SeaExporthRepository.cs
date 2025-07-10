@@ -13,6 +13,8 @@ using Database.Models.Cargo;
 using SeaExport.Interfaces;
 using System.Threading.Tasks.Dataflow;
 using System.Numerics;
+using SeaExport.Printing;
+using Marketing.Printing;
 
 //Name : Sourav V
 //Created Date : 03/03/2025
@@ -47,6 +49,8 @@ namespace SeaExport.Repositories
                 var action = data["action"].ToString();
                 if (action == null)
                     action = "search";
+                var title = data["title"].ToString();
+                var user_name = data["global_user_name"].ToString();
                 var hbl_mode = "";
                 var hbl_from_date = "";
                 var hbl_to_date = "";
@@ -99,7 +103,7 @@ namespace SeaExport.Repositories
                 if (!Lib.IsBlank(hbl_houseno))
                     query = query.Where(w => w.hbl_houseno!.Contains(hbl_houseno!));
 
-                if (action == "SEARCH")
+                if (action == "SEARCH" || action == "PRINT" || action == "EXCEL" || action == "PDF")
                 {
                     _page.rows = query.Count();
                     _page.pages = Lib.getTotalPages(_page.rows, _page.pageSize);
@@ -135,7 +139,27 @@ namespace SeaExport.Repositories
                     rec_edited_by = e.rec_edited_by,
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
                 }).ToListAsync();
+                var fileDataList = new List<filesm>();
+                var searchInfo = new Dictionary<string, string>
+                {
+                    {"hbl_from_date",hbl_from_date!},
+                    {"hbl_to_date",hbl_to_date!},
+                    {"hbl_houseno", hbl_houseno!},
+                };
 
+                if (action == "PDF" || action == "PRINT")
+                {
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, hbl_houseno!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(pdfResult);
+                }
+                if (action == "EXCEL" || action == "PRINT")
+                {
+                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, hbl_houseno!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(excelResult);
+                }
+
+                RetData.Add("fileData", fileDataList);
+                RetData.Add("action", action);
                 RetData.Add("records", Records);
                 RetData.Add("page", _page);
 
@@ -421,19 +445,20 @@ namespace SeaExport.Repositories
                     rec_branch_id = e.rec_branch_id,
                     rec_company_id = e.rec_company_id,
                 }).FirstOrDefaultAsync();
-                
-                var caption = new List<string> {"DEFAULT-DRAFT-FORMAT","DEFAULT-BLANK-FORMAT"};
 
-                var settings =await context.mast_settings
+                var caption = new List<string> { "DEFAULT-DRAFT-FORMAT", "DEFAULT-BLANK-FORMAT" };
+
+                var settings = await context.mast_settings
                 .Where(f => f.rec_company_id == Record!.rec_company_id && f.rec_branch_id == Record.rec_branch_id && caption.Contains(f.caption!))
                 .ToListAsync();
 
-                var blank_format_id = settings.FirstOrDefault(s=>s.caption == "DEFAULT-BLANK-FORMAT")?.value;
-                var blank_format_name = settings.FirstOrDefault(s=>s.caption == "DEFAULT-BLANK-FORMAT")?.name;
-                var draft_format_id = settings.FirstOrDefault(s=>s.caption == "DEFAULT-DRAFT-FORMAT")?.value;
-                var draft_format_name = settings.FirstOrDefault(s=>s.caption == "DEFAULT-DRAFT-FORMAT")?.name;
+                var blank_format_id = settings.FirstOrDefault(s => s.caption == "DEFAULT-BLANK-FORMAT")?.value;
+                var blank_format_name = settings.FirstOrDefault(s => s.caption == "DEFAULT-BLANK-FORMAT")?.name;
+                var draft_format_id = settings.FirstOrDefault(s => s.caption == "DEFAULT-DRAFT-FORMAT")?.value;
+                var draft_format_name = settings.FirstOrDefault(s => s.caption == "DEFAULT-DRAFT-FORMAT")?.name;
 
-                if(Record!=null){
+                if (Record != null)
+                {
                     Record.hbl_format_id = Lib.StringToInteger(blank_format_id!);
                     Record.hbl_format_name = blank_format_name;
                     Record.hbl_draft_format_id = Lib.StringToInteger(draft_format_id!);
@@ -526,17 +551,17 @@ namespace SeaExport.Repositories
             {
                 if (Lib.IsBlank(rec.cntr_type_name))
                     type = "Type Cannot Be Blank!";
-                if(!CommonLib.IsValidContainerNumber(rec.cntr_no!))
+                if (!CommonLib.IsValidContainerNumber(rec.cntr_no!))
                     cntr_no = $"Invalid Container Number: {rec.cntr_no}";
-                    if (Lib.IsBlank(rec.cntr_no))
-                        cntr_no = "Cntr No Cannot Be Blank!";
+                if (Lib.IsBlank(rec.cntr_no))
+                    cntr_no = "Cntr No Cannot Be Blank!";
                 if (Lib.IsBlank(rec.cntr_packages_unit_name))
                     unit = "Unit Cannot Be Blank";
             }
 
             if (type != "")
                 str += type;
-                
+
             if (cntr_no != "")
                 str += cntr_no;
             if (unit != "")
@@ -827,7 +852,7 @@ namespace SeaExport.Repositories
                 //Add or Edit Records cntr
                 foreach (var rec in records_dto)
                 {
-                    
+
                     if (rec.cntr_id == 0)
                     {
                         record = new cargo_container();
@@ -1327,6 +1352,76 @@ namespace SeaExport.Repositories
             .SetRecord(old_record_dto, NewRecord_dto)
             .LogChangesAsync();
 
+        }
+        public filesm ProcessPdfFileAsync(List<cargo_sea_exporth_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
+
+            SeaExportHPdfFile bc = new SeaExportHPdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Hbl_type = title,
+                FromDate = searchInfo.ContainsKey("hbl_from_date") ? searchInfo["hbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("hbl_to_date") ? searchInfo["hbl_to_date"] : "",
+                HouseNo = searchInfo.ContainsKey("hbl_houseno") ? searchInfo["hbl_houseno"] : "",
+            };
+            bc.Process();
+
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
+
+            var file = bc.FList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
+        public filesm ProcessExcelFileAsync(List<cargo_sea_exporth_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
+
+            ProcessSeaExportHExcelFile bc = new ProcessSeaExportHExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Hbl_type = title,
+                FromDate = searchInfo.ContainsKey("hbl_from_date") ? searchInfo["hbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("hbl_to_date") ? searchInfo["hbl_to_date"] : "",
+                HouseNo = searchInfo.ContainsKey("hbl_houseno") ? searchInfo["hbl_houseno"] : "",
+            };
+            bc.Process();
+
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
+
+            var file = bc.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
         }
     }
 }
