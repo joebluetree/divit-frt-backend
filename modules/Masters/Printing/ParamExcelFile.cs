@@ -90,7 +90,9 @@ namespace Masters.Printing
             rowIndex += 1;
             excel.CellValue(rowIndex, colIndex, "Name    :" + Name, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = col_count });
             rowIndex += 1;
+
             excel.CellValue(rowIndex, colIndex, "PRINTED : " + Date + " / " + User_name, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = col_count  });
+
             rowIndex += 1;
             excel.CellValue(rowIndex, colIndex, "CODE", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 20 });
             excel.CellValue(rowIndex, colIndex + 1, "NAME", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 60 });
