@@ -168,8 +168,8 @@ namespace AirExport.Printing
             pdf.AddNewPage();
             PageNumber++;
 
-            var getDate = DbLib.GetDateTime();
-            Date = Lib.FormatDate(getDate, Lib.DisplayDateFormat);
+            var currentDate = DbLib.GetDateTime();
+            Date = Lib.FormatDate(currentDate, Lib.DisplayDateTimeFormat);
 
             string ptintInfo = $"PRINTED ON : {Date} / {User_name}     PAGE#: {PageNumber}";
 
