@@ -154,8 +154,8 @@ namespace Marketing.Printing
             pdf.AddNewPage();
             PageNumber++;
 
-            var getDate = DbLib.GetDateTime();
-            Date = Lib.FormatDate(getDate, Lib.DisplayDateFormat);
+            var CurrentDate = DbLib.GetDateTime();
+            Date = Lib.FormatDate(CurrentDate, Lib.DisplayDateTimeFormat);
             FromDate = Lib.FormatDate(Lib.ParseDate(FromDate), Lib.DisplayDateFormat);
             ToDate = Lib.FormatDate(Lib.ParseDate(ToDate), Lib.DisplayDateFormat);
 
