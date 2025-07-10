@@ -10,7 +10,7 @@ namespace Database.Lib
         public static string outputDateTimeFormat = "yyyy-MM-ddTHHmmss";
         public static string outputDateFormat = "yyyy-MM-dd";
         public static string DisplayDateFormat = "dd-MMM-yyyy";
-
+        public static string DisplayDateTimeFormat = "dd-MMM-yyyy HH:mm:ss";
         public static string BACK_END_DATE_FORMAT = "yyyy-MM-dd";
 
         public static string rootFolder = @"D:\files";
