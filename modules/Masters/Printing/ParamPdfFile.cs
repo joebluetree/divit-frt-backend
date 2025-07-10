@@ -117,9 +117,23 @@ namespace Masters.Printing
                 printHeader = CommonLib.IsPageBreak(Row, Line_Height, Page_Height);
                 BL = CommonLib.IsLastRow(i, recordCount);
 
-                pdf.AddText(Row, Col_Code.Left, Col_Code.Width, Line_Height, dr.param_code!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_Name.Left, Col_Name.Width, Line_Height, dr.param_name!, new TextFormat { Border = "LTR" + BL, FontSize = 9, Indent = true });
-                Row += Line_Height;
+                var format = new TextFormat
+                {
+                    FontSize = 9,
+                    Style = "J",
+                    Indent = true
+                };
+
+                float codeHeight = pdf.MeasureWrappedTextHeight(Row, Col_Code.Left, Col_Code.Width, Line_Height, dr.param_code!, format);
+                float nameHeight = pdf.MeasureWrappedTextHeight(Row, Col_Name.Left, Col_Name.Width, Line_Height, dr.param_name!, format);
+
+                // Step 2: Determine max height for the row
+                float rowHeight = new[] { codeHeight, nameHeight }.Max();
+
+                pdf.AddText(Row, Col_Code.Left, Col_Code.Width, rowHeight, dr.param_code!, new TextFormat { Border = "LT" + BL, Style = "J", FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_Name.Left, Col_Name.Width, rowHeight, dr.param_name!, new TextFormat { Border = "LTR" + BL, Style = "J", FontSize = 9, Indent = true });
+
+                Row += rowHeight;
 
                 if (printHeader)
                     Row = WriteHeader(Row_Default, Col_Default);
@@ -150,8 +164,8 @@ namespace Masters.Printing
             currentY += Line_Height + 5;
 
             // Table Header
-            pdf.AddText(currentY, Col_Code.Left, Col_Code.Width, Line_Height, "CODE", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
-            pdf.AddText(currentY, Col_Name.Left, Col_Name.Width, Line_Height, "NAME", new TextFormat { Border = "LRT", Style = "B", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_Code.Left, Col_Code.Width, Line_Height, "CODE", new TextFormat { Border = "LT", Style = "BJ", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_Name.Left, Col_Name.Width, Line_Height, "NAME", new TextFormat { Border = "LRT", Style = "BJ", FontSize = 10, Indent = true });
             currentY += Line_Height;
 
             return currentY;

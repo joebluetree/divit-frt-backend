@@ -10,6 +10,7 @@ using Common.DTO.AirExport;
 using AirExport.Interfaces;
 using System.Data;
 using Common.DTO.Common;
+using AirExport.Printing;
 
 namespace AirExport.Repositories
 {
@@ -44,7 +45,7 @@ namespace AirExport.Repositories
 
                 var action = data["action"].ToString();
                 if (action == null)
-                    action = "search";
+                    action = "SEARCH";
 
                 var mbl_refno = "";
                 var company_id = 0;
@@ -54,6 +55,7 @@ namespace AirExport.Repositories
                 DateTime? from_date = null;
                 DateTime? to_date = null;
 
+                var user_name = data["global_user_name"].ToString();
                 if (data.ContainsKey("mbl_refno"))
                     mbl_refno = data["mbl_refno"].ToString();
                 if (data.ContainsKey("mbl_from_date"))
@@ -91,7 +93,7 @@ namespace AirExport.Repositories
                 if (!Lib.IsBlank(mbl_refno))
                     query = query.Where(w => w.mbl_refno!.Contains(mbl_refno!));
 
-                if (action == "SEARCH")
+                if (action == "SEARCH" || action == "PRINT" || action == "EXCEL" || action == "PDF")
                 {
                     _page.rows = query.Count();
                     _page.pages = Lib.getTotalPages(_page.rows, _page.pageSize);
@@ -134,6 +136,23 @@ namespace AirExport.Repositories
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
                 }).ToListAsync();
 
+                var fileDataList = new List<filesm>();
+                var searchInfo = new Dictionary<string, string>
+                {
+                    { "mbl_refno", mbl_refno! },
+                     { "mbl_from_date", mbl_from_date! },
+                     { "mbl_to_date", mbl_to_date! },
+                };
+
+                if (action == "PDF" || action == "PRINT")
+                {
+                    var pdfResult = ProcessPdfFileAsync(Records, mbl_mode!, company_id, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(pdfResult);
+                }
+
+                RetData.Add("fileData", fileDataList);
+
+                RetData.Add("action", action);
                 RetData.Add("records", Records);
                 RetData.Add("page", _page);
 
@@ -531,6 +550,43 @@ namespace AirExport.Repositories
             }
         }
 
+        public filesm ProcessPdfFileAsync(List<cargo_air_exportm_dto> Records, string title, int company_id,  string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
+
+            AirExportMPdfFile bc = new AirExportMPdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                // Name = name,
+                User_name = user_name,
+                Qtnm_type = title,
+                RefNo = searchInfo.ContainsKey("mbl_refno") ? searchInfo["mbl_refno"] : "",
+                From = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                To = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
+
+            };
+            bc.Process();
+
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
+
+            var file = bc.FList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
 
         public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)
         {
