@@ -78,18 +78,19 @@ namespace Masters.Printing
         {
             int rowIndex = 0;
             int colIndex = 0;
+            int col_count = 1;
             excel.CreateSheet("Sheet1");
 
             var getDate = DbLib.GetDateTime();
             Date = Lib.FormatDate(getDate, Lib.DisplayDateFormat);
 
-            rowIndex = CommonLib.WriteBranchAddressExcel(rowIndex, colIndex, Company_id, Branch_id, context!, excel);
+            rowIndex = CommonLib.WriteBranchAddressExcel(rowIndex, colIndex, col_count, Company_id, Branch_id, context!, excel);
             rowIndex += 1;
-            excel.CellValue(rowIndex, colIndex, Title, new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 80, Merge = 1 });
+            excel.CellValue(rowIndex, colIndex, Title, new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 80, Merge = col_count });
             rowIndex += 1;
             excel.CellValue(rowIndex, colIndex, "Name    :" + Name, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = 1 });
             rowIndex += 1;
-            excel.CellValue(rowIndex, colIndex, "PRINTED : " + Date + " / " + User_name, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = 1 });
+            excel.CellValue(rowIndex, colIndex, "PRINTED : " + Date + " / " + User_name, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = col_count });
             rowIndex += 1;
             excel.CellValue(rowIndex, colIndex, "CODE", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 20 });
             excel.CellValue(rowIndex, colIndex + 1, "NAME", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 60 });
