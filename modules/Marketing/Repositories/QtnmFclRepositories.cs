@@ -12,6 +12,8 @@ using Common.DTO.Marketing;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.VisualBasic;
 using Common.Lib;
+using Database.Models.Cargo;
+using Marketing.Printing;
 
 
 namespace Marketing.Repositories
@@ -20,7 +22,7 @@ namespace Marketing.Repositories
     //Name : Alen Cherian
     //Date : 03/01/2025
     //Command :  Create Repository for the Quotation Fcl.
-
+    // version 2 04/07/2025 : print added
     public class QtnmFclRepository : IQtnmFclRepository
     {
 
@@ -46,7 +48,9 @@ namespace Marketing.Repositories
                 var action = data["action"].ToString();
                 if (action == null)
                     action = "search";
-
+                    
+                var title = data["title"].ToString();
+                var user_name = data["global_user_name"].ToString();
                 var qtnm_to_name = "";
                 var qtnm_no = "";
                 var company_id = 0;
@@ -103,7 +107,7 @@ namespace Marketing.Repositories
                     query = query.Where(w => w.qtnm_pld_name!.Contains(qtnm_pld_name!));
 
 
-                if (action == "SEARCH")
+                if (action == "SEARCH" || action == "PRINT" || action == "EXCEL" || action == "PDF")
                 {
                     _page.rows = query.Count();
                     _page.pages = Lib.getTotalPages(_page.rows, _page.pageSize);
@@ -147,7 +151,26 @@ namespace Marketing.Repositories
                     rec_edited_by = e.rec_edited_by,
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
                 }).ToListAsync();
+                var fileDataList = new List<filesm>();
+                var searchInfo = new Dictionary<string, string>
+                {
+                    { "qtnm_to_name", qtnm_to_name! },
+                    { "qtnm_no", qtnm_no! },
+                };
 
+                if (action == "PDF" || action == "PRINT")
+                {
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, qtnm_no!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(pdfResult);
+                }
+                if (action == "EXCEL" || action == "PRINT")
+                {
+                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, qtnm_no!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(excelResult);
+                }
+
+                RetData.Add("fileData", fileDataList);
+                RetData.Add("action", action);
                 RetData.Add("records", Records);
                 RetData.Add("page", _page);
 
@@ -689,6 +712,75 @@ namespace Marketing.Repositories
                 .LogChangesAsync();
 
         }
+        public filesm ProcessPdfFileAsync(List<mark_qtnm_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
 
+            QtnmFclPdfFile bc = new QtnmFclPdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                Name = name,
+                User_name = user_name,
+                Qtnm_type = qtnm_type,
+                QuoteTo = searchInfo.ContainsKey("qtnm_to_name") ? searchInfo["qtnm_to_name"] : "",
+                QuoteNo = searchInfo.ContainsKey("qtnm_no") ? searchInfo["qtnm_no"] : "",
+            };
+            bc.Process();
+
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
+
+            var file = bc.FList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
+        public filesm ProcessExcelFileAsync(List<mark_qtnm_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
+
+            ProcessFclExcelFile bc = new ProcessFclExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                Name = name,
+                User_name = user_name,
+                Qtnm_type = qtnm_type,
+                QuoteTo = searchInfo.ContainsKey("qtnm_to_name") ? searchInfo["qtnm_to_name"] : "",
+                QuoteNo = searchInfo.ContainsKey("qtnm_no") ? searchInfo["qtnm_no"] : "",
+            };
+            bc.Process();
+
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
+
+            var file = bc.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
     }
 }

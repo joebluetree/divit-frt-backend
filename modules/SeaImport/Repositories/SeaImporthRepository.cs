@@ -13,6 +13,8 @@ using System.Threading.Tasks.Dataflow;
 using System.Numerics;
 using SeaImport.Interfaces;
 using Common.DTO.SeaImport;
+using Marketing.Printing;
+using SeaExport.Printing;
 
 //Name : Sourav V
 //Created Date : 01/04/2025
@@ -46,6 +48,8 @@ namespace SeaImport.Repositories
                 var action = data["action"].ToString();
                 if (action == null)
                     action = "search";
+                var title = data["title"].ToString();
+                var user_name = data["global_user_name"].ToString();
                 var hbl_mode = "";
                 var hbl_from_date = "";
                 var hbl_to_date = "";
@@ -98,7 +102,7 @@ namespace SeaImport.Repositories
                 if (!Lib.IsBlank(hbl_houseno))
                     query = query.Where(w => w.hbl_houseno!.Contains(hbl_houseno!));
 
-                if (action == "SEARCH")
+                if (action == "SEARCH" || action == "PRINT" || action == "EXCEL" || action == "PDF")
                 {
                     _page.rows = query.Count();
                     _page.pages = Lib.getTotalPages(_page.rows, _page.pageSize);
@@ -125,6 +129,7 @@ namespace SeaImport.Repositories
                     hbl_shipper_name = e.hbl_shipper_name,
                     hbl_consignee_name = e.hbl_consignee_name,
                     hbl_packages = e.hbl_packages,
+                    hbl_telex_released_code = e.telexrelease!.param_code,
                     hbl_handled_name = e.handledby!.param_name,
                     hbl_mbl_pol_etd = Lib.FormatDate(e.master!.mbl_pol_etd, Lib.outputDateFormat),
                     hbl_mbl_pod_eta = Lib.FormatDate(e.master!.mbl_pod_eta, Lib.outputDateFormat),
@@ -134,7 +139,27 @@ namespace SeaImport.Repositories
                     rec_edited_by = e.rec_edited_by,
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
                 }).ToListAsync();
+                var fileDataList = new List<filesm>();
+                var searchInfo = new Dictionary<string, string>
+                {
+                    {"hbl_from_date",hbl_from_date!},
+                    {"hbl_to_date",hbl_to_date!},
+                    {"hbl_houseno", hbl_houseno! },
+                };
 
+                if (action == "PDF" || action == "PRINT")
+                {
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, hbl_houseno!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(pdfResult);
+                }
+                if (action == "EXCEL" || action == "PRINT")
+                {
+                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, hbl_houseno!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(excelResult);
+                }
+
+                RetData.Add("fileData", fileDataList);
+                RetData.Add("action", action);
                 RetData.Add("records", Records);
                 RetData.Add("page", _page);
 
@@ -419,7 +444,7 @@ namespace SeaImport.Repositories
                     hbl_location_add1 = e.mbl_cargo_loc_add1,
                     hbl_location_add2 = e.mbl_cargo_loc_add2,
                     hbl_location_add3 = e.mbl_cargo_loc_add3,
-                    hbl_location_add4 = e.mbl_cargo_loc_add4,                    
+                    hbl_location_add4 = e.mbl_cargo_loc_add4,
                     hbl_mbl_refno = e.mbl_refno,
                     hbl_agent_id = e.mbl_agent_id,
                     hbl_agent_name = e.agent!.cust_name,
@@ -428,34 +453,35 @@ namespace SeaImport.Repositories
                     hbl_handled_name = e.handledby!.param_name,
                     hbl_salesman_id = e.mbl_salesman_id,
                     hbl_salesman_name = e.salesman!.param_name,
-                    
+
                     marks9 = new cargo_desc_dto
                     {
                         desc_description = "QUANTITY/QUALITY AS PER SHIPPER'S DECLARATION"
                     },
                     marks10 = new cargo_desc_dto
                     {
-                        desc_description = "CARRIER NOT RESPONSIBLE FOR PACKING OF CARGO" 
+                        desc_description = "CARRIER NOT RESPONSIBLE FOR PACKING OF CARGO"
                     },
 
                     rec_branch_id = e.rec_branch_id,
                     rec_company_id = e.rec_company_id,
                 }).FirstOrDefaultAsync();
 
-                if(Record!=null){
+                if (Record != null)
+                {
                     Record.hbl_bl_req = $"* ENDORSED ORIGINAL B/L REQUIRED";
                 }
 
                 if (Record == null)
                     throw new Exception("No Data Found");
-                if(Record!=null)
+                if (Record != null)
                 {
                     var DefaultCntr = await GetMastCntrAsync(id);
                     Record.hbl_uom_id = DefaultCntr.FirstOrDefault()?.cntr_packages_unit_id ?? 0;
                     Record.hbl_uom_name = DefaultCntr.FirstOrDefault()?.cntr_packages_unit_name ?? "";
-                    Record.hbl_packages = DefaultCntr.Sum(c=>c.cntr_pieces);
-                    Record.hbl_weight = DefaultCntr.Sum(c=> c.cntr_weight);
-                    Record.hbl_cbm = DefaultCntr.Sum(c=> c.cntr_cbm);
+                    Record.hbl_packages = DefaultCntr.Sum(c => c.cntr_pieces);
+                    Record.hbl_weight = DefaultCntr.Sum(c => c.cntr_weight);
+                    Record.hbl_cbm = DefaultCntr.Sum(c => c.cntr_cbm);
                     Record.house_cntr = DefaultCntr;
                 }
                 return Record;
@@ -755,7 +781,7 @@ namespace SeaImport.Repositories
                     Record.hbl_telex_released_id = null;
                 else
                     Record.hbl_telex_released_id = record_dto.hbl_telex_released_id;
-                
+
                 Record.hbl_mov_dad = record_dto.hbl_mov_dad;
                 Record.hbl_bl_req = record_dto.hbl_bl_req;
                 Record.hbl_book_slno = record_dto.hbl_book_slno;
@@ -1126,7 +1152,7 @@ namespace SeaImport.Repositories
                     RetData.Add("status", true);
                     RetData.Add("message", "");
                 }
-                
+
                 return RetData;
             }
             catch (Exception)
@@ -1212,7 +1238,7 @@ namespace SeaImport.Repositories
                 hbl_is_ci = old_record.hbl_is_ci,
                 hbl_is_carr_an = old_record.hbl_is_carr_an,
                 hbl_custom_reles_status = old_record.hbl_custom_reles_status,
-                hbl_custom_clear_date = Lib.FormatDate(old_record.hbl_custom_clear_date,Lib.outputDateFormat),
+                hbl_custom_clear_date = Lib.FormatDate(old_record.hbl_custom_clear_date, Lib.outputDateFormat),
                 hbl_is_delivery = old_record.hbl_is_delivery,
                 hbl_paid_status_name = old_record.paidstatus?.param_name,
                 hbl_paid_remarks = old_record.hbl_paid_remarks,
@@ -1400,6 +1426,78 @@ namespace SeaImport.Repositories
             .SetRecord(old_record_dto, NewRecord_dto)
             .LogChangesAsync();
 
+        }
+        public filesm ProcessPdfFileAsync(List<cargo_sea_importh_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
+
+            SeaImportHPdfFile bc = new SeaImportHPdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Hbl_type = title,
+                FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
+                HouseNo = searchInfo.ContainsKey("mbl_houseno") ? searchInfo["mbl_houseno"] : "",
+
+            };
+            bc.Process();
+
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
+
+            var file = bc.FList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
+        public filesm ProcessExcelFileAsync(List<cargo_sea_importh_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
+
+            ProcessSeaImportHExcelFile bc = new ProcessSeaImportHExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Hbl_type = title,
+                FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
+                HouseNo = searchInfo.ContainsKey("mbl_houseno") ? searchInfo["mbl_houseno"] : "",
+
+            };
+            bc.Process();
+
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
+
+            var file = bc.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
         }
     }
 }

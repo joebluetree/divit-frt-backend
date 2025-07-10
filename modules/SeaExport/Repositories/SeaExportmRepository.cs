@@ -12,6 +12,8 @@ using Common.DTO.SeaExport;
 using Database.Models.Cargo;
 using System.Diagnostics.Eventing.Reader;
 using Common.DTO.Common;
+using Marketing.Printing;
+using SeaExport.Printing;
 
 namespace SeaExport.Repositories
 {
@@ -38,6 +40,9 @@ namespace SeaExport.Repositories
                 var action = data["action"].ToString();
                 if (action == null)
                     action = "search";
+
+                var title = data["title"].ToString();
+                var user_name = data["global_user_name"].ToString();
                 var mbl_mode = "";
                 var mbl_from_date = "";
                 var mbl_to_date = "";
@@ -107,7 +112,7 @@ namespace SeaExport.Repositories
                 if (!Lib.IsBlank(mbl_pod_name))
                     query = query.Where(w => w.pod!.param_name!.Contains(mbl_pod_name!));
 
-                if (action == "SEARCH")
+                if (action == "SEARCH" || action == "PRINT" || action == "EXCEL" || action == "PDF")
                 {
                     _page.rows = query.Count();
                     _page.pages = Lib.getTotalPages(_page.rows, _page.pageSize);
@@ -145,7 +150,30 @@ namespace SeaExport.Repositories
                     rec_edited_by = e.rec_edited_by,
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
                 }).ToListAsync();
+                var fileDataList = new List<filesm>();
+                var searchInfo = new Dictionary<string, string>
+                {
+                    {"mbl_from_date",mbl_from_date!},
+                    {"mbl_to_date",mbl_to_date!},
+                    { "mbl_refno", mbl_refno! },
+                    { "mbl_agent_name", mbl_agent_name! },
+                    { "mbl_pol_name", mbl_pol_name! },
+                    { "mbl_pod_name", mbl_pod_name! },
+                };
 
+                if (action == "PDF" || action == "PRINT")
+                {
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, mbl_refno!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(pdfResult);
+                }
+                if (action == "EXCEL" || action == "PRINT")
+                {
+                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, mbl_refno!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(excelResult);
+                }
+
+                RetData.Add("fileData", fileDataList);
+                RetData.Add("action", action);
                 RetData.Add("records", Records);
                 RetData.Add("page", _page);
 
@@ -298,30 +326,30 @@ namespace SeaExport.Repositories
 
             return records;
         }
-            public async Task<cargo_sea_exportm_dto> GetDefaultData()
+        public async Task<cargo_sea_exportm_dto> GetDefaultData()
+        {
+            try
             {
-                try
+                IQueryable<mast_param> query = context.mast_param;
+
+                query = query.Where(f => f.param_type == "SHIPSTAGE OE" && f.param_name == "NIL");
+
+                var Record = await query.Select(e => new cargo_sea_exportm_dto
                 {
-                    IQueryable<mast_param> query = context.mast_param;
+                    mbl_shipment_stage_id = e.param_id,
+                    mbl_shipment_stage_name = e.param_name,
+                }).FirstOrDefaultAsync();
 
-                    query = query.Where(f => f.param_type == "SHIPSTAGE OE" && f.param_name == "NIL");
+                if (Record == null)
+                    throw new Exception("Shipment Stage 'NIL' not found.");
 
-                    var Record = await query.Select(e => new cargo_sea_exportm_dto
-                    {
-                        mbl_shipment_stage_id = e.param_id,
-                        mbl_shipment_stage_name = e.param_name,
-                    }).FirstOrDefaultAsync();
-
-                    if (Record == null)
-                        throw new Exception("Shipment Stage 'NIL' not found.");
-
-                    return Record;
-                }
-                catch (Exception Ex)
-                {
-                    throw new Exception(Ex.Message.ToString());
-                }
+                return Record;
             }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
+            }
+        }
 
         public async Task<cargo_sea_exportm_dto> SaveAsync(int id, string mode, cargo_sea_exportm_dto record_dto)
         {
@@ -394,10 +422,10 @@ namespace SeaExport.Repositories
             {
                 if (Lib.IsBlank(rec.cntr_type_name))
                     type = "Type Cannot Be Blank!";
-                if(!CommonLib.IsValidContainerNumber(rec.cntr_no!))
+                if (!CommonLib.IsValidContainerNumber(rec.cntr_no!))
                     cntr_no = $"Invalid Container Number: {rec.cntr_no}";
-                    if (Lib.IsBlank(rec.cntr_no))
-                        cntr_no = "Cntr No Cannot Be Blank!";
+                if (Lib.IsBlank(rec.cntr_no))
+                    cntr_no = "Cntr No Cannot Be Blank!";
                 if (Lib.IsBlank(rec.cntr_packages_unit_name))
                     unit = "Unit Cannot Be Blank";
             }
@@ -721,10 +749,6 @@ namespace SeaExport.Repositories
                 //Add or Edit Records cntr
                 foreach (var rec in records_dto)
                 {
-                    // CommonLib.ValidContainerNumber(rec.cntr_no!);
-                    // {
-                    //     throw new Exception($"Invalid Container Number: {rec.cntr_no}");// 4 Character And 7 digits.
-                    // }
 
                     if (rec.cntr_id == 0)
                     {
@@ -859,7 +883,7 @@ namespace SeaExport.Repositories
 
                     context.Remove(_Record);
                     context.SaveChanges();
-             
+
                     context.Database.CommitTransaction();
 
                     RetData.Add("status", true);
@@ -994,6 +1018,83 @@ namespace SeaExport.Repositories
                 .SetRecords(old_records_dto, record_dto.master_cntr!)
                 .LogChangesAsync();
 
+        }
+        public filesm ProcessPdfFileAsync(List<cargo_sea_exportm_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
+
+            SeaExportMPdfFile bc = new SeaExportMPdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                // Name = name,
+                User_name = user_name,
+                Mbl_type = title,
+                FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
+                RefNo = searchInfo.ContainsKey("mbl_refno") ? searchInfo["mbl_refno"] : "",
+                Agent = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
+                POR = searchInfo.ContainsKey("mbl_pol_name") ? searchInfo["mbl_pol_name"] : "",
+                POD = searchInfo.ContainsKey("mbl_pod_name") ? searchInfo["mbl_pod_name"] : "",
+            };
+            bc.Process();
+
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
+
+            var file = bc.FList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
+        public filesm ProcessExcelFileAsync(List<cargo_sea_exportm_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
+
+            ProcessSeaExportMExcelFile bc = new ProcessSeaExportMExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Mbl_type = title,
+                FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
+                RefNo = searchInfo.ContainsKey("mbl_refno") ? searchInfo["mbl_refno"] : "",
+                Agent = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
+                POR = searchInfo.ContainsKey("mbl_pol_name") ? searchInfo["mbl_pol_name"] : "",
+                POD = searchInfo.ContainsKey("mbl_pod_name") ? searchInfo["mbl_pod_name"] : "",
+            };
+            bc.Process();
+
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
+
+            var file = bc.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
         }
 
     }
