@@ -131,15 +131,30 @@ namespace Marketing.Printing
                 i++;
                 printHeader = CommonLib.IsPageBreak(Row, Line_Height, Page_Height);
                 BL = CommonLib.IsLastRow(i, recordCount);
+                var format = new TextFormat
+                {
+                    FontSize = 9,
+                    Style = "J",
+                    Indent = true
+                };
 
-                pdf.AddText(Row, Col_RefNo.Left, Col_RefNo.Width, Line_Height, dr.hbl_mbl_refno!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_MblNo.Left, Col_MblNo.Width, Line_Height, dr.hbl_mbl_no!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_HouseNo.Left, Col_HouseNo.Width, Line_Height, dr.hbl_houseno!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_Shipper.Left, Col_Shipper.Width, Line_Height, dr.hbl_shipper_name!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_Consignee.Left, Col_Consignee.Width, Line_Height, dr.hbl_consignee_name!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_Handled.Left, Col_Handled.Width, Line_Height, dr.hbl_handled_name!, new TextFormat { Border = "LTR" + BL, FontSize = 9, Indent = true });
+                float RefNoHeight = pdf.MeasureWrappedTextHeight(Row, Col_RefNo.Left, Col_RefNo.Width, Line_Height, dr.hbl_mbl_refno!, format);
+                float MblNoHeight = pdf.MeasureWrappedTextHeight(Row, Col_MblNo.Left, Col_MblNo.Width, Line_Height, dr.hbl_mbl_no!, format);
+                float HouseNoHeight = pdf.MeasureWrappedTextHeight(Row, Col_HouseNo.Left, Col_HouseNo.Width, Line_Height, dr.hbl_houseno!, format);
+                float ShipperHeight = pdf.MeasureWrappedTextHeight(Row, Col_Shipper.Left, Col_Shipper.Width, Line_Height, dr.hbl_shipper_name!, format);
+                float ConsigneeHeight = pdf.MeasureWrappedTextHeight(Row, Col_Consignee.Left, Col_Consignee.Width, Line_Height, dr.hbl_consignee_name!, format);
+                float handledHeight = pdf.MeasureWrappedTextHeight(Row, Col_Handled.Left, Col_Handled.Width, Line_Height, dr.hbl_handled_name!, format);
+
+                float rowHeight = new[] { RefNoHeight, MblNoHeight, HouseNoHeight, ShipperHeight, ConsigneeHeight, handledHeight }.Max();
+
+                pdf.AddText(Row, Col_RefNo.Left, Col_RefNo.Width, rowHeight, dr.hbl_mbl_refno!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_MblNo.Left, Col_MblNo.Width, rowHeight, dr.hbl_mbl_no!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_HouseNo.Left, Col_HouseNo.Width, rowHeight, dr.hbl_houseno!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_Shipper.Left, Col_Shipper.Width, rowHeight, dr.hbl_shipper_name!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_Consignee.Left, Col_Consignee.Width, rowHeight, dr.hbl_consignee_name!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_Handled.Left, Col_Handled.Width, rowHeight, dr.hbl_handled_name!, new TextFormat { Border = "LTR" + BL, FontSize = 9, Indent = true });
                 
-                Row += Line_Height;
+                Row += rowHeight;
 
                 if (printHeader)
                     Row = WriteHeader(Row_Default, Col_Default);
@@ -176,8 +191,8 @@ namespace Marketing.Printing
             currentY += Line_Height + 5;
 
             // Table Header
-            pdf.AddText(currentY, Col_RefNo.Left, Col_RefNo.Width, Line_Height, "REF #", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
-            pdf.AddText(currentY, Col_MblNo.Left, Col_MblNo.Width, Line_Height, "MBL #", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_RefNo.Left, Col_RefNo.Width, Line_Height, "REF #", new TextFormat { Border = "LT", Style = "BJ", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_MblNo.Left, Col_MblNo.Width, Line_Height, "MBL #", new TextFormat { Border = "LT", Style = "BJ", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_HouseNo.Left, Col_HouseNo.Width, Line_Height, "HOUSE #", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Shipper.Left, Col_Shipper.Width, Line_Height, "SHIPPER", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Consignee.Left, Col_Consignee.Width, Line_Height, "CONSIGNEE", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });

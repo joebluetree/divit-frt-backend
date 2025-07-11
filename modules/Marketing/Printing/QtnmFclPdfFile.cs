@@ -130,14 +130,30 @@ namespace Marketing.Printing
                 BL = CommonLib.IsLastRow(i, recordCount);
                 var qtnm_date = Lib.FormatDate(Lib.ParseDate(dr.qtnm_date!), Lib.DisplayDateFormat);
 
-                pdf.AddText(Row, Col_Code.Left, Col_Code.Width, Line_Height, dr.qtnm_no!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_date.Left, Col_date.Width, Line_Height, qtnm_date!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_QuoteTo.Left, Col_QuoteTo.Width, Line_Height, dr.qtnm_to_name!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_QuoteBy.Left, Col_QuoteBy.Width, Line_Height, dr.qtnm_quot_by!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_Move.Left, Col_Move.Width, Line_Height, dr.qtnm_move_type!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_Commodity.Left, Col_Commodity.Width, Line_Height, dr.qtnm_commodity!, new TextFormat { Border = "LTR" + BL, FontSize = 9, Indent = true });
+                var format = new TextFormat
+                {
+                    FontSize = 9,
+                    Style = "J",
+                    Indent = true
+                };
+
+                float CodeHeight = pdf.MeasureWrappedTextHeight(Row, Col_Code.Left, Col_Code.Width, Line_Height, dr.qtnm_no!, format);
+                float dateHeight = pdf.MeasureWrappedTextHeight(Row, Col_date.Left, Col_date.Width, Line_Height, qtnm_date!, format);
+                float QuoteToHeight = pdf.MeasureWrappedTextHeight(Row, Col_QuoteTo.Left, Col_QuoteTo.Width, Line_Height, dr.qtnm_to_name!, format);
+                float QuoteByHeight = pdf.MeasureWrappedTextHeight(Row, Col_QuoteBy.Left, Col_QuoteBy.Width, Line_Height, dr.qtnm_quot_by!, format);
+                float MoveHeight = pdf.MeasureWrappedTextHeight(Row, Col_Move.Left, Col_Move.Width, Line_Height, dr.qtnm_move_type!, format);
+                float CommodityHeight = pdf.MeasureWrappedTextHeight(Row, Col_Commodity.Left, Col_Commodity.Width, Line_Height, dr.qtnm_commodity!, format);                
+
+                float rowHeight = new[] { CodeHeight, dateHeight, QuoteToHeight, QuoteByHeight, MoveHeight, CommodityHeight }.Max();
                 
-                Row += Line_Height;
+                pdf.AddText(Row, Col_Code.Left, Col_Code.Width, rowHeight, dr.qtnm_no!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_date.Left, Col_date.Width, rowHeight, qtnm_date!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_QuoteTo.Left, Col_QuoteTo.Width, rowHeight, dr.qtnm_to_name!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_QuoteBy.Left, Col_QuoteBy.Width, rowHeight, dr.qtnm_quot_by!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_Move.Left, Col_Move.Width, rowHeight, dr.qtnm_move_type!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_Commodity.Left, Col_Commodity.Width, rowHeight, dr.qtnm_commodity!, new TextFormat { Border = "LTR" + BL, FontSize = 9, Indent = true });
+                
+                Row += rowHeight;
 
                 if (printHeader)
                     Row = WriteHeader(Row_Default, Col_Default);
@@ -152,8 +168,8 @@ namespace Marketing.Printing
             pdf.AddNewPage();
             PageNumber++;
 
-            var getDate = DbLib.GetDateTime();
-            Date = Lib.FormatDate(getDate, Lib.DisplayDateFormat);
+            var currentDate = DbLib.GetDateTime();
+            Date = Lib.FormatDate(currentDate, Lib.DisplayDateFormat);
 
             string ptintInfo = $"PRINTED ON : {Date} / {User_name}     PAGE#: {PageNumber}";
 

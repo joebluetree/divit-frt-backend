@@ -88,8 +88,8 @@ namespace Marketing.Printing
             int col_count = 5; // Column count to merge
             excel.CreateSheet("Sheet1");
 
-            var getDate = DbLib.GetDateTime();
-            Date = Lib.FormatDate(getDate, Lib.DisplayDateFormat);
+            var currentDate = DbLib.GetDateTime();
+            Date = Lib.FormatDate(currentDate, Lib.DisplayDateFormat);
 
             rowIndex = CommonLib.WriteBranchAddressExcel(rowIndex, colIndex, col_count, Company_id, Branch_id, context!, excel);
             rowIndex += 1;

@@ -131,17 +131,34 @@ namespace Marketing.Printing
                 i++;
                 printHeader = CommonLib.IsPageBreak(Row, Line_Height, Page_Height);
                 BL = CommonLib.IsLastRow(i, recordCount);
+                var format = new TextFormat
+                {
+                    FontSize = 9,
+                    Style = "J",
+                    Indent = true
+                };
+
                 var mbl_ref_date = Lib.FormatDate(Lib.ParseDate(dr.mbl_ref_date!), Lib.DisplayDateFormat);
 
-                pdf.AddText(Row, Col_Code.Left, Col_Code.Width, Line_Height, dr.mbl_refno!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_date.Left, Col_date.Width, Line_Height, mbl_ref_date!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_MblNo.Left, Col_MblNo.Width, Line_Height, dr.mbl_no!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_Agent.Left, Col_Agent.Width, Line_Height, dr.mbl_agent_name!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_Carrier.Left, Col_Carrier.Width, Line_Height, dr.mbl_liner_name!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_ShipType.Left, Col_ShipType.Width, Line_Height, dr.mbl_cntr_type!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_Handled.Left, Col_Handled.Width, Line_Height, dr.mbl_handled_name!, new TextFormat { Border = "LTR" + BL, FontSize = 9, Indent = true });
+                float codeHeight = pdf.MeasureWrappedTextHeight(Row, Col_Code.Left, Col_Code.Width, Line_Height, dr.mbl_refno!, format);
+                float nameHeight = pdf.MeasureWrappedTextHeight(Row, Col_date.Left, Col_date.Width, Line_Height, mbl_ref_date!, format);
+                float mblnoHeight = pdf.MeasureWrappedTextHeight(Row, Col_MblNo.Left, Col_MblNo.Width, Line_Height, dr.mbl_no!, format);
+                float agentHeight = pdf.MeasureWrappedTextHeight(Row, Col_Agent.Left, Col_Agent.Width, Line_Height, dr.mbl_agent_name!, format);
+                float carrierHeight = pdf.MeasureWrappedTextHeight(Row, Col_Carrier.Left, Col_Carrier.Width, Line_Height, dr.mbl_liner_name!, format);
+                float shiptypeHeight = pdf.MeasureWrappedTextHeight(Row, Col_ShipType.Left, Col_ShipType.Width, Line_Height, dr.mbl_cntr_type!, format);
+                float handledHeight = pdf.MeasureWrappedTextHeight(Row, Col_Handled.Left, Col_Handled.Width, Line_Height, dr.mbl_handled_name!, format);
+
+                float rowHeight = new[] { codeHeight, nameHeight, mblnoHeight, agentHeight, carrierHeight, handledHeight }.Max();
+
+                pdf.AddText(Row, Col_Code.Left, Col_Code.Width, rowHeight, dr.mbl_refno!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_date.Left, Col_date.Width, rowHeight, mbl_ref_date!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_MblNo.Left, Col_MblNo.Width, rowHeight, dr.mbl_no!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_Agent.Left, Col_Agent.Width, rowHeight, dr.mbl_agent_name!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_Carrier.Left, Col_Carrier.Width, rowHeight, dr.mbl_liner_name!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_ShipType.Left, Col_ShipType.Width, rowHeight, dr.mbl_cntr_type!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_Handled.Left, Col_Handled.Width, rowHeight, dr.mbl_handled_name!, new TextFormat { Border = "LTR" + BL, FontSize = 9, Indent = true });
                 
-                Row += Line_Height;
+                Row += rowHeight;
 
                 if (printHeader)
                     Row = WriteHeader(Row_Default, Col_Default);
@@ -156,8 +173,8 @@ namespace Marketing.Printing
             pdf.AddNewPage();
             PageNumber++;
 
-            var getDate = DbLib.GetDateTime();
-            Date = Lib.FormatDate(getDate, Lib.DisplayDateFormat);
+            var currentDate = DbLib.GetDateTime();
+            Date = Lib.FormatDate(currentDate, Lib.DisplayDateTimeFormat);
             FromDate = Lib.FormatDate(Lib.ParseDate(FromDate), Lib.DisplayDateFormat);
             ToDate = Lib.FormatDate(Lib.ParseDate(ToDate), Lib.DisplayDateFormat);
 

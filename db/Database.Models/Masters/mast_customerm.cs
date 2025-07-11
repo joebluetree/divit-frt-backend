@@ -145,9 +145,13 @@ namespace Database.Models.Masters
         public string? rec_edited_by { get; set; }
         public DateTime? rec_edited_date { get; set; }
         public int rec_company_id { get; set; }
+        public int? rec_branch_id { get; set; }
 
         [ForeignKey("rec_company_id")]
         public mast_companym? company { get; set; }
+
+        [ForeignKey("rec_branch_id")]
+        public mast_branchm? branchm { get; set; }
 
     }
 }

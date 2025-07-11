@@ -11,6 +11,8 @@ using Database.Models.Cargo;
 using System.Diagnostics.Eventing.Reader;
 using OtherOp.Interfaces;
 using Common.DTO.OtherOp;
+using SeaExport.Printing;
+using Marketing.Printing;
 
 namespace OtherOp.Repositories
 {
@@ -37,6 +39,8 @@ namespace OtherOp.Repositories
                 var action = data["action"].ToString();
                 if (action == null)
                     action = "search";
+                var title = data["title"].ToString();
+                var user_name = data["global_user_name"].ToString();
                 var oth_mode = "";
                 var oth_from_date = "";
                 var oth_to_date = "";
@@ -91,7 +95,7 @@ namespace OtherOp.Repositories
                 if (!Lib.IsBlank(oth_refno))
                     query = query.Where(w => w.mbl_refno!.Contains(oth_refno!));
 
-                if (action == "SEARCH")
+                if (action == "SEARCH" || action == "PRINT" || action == "EXCEL" || action == "PDF")
                 {
                     _page.rows = query.Count();
                     _page.pages = Lib.getTotalPages(_page.rows, _page.pageSize);
@@ -122,11 +126,34 @@ namespace OtherOp.Repositories
                     oth_pod_name = e.pod!.param_name,
                     oth_pod_eta = Lib.FormatDate(e.mbl_pod_eta, Lib.outputDateFormat),
                     oth_handled_name = e.handledby!.param_name,
+
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                     rec_edited_by = e.rec_edited_by,
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
+
                 }).ToListAsync();
+                var fileDataList = new List<filesm>();
+                var searchInfo = new Dictionary<string, string>
+                {
+                    {"oth_from_date",oth_from_date!},
+                    {"oth_to_date",oth_to_date!},
+                    {"oth_refno", oth_refno! },
+                };
+
+                if (action == "PDF" || action == "PRINT")
+                {
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(pdfResult);
+                }
+                if (action == "EXCEL" || action == "PRINT")
+                {
+                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(excelResult);
+                }
+
+                RetData.Add("fileData", fileDataList);
+                RetData.Add("action", action);
 
                 RetData.Add("records", Records);
                 RetData.Add("page", _page);
@@ -1155,6 +1182,77 @@ namespace OtherOp.Repositories
                 .LogChangesAsync();
 
         }
+        public filesm ProcessPdfFileAsync(List<cargo_otherop_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
 
+            OtherOpPdfFile bc = new OtherOpPdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Mbl_type = title,
+                FromDate = searchInfo.ContainsKey("oth_from_date") ? searchInfo["oth_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("oth_to_date") ? searchInfo["oth_to_date"] : "",
+                RefNo = searchInfo.ContainsKey("oth_refno") ? searchInfo["oth_refno"] : "",
+
+            };
+            bc.Process();
+
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
+
+            var file = bc.FList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
+        public filesm ProcessExcelFileAsync(List<cargo_otherop_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
+
+            ProcessOtherOpExcelFile bc = new ProcessOtherOpExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Mbl_type = title,
+                FromDate = searchInfo.ContainsKey("oth_from_date") ? searchInfo["oth_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("oth_to_date") ? searchInfo["oth_to_date"] : "",
+                RefNo = searchInfo.ContainsKey("oth_refno") ? searchInfo["oth_refno"] : "",
+
+            };
+            bc.Process();
+
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
+
+            var file = bc.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
     }
 }
