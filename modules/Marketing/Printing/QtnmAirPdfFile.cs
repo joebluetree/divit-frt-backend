@@ -26,6 +26,8 @@ namespace Marketing.Printing
         public int Branch_id { get; set; }
         public AppDbContext? context { get; set; }
         public string Name { get; set; } = "";
+        public string FromDate { get; set; } = "";
+        public string ToDate { get; set; } = "";
         public string QuoteTo { get; set; } = "";
         public string QuoteNo { get; set; } = "";
         public string Quotepld { get; set; } = "";
@@ -169,7 +171,7 @@ namespace Marketing.Printing
             PageNumber++;
 
             var currentDate = DbLib.GetDateTime();
-            Date = Lib.FormatDate(currentDate, Lib.DisplayDateFormat);
+            Date = Lib.FormatDate(currentDate, Lib.DisplayDateTimeFormat);
 
             string ptintInfo = $"PRINTED ON : {Date} / {User_name}     PAGE#: {PageNumber}";
 
@@ -178,10 +180,15 @@ namespace Marketing.Printing
             currentY += Line_Height;
             pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper(), new TextFormat { Border = "TB", Style = "B", FontSize = 10 });
             currentY += Line_Height + 3;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, "QUOTE TO             : " + QuoteTo, new TextFormat { FontSize = 10 });
+            int halfWidth = Row_Width / 2; // to assign From and to date in same row
+            pdf.AddText(currentY, Col, halfWidth, Line_Height, "FROM DATE: " + FromDate, new TextFormat { FontSize = 10 });
+            pdf.AddText(currentY, Col + halfWidth, halfWidth, Line_Height, "TO DATE: " + ToDate, new TextFormat { FontSize = 10 });
             currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, "QUOTE NO             : " + QuoteNo, new TextFormat { FontSize = 10 });
+
+            pdf.AddText(currentY, Col, halfWidth, Line_Height, "QUOTE TO: " + QuoteTo, new TextFormat { FontSize = 10 });
+            pdf.AddText(currentY, Col + halfWidth, halfWidth, Line_Height, "QUOTE NO: " + QuoteNo, new TextFormat { FontSize = 10 });
             currentY += Line_Height;
+            
             pdf.AddText(currentY, Col, Row_Width, Line_Height, ptintInfo, new TextFormat { FontSize = 10 });
             currentY += Line_Height + 5;
 
