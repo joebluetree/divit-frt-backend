@@ -153,8 +153,10 @@ namespace Marketing.Repositories
                 var fileDataList = new List<filesm>();
                 var searchInfo = new Dictionary<string, string>
                 {
-                    { "qtnm_to_name", qtnm_to_name! },
-                    { "qtnm_no", qtnm_no! },
+                    {"qtnm_from_date",qtnm_from_date!},
+                    {"qtnm_to_date",qtnm_to_date!},
+                    {"qtnm_to_name", qtnm_to_name! },
+                    {"qtnm_no", qtnm_no! },
                 };
 
                 if (action == "PDF" || action == "PRINT")
@@ -718,6 +720,8 @@ namespace Marketing.Repositories
                 Name = name,
                 User_name = user_name,
                 Qtnm_type = sqtnm_type,
+                FromDate = searchInfo.ContainsKey("qtnm_from_date") ? searchInfo["qtnm_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("qtnm_to_date") ? searchInfo["qtnm_to_date"] : "",
                 QuoteTo = searchInfo.ContainsKey("qtnm_to_name") ? searchInfo["qtnm_to_name"] : "",
                 QuoteNo = searchInfo.ContainsKey("qtnm_no") ? searchInfo["qtnm_no"] : "",
             };
@@ -753,6 +757,8 @@ namespace Marketing.Repositories
                 Name = name,
                 User_name = user_name,
                 Qtnm_type = sqtnm_type,
+                FromDate = searchInfo.ContainsKey("qtnm_from_date") ? searchInfo["qtnm_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("qtnm_to_date") ? searchInfo["qtnm_to_date"] : "",
                 QuoteTo = searchInfo.ContainsKey("qtnm_to_name") ? searchInfo["qtnm_to_name"] : "",
                 QuoteNo = searchInfo.ContainsKey("qtnm_no") ? searchInfo["qtnm_no"] : "",
             };

@@ -8,6 +8,8 @@ using Database.Lib.Interfaces;
 using Database.Models.Masters;
 using Database.Models.BaseTables;
 using Common.Lib;
+using Database.Models.Cargo;
+using Masters.Printing;
 
 namespace Masters.Repositories
 {
@@ -33,8 +35,11 @@ namespace Masters.Repositories
                 var action = data["action"].ToString();
                 if (action == null)
                     action = "search";
+                var title = data["title"].ToString();
+                var user_name = data["global_user_name"].ToString();
                 var cust_row_type = "";
                 var company_id = 0;
+                var branch_id = 0;
                 var cust_date_type = "";
                 var cust_from_date = "";
                 var cust_to_date = "";
@@ -67,6 +72,10 @@ namespace Masters.Repositories
                     cust_firm_code = data["cust_firm_code"].ToString();
                 if (data.ContainsKey("cust_is_blackacc"))
                     cust_is_blackacc = data["cust_is_blackacc"].ToString();
+                if (data.ContainsKey("rec_branch_id"))
+                    branch_id = int.Parse(data["rec_branch_id"].ToString()!);
+                if (branch_id == 0)
+                    throw new Exception("Branch Id Not Found");
                 if (data.ContainsKey("rec_company_id"))
                     company_id = int.Parse(data["rec_company_id"].ToString()!);
                 if (company_id == 0)
@@ -81,6 +90,7 @@ namespace Masters.Repositories
                     .Include(e => e.customer);
 
                 query = query.Where(w => w.rec_company_id == company_id);
+                query = query.Where(w => w.rec_branch_id == branch_id);
                 query = query.Where(w => w.cust_row_type == cust_row_type);
 
 
@@ -111,7 +121,7 @@ namespace Masters.Repositories
                 if (!Lib.IsBlank(cust_is_blackacc))
                     query = query.Where(w => w.cust_is_blackacc!.Contains(cust_is_blackacc!));
 
-                if (action == "SEARCH")
+                if (action == "SEARCH" || action == "PRINT" || action == "EXCEL" || action == "PDF")
                 {
                     _page.rows = query.Count();
                     _page.pages = Lib.getTotalPages(_page.rows, _page.pageSize);
@@ -136,13 +146,65 @@ namespace Masters.Repositories
                     cust_short_name = e.cust_short_name,
                     cust_name = e.cust_name,
                     cust_parent_name = e.customer!.cust_name,
+                    cust_address1 = e.cust_address1,
+                    cust_address2 = e.cust_address2,
+                    cust_address3 = e.cust_address3,
+                    cust_type = e.cust_type,
+                    cust_nomination = e.cust_nomination,
+                    cust_contact = e.cust_contact,
+                    cust_is_shipper = e.cust_is_shipper,
+                    cust_is_consignee = e.cust_is_consignee,
+                    cust_is_importer = e.cust_is_importer,
+                    cust_is_exporter = e.cust_is_exporter,
+                    cust_is_cha = e.cust_is_cha,
+                    cust_is_forwarder = e.cust_is_forwarder,
+                    cust_is_oagent = e.cust_is_oagent,
+                    cust_is_acarrier = e.cust_is_acarrier,
+                    cust_is_scarrier = e.cust_is_scarrier,
+                    cust_is_trucker = e.cust_is_trucker,
+                    cust_is_warehouse = e.cust_is_warehouse,
+                    cust_is_sterminal = e.cust_is_sterminal,
+                    cust_is_aterminal = e.cust_is_aterminal,
+                    cust_is_shipvendor = e.cust_is_shipvendor,
+                    cust_is_gvendor = e.cust_is_gvendor,
+                    cust_is_employee = e.cust_is_employee,
+                    cust_is_contract = e.cust_is_contract,
+                    cust_is_miscell = e.cust_is_miscell,
+                    cust_is_tbd = e.cust_is_tbd,
+                    cust_is_bank = e.cust_is_bank,
 
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                     rec_edited_by = e.rec_edited_by,
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
                 }).ToListAsync();
+                var fileDataList = new List<filesm>();
+                var searchInfo = new Dictionary<string, string>
+                {
+                    {"cust_from_date",cust_from_date!},
+                    {"cust_to_date",cust_to_date!},
+                    {"cust_created_by", cust_created_by!},
+                    {"cust_edited_by", cust_edited_by!},
+                    {"cust_code", cust_code!},
+                    {"cust_name", cust_name!},
+                    {"cust_firm_code", cust_firm_code!},
+                    {"cust_is_blackacc", cust_is_blackacc!},
+                };
 
+                if (action == "PDF" || action == "PRINT")
+                {
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, branch_id, user_name!, cust_row_type!,searchInfo);
+                    fileDataList.Add(pdfResult);
+                }
+
+                if (action == "EXCEL" || action == "PRINT")
+                {
+                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, branch_id, user_name!, cust_row_type!,searchInfo);
+                    fileDataList.Add(excelResult);
+                }
+
+                RetData.Add("fileData", fileDataList);
+                RetData.Add("action", action);
                 RetData.Add("records", Records);
                 RetData.Add("page", _page);
 
@@ -490,6 +552,7 @@ namespace Masters.Repositories
                     Record = new mast_customerm();
                     // Record.cust_id = record_dto.cust_id;
                     Record.rec_company_id = record_dto.rec_company_id;
+                    Record.rec_branch_id = record_dto.rec_branch_id;
                     Record.rec_created_by = record_dto.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
                     Record.rec_locked = "N";
@@ -518,7 +581,7 @@ namespace Masters.Repositories
 
 
                 if (mode == "edit")
-                   await logHistory(Record, record_dto);
+                    await logHistory(Record, record_dto);
 
                 string cust_type = GetCustomerType(record_dto);
                 Record.cust_type = cust_type;
@@ -671,10 +734,10 @@ namespace Masters.Repositories
                     .Where(w => w.cont_parent_id == id)
                     .ToListAsync();
 
-            
+
                 if (mode == "edit")
                     await logHistoryDetail(records, record_dto);
-                
+
 
 
                 // Remove Deleted Records
@@ -845,12 +908,12 @@ namespace Masters.Repositories
                 cust_bond_yn = old_record.cust_bond_yn,
                 cust_punch_from = old_record.cust_punch_from,
                 cust_bond_no = old_record.cust_bond_no,
-                cust_bond_expdt = Lib.FormatDate(old_record.cust_bond_expdt,Lib.outputDateFormat),
+                cust_bond_expdt = Lib.FormatDate(old_record.cust_bond_expdt, Lib.outputDateFormat),
                 cust_branch_name = old_record.branch?.branch_name,
                 cust_protected = old_record.cust_protected,
                 cust_cur_name = old_record.currency?.param_name,
                 cust_row_type = old_record.cust_row_type,
-                cust_est_dt = Lib.FormatDate(old_record.cust_est_dt,Lib.outputDateFormat),
+                cust_est_dt = Lib.FormatDate(old_record.cust_est_dt, Lib.outputDateFormat),
                 cust_parent_id = old_record.cust_parent_id
 
             };
@@ -858,8 +921,8 @@ namespace Masters.Repositories
             await new LogHistorym<mast_customerm_dto>(context)
                 .Table("mast_customerm", log_date)
                 .PrimaryKey("cust_id", record_dto.cust_id)
-                .RefNo(record_dto.cust_name!)              
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .RefNo(record_dto.cust_name!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
                 .TrackColumn("cust_code", "Customer Code")
                 .TrackColumn("cust_short_name", "Short Name")
                 .TrackColumn("cust_name", "Customer Name")
@@ -933,7 +996,7 @@ namespace Masters.Repositories
                 .TrackColumn("cust_bond_yn", "Bond Y/N")
                 .TrackColumn("cust_punch_from", "Punch From")
                 .TrackColumn("cust_bond_no", "Bond No")
-                .TrackColumn("cust_bond_expdt", "Bond Expiry Date","date")//bond
+                .TrackColumn("cust_bond_expdt", "Bond Expiry Date", "date")//bond
                 .TrackColumn("cust_branch_name", "Branch")
                 .TrackColumn("cust_protected", "Protected")
                 .TrackColumn("cust_cur_name", "Currency Name")
@@ -979,6 +1042,89 @@ namespace Masters.Repositories
                 .SetRecords(old_records_dto, record_dto.cust_contacts!)
                 .LogChangesAsync();
 
+        }
+        public filesm ProcessPdfFileAsync(List<mast_customerm_dto> Records, string title, int company_id, int branch_id, string user_name, string Cust_type, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
+
+            CustomermPdfFile bc = new CustomermPdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Cust_type = Cust_type,
+
+                FromDate = searchInfo.ContainsKey("cust_from_date") ? searchInfo["cust_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("cust_to_date") ? searchInfo["cust_to_date"] : "",
+                CreatedBy = searchInfo.ContainsKey("cust_created_by") ? searchInfo["cust_created_by"] : "",
+                EditedBy = searchInfo.ContainsKey("cust_edited_by") ? searchInfo["cust_edited_by"] : "",
+                CustCode = searchInfo.ContainsKey("cust_code") ? searchInfo["cust_code"] : "",
+                Name = searchInfo.ContainsKey("cust_name") ? searchInfo["cust_name"] : "",
+                FirmCode = searchInfo.ContainsKey("cust_firm_code") ? searchInfo["cust_firm_code"] : "",
+                IsBlackAcc = searchInfo.ContainsKey("cust_is_blackacc") ? searchInfo["cust_is_blackacc"] : "",
+            };
+            bc.Process();
+
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
+
+            var file = bc.FList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
+
+        public filesm ProcessExcelFileAsync(List<mast_customerm_dto> Records, string title, int company_id, int branch_id, string user_name,  string Cust_type, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
+
+            ProcessCustomerExcelFile bc = new ProcessCustomerExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Cust_type = Cust_type,
+
+                FromDate = searchInfo.ContainsKey("cust_from_date") ? searchInfo["cust_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("cust_to_date") ? searchInfo["cust_to_date"] : "",
+                CreatedBy = searchInfo.ContainsKey("cust_created_by") ? searchInfo["cust_created_by"] : "",
+                EditedBy = searchInfo.ContainsKey("cust_edited_by") ? searchInfo["cust_edited_by"] : "",
+                CustCode = searchInfo.ContainsKey("cust_code") ? searchInfo["cust_code"] : "",
+                Name = searchInfo.ContainsKey("cust_name") ? searchInfo["cust_name"] : "",
+                FirmCode = searchInfo.ContainsKey("cust_firm_code") ? searchInfo["cust_firm_code"] : "",
+                IsBlackAcc = searchInfo.ContainsKey("cust_is_blackacc") ? searchInfo["cust_is_blackacc"] : "",
+            };
+            bc.Process();
+
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
+
+            var file = bc.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
         }
     }
 }
