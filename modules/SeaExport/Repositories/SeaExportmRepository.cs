@@ -12,7 +12,6 @@ using Common.DTO.SeaExport;
 using Database.Models.Cargo;
 using System.Diagnostics.Eventing.Reader;
 using Common.DTO.Common;
-using Marketing.Printing;
 using SeaExport.Printing;
 
 namespace SeaExport.Repositories
@@ -164,7 +163,7 @@ namespace SeaExport.Repositories
                 if (action == "PDF" || action == "PRINT")
                 {
                     var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, mbl_refno!, user_name!, branch_id, searchInfo);
-                    fileDataList.Add(pdfResult);
+                    fileDataList.Add(pdfResult); 
                 }
                 if (action == "EXCEL" || action == "PRINT")
                 {
@@ -538,64 +537,24 @@ namespace SeaExport.Repositories
                 Record.mbl_no = record_dto.mbl_no;
                 Record.mbl_sub_houseno = record_dto.mbl_sub_houseno;
                 Record.mbl_liner_bookingno = record_dto.mbl_liner_bookingno;
-
-                if (Lib.IsZero(record_dto.mbl_agent_id))
-                    Record.mbl_agent_id = null;
-                else
-                    Record.mbl_agent_id = record_dto.mbl_agent_id;
-
-                if (Lib.IsZero(record_dto.mbl_liner_id))
-                    Record.mbl_liner_id = null;
-                else
-                    Record.mbl_liner_id = record_dto.mbl_liner_id;
-
-                if (Lib.IsZero(record_dto.mbl_handled_id))
-                    Record.mbl_handled_id = null;
-                else
-                    Record.mbl_handled_id = record_dto.mbl_handled_id;
-
-                if (Lib.IsZero(record_dto.mbl_salesman_id))
-                    Record.mbl_salesman_id = null;
-                else
-                    Record.mbl_salesman_id = record_dto.mbl_salesman_id;
+                Record.mbl_agent_id = record_dto.mbl_agent_id;
+                Record.mbl_liner_id = record_dto.mbl_liner_id;
+                Record.mbl_handled_id = record_dto.mbl_handled_id;
+                Record.mbl_salesman_id = record_dto.mbl_salesman_id;
 
                 Record.mbl_frt_status_name = record_dto.mbl_frt_status_name;
-                if (Lib.IsZero(record_dto.mbl_ship_term_id))
-                    Record.mbl_ship_term_id = null;
-                else
-                    Record.mbl_ship_term_id = record_dto.mbl_ship_term_id;
-
+                Record.mbl_ship_term_id = record_dto.mbl_ship_term_id;
                 Record.mbl_cntr_type = record_dto.mbl_cntr_type;
                 Record.mbl_direct = record_dto.mbl_direct;
                 Record.mbl_place_delivery = record_dto.mbl_place_delivery;
-
-                if (Lib.IsZero(record_dto.mbl_pol_id))
-                    Record.mbl_pol_id = null;
-                else
-                    Record.mbl_pol_id = record_dto.mbl_pol_id;
+                Record.mbl_pol_id = record_dto.mbl_pol_id;
                 Record.mbl_pol_etd = Lib.ParseDate(record_dto.mbl_pol_etd!);
-
-                if (Lib.IsZero(record_dto.mbl_pod_id))
-                    Record.mbl_pod_id = null;
-                else
-                    Record.mbl_pod_id = record_dto.mbl_pod_id;
+                Record.mbl_pod_id = record_dto.mbl_pod_id;
                 Record.mbl_pod_eta = Lib.ParseDate(record_dto.mbl_pod_eta!);
-
-                if (Lib.IsZero(record_dto.mbl_pofd_id))
-                    Record.mbl_pofd_id = null;
-                else
-                    Record.mbl_pofd_id = record_dto.mbl_pofd_id;
+                Record.mbl_pofd_id = record_dto.mbl_pofd_id;
                 Record.mbl_pofd_eta = Lib.ParseDate(record_dto.mbl_pofd_eta!);
-
-                if (Lib.IsZero(record_dto.mbl_country_id))
-                    Record.mbl_country_id = null;
-                else
-                    Record.mbl_country_id = record_dto.mbl_country_id;
-
-                if (Lib.IsZero(record_dto.mbl_vessel_id))
-                    Record.mbl_vessel_id = null;
-                else
-                    Record.mbl_vessel_id = record_dto.mbl_vessel_id;
+                Record.mbl_country_id = record_dto.mbl_country_id;
+                Record.mbl_vessel_id = record_dto.mbl_vessel_id;
                 Record.mbl_vessel_name = record_dto.mbl_vessel_name;
                 Record.mbl_voyage = record_dto.mbl_voyage;
                 Record.mbl_book_slno = record_dto.mbl_book_slno;
@@ -1022,8 +981,8 @@ namespace SeaExport.Repositories
         public filesm ProcessPdfFileAsync(List<cargo_sea_exportm_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
         {
             var Dt_List = Records;
-            if (Dt_List.Count <= 0)
-                throw new Exception("Print List Records error");
+            // if (Dt_List.Count <= 0)
+            //     throw new Exception("Print List Records error");
 
             SeaExportMPdfFile bc = new SeaExportMPdfFile
             {

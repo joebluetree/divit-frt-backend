@@ -13,8 +13,7 @@ using System.Threading.Tasks.Dataflow;
 using System.Numerics;
 using SeaImport.Interfaces;
 using Common.DTO.SeaImport;
-using Marketing.Printing;
-using SeaExport.Printing;
+using SeaImport.Printing;
 
 //Name : Sourav V
 //Created Date : 01/04/2025
@@ -51,9 +50,11 @@ namespace SeaImport.Repositories
                 var title = data["title"].ToString();
                 var user_name = data["global_user_name"].ToString();
                 var hbl_mode = "";
+                var hbl_date_type = "";
                 var hbl_from_date = "";
                 var hbl_to_date = "";
-                var hbl_houseno = "";
+                var hbl_mbl_refno = "";
+                var rec_created_by = "";
                 var company_id = 0;
                 var branch_id = 0;
 
@@ -62,12 +63,16 @@ namespace SeaImport.Repositories
 
                 if (data.ContainsKey("hbl_mode"))
                     hbl_mode = data["hbl_mode"].ToString();
+                if (data.ContainsKey("hbl_date_type"))
+                    hbl_date_type = data["hbl_date_type"].ToString();
                 if (data.ContainsKey("hbl_from_date"))
                     hbl_from_date = data["hbl_from_date"].ToString();
                 if (data.ContainsKey("hbl_to_date"))
                     hbl_to_date = data["hbl_to_date"].ToString();
-                if (data.ContainsKey("hbl_houseno"))
-                    hbl_houseno = data["hbl_houseno"].ToString();
+                if (data.ContainsKey("hbl_mbl_refno"))
+                    hbl_mbl_refno = data["hbl_mbl_refno"].ToString();
+                if (data.ContainsKey("rec_created_by"))
+                    rec_created_by = data["rec_created_by"].ToString();
 
                 if (data.ContainsKey("rec_company_id"))
                     company_id = int.Parse(data["rec_company_id"].ToString()!);
@@ -92,15 +97,28 @@ namespace SeaImport.Repositories
                 if (!Lib.IsBlank(hbl_from_date))
                 {
                     from_date = Lib.ParseDate(hbl_from_date!);
-                    query = query.Where(w => w.master!.mbl_date >= from_date);
+                    if (hbl_date_type == "Created Date")
+                        query = query.Where(w => w.rec_created_date.Date >= from_date);
+                    if (hbl_date_type == "Ref Date")
+                        query = query.Where(w => w.master!.mbl_ref_date.HasValue && w.master!.mbl_ref_date.Value.Date >= from_date);    
                 }
                 if (!Lib.IsBlank(hbl_to_date))
                 {
                     to_date = Lib.ParseDate(hbl_to_date!);
-                    query = query.Where(w => w.master!.mbl_date <= to_date);
+                    if (hbl_date_type == "Created Date")
+                        query = query.Where(w => w.rec_created_date.Date <= to_date);
+                    if (hbl_date_type == "Ref Date")
+                        query = query.Where(w => w.master!.mbl_ref_date.HasValue && w.master!.mbl_ref_date.Value.Date <= to_date);
+                        // query = query.Where(w => w.master!.mbl_date <= to_date);
                 }
-                if (!Lib.IsBlank(hbl_houseno))
-                    query = query.Where(w => w.hbl_houseno!.Contains(hbl_houseno!));
+                if (Lib.IsBlank(hbl_from_date) && Lib.IsBlank(hbl_to_date))
+                {
+                    hbl_date_type = "";
+                }
+                if (!Lib.IsBlank(hbl_mbl_refno))
+                        query = query.Where(w => w.master!.mbl_refno!.Contains(hbl_mbl_refno!));
+                if (!Lib.IsBlank(hbl_mbl_refno))
+                    query = query.Where(w => w.rec_created_by!.Contains(rec_created_by!));
 
                 if (action == "SEARCH" || action == "PRINT" || action == "EXCEL" || action == "PDF")
                 {
@@ -142,19 +160,21 @@ namespace SeaImport.Repositories
                 var fileDataList = new List<filesm>();
                 var searchInfo = new Dictionary<string, string>
                 {
+                    {"hbl_date_type",hbl_date_type!},
                     {"hbl_from_date",hbl_from_date!},
                     {"hbl_to_date",hbl_to_date!},
-                    {"hbl_houseno", hbl_houseno! },
+                    {"hbl_mbl_refno", hbl_mbl_refno! },
+                    {"rec_created_by", rec_created_by! },
                 };
 
                 if (action == "PDF" || action == "PRINT")
                 {
-                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, hbl_houseno!, user_name!, branch_id, searchInfo);
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo);
                     fileDataList.Add(pdfResult);
                 }
                 if (action == "EXCEL" || action == "PRINT")
                 {
-                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, hbl_houseno!, user_name!, branch_id, searchInfo);
+                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo);
                     fileDataList.Add(excelResult);
                 }
 
@@ -1427,7 +1447,7 @@ namespace SeaImport.Repositories
             .LogChangesAsync();
 
         }
-        public filesm ProcessPdfFileAsync(List<cargo_sea_importh_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        public filesm ProcessPdfFileAsync(List<cargo_sea_importh_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo)
         {
             var Dt_List = Records;
             if (Dt_List.Count <= 0)
@@ -1443,9 +1463,11 @@ namespace SeaImport.Repositories
                 context = context,
                 User_name = user_name,
                 Hbl_type = title,
-                FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
-                ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
-                HouseNo = searchInfo.ContainsKey("mbl_houseno") ? searchInfo["mbl_houseno"] : "",
+                DateType = searchInfo.ContainsKey("hbl_date_type") ? searchInfo["hbl_date_type"] : "",
+                FromDate = searchInfo.ContainsKey("hbl_from_date") ? searchInfo["hbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("hbl_to_date") ? searchInfo["hbl_to_date"] : "",
+                RefNo = searchInfo.ContainsKey("hbl_mbl_refno") ? searchInfo["hbl_mbl_refno"] : "",
+                CreatedBy = searchInfo.ContainsKey("rec_created_by") ? searchInfo["rec_created_by"] : "",
 
             };
             bc.Process();
@@ -1463,7 +1485,7 @@ namespace SeaImport.Repositories
             };
             return record;
         }
-        public filesm ProcessExcelFileAsync(List<cargo_sea_importh_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        public filesm ProcessExcelFileAsync(List<cargo_sea_importh_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo)
         {
             var Dt_List = Records;
             if (Dt_List.Count <= 0)
@@ -1479,9 +1501,11 @@ namespace SeaImport.Repositories
                 context = context,
                 User_name = user_name,
                 Hbl_type = title,
-                FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
-                ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
-                HouseNo = searchInfo.ContainsKey("mbl_houseno") ? searchInfo["mbl_houseno"] : "",
+                DateType = searchInfo.ContainsKey("hbl_date_type") ? searchInfo["hbl_date_type"] : "",
+                FromDate = searchInfo.ContainsKey("hbl_from_date") ? searchInfo["hbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("hbl_to_date") ? searchInfo["hbl_to_date"] : "",
+                RefNo = searchInfo.ContainsKey("hbl_houseno") ? searchInfo["hbl_houseno"] : "",
+                CreatedBy = searchInfo.ContainsKey("rec_created_by") ? searchInfo["rec_created_by"] : "",
 
             };
             bc.Process();

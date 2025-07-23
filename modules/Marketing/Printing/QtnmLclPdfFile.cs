@@ -182,7 +182,7 @@ namespace Marketing.Printing
             float currentY = CommonLib.WriteBranchAddressPdf(Row, Col, Company_id, Branch_id, context!, pdf);
 
             currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper(), new TextFormat { Border = "TB", Style = "B", FontSize = 10 });
+            pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper() + " LIST", new TextFormat { Border = "TB", Style = "B", FontSize = 10 });
             currentY += Line_Height + 3;
             int halfWidth = Row_Width / 2; // to assign From and to date in same row
             pdf.AddText(currentY, Col, halfWidth, Line_Height, "FROM DATE: " + FromDate, new TextFormat { FontSize = 10 });

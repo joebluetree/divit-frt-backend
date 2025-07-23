@@ -13,6 +13,7 @@ using System.Diagnostics.Eventing.Reader;
 using CommonShipment.Interfaces;
 using Common.DTO.CommonShipment;
 using Common.DTO.SeaExport;
+using CommonShipment.Printing;
 
 
 //Name : Sourav V
@@ -20,6 +21,7 @@ using Common.DTO.SeaExport;
 //Remark : this file defines functions like Save, Delete, getList and getRecords which save/retrieve data
 //version v1-17-04-2025: added full repository
 // v2- 13/05/2025 : GetDetail service added
+// v3 - 22/07/2025 : Print pdf and Excell service added
 
 namespace CommonShipment.Repositories
 {
@@ -46,9 +48,9 @@ namespace CommonShipment.Repositories
 
                 var action = data["action"].ToString();
                 if (action == null)
-
                     action = "search";
-
+                var title = data["title"].ToString();
+                var user_name = data["global_user_name"].ToString();
                 var do_from_date = "";
                 var do_to_date = "";
                 var do_order_no = "";
@@ -97,7 +99,7 @@ namespace CommonShipment.Repositories
                 if (!Lib.IsBlank(do_order_no))
                     query = query.Where(w => w.do_order_no!.Contains(do_order_no!));
 
-                if (action == "SEARCH")
+                if (action == "SEARCH" || action == "PRINT" || action == "EXCEL" || action == "PDF")
                 {
                     _page.rows = query.Count();
                     _page.pages = Lib.getTotalPages(_page.rows, _page.pageSize);
@@ -125,6 +127,7 @@ namespace CommonShipment.Repositories
                     do_to_name = e.do_to_name,
                     do_parent_id = e.do_parent_id,
                     do_order_date = Lib.FormatDate(e.do_order_date, Lib.outputDateFormat),
+                    do_terms_ship = e.do_terms_ship,
 
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
@@ -132,6 +135,27 @@ namespace CommonShipment.Repositories
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
                 }).ToListAsync();
 
+                var fileDataList = new List<filesm>();
+                var searchInfo = new Dictionary<string, string>
+                {
+                    {"do_from_date",do_from_date!},
+                    {"do_to_date",do_to_date!},
+                    {"do_order_no", do_order_no!},
+                };
+
+                if (action == "PDF" || action == "PRINT")
+                {
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, do_order_no!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(pdfResult);
+                }
+                if (action == "EXCEL" || action == "PRINT")
+                {
+                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, do_order_no!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(excelResult);
+                }
+
+                RetData.Add("fileData", fileDataList);
+                RetData.Add("action", action);
                 RetData.Add("records", Records);
                 RetData.Add("page", _page);
 
@@ -521,7 +545,6 @@ namespace CommonShipment.Repositories
                     record_dto.do_order_no = $"{Defaultprefix}{iNextNo}";
                 }
 
-
                 var do_freight = $"{record_dto.do_is_exw},{record_dto.do_is_fob},{record_dto.do_is_fca},{record_dto.do_is_cpu},{record_dto.do_is_ddu},{record_dto.do_is_frt_others},{record_dto.do_freight_remark}";
                 var do_export_doc = $"{record_dto.do_is_comm_inv},{record_dto.do_is_lc},{record_dto.do_is_coo},{record_dto.do_is_pl},{record_dto.do_is_expdec},{record_dto.do_is_exp_others},{record_dto.do_export_doc_remark}";
 
@@ -535,7 +558,6 @@ namespace CommonShipment.Repositories
                     Record.rec_created_by = record_dto.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
                     Record.rec_locked = "N";
-
                     Record.do_cfno = record_dto.do_cfno;
 
                 }
@@ -908,8 +930,77 @@ namespace CommonShipment.Repositories
 
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
-
         }
+        public filesm ProcessPdfFileAsync(List<cargo_delivery_order_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
 
+            DeliveryOrderPdfFile bc = new DeliveryOrderPdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                FileName = title,
+                FromDate = searchInfo.ContainsKey("do_from_date") ? searchInfo["do_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("do_to_date") ? searchInfo["do_to_date"] : "",
+                RefNo = searchInfo.ContainsKey("do_order_no") ? searchInfo["do_order_no"] : "",
+                
+            };
+            bc.Process();
+
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
+
+            var file = bc.FList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
+        public filesm ProcessExcelFileAsync(List<cargo_delivery_order_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
+
+            ProcessDeliveryOrderExcelFile bc = new ProcessDeliveryOrderExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                FileName = title,
+                FromDate = searchInfo.ContainsKey("do_from_date") ? searchInfo["do_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("do_to_date") ? searchInfo["do_to_date"] : "",
+                RefNo = searchInfo.ContainsKey("do_order_no") ? searchInfo["do_order_no"] : "",
+            };
+            bc.Process();
+
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
+
+            var file = bc.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
     }
 }

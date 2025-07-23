@@ -11,8 +11,7 @@ using Database.Models.Cargo;
 using System.Diagnostics.Eventing.Reader;
 using SeaImport.Interfaces;
 using Common.DTO.SeaImport;
-using SeaExport.Printing;
-using Marketing.Printing;
+using SeaImport.Printing;
 
 namespace SeaImport.Repositories
 {

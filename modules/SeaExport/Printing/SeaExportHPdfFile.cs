@@ -1,7 +1,5 @@
 using System;
 using System.Data;
-using Common.DTO.Marketing;
-using Common.DTO.Masters;
 using Common.DTO.SeaExport;
 using Common.Lib;
 using Common.UserAdmin.DTO;
@@ -14,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using NPOI.HPSF;
 using NPOI.SS.Formula.Functions;
 
-namespace Marketing.Printing
+namespace SeaExport.Printing
 {
     public class SeaExportHPdfFile
     {
@@ -26,6 +24,7 @@ namespace Marketing.Printing
         public int Company_id { get; set; }
         public int Branch_id { get; set; }
         public AppDbContext? context { get; set; }
+        public string RefNo { get; set; } = "";
         public string HouseNo { get; set; } = "";
         public string FromDate { get; set; } = "";
         public string ToDate { get; set; } = "";
@@ -98,11 +97,11 @@ namespace Marketing.Printing
             this.Row_Width = 500;
 
             this.Col_RefNo = new ColumnFormat { Left = 30, Width =60 };
-            this.Col_MblNo = new ColumnFormat { Left = 90, Width = 90};
-            this.Col_HouseNo = new ColumnFormat { Left = 180, Width = 65};
-            this.Col_Shipper = new ColumnFormat { Left = 245, Width = 110};
-            this.Col_Consignee = new ColumnFormat { Left = 355, Width = 110};
-            this.Col_Handled = new ColumnFormat { Left = 465, Width = 65};
+            this.Col_MblNo = new ColumnFormat { Left = 90, Width = 85};
+            this.Col_HouseNo = new ColumnFormat { Left = 175, Width = 65};
+            this.Col_Shipper = new ColumnFormat { Left = 240, Width = 110};
+            this.Col_Consignee = new ColumnFormat { Left = 350, Width = 110};
+            this.Col_Handled = new ColumnFormat { Left = 460, Width = 70};
 
             pdf.CreateDocument(File_Name);
             CreateReport();
@@ -176,24 +175,25 @@ namespace Marketing.Printing
             float currentY = CommonLib.WriteBranchAddressPdf(Row, Col, Company_id, Branch_id, context!, pdf);
 
             currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper(), new TextFormat { Border = "TB", Style = "B", FontSize = 10 });
+            pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper() + " LIST", new TextFormat { Border = "TB", Style = "B", FontSize = 10 });
             currentY += Line_Height + 3;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, "FROM             : " + FromDate, new TextFormat { FontSize = 10 });
+            int halfWidth = Row_Width / 2; // to assign From and to date in same row
+            pdf.AddText(currentY, Col, halfWidth, Line_Height, "FROM DATE: " + FromDate, new TextFormat { FontSize = 10 });
+            pdf.AddText(currentY, Col + halfWidth, halfWidth, Line_Height, "TO DATE: " + ToDate, new TextFormat { FontSize = 10 });
             currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, "TO                 : " + ToDate, new TextFormat { FontSize = 10 });
-            currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, "HOUSE #       : " + HouseNo, new TextFormat { FontSize = 10 });
+            pdf.AddText(currentY, Col, halfWidth, Line_Height, "REF NO: " + RefNo, new TextFormat { FontSize = 10 });
+            pdf.AddText(currentY, Col+halfWidth , halfWidth, Line_Height, "HOUSE NO: " + HouseNo, new TextFormat { FontSize = 10 });
             currentY += Line_Height;
             pdf.AddText(currentY, Col, Row_Width, Line_Height, ptintInfo, new TextFormat { FontSize = 10 });
             currentY += Line_Height + 5;
 
             // Table Header
-            pdf.AddText(currentY, Col_RefNo.Left, Col_RefNo.Width, Line_Height, "REF#", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_RefNo.Left, Col_RefNo.Width, Line_Height, "REF #", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_MblNo.Left, Col_MblNo.Width, Line_Height, "MBL #", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_HouseNo.Left, Col_HouseNo.Width, Line_Height, "HOUSE #", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Shipper.Left, Col_Shipper.Width, Line_Height, "SHIPPER", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Consignee.Left, Col_Consignee.Width, Line_Height, "CONSIGNEE", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
-            pdf.AddText(currentY, Col_Handled.Left, Col_Handled.Width, Line_Height, "HANDLED", new TextFormat { Border = "LTR", Style = "B", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_Handled.Left, Col_Handled.Width, Line_Height, "HANDLED BY", new TextFormat { Border = "LTR", Style = "B", FontSize = 10, Indent = true });
 
             currentY += Line_Height;
 

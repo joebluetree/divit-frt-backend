@@ -9,6 +9,7 @@ using Database.Models.Cargo;
 using Common.DTO.AirImport;
 using Database.Models.UserAdmin;
 using AirImport.Interfaces;
+using AirImport.Printing;
 
 namespace AirImport.Repositories
 {
@@ -45,7 +46,8 @@ namespace AirImport.Repositories
                 if (action == null)
                     action = "search";
 
-
+                var title = data["title"].ToString();
+                var user_name = data["global_user_name"].ToString();
                 var hbl_houseno = "";
                 var company_id = 0;
                 var branch_id = 0;
@@ -94,7 +96,7 @@ namespace AirImport.Repositories
                     query = query.Where(w => w.hbl_houseno!.Contains(hbl_houseno!));
 
 
-                if (action == "SEARCH")
+                if (action == "SEARCH" || action == "PRINT" || action == "EXCEL" || action == "PDF")
                 {
                     _page.rows = query.Count();
                     _page.pages = Lib.getTotalPages(_page.rows, _page.pageSize);
@@ -154,7 +156,27 @@ namespace AirImport.Repositories
                     rec_edited_by = e.rec_edited_by,
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
                 }).ToListAsync();
+                var fileDataList = new List<filesm>();
+                var searchInfo = new Dictionary<string, string>
+                {
+                    {"hbl_from_date",hbl_from_date!},
+                    {"hbl_to_date",hbl_to_date!},
+                    {"hbl_houseno", hbl_houseno!},
+                };
 
+                if (action == "PDF" || action == "PRINT")
+                {
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, hbl_houseno!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(pdfResult);
+                }
+                if (action == "EXCEL" || action == "PRINT")
+                {
+                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, hbl_houseno!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(excelResult);
+                }
+
+                RetData.Add("fileData", fileDataList);
+                RetData.Add("action", action);
                 RetData.Add("records", Records);
                 RetData.Add("page", _page);
 
@@ -1038,6 +1060,75 @@ namespace AirImport.Repositories
             .LogChangesAsync();
 
         }
+        public filesm ProcessPdfFileAsync(List<cargo_air_importh_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
 
+            AirImportHPdfFile bc = new AirImportHPdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Hbl_type = title,
+                FromDate = searchInfo.ContainsKey("hbl_from_date") ? searchInfo["hbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("hbl_to_date") ? searchInfo["hbl_to_date"] : "",
+                HouseNo = searchInfo.ContainsKey("hbl_houseno") ? searchInfo["hbl_houseno"] : "",
+            };
+            bc.Process();
+
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
+
+            var file = bc.FList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
+        public filesm ProcessExcelFileAsync(List<cargo_air_importh_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
+
+            ProcessAirImportHExcelFile bc = new ProcessAirImportHExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Hbl_type = title,
+                FromDate = searchInfo.ContainsKey("hbl_from_date") ? searchInfo["hbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("hbl_to_date") ? searchInfo["hbl_to_date"] : "",
+                HouseNo = searchInfo.ContainsKey("hbl_houseno") ? searchInfo["hbl_houseno"] : "",
+            };
+            bc.Process();
+
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
+
+            var file = bc.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
     }
 }

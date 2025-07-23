@@ -1,6 +1,6 @@
 INSERT INTO mast_param
 (param_id, param_type, param_code, param_name, param_order, rec_created_by, rec_created_date, rec_company_id)
-SELECT 107, 'SHIPSTAGE AE', 'NILL', 'NILL', 5, 'ADMIN', now(), 1
+SELECT 107, 'SHIPSTAGE AE', 'NIL', 'NIL', 5, 'ADMIN', now(), 1
 WHERE NOT EXISTS (SELECT 1 FROM mast_param WHERE param_id = 107);
 
 INSERT INTO mast_param

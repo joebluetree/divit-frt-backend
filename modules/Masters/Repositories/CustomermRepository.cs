@@ -98,15 +98,18 @@ namespace Masters.Repositories
                 if (!Lib.IsBlank(cust_from_date))
                 {
                     from_date = Lib.ParseDate(cust_from_date!);
-                    // if(cust_date_type == "Created Date")
-                    //     query = query.Where(w => w.rec_created_date.Date >= from_date);
-                    // DateOnly created_date = rec_created_date.Date;
-                    query = query.Where(w => w.rec_created_date.Date >= from_date);
+                    if (cust_date_type == "Created Date")
+                        query = query.Where(w => w.rec_created_date.Date >= from_date);
+                    if (cust_date_type == "Edited Date")
+                        query = query.Where(w => w.rec_edited_date.HasValue && w.rec_edited_date.Value.Date >= from_date);     
                 }
                 if (!Lib.IsBlank(cust_to_date))
                 {
                     to_date = Lib.ParseDate(cust_to_date!);
-                    query = query.Where(w => w.rec_created_date.Date <= to_date);
+                    if (cust_date_type == "Created Date")
+                        query = query.Where(w => w.rec_created_date.Date <= to_date);
+                    if (cust_date_type == "Edited Date")
+                        query = query.Where(w => w.rec_edited_date.HasValue && w.rec_edited_date.Value.Date <= to_date);     
                 }
                 if (!Lib.IsBlank(cust_created_by))
                     query = query.Where(w => w.rec_created_by!.Contains(cust_created_by!));
@@ -181,6 +184,7 @@ namespace Masters.Repositories
                 var fileDataList = new List<filesm>();
                 var searchInfo = new Dictionary<string, string>
                 {
+                    {"cust_date_type",cust_date_type!},
                     {"cust_from_date",cust_from_date!},
                     {"cust_to_date",cust_to_date!},
                     {"cust_created_by", cust_created_by!},
@@ -1060,6 +1064,7 @@ namespace Masters.Repositories
                 User_name = user_name,
                 Cust_type = Cust_type,
 
+                DateType = searchInfo.ContainsKey("cust_date_type") ? searchInfo["cust_date_type"] : "",
                 FromDate = searchInfo.ContainsKey("cust_from_date") ? searchInfo["cust_from_date"] : "",
                 ToDate = searchInfo.ContainsKey("cust_to_date") ? searchInfo["cust_to_date"] : "",
                 CreatedBy = searchInfo.ContainsKey("cust_created_by") ? searchInfo["cust_created_by"] : "",
@@ -1102,6 +1107,7 @@ namespace Masters.Repositories
                 User_name = user_name,
                 Cust_type = Cust_type,
 
+                DateType = searchInfo.ContainsKey("cust_date_type") ? searchInfo["cust_date_type"] : "",
                 FromDate = searchInfo.ContainsKey("cust_from_date") ? searchInfo["cust_from_date"] : "",
                 ToDate = searchInfo.ContainsKey("cust_to_date") ? searchInfo["cust_to_date"] : "",
                 CreatedBy = searchInfo.ContainsKey("cust_created_by") ? searchInfo["cust_created_by"] : "",

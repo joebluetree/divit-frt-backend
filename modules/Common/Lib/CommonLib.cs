@@ -686,22 +686,22 @@ namespace Common.Lib
             if (Address == null)
                 throw new Exception($"Address not found !");
 
-            excel.CellValue(rowIndex, colIndex, Address.Name!, new CellFormat { Style = "B", FontSize = 15, ColumnWidth = 80, Merge = col_count });
+            excel.CellValue(rowIndex, colIndex, Address.Name!, new CellFormat { Style = "B", FontSize = 15, ColumnWidth = 100 });
             rowIndex += 1;
 
             if (!Database.Lib.Lib.IsBlank(Address!.Address1))
             {
-                excel.CellValue(rowIndex, colIndex, Address.Address1!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = col_count });
+                excel.CellValue(rowIndex, colIndex, Address.Address1!, new CellFormat { FontSize = 10, ColumnWidth = 100 });
                 rowIndex += 1;
             }
             if (!Database.Lib.Lib.IsBlank(Address!.Address2))
             {
-                excel.CellValue(rowIndex, colIndex, Address.Address2!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = col_count });
+                excel.CellValue(rowIndex, colIndex, Address.Address2!, new CellFormat { FontSize = 10, ColumnWidth = 100 });
                 rowIndex += 1;
             }
             if (!Database.Lib.Lib.IsBlank(Address!.Address3))
             {
-                excel.CellValue(rowIndex, colIndex, Address.Address3!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = col_count });
+                excel.CellValue(rowIndex, colIndex, Address.Address3!, new CellFormat { FontSize = 10, ColumnWidth = 100 });
             }
 
             return rowIndex;

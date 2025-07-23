@@ -1,8 +1,7 @@
 using System;
 using System.Data;
-using Common.DTO.SeaImport;
+using Common.DTO.AirImport;
 using Common.Lib;
-using Common.UserAdmin.DTO;
 using Database;
 using Database.Lib;
 using Database.Models.Cargo;
@@ -12,14 +11,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using NPOI.HPSF;
 using NPOI.SS.Formula.Functions;
 
-namespace SeaImport.Printing
+namespace AirImport.Printing
 {
-    public class SeaImportMPdfFile
+    public class AirImportMPdfFile
     {
         iPdfBase pdf = null!;
         public List<filesm> FList = new List<filesm>();
         public string Report_Folder = "";
-        public List<cargo_sea_importm_dto> Dt_List { get; set; } = new List<cargo_sea_importm_dto>();
+        public List<cargo_air_importm_dto> Dt_List { get; set; } = new List<cargo_air_importm_dto>();
         public string Title { get; set; } = "";
         public int Company_id { get; set; }
         public int Branch_id { get; set; }
@@ -53,11 +52,10 @@ namespace SeaImport.Printing
         private ColumnFormat Col_MblNo = new();
         private ColumnFormat Col_Agent = new();
         private ColumnFormat Col_Carrier = new();
-        private ColumnFormat Col_ShipType = new();
         private ColumnFormat Col_Handled = new();
 
 
-        public SeaImportMPdfFile()
+        public AirImportMPdfFile()
         {
             pdf = new TextSharpPdf();
             context = _context;
@@ -99,10 +97,9 @@ namespace SeaImport.Printing
             this.Col_Code = new ColumnFormat { Left = 30, Width =60 };
             this.Col_date = new ColumnFormat { Left = 90, Width = 60 };
             this.Col_MblNo = new ColumnFormat { Left = 150, Width = 70};
-            this.Col_Agent = new ColumnFormat { Left = 220, Width = 100};
-            this.Col_Carrier = new ColumnFormat { Left = 320, Width = 90};
-            this.Col_ShipType = new ColumnFormat { Left = 410, Width = 60};
-            this.Col_Handled = new ColumnFormat { Left = 470, Width = 60};
+            this.Col_Agent = new ColumnFormat { Left = 220, Width = 120};
+            this.Col_Carrier = new ColumnFormat { Left = 340, Width = 110};
+            this.Col_Handled = new ColumnFormat { Left = 450, Width = 80};
 
             pdf.CreateDocument(File_Name);
             CreateReport();
@@ -123,7 +120,7 @@ namespace SeaImport.Printing
 
             int i = 0;
 
-            foreach (cargo_sea_importm_dto dr in Dt_List)
+            foreach (cargo_air_importm_dto dr in Dt_List)
             {
                 i++;
                 printHeader = CommonLib.IsPageBreak(Row, Line_Height, Page_Height);
@@ -142,7 +139,6 @@ namespace SeaImport.Printing
                 float mblnoHeight = pdf.MeasureWrappedTextHeight(Row, Col_MblNo.Left, Col_MblNo.Width, Line_Height, dr.mbl_no!, format);
                 float agentHeight = pdf.MeasureWrappedTextHeight(Row, Col_Agent.Left, Col_Agent.Width, Line_Height, dr.mbl_agent_name!, format);
                 float carrierHeight = pdf.MeasureWrappedTextHeight(Row, Col_Carrier.Left, Col_Carrier.Width, Line_Height, dr.mbl_liner_name!, format);
-                float shiptypeHeight = pdf.MeasureWrappedTextHeight(Row, Col_ShipType.Left, Col_ShipType.Width, Line_Height, dr.mbl_cntr_type!, format);
                 float handledHeight = pdf.MeasureWrappedTextHeight(Row, Col_Handled.Left, Col_Handled.Width, Line_Height, dr.mbl_handled_name!, format);
 
                 float rowHeight = new[] { codeHeight, nameHeight, mblnoHeight, agentHeight, carrierHeight, handledHeight }.Max();
@@ -152,7 +148,6 @@ namespace SeaImport.Printing
                 pdf.AddText(Row, Col_MblNo.Left, Col_MblNo.Width, rowHeight, dr.mbl_no!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
                 pdf.AddText(Row, Col_Agent.Left, Col_Agent.Width, rowHeight, dr.mbl_agent_name!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
                 pdf.AddText(Row, Col_Carrier.Left, Col_Carrier.Width, rowHeight, dr.mbl_liner_name!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_ShipType.Left, Col_ShipType.Width, rowHeight, dr.mbl_cntr_type!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
                 pdf.AddText(Row, Col_Handled.Left, Col_Handled.Width, rowHeight, dr.mbl_handled_name!, new TextFormat { Border = "LTR" + BL, FontSize = 9, Indent = true });
                 
                 Row += rowHeight;
@@ -186,7 +181,7 @@ namespace SeaImport.Printing
             pdf.AddText(currentY, Col, halfWidth, Line_Height, "FROM DATE: " + FromDate, new TextFormat { FontSize = 10 });
             pdf.AddText(currentY, Col + halfWidth, halfWidth, Line_Height, "TO DATE: " + ToDate, new TextFormat { FontSize = 10 });
             currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, "REF # : " + RefNo, new TextFormat { FontSize = 10 });
+            pdf.AddText(currentY, Col, Row_Width, Line_Height, "REF #: " + RefNo, new TextFormat { FontSize = 10 });
             currentY += Line_Height;
             pdf.AddText(currentY, Col, Row_Width, Line_Height, ptintInfo, new TextFormat { FontSize = 10 });
             currentY += Line_Height + 5;
@@ -197,7 +192,6 @@ namespace SeaImport.Printing
             pdf.AddText(currentY, Col_MblNo.Left, Col_MblNo.Width, Line_Height, "MBL#", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Agent.Left, Col_Agent.Width, Line_Height, "MASTER AGENT", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Carrier.Left, Col_Carrier.Width, Line_Height, "CARRIER", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
-            pdf.AddText(currentY, Col_ShipType.Left, Col_ShipType.Width, Line_Height, "SHIP TYPE", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Handled.Left, Col_Handled.Width, Line_Height, "HANDLED BY", new TextFormat { Border = "LTR", Style = "B", FontSize = 10, Indent = true });
 
             currentY += Line_Height;

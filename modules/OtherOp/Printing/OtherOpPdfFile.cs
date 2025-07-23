@@ -178,11 +178,11 @@ namespace Marketing.Printing
             float currentY = CommonLib.WriteBranchAddressPdf(Row, Col, Company_id, Branch_id, context!, pdf);
 
             currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper(), new TextFormat { Border = "TB", Style = "B", FontSize = 10 });
+            pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper() + " LIST", new TextFormat { Border = "TB", Style = "B", FontSize = 10 });
             currentY += Line_Height + 3;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, "FROM             : " + FromDate, new TextFormat { FontSize = 10 });
-            currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, "TO                  : " + ToDate, new TextFormat { FontSize = 10 });
+            int halfWidth = Row_Width / 2; 
+            pdf.AddText(currentY, Col, halfWidth, Line_Height, "FROM DATE: " + FromDate, new TextFormat { FontSize = 10 });
+            pdf.AddText(currentY, Col + halfWidth, halfWidth, Line_Height, "TO DATE: " + ToDate, new TextFormat { FontSize = 10 });
             currentY += Line_Height;
             pdf.AddText(currentY, Col, Row_Width, Line_Height, "REF #                   : " + RefNo, new TextFormat { FontSize = 10 });
             currentY += Line_Height;
@@ -195,8 +195,7 @@ namespace Marketing.Printing
             pdf.AddText(currentY, Col_MblNo.Left, Col_MblNo.Width, Line_Height, "MBL#", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Agent.Left, Col_Agent.Width, Line_Height, "MASTER AGENT", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Carrier.Left, Col_Carrier.Width, Line_Height, "CARRIER", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
-            // pdf.AddText(currentY, Col_POD.Left, Col_POD.Width, Line_Height, "POD", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
-            pdf.AddText(currentY, Col_Handled.Left, Col_Handled.Width, Line_Height, "HANDLED", new TextFormat { Border = "LTR", Style = "B", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_Handled.Left, Col_Handled.Width, Line_Height, "HANDLED BY", new TextFormat { Border = "LTR", Style = "B", FontSize = 10, Indent = true });
 
             currentY += Line_Height;
 
