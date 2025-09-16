@@ -188,6 +188,8 @@ CREATE TABLE IF NOT EXISTS cargo_housem (
     hbl_an_sent_by varchar(15) NULL,
     hbl_an_sent_date date NULL,
     hbl_invoiceno varchar(60) NULL,
+    rec_telex_count int4 NULL,
+    rec_telex_attached varchar(5) NULL,
     rec_year int4 NULL,     
     rec_version int4 DEFAULT 1 NOT NULL,
     rec_locked text NULL,

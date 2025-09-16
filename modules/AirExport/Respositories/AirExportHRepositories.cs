@@ -9,6 +9,7 @@ using Database.Models.Cargo;
 using Common.DTO.AirExport;
 using AirExport.Interfaces;
 using Database.Models.UserAdmin;
+using AirExport.Printing;
 
 namespace AirExport.Repositories
 {
@@ -45,8 +46,10 @@ namespace AirExport.Repositories
                 if (action == null)
                     action = "search";
 
-
+                var title = data["title"].ToString();
+                var user_name = data["global_user_name"].ToString();
                 var hbl_houseno = "";
+                var hbl_mbl_refno = "";
                 var company_id = 0;
                 var branch_id = 0;
                 var hbl_from_date = "";
@@ -55,6 +58,8 @@ namespace AirExport.Repositories
                 DateTime? to_date = null;
 
 
+                if (data.ContainsKey("hbl_mbl_refno"))
+                    hbl_mbl_refno = data["hbl_mbl_refno"].ToString();
                 if (data.ContainsKey("hbl_houseno"))
                     hbl_houseno = data["hbl_houseno"].ToString();
                 if (data.ContainsKey("hbl_from_date"))
@@ -90,11 +95,13 @@ namespace AirExport.Repositories
                     to_date = Lib.ParseDate(hbl_to_date!);
                     query = query.Where(w => w.hbl_date <= to_date);
                 }
+                if (!Lib.IsBlank(hbl_mbl_refno))
+                    query = query.Where(w => w.master!.mbl_refno!.Contains(hbl_mbl_refno!));
                 if (!Lib.IsBlank(hbl_houseno))
                     query = query.Where(w => w.hbl_houseno!.Contains(hbl_houseno!));
 
 
-                if (action == "SEARCH")
+                if (action == "SEARCH" || action == "PRINT" || action == "EXCEL" || action == "PDF")
                 {
                     _page.rows = query.Count();
                     _page.pages = Lib.getTotalPages(_page.rows, _page.pageSize);
@@ -182,7 +189,28 @@ namespace AirExport.Repositories
                     rec_edited_by = e.rec_edited_by,
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
                 }).ToListAsync();
+                var fileDataList = new List<filesm>();
+                var searchInfo = new Dictionary<string, string>
+                {
+                    {"hbl_from_date",hbl_from_date!},
+                    {"hbl_to_date",hbl_to_date!},
+                    {"hbl_houseno", hbl_houseno!},
+                    {"hbl_mbl_refno", hbl_mbl_refno!},
+                };
 
+                if (action == "PDF" || action == "PRINT")
+                {
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, hbl_houseno!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(pdfResult);
+                }
+                if (action == "EXCEL" || action == "PRINT")
+                {
+                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, hbl_houseno!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(excelResult);
+                }
+
+                RetData.Add("fileData", fileDataList);
+                RetData.Add("action", action);
                 RetData.Add("records", Records);
                 RetData.Add("page", _page);
 
@@ -447,11 +475,22 @@ namespace AirExport.Repositories
                 var hawb_id = settings.FirstOrDefault(s => s.caption == "HAWB-FORMAT")?.value;
                 var hawb_name = settings.FirstOrDefault(s => s.caption == "HAWB-FORMAT")?.name;
 
-
+                var shipmentStage = await context.mast_param
+                    .Where(f => f.param_type == "SHIPSTAGE AI" && f.param_name == "NIL")
+                    .Select(e => new 
+                    {
+                        e.param_id,
+                        e.param_name
+                    })
+                    .FirstOrDefaultAsync();
 
                 if (Record != null)
                 {
-
+                    if (shipmentStage != null)
+                    {
+                        Record.hbl_shipment_stage_id = shipmentStage.param_id;
+                        Record.hbl_shipment_stage_name = shipmentStage.param_name;
+                    }
                     Record.hbl_agent_name = agentname;
                     Record.hbl_agent_city = agentcity;
                     Record.hbl_exp_ref1 = agentname;
@@ -1246,6 +1285,77 @@ namespace AirExport.Repositories
             .LogChangesAsync();
 
         }
+        public filesm ProcessPdfFileAsync(List<cargo_air_exporth_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
 
+            AirExportHPdfFile bc = new AirExportHPdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Hbl_type = title,
+                FromDate = searchInfo.ContainsKey("hbl_from_date") ? searchInfo["hbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("hbl_to_date") ? searchInfo["hbl_to_date"] : "",
+                HouseNo = searchInfo.ContainsKey("hbl_houseno") ? searchInfo["hbl_houseno"] : "",
+                RefNo = searchInfo.ContainsKey("hbl_mbl_refno") ? searchInfo["hbl_mbl_refno"] : "",
+            };
+            bc.Process();
+
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
+
+            var file = bc.FList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
+        public filesm ProcessExcelFileAsync(List<cargo_air_exporth_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
+
+            ProcessAirExportHExcelFile bc = new ProcessAirExportHExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Hbl_type = title,
+                FromDate = searchInfo.ContainsKey("hbl_from_date") ? searchInfo["hbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("hbl_to_date") ? searchInfo["hbl_to_date"] : "",
+                HouseNo = searchInfo.ContainsKey("hbl_houseno") ? searchInfo["hbl_houseno"] : "",
+                RefNo = searchInfo.ContainsKey("hbl_mbl_refno") ? searchInfo["hbl_mbl_refno"] : "",
+            };
+            bc.Process();
+
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
+
+            var file = bc.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
     }
 }

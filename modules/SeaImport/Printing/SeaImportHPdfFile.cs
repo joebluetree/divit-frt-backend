@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using NPOI.HPSF;
 using NPOI.SS.Formula.Functions;
 
-namespace Marketing.Printing
+namespace SeaImport.Printing
 {
     public class SeaImportHPdfFile
     {
@@ -27,7 +27,9 @@ namespace Marketing.Printing
         public int Company_id { get; set; }
         public int Branch_id { get; set; }
         public AppDbContext? context { get; set; }
-        public string HouseNo { get; set; } = "";
+        public string RefNo { get; set; } = "";
+        public string CreatedBy { get; set; } = "";
+        public string DateType { get; set; } = "";
         public string FromDate { get; set; } = "";
         public string ToDate { get; set; } = "";
         public string User_name { get; set; } = "";
@@ -179,13 +181,15 @@ namespace Marketing.Printing
             float currentY = CommonLib.WriteBranchAddressPdf(Row, Col, Company_id, Branch_id, context!, pdf);
 
             currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper(), new TextFormat { Border = "TB", Style = "B", FontSize = 10 });
+            pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper() + " LIST", new TextFormat { Border = "TB", Style = "B", FontSize = 10 });
             currentY += Line_Height + 3;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, "FROM             : " + FromDate, new TextFormat { FontSize = 10 });
+            int halfWidth = Row_Width / 2;
+            pdf.AddText(currentY, Col, halfWidth, Line_Height, "FROM DATE : " + FromDate, new TextFormat { FontSize = 10 });
+            pdf.AddText(currentY, Col + halfWidth, halfWidth/2, Line_Height, "TO DATE : " + ToDate, new TextFormat { FontSize = 10 });
+            pdf.AddText(currentY, Col + 3*halfWidth/2, halfWidth/2, Line_Height,  DateType, new TextFormat { FontSize = 10 });
             currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, "TO                  : " + ToDate, new TextFormat { FontSize = 10 });
-            currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, "HOUSE #                   : " + HouseNo, new TextFormat { FontSize = 10 });
+            pdf.AddText(currentY, Col, halfWidth, Line_Height, "REF # : " + RefNo, new TextFormat { FontSize = 10 });
+            pdf.AddText(currentY, Col + halfWidth, halfWidth, Line_Height, "CREATED BY : " + CreatedBy, new TextFormat { FontSize = 10 });
             currentY += Line_Height;
             pdf.AddText(currentY, Col, Row_Width, Line_Height, ptintInfo, new TextFormat { FontSize = 10 });
             currentY += Line_Height + 5;
@@ -196,7 +200,7 @@ namespace Marketing.Printing
             pdf.AddText(currentY, Col_HouseNo.Left, Col_HouseNo.Width, Line_Height, "HOUSE #", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Shipper.Left, Col_Shipper.Width, Line_Height, "SHIPPER", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Consignee.Left, Col_Consignee.Width, Line_Height, "CONSIGNEE", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
-            pdf.AddText(currentY, Col_Handled.Left, Col_Handled.Width, Line_Height, "HANDLED", new TextFormat { Border = "LTR", Style = "B", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_Handled.Left, Col_Handled.Width, Line_Height, "HANDLED BY", new TextFormat { Border = "LTR", Style = "B", FontSize = 10, Indent = true });
 
             currentY += Line_Height;
 

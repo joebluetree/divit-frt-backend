@@ -7,6 +7,7 @@ using Database.Models.UserAdmin;
 //Name : Alen Cherian
 //Created Date : 21/02/2025
 //Remark : Version 1.0 , 22/02/2025
+//Remark : Version 2, 12/08/2025 added invoice summary data
 
 namespace Database.Models.Cargo
 {
@@ -75,7 +76,6 @@ namespace Database.Models.Cargo
         public string? mbl_software_name { get; set; }
         public string? mbl_it_tot { get; set; }
         public int? mbl_incoterm_id { get; set; } //changed
-        public string? mbl_bo_status { get; set; }
         public string? mbl_bo_attended_code { get; set; }
         public DateTime? mbl_bo_attended_date { get; set; }
         public string? mbl_house_nos { get; set; }
@@ -130,6 +130,10 @@ namespace Database.Models.Cargo
         public int? mbl_zero_chwt { get; set; }
         public int? mbl_zero_wt { get; set; }
         public string? mbl_loss_approved { get; set; }
+        public string? mbl_loss_memo { get; set; }
+        public string? mbl_profit_req { get; set; }
+        public string? mbl_bo_status { get; set; }
+        public string? mbl_inv_remarks { get; set; }
         public int? rec_files_count { get; set; }
         public string? rec_memo_attached { get; set; }
         public int? rec_memo_count { get; set; }
@@ -207,7 +211,7 @@ namespace Database.Models.Cargo
         public mast_param? salesman { get; set; }
 
         [ForeignKey("mbl_coloader_id")]
-        public mast_param? coloader { get; set; }
+        public mast_customerm? coloader { get; set; }
 
 
         [ForeignKey("rec_company_id")]

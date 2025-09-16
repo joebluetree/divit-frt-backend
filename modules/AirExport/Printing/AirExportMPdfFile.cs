@@ -14,6 +14,7 @@ using iTextSharp.text.pdf.qrcode;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using NPOI.HPSF;
 using NPOI.SS.Formula.Functions;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace AirExport.Printing
 {
@@ -28,10 +29,10 @@ namespace AirExport.Printing
         public int Branch_id { get; set; }
         public AppDbContext? context { get; set; }
         public string RefNo { get; set; } = "";
-        public string From { get; set; } = "";
-        public string To { get; set; } = "";
+        public string FromDate { get; set; } = "";
+        public string ToDate { get; set; } = "";
         public string User_name { get; set; } = "";
-        public string Qtnm_type { get; set; } = "";
+        public string Mbl_type { get; set; } = "";
 
         private string File_Name = "";
         private string File_Display_Name = "";
@@ -73,7 +74,7 @@ namespace AirExport.Printing
             {
                 FList = new List<filesm>();
                 Folderid = Guid.NewGuid().ToString().ToUpper();
-                File_Display_Name = Qtnm_type!.ToLower();
+                File_Display_Name = Mbl_type!.ToLower();
                 File_Display_Name += ".pdf";
                 File_Display_Name = Database.Lib.Lib.ProperFileName(File_Display_Name);
                 File_Name = Database.Lib.Lib.GetFileName(Report_Folder, Folderid, File_Display_Name, false);
@@ -170,30 +171,31 @@ namespace AirExport.Printing
 
             var currentDate = DbLib.GetDateTime();
             Date = Lib.FormatDate(currentDate, Lib.DisplayDateTimeFormat);
-
+            FromDate = Lib.FormatDate(Lib.ParseDate(FromDate), Lib.DisplayDateFormat);
+            ToDate = Lib.FormatDate(Lib.ParseDate(ToDate), Lib.DisplayDateFormat);
             string ptintInfo = $"PRINTED ON : {Date} / {User_name}     PAGE#: {PageNumber}";
 
             float currentY = CommonLib.WriteBranchAddressPdf(Row, Col, Company_id, Branch_id, context!, pdf);
 
             currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper(), new TextFormat { Border = "TB", Style = "B", FontSize = 10 });
+            pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper() + " LIST", new TextFormat { Border = "TB", Style = "B", FontSize = 10 });
             currentY += Line_Height + 3;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, "FROM            : " + From, new TextFormat { FontSize = 10 });
+            int halfWidth = Row_Width / 2;
+            pdf.AddText(currentY, Col, halfWidth, Line_Height, "FROM DATE : " + FromDate, new TextFormat { FontSize = 10 });
+            pdf.AddText(currentY, Col + halfWidth, halfWidth, Line_Height, "TO DATE : " + ToDate, new TextFormat { FontSize = 10 });
             currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, "TO                  : " + To, new TextFormat { FontSize = 10 });
-            currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, "REF #             : " + RefNo, new TextFormat { FontSize = 10 });
+            pdf.AddText(currentY, Col, Row_Width, Line_Height, "REF # : " + RefNo, new TextFormat { FontSize = 10 });
             currentY += Line_Height;
             pdf.AddText(currentY, Col, Row_Width, Line_Height, ptintInfo, new TextFormat { FontSize = 10 });
             currentY += Line_Height + 5;
 
             // Table Header
-            pdf.AddText(currentY, Col_Code.Left, Col_Code.Width, Line_Height, "REF#", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_Code.Left, Col_Code.Width, Line_Height, "REF #", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_date.Left, Col_date.Width, Line_Height, "DATE", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
-            pdf.AddText(currentY, Col_MblNo.Left, Col_MblNo.Width, Line_Height, "MBL#", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_MblNo.Left, Col_MblNo.Width, Line_Height, "MBL #", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Agent.Left, Col_Agent.Width, Line_Height, "MASTER AGENT", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Carrier.Left, Col_Carrier.Width, Line_Height, "CARRIER", new TextFormat { Border = "LT", Style = "B", FontSize = 10, Indent = true });
-            pdf.AddText(currentY, Col_Handled.Left, Col_Handled.Width, Line_Height, "HANDLED", new TextFormat { Border = "LTR", Style = "B", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_Handled.Left, Col_Handled.Width, Line_Height, "HANDLED BY", new TextFormat { Border = "LTR", Style = "B", FontSize = 10, Indent = true });
 
             currentY += Line_Height;
 

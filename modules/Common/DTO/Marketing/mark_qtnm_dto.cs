@@ -57,8 +57,11 @@ namespace Common.DTO.Marketing
         public string? qtnm_plfd_name { get; set; } = "";
         public string? qtnm_trans_time { get; set; } = "";
         public string? qtnm_routing { get; set; } = "";
-        public decimal? qtnm_amt { get; set; } = 0;   
-
+        public decimal? qtnm_amt { get; set; } = 0;
+        public int? qtnm_cur_id { get; set; } = 0;
+        public string? qtnm_cur_code { get; set; } = "";
+        public decimal? qtnm_exrate { get; set; } = 0;
+        public int? exrate_decimal { get; set; } = 0;
         public int? rec_files_count { get; set; }
         public string? rec_files_attached { get; set; }
         public List<mark_qtnd_fcl_dto>? qtnd_fcl {get; set;}             

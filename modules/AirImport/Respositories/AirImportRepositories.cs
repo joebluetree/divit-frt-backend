@@ -8,6 +8,8 @@ using Common.Lib;
 using Database.Models.Cargo;
 using Common.DTO.AirImport;
 using AirImport.Interfaces;
+using AirImport.Printing;
+using Database.Models.Masters;
 
 
 namespace AirImport.Repositories
@@ -43,6 +45,8 @@ namespace AirImport.Repositories
                 if (action == null)
                     action = "search";
 
+                var title = data["title"].ToString();
+                var user_name = data["global_user_name"].ToString();
                 var mbl_refno = "";
                 var company_id = 0;
                 var branch_id = 0;
@@ -90,7 +94,7 @@ namespace AirImport.Repositories
                 if (!Lib.IsBlank(mbl_refno))
                     query = query.Where(w => w.mbl_refno!.Contains(mbl_refno!));
 
-                if (action == "SEARCH")
+                if (action == "SEARCH" || action == "PRINT" || action == "EXCEL" || action == "PDF")
                 {
                     _page.rows = query.Count();
                     _page.pages = Lib.getTotalPages(_page.rows, _page.pageSize);
@@ -132,7 +136,27 @@ namespace AirImport.Repositories
                     rec_edited_by = e.rec_edited_by,
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
                 }).ToListAsync();
+                var fileDataList = new List<filesm>();
+                var searchInfo = new Dictionary<string, string>
+                {
+                    {"mbl_from_date",mbl_from_date!},
+                    {"mbl_to_date",mbl_to_date!},
+                    {"mbl_refno", mbl_refno!},
+                };
 
+                if (action == "PDF" || action == "PRINT")
+                {
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, mbl_refno!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(pdfResult);
+                }
+                if (action == "EXCEL" || action == "PRINT")
+                {
+                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, mbl_refno!, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(excelResult);
+                }
+
+                RetData.Add("fileData", fileDataList);
+                RetData.Add("action", action);
                 RetData.Add("records", Records);
                 RetData.Add("page", _page);
 
@@ -263,7 +287,30 @@ namespace AirImport.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+        public async Task<cargo_air_importm_dto> GetDefaultData()
+        {
+            try
+            {
+                IQueryable<mast_param> query = context.mast_param;
 
+                query = query.Where(f => f.param_type == "SHIPSTAGE AE" && f.param_name == "NIL");
+
+                var Record = await query.Select(e => new cargo_air_importm_dto
+                {
+                    mbl_shipment_stage_id = e.param_id,
+                    mbl_shipment_stage_name = e.param_name,
+                }).FirstOrDefaultAsync();
+
+                if (Record == null)
+                    throw new Exception("Shipment Stage 'NIL' not found.");
+
+                return Record;
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
+            }
+        }
 
         public async Task<cargo_air_importm_dto> SaveAsync(int id, string mode, cargo_air_importm_dto record_dto)
         {
@@ -590,6 +637,74 @@ namespace AirImport.Repositories
 
 
         }
+        public filesm ProcessPdfFileAsync(List<cargo_air_importm_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
 
+            AirImportMPdfFile bc = new AirImportMPdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Mbl_type = title,
+                FromDate = searchInfo.ContainsKey("hbl_from_date") ? searchInfo["hbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("hbl_to_date") ? searchInfo["hbl_to_date"] : "",
+                
+            };
+            bc.Process();
+
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
+
+            var file = bc.FList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
+        public filesm ProcessExcelFileAsync(List<cargo_air_importm_dto> Records, string title, int company_id, string name, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
+
+            ProcessAirImportMExcelFile bc = new ProcessAirImportMExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Mbl_type = title,
+                FromDate = searchInfo.ContainsKey("hbl_from_date") ? searchInfo["hbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("hbl_to_date") ? searchInfo["hbl_to_date"] : "",
+            };
+            bc.Process();
+
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
+
+            var file = bc.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
     }
 }

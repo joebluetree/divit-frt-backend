@@ -311,6 +311,7 @@ namespace UserAdmin.Repositories
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-AIR-STARTING-NO", "", "INT", "", "", "", "", 8);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-FCL-PREFIX", "", "STRING", "", "", "", "", 9);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "QUOTATION-FCL-STARTING-NO", "", "INT", "", "", "", "",10);
+
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-EXP-MASTER-PREFIX", "", "STRING", "", "", "", "", 11);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-EXP-MASTER-STARTING-NO", "", "INT", "", "", "", "",12);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-MASTER-PREFIX", "", "STRING", "", "", "", "", 13);
@@ -319,7 +320,6 @@ namespace UserAdmin.Repositories
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-EXP-HOUSE-STARTING-NO", "", "INT", "", "", "", "",16);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-HOUSE-PREFIX", "", "STRING", "", "", "", "", 17);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-EXP-HOUSE-STARTING-NO", "", "INT", "", "", "", "",18);
-
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-IMP-MASTER-PREFIX", "", "STRING", "", "", "", "", 19);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "SEA-IMP-MASTER-STARTING-NO", "", "INT", "", "", "", "",20);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "AIR-IMP-MASTER-PREFIX", "", "STRING", "", "", "", "", 23);
@@ -335,6 +335,12 @@ namespace UserAdmin.Repositories
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "DEFAULT-MESSENGER", "", "TABLE", "customerm, ,cust_id,cust_code,cust_name", "", "", "", 33);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "OTHER-OPERATION-PREFIX", "", "STRING", "", "", "", "", 34);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "OTHER-OPERATION-STARTING-NO", "", "INT", "", "", "", "",35);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "INV-AR-PREFIX", "", "STRING", "", "", "", "", 36);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "INV-AR-STARTING-NO", "", "INT", "", "", "", "",37);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "INV-AP-PREFIX", "", "STRING", "", "", "", "", 38);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "INV-AP-STARTING-NO", "", "INT", "", "", "", "",39);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "CURRENCY", "", "TABLE", "param,currency,param_id,param_code,param_name", "", "", "",40 );
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "EXRATE DECIMAL", "", "INT", "", "", "", "",41);
 
             return retValue;
         }

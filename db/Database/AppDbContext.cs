@@ -61,12 +61,11 @@ namespace Database
         public DbSet<cargo_slip> cargo_slip { get; set; } = null!;
         public DbSet<cargo_custom_hold> cargo_custom_hold { get; set; } = null!;
 
-
-
-
         //Accounts
         public DbSet<acc_groupm> acc_groupm { get; set; } = null!;
         public DbSet<acc_acctm> acc_acctm { get; set; } = null!;
+        public DbSet<acc_invoicem> acc_invoicem { get; set; } = null!;
+        public DbSet<acc_invoiced> acc_invoiced { get; set; } = null!;
 
         //TnT
         public DbSet<tnt_tracking_data> tnt_tracking_data { get; set; } = null!;

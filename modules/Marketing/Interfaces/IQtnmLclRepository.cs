@@ -11,6 +11,7 @@ namespace Marketing.Interfaces
     {
         Task<Dictionary<string, object>> GetListAsync(Dictionary<string, object> data);
         Task<mark_qtnm_dto?> GetRecordAsync(int id);
+        Task<mark_qtnm_dto> GetDefaultData(int company_id, int branch_id);
         Task<mark_qtnm_dto> SaveAsync(int id, string mode, mark_qtnm_dto record);
         Task<mark_qtnm_dto> SaveParentAsync(int id,string mode, mark_qtnm_dto record);
         Task<Dictionary<string, object>> DeleteAsync(int id);

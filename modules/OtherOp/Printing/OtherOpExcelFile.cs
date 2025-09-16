@@ -74,16 +74,17 @@ namespace SeaExport.Printing
 
             foreach (cargo_otherop_dto dr in Dt_List)
             {
-                excel.CellValue(rowIndex, colIndex, dr.oth_refno!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 9 });
-                excel.CellValue(rowIndex, colIndex + 1, Lib.FormatDate(Lib.ParseDate(dr.oth_ref_date!), Lib.DisplayDateFormat), new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 11 });
+                excel.CellValue(rowIndex, colIndex, dr.oth_refno!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 15 });
+                excel.CellValue(rowIndex, colIndex + 1, Lib.FormatDate(Lib.ParseDate(dr.oth_ref_date!), Lib.DisplayDateFormat), new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 15 });
                 excel.CellValue(rowIndex, colIndex + 2, dr.oth_mbl_no!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 15 });
-                excel.CellValue(rowIndex, colIndex + 3, dr.oth_agent_name!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 50 });
-                excel.CellValue(rowIndex, colIndex + 4, dr.oth_liner_name!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 25 });
-                excel.CellValue(rowIndex, colIndex + 5, dr.oth_pol_name!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 20 });
-                excel.CellValue(rowIndex, colIndex + 6, Lib.FormatDate(Lib.ParseDate(dr.oth_pol_etd!), Lib.DisplayDateFormat), new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 11});
-                excel.CellValue(rowIndex, colIndex + 7, dr.oth_pod_name!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 20 });
-                excel.CellValue(rowIndex, colIndex + 8, Lib.FormatDate(Lib.ParseDate(dr.oth_pod_eta!), Lib.DisplayDateFormat), new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 11});
-                excel.CellValue(rowIndex++, colIndex + 9, dr.oth_handled_name!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 10 });
+                excel.CellValue(rowIndex, colIndex + 3, dr.oth_agent_name!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 25, MergeCols = 1 });
+                excel.CellValue(rowIndex, colIndex + 4, "", new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 25 });
+                excel.CellValue(rowIndex, colIndex + 5, dr.oth_liner_name!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 25 });
+                excel.CellValue(rowIndex, colIndex + 6, dr.oth_pol_name!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 20 });
+                excel.CellValue(rowIndex, colIndex + 7, Lib.FormatDate(Lib.ParseDate(dr.oth_pol_etd!), Lib.DisplayDateFormat), new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 11});
+                excel.CellValue(rowIndex, colIndex + 8, dr.oth_pod_name!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 20 });
+                excel.CellValue(rowIndex, colIndex + 9, Lib.FormatDate(Lib.ParseDate(dr.oth_pod_eta!), Lib.DisplayDateFormat), new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 11});
+                excel.CellValue(rowIndex++, colIndex + 10, dr.oth_handled_name!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 15 });
             }
             excel.Save(File_Name);
         }
@@ -92,7 +93,7 @@ namespace SeaExport.Printing
         {
             int rowIndex = 0;
             int colIndex = 0;
-            int col_count = 1; // Column count to merge
+            int col_count = 11; // Column count set Title border
             excel.CreateSheet("Sheet1");
 
             var currentDate = DbLib.GetDateTime();
@@ -102,26 +103,33 @@ namespace SeaExport.Printing
 
             rowIndex = CommonLib.WriteBranchAddressExcel(rowIndex, colIndex, col_count, Company_id, Branch_id, context!, excel);
             rowIndex += 1;
-            excel.CellValue(rowIndex, colIndex, Title, new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 100, Merge = col_count });
+            excel.CellValue(rowIndex, colIndex, Title + " LIST", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 100,MergeCols = 1});
+            for (int i = colIndex + 1; i < colIndex + col_count; i++)
+            {
+                excel.CellValue(rowIndex, i, "", new CellFormat { Border = "TB", FontSize = 10, ColumnWidth = 100 });
+            }
             rowIndex += 1;
-            excel.CellValue(rowIndex, colIndex, "FROM    :" + FromDate , new CellFormat { FontSize = 10, ColumnWidth = 100, Merge = col_count });
+            excel.CellValue(rowIndex, colIndex, "FROM    :" , new CellFormat { FontSize = 10, ColumnWidth = 80 });
+            excel.CellValue(rowIndex, colIndex + 1, FromDate , new CellFormat { FontSize = 10, ColumnWidth = 80 });
+            excel.CellValue(rowIndex, colIndex + 2, "TO       :" , new CellFormat { FontSize = 10, ColumnWidth = 80 });
+            excel.CellValue(rowIndex, colIndex + 3, ToDate , new CellFormat { FontSize = 10, ColumnWidth = 80 });
             rowIndex += 1;
-            excel.CellValue(rowIndex, colIndex, "TO       :"+ ToDate , new CellFormat { FontSize = 10, ColumnWidth = 100, Merge = col_count });
+            excel.CellValue(rowIndex, colIndex, "REF NO    :" , new CellFormat { FontSize = 10, ColumnWidth = 80 });
+            excel.CellValue(rowIndex, colIndex + 1, RefNo, new CellFormat { FontSize = 10, ColumnWidth = 80 });
             rowIndex += 1;
-            excel.CellValue(rowIndex, colIndex, "REF NO    :" + RefNo, new CellFormat { FontSize = 10, ColumnWidth = 100, Merge = col_count });
+            excel.CellValue(rowIndex, colIndex, "PRINTED : " + Date + " / " + User_name, new CellFormat { FontSize = 10, ColumnWidth = 80, MergeCols = 1 });
             rowIndex += 1;
-            excel.CellValue(rowIndex, colIndex, "PRINTED : " + Date + " / " + User_name, new CellFormat { FontSize = 10, ColumnWidth = 100, Merge = col_count });
-            rowIndex += 1;
-            excel.CellValue(rowIndex, colIndex, "REF #", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 9 });
-            excel.CellValue(rowIndex, colIndex + 1, "DATE", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 11 });
+            excel.CellValue(rowIndex, colIndex, "REF #", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 15 });
+            excel.CellValue(rowIndex, colIndex + 1, "DATE", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 15 });
             excel.CellValue(rowIndex, colIndex + 2, "MBL #", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 15 });
-            excel.CellValue(rowIndex, colIndex + 3, "MASTER AGENT", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 50 });
-            excel.CellValue(rowIndex, colIndex + 4, "CARRIER", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 25 });
-            excel.CellValue(rowIndex, colIndex + 5, "POL", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 20 });
-            excel.CellValue(rowIndex, colIndex + 6, "ETD", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 11 });
-            excel.CellValue(rowIndex, colIndex + 7, "POD", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 20 });
-            excel.CellValue(rowIndex, colIndex + 8, "ETA", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 11 });
-            excel.CellValue(rowIndex, colIndex + 9, "HANDLED", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 10 });
+            excel.CellValue(rowIndex, colIndex + 3, "MASTER AGENT", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 25, MergeCols = 1 });
+            excel.CellValue(rowIndex, colIndex + 4, "", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 25 });
+            excel.CellValue(rowIndex, colIndex + 5, "CARRIER", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 25 });
+            excel.CellValue(rowIndex, colIndex + 6, "POL", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 20 });
+            excel.CellValue(rowIndex, colIndex + 7, "ETD", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 11 });
+            excel.CellValue(rowIndex, colIndex + 8, "POD", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 20 });
+            excel.CellValue(rowIndex, colIndex + 9, "ETA", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 11 });
+            excel.CellValue(rowIndex, colIndex + 10, "HANDLED BY", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 15 });
             rowIndex += 1;
             return rowIndex;
         }

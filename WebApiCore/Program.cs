@@ -113,6 +113,7 @@ builder.Services.AddScoped<ISeaImporthRepository, SeaImporthRepository>();
 //Accounts
 builder.Services.AddScoped<IAccGroupRepository, AccGroupRepository>();
 builder.Services.AddScoped<IAcctmRepository, AcctmRepository>();
+builder.Services.AddScoped<IInvoicemRepository, InvoicemRepository>();
 
 //AirExport
 builder.Services.AddScoped<IAirExportRepository, AirExportRepository>();

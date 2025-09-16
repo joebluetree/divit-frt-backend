@@ -14,7 +14,6 @@ using SeaExport.Interfaces;
 using System.Threading.Tasks.Dataflow;
 using System.Numerics;
 using SeaExport.Printing;
-using Marketing.Printing;
 
 //Name : Sourav V
 //Created Date : 03/03/2025
@@ -23,6 +22,7 @@ using Marketing.Printing;
 //        v2-10-03-2025: edited mbl_id reference 
 //        v3-15-03-2025: added function UpdateHouse and GetTeuValue
 //        v4-18-03-2025: modified SaveMarksandDesc for updating logHistory
+//        v5- 12/07/2025: added print report function
 
 namespace SeaExport.Repositories
 {
@@ -54,6 +54,7 @@ namespace SeaExport.Repositories
                 var hbl_mode = "";
                 var hbl_from_date = "";
                 var hbl_to_date = "";
+                var hbl_mbl_refno = "";
                 var hbl_houseno = "";
                 var company_id = 0;
                 var branch_id = 0;
@@ -67,6 +68,8 @@ namespace SeaExport.Repositories
                     hbl_from_date = data["hbl_from_date"].ToString();
                 if (data.ContainsKey("hbl_to_date"))
                     hbl_to_date = data["hbl_to_date"].ToString();
+                if (data.ContainsKey("hbl_mbl_refno"))
+                    hbl_mbl_refno = data["hbl_mbl_refno"].ToString();
                 if (data.ContainsKey("hbl_houseno"))
                     hbl_houseno = data["hbl_houseno"].ToString();
 
@@ -102,6 +105,8 @@ namespace SeaExport.Repositories
                 }
                 if (!Lib.IsBlank(hbl_houseno))
                     query = query.Where(w => w.hbl_houseno!.Contains(hbl_houseno!));
+                if (!Lib.IsBlank(hbl_mbl_refno))
+                    query = query.Where(w => w.master!.mbl_refno!.Contains(hbl_mbl_refno!));
 
                 if (action == "SEARCH" || action == "PRINT" || action == "EXCEL" || action == "PDF")
                 {
@@ -144,6 +149,7 @@ namespace SeaExport.Repositories
                 {
                     {"hbl_from_date",hbl_from_date!},
                     {"hbl_to_date",hbl_to_date!},
+                    {"hbl_mbl_refno", hbl_mbl_refno!},
                     {"hbl_houseno", hbl_houseno!},
                 };
 
@@ -520,43 +526,47 @@ namespace SeaExport.Repositories
 
 
             if (Lib.IsZero(record_dto.hbl_shipment_stage_id))
-                str += "Stage Cannot Be Blank!";
+                str += "Stage Cannot Be Blank! ";
             if (Lib.IsBlank(record_dto.hbl_shipper_code))
-                str += "Shipper Code Cannot Be Blank!";
+                str += "Shipper Code Cannot Be Blank! ";
             if (Lib.IsBlank(record_dto.hbl_shipper_name))
-                str += "Shipper Name Cannot Be Blank!";
+                str += "Shipper Name Cannot Be Blank! ";
             if (Lib.IsBlank(record_dto.hbl_shipper_add1))
-                str += "Shipper Adress1 Cannot Be Blank!";
+                str += "Shipper Adress1 Cannot Be Blank! ";
             if (Lib.IsBlank(record_dto.hbl_consignee_code))
-                str += "Consignee Code Cannot Be Blank!";
+                str += "Consignee Code Cannot Be Blank! ";
             if (Lib.IsBlank(record_dto.hbl_consignee_name))
-                str += "Consignee Name Cannot Be Blank!";
+                str += "Consignee Name Cannot Be Blank! ";
+            if (Lib.IsBlank(record_dto.hbl_pol_name))
+                str += "Pol cannot be blank! ";
+            if (Lib.IsBlank(record_dto.hbl_pod_name))
+                str += "Pod cannot be blank! ";
             if (Lib.IsBlank(record_dto.hbl_frt_status_name))
-                str += "Fright Status Cannot Be Blank!";
+                str += "Fright Status Cannot Be Blank! ";
             if (Lib.IsBlank(record_dto.hbl_bltype))
-                str += "Client.Type Cannot Be Blank!";
+                str += "Client.Type Cannot Be Blank! ";
             if (Lib.IsZero(record_dto.hbl_lbs))
-                str += "LBS Cannot Be Blank!";
+                str += "LBS Cannot Be Blank! ";
             if (Lib.IsZero(record_dto.hbl_weight))
-                str += "Weight Cannot Be Blank!";
+                str += "Weight Cannot Be Blank! ";
             if (Lib.IsZero(record_dto.hbl_cft))
-                str += "CFT Cannot Be Blank!";
+                str += "CFT Cannot Be Blank! ";
             if (Lib.IsZero(record_dto.hbl_cbm))
-                str += "CBM Cannot Be Blank!";
+                str += "CBM Cannot Be Blank! ";
             if (Lib.IsZero(record_dto.hbl_packages))
-                str += "PKGS Cannot Be Blank!";
+                str += "PKGS Cannot Be Blank! ";
             if (Lib.IsBlank(record_dto.hbl_uom_name))
-                str += "Uom Cannot Be Blank!";
+                str += "Uom Cannot Be Blank! ";
             foreach (cargo_container_dto rec in record_dto.house_cntr!)
             {
                 if (Lib.IsBlank(rec.cntr_type_name))
-                    type = "Type Cannot Be Blank!";
+                    type = "Type Cannot Be Blank! ";
                 if (!CommonLib.IsValidContainerNumber(rec.cntr_no!))
                     cntr_no = $"Invalid Container Number: {rec.cntr_no}";
                 if (Lib.IsBlank(rec.cntr_no))
-                    cntr_no = "Cntr No Cannot Be Blank!";
+                    cntr_no = "Cntr No Cannot Be Blank! ";
                 if (Lib.IsBlank(rec.cntr_packages_unit_name))
-                    unit = "Unit Cannot Be Blank";
+                    unit = "Unit Cannot Be Blank! ";
             }
 
             if (type != "")
@@ -1371,7 +1381,9 @@ namespace SeaExport.Repositories
                 Hbl_type = title,
                 FromDate = searchInfo.ContainsKey("hbl_from_date") ? searchInfo["hbl_from_date"] : "",
                 ToDate = searchInfo.ContainsKey("hbl_to_date") ? searchInfo["hbl_to_date"] : "",
+                RefNo = searchInfo.ContainsKey("hbl_mbl_refno") ? searchInfo["hbl_mbl_refno"] : "",
                 HouseNo = searchInfo.ContainsKey("hbl_houseno") ? searchInfo["hbl_houseno"] : "",
+                
             };
             bc.Process();
 
@@ -1406,6 +1418,7 @@ namespace SeaExport.Repositories
                 Hbl_type = title,
                 FromDate = searchInfo.ContainsKey("hbl_from_date") ? searchInfo["hbl_from_date"] : "",
                 ToDate = searchInfo.ContainsKey("hbl_to_date") ? searchInfo["hbl_to_date"] : "",
+                RefNo = searchInfo.ContainsKey("hbl_mbl_refno") ? searchInfo["hbl_mbl_refno"] : "",
                 HouseNo = searchInfo.ContainsKey("hbl_houseno") ? searchInfo["hbl_houseno"] : "",
             };
             bc.Process();

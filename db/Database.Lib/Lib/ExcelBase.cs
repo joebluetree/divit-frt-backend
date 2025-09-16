@@ -23,9 +23,12 @@ namespace Masters.Interfaces
         public string VAlign { get; set; } = "C";    // T=Top, B=Bottom, C=Center, J=Justify for Vertical Alignment
         public string Border { get; set; } = "";       // e.g., "A", "LR", "TB"
         public int Merge { get; set; } = -1;
-        public bool WrapText { get; set; } = true;
+        public bool WrapText { get; set; } = false;
         public string Case { get; set; } = "U";      // "U" = UPPER, "L" = lower, "" = original
         public int? ColumnWidth { get; set; }           // Optional: width in characters
+        public int MergeCols { get; set; } = 0; // How many additional columns to merge (default 0 = no merge)
+        public int MergeRows { get; set; } = 0; // How many additional rows to merge (default 0 = no merge)
+
     }
 
     public class TextExcel : IExcelBase
@@ -139,27 +142,56 @@ namespace Masters.Interfaces
 
             // Apply final style
             cell.CellStyle = style;
-            if (options.Merge >= 0)
+            int spanCols = options.MergeCols;
+            int spanRows = options.MergeRows;
+            if (spanCols > 0 || spanRows > 0)
             {
-                int endCol = options.Merge > colIndex ? options.Merge : colIndex;
-                for (int i = colIndex; i <= endCol; i++)
+                int endRow = rowIndex + spanRows;
+                int endCol = colIndex + spanCols;
+
+                // Apply style to all cells in the range
+                for (int r = rowIndex; r <= endRow; r++)
                 {
-                    ICell targetCell = row.GetCell(i) ?? row.CreateCell(i);
-                    targetCell.CellStyle = style;
+                    IRow mergeRow = sheet.GetRow(r) ?? sheet.CreateRow(r);
+                    for (int c = colIndex; c <= endCol; c++)
+                    {
+                        ICell targetCell = mergeRow.GetCell(c) ?? mergeRow.CreateCell(c);
+                        targetCell.CellStyle = style;
 
-                    // Only first cell holds the value
-                    if (i == colIndex)
-                        targetCell.SetCellValue(value);
-                    else
-                        targetCell.SetCellValue("");
+                        // Only the top-left cell gets the value
+                        if (r == rowIndex && c == colIndex)
+                            targetCell.SetCellValue(value);
+                        else
+                            targetCell.SetCellValue("");
+                    }
                 }
-
-                // Merge if applicable
                 if (endCol > colIndex)
                 {
-                    sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(rowIndex, rowIndex, colIndex, options.Merge));
+                    // Merge region
+                    sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(rowIndex, endRow, colIndex, endCol));
                 }
             }
+            // if (options.Merge >= 0)
+            // {
+            //     int endCol = options.Merge > colIndex ? options.Merge : colIndex;
+            //     for (int i = colIndex; i <= endCol; i++)
+            //     {
+            //         ICell targetCell = row.GetCell(i) ?? row.CreateCell(i);
+            //         targetCell.CellStyle = style;
+
+            //         // Only first cell holds the value
+            //         if (i == colIndex)
+            //             targetCell.SetCellValue(value);
+            //         else
+            //             targetCell.SetCellValue("");
+            //     }
+
+            // Merge if applicable
+            // if (endCol > colIndex)
+            // {
+            //     sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(rowIndex, rowIndex, colIndex, options.Merge));
+            // }
+        // }
             if (options.Merge < 0)
             {
                 cell.SetCellValue(value);

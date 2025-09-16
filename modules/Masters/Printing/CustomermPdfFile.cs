@@ -27,6 +27,7 @@ namespace Masters.Printing
         public string Name { get; set; } = "";
         public string User_name { get; set; } = "";
         public string Cust_type { get; set; } = "";
+        public string DateType { get; set; } = "";
         public string FromDate { get; set; } = "";
         public string ToDate { get; set; } = "";
         public string CreatedBy { get; set; } = "";
@@ -178,13 +179,15 @@ namespace Masters.Printing
 
             var currentDate = DbLib.GetDateTime();
             Date = Lib.FormatDate(currentDate, Lib.DisplayDateTimeFormat);
+            FromDate = Lib.FormatDate(Lib.ParseDate(FromDate), Lib.DisplayDateFormat);
+            ToDate = Lib.FormatDate(Lib.ParseDate(ToDate), Lib.DisplayDateFormat);
 
             string ptintInfo = $"PRINTED ON : {Date} / {User_name}     PAGE#: {PageNumber}";
 
             float currentY = CommonLib.WriteBranchAddressPdf(Row, Col, Company_id, Branch_id, context!, pdf);
 
             currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper(), new TextFormat { Border = "TB", Style = "B", FontSize = 10 });
+            pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper() + " LIST", new TextFormat { Border = "TB", Style = "B", FontSize = 10 });
             currentY += Line_Height + 3;
 
             int halfWidth = Row_Width / 2; // to assign From and to date in same row

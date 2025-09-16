@@ -57,9 +57,13 @@ namespace Common.Lib
                 {
                     result[rec.caption!] = Database.Lib.Lib.StringToInteger(rec.value!.ToString());
                 }
-                else if (rec.@type == "STRING")
+                if (rec.@type == "STRING")
                 {
                     result[rec.caption!] = rec.value!.ToString();
+                }
+                if (rec.@type == "TABLE")
+                {
+                    result[rec.caption!] = Database.Lib.Lib.StringToInteger(rec.value!.ToString());
                 }
             }
 
@@ -240,7 +244,6 @@ namespace Common.Lib
                 await DeleteDesc(context, id);
 
                 // Delete cargo_housem records by creating stub entities
-
                 context.cargo_housem.RemoveRange(houses);
                 // Save all changes
                 await context.SaveChangesAsync();
@@ -280,6 +283,10 @@ namespace Common.Lib
             {
                 await UpdateOperationsDocCount(context, parent_id, parent_type);
             }
+            if (parent_type == "SEA IMPORT TELEX")
+            {
+                await UpdateTelexDocCount(context, parent_id, parent_type);
+            }
             if (parent_type == "CUSTOMER")
             {
                 await UpdateCustomerDocCount(context, parent_id, parent_type);
@@ -292,7 +299,14 @@ namespace Common.Lib
             {
                 await UpdateMemoDocCount(context, parent_id, parent_type);
             }
-
+            if (parent_type == "A/R" || parent_type == "A/P")
+            {
+                await UpdateInvDocCount(context, parent_id, parent_type);
+            }
+            if (parent_type == "A/R CHECK COPY" || parent_type == "A/P CHECK COPY" )
+            {
+                await UpdateCheckCopyCount(context, parent_id, parent_type);
+            }
         }
 
         public static async Task UpdateOperationsDocCount(AppDbContext _context, int? parent_id, string? parent_type)
@@ -310,6 +324,24 @@ namespace Common.Lib
             {
                 master_Record.rec_files_count = FilesCount;
                 master_Record.rec_files_attached = "Y";
+                await context.SaveChangesAsync();
+            }
+        }
+        public static async Task UpdateTelexDocCount(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+            int FilesCount = 0;
+            FilesCount = context.mast_fileupload
+                .Count(f => f.files_parent_id == parent_id && f.files_parent_type == parent_type && f.files_status == "N");
+
+            var master_Record = context.cargo_housem
+                .Where(m => m.hbl_id == parent_id && m.hbl_mode == "SEA IMPORT")
+                .FirstOrDefault();
+
+            if (master_Record != null)
+            {
+                master_Record.rec_telex_count = FilesCount;
+                master_Record.rec_telex_attached = "Y";
                 await context.SaveChangesAsync();
             }
         }
@@ -365,6 +397,46 @@ namespace Common.Lib
             {
                 // master_Record.rec_files_count = FilesCount;
                 master_Record.rec_files_attached = "Y";
+                await context.SaveChangesAsync();
+            }
+        }
+        public static async Task UpdateInvDocCount(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+            int FilesCount = 0;
+            FilesCount = context.mast_fileupload
+                .Count(f => f.files_parent_id == parent_id && f.files_parent_type == parent_type && f.files_status == "N");
+
+            var invoice_Record = context.acc_invoicem
+                .Where(m => m.inv_id == parent_id && m.inv_arap == parent_type)
+                .FirstOrDefault();
+
+            if (invoice_Record != null)
+            {
+                invoice_Record.rec_files_count = FilesCount;
+                invoice_Record.rec_files_attached = "Y";
+                await context.SaveChangesAsync();
+            }
+        }
+        public static async Task UpdateCheckCopyCount(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+            int FilesCount = 0;
+            FilesCount = context.mast_fileupload
+                .Count(f => f.files_parent_id == parent_id && f.files_parent_type == parent_type && f.files_status == "N");
+
+            if (parent_type == "A/R CHECK COPY")
+                parent_type = "A/R";
+            if (parent_type == "A/P CHECK COPY")
+                parent_type = "A/P";
+            var invoice_Record = context.acc_invoicem
+                .Where(m => m.inv_id == parent_id && m.inv_arap == parent_type)
+                .FirstOrDefault();
+
+            if (invoice_Record != null)
+            {
+                invoice_Record.rec_check_count = FilesCount;
+                invoice_Record.rec_check_attached = "Y";
                 await context.SaveChangesAsync();
             }
         }
@@ -524,7 +596,7 @@ namespace Common.Lib
         public static async Task SaveGenMemoSummary(AppDbContext _context, int? parent_id, string? parent_type)
         {
             context = _context;
-            if (parent_type == "CUSTOMER-MEMO" || parent_type == "CUSTOMER-SOP"|| parent_type == "CUSTOMER-QTNM"|| parent_type == "CUSTOMER-ACC")
+            if (parent_type == "CUSTOMER-MEMO" || parent_type == "CUSTOMER-SOP" || parent_type == "CUSTOMER-QTNM" || parent_type == "CUSTOMER-ACC")
             {
                 await UpdateCustomerMemoCount(context, parent_id, parent_type);
             }
@@ -562,7 +634,33 @@ namespace Common.Lib
                 await context.SaveChangesAsync();
             }
         }
+        public static async Task UpdateMasterInvoiceSummary(AppDbContext _context, int? parent_id)
+        {
+            context = _context;
 
+            var masterRecord = await context.cargo_masterm
+            .Where(m => m.mbl_id == parent_id)
+            .FirstOrDefaultAsync();
+
+            if (masterRecord != null)
+            {
+                var invoiceList = await context.acc_invoicem
+                    .Where(f => f.inv_mbl_id == parent_id && f.rec_deleted == "N")
+                    .Select(f => new {
+                        f.inv_arap,
+                        f.inv_total})
+                    .ToListAsync();
+
+                var incTotal = invoiceList.Where(f => f.inv_arap == "A/R").Sum(f => f.inv_total);
+                var expTotal = invoiceList.Where(f => f.inv_arap == "A/P").Sum(f => f.inv_total);
+
+                masterRecord.mbl_inc_total = incTotal;
+                masterRecord.mbl_exp_total = expTotal;
+                masterRecord.mbl_revenue = incTotal - expTotal;
+
+                await context.SaveChangesAsync();
+            }
+        }
 
         public static async Task<FileDownloadResult_Dto> GetFileAsync(string filePath)
         {
@@ -686,22 +784,22 @@ namespace Common.Lib
             if (Address == null)
                 throw new Exception($"Address not found !");
 
-            excel.CellValue(rowIndex, colIndex, Address.Name!, new CellFormat { Style = "B", FontSize = 15, ColumnWidth = 80, Merge = col_count });
+            excel.CellValue(rowIndex, colIndex, Address.Name!, new CellFormat { Style = "B", FontSize = 15, ColumnWidth = 100 });
             rowIndex += 1;
 
             if (!Database.Lib.Lib.IsBlank(Address!.Address1))
             {
-                excel.CellValue(rowIndex, colIndex, Address.Address1!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = col_count });
+                excel.CellValue(rowIndex, colIndex, Address.Address1!, new CellFormat { FontSize = 10, ColumnWidth = 100 });
                 rowIndex += 1;
             }
             if (!Database.Lib.Lib.IsBlank(Address!.Address2))
             {
-                excel.CellValue(rowIndex, colIndex, Address.Address2!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = col_count });
+                excel.CellValue(rowIndex, colIndex, Address.Address2!, new CellFormat { FontSize = 10, ColumnWidth = 100 });
                 rowIndex += 1;
             }
             if (!Database.Lib.Lib.IsBlank(Address!.Address3))
             {
-                excel.CellValue(rowIndex, colIndex, Address.Address3!, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = col_count });
+                excel.CellValue(rowIndex, colIndex, Address.Address3!, new CellFormat { FontSize = 10, ColumnWidth = 100 });
             }
 
             return rowIndex;
