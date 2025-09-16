@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using SixLabors.ImageSharp.ColorSpaces.Companding;
 namespace Database.Lib.Repositories
 {
     public class Lov_modulem : ILov
@@ -9,7 +10,7 @@ namespace Database.Lib.Repositories
             Dictionary<string, object> RetData = new Dictionary<string, object>();
 
             var query = from rec in context.mast_modulem
-                        where rec.rec_company_id == comp_id  
+                        where rec.rec_company_id == comp_id
                         && rec.module_parent_id == null
                         select new
                         {
@@ -46,7 +47,7 @@ namespace Database.Lib.Repositories
             var query = from rec in context.mast_modulem
                         where rec.rec_company_id == comp_id
                         && rec.module_parent_id != null
-                        select new 
+                        select new
                         {
                             rec.module_id,
                             rec.module_name,
@@ -233,8 +234,6 @@ namespace Database.Lib.Repositories
         {
             Dictionary<string, object> RetData = new Dictionary<string, object>();
 
-            
-
             var query = from rec in context.mast_customerm
                         where (rec.rec_company_id == comp_id && rec.cust_row_type == "CUSTOMER")
                         select new
@@ -276,6 +275,54 @@ namespace Database.Lib.Repositories
             return RetData;
         }
     }
+    public class Lov_master_house : ILov
+    {
+        public async Task<Dictionary<string, object>> getRecordsAsync(AppDbContext context, Dictionary<string, object> data, int comp_id = 0, string search_string = "")
+        {
+            Dictionary<string, object> RetData = new Dictionary<string, object>();
+
+            // to get list of master and house based on the mbl_id(parent)
+            int mbl_id = data.ContainsKey("parent_id") ? Lib.StringToInteger(data["parent_id"]?.ToString()!) : 0;
+
+            var s = search_string?.ToUpper() ?? "";
+
+            var masterList = await context.cargo_masterm
+                            .Where(rec => rec.rec_company_id == comp_id && rec.mbl_id == mbl_id)
+                            .Select(rec => new
+                            {
+                                master_id = rec.mbl_id,
+                                master_refno = rec.mbl_refno ?? "",
+                            })
+                            .ToListAsync();
+
+            var houseList = await context.cargo_housem
+                            .Where(rec => rec.rec_company_id == comp_id && rec.hbl_mbl_id == mbl_id)
+                            .Select(rec => new
+                            {
+                                house_id = rec.hbl_id,
+                                master_refno = rec.master!.mbl_refno ?? "",
+                                master_no = rec.hbl_houseno ?? "",
+                                house_shipper = rec.hbl_shipper_name ?? "",
+                                house_consignee = rec.hbl_consignee_name ?? "",
+                                house_pcs = rec.hbl_packages ?? 0,
+                                house_uom_id = rec.hbl_uom_id ?? 0,
+                                house_uom_code = rec.packageunit!.param_code ?? "",
+                                house_lbs = rec.hbl_lbs ?? 0,
+                                house_kgs = rec.hbl_weight ?? 0,
+                                house_cbm = rec.hbl_cbm ?? 0,
+                                house_cft = rec.hbl_cft ?? 0,
+                            })
+                            .ToListAsync();
+
+            var records = new List<object>();
+            records.AddRange(masterList);
+            records.AddRange(houseList);
+ 
+            RetData["records"] = records.ToList();
+
+            return RetData;
+        }
+    }
 
 
     public class Lov_param : ILov
@@ -295,7 +342,8 @@ namespace Database.Lib.Repositories
                         {
                             rec.param_id,
                             rec.param_code,
-                            rec.param_name
+                            rec.param_name,
+                            rec.param_value1
                         };
 
 

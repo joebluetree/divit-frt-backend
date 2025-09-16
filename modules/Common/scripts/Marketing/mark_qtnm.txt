@@ -12,9 +12,9 @@ CREATE TABLE IF NOT EXISTS mark_qtnm (
     qtnm_to_addr4 varchar(100) NULL,
     qtnm_date date NOT NULL,
     qtnm_quot_by varchar(50) NOT NULL,
-    qtnm_valid_date date NULL,
+    qtnm_valid_date date NOT NULL,
     qtnm_salesman_id int4 NULL,
-    qtnm_move_type varchar(30) NOT NULL,
+    qtnm_move_type varchar(30) NULL,
     qtnm_commodity varchar(60) NULL,
     qtnm_package varchar(10) NULL,
     qtnm_kgs numeric(15, 3) NULL,
@@ -32,6 +32,10 @@ CREATE TABLE IF NOT EXISTS mark_qtnm (
     qtnm_trans_time varchar(100) NULL,
     qtnm_routing varchar(100) NULL,
     qtnm_amt numeric(15, 3) NOT NULL,
+    qtnm_cur_id int NULL,
+    qtnm_exrate numeric(15,7) NULL,
+    rec_files_count int4 NULL,
+    rec_files_attached varchar(5) NULL,
     rec_version int4 DEFAULT 1 NOT NULL,
     rec_locked text NULL,
     rec_created_by varchar(20) NOT NULL,
@@ -47,7 +51,8 @@ CREATE TABLE IF NOT EXISTS mark_qtnm (
     CONSTRAINT fk_mark_qtnm_qtnm_salesman_id FOREIGN KEY (qtnm_salesman_id) REFERENCES mast_param(param_id),
     CONSTRAINT fk_mark_qtnm_qtnm_por_id FOREIGN KEY (qtnm_por_id) REFERENCES mast_param(param_id),
     CONSTRAINT fk_mark_qtnm_qtnm_pol_id FOREIGN KEY (qtnm_pol_id) REFERENCES mast_param(param_id),
-    CONSTRAINT fk_mark_qtnm_qtnm_pod_id FOREIGN KEY (qtnm_pod_id) REFERENCES mast_param(param_id)
+    CONSTRAINT fk_mark_qtnm_qtnm_pod_id FOREIGN KEY (qtnm_pod_id) REFERENCES mast_param(param_id),
+    CONSTRAINT fk_mark_qtnm_qtnm_cur_id FOREIGN KEY (qtnm_cur_id) REFERENCES mast_param(param_id)
 );
 
 -- Use a DO block to check and create indexes if they do not exist
@@ -76,6 +81,11 @@ BEGIN
     -- Check and create index IX_mark_qtnm_qtnm_to_id
     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mark_qtnm_qtnm_to_id') THEN
         CREATE INDEX "IX_mark_qtnm_qtnm_to_id" ON mark_qtnm USING btree (qtnm_to_id);
+    END IF;
+
+    -- Check and create index IX_mark_qtnm_qtnm_cur_id
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mark_qtnm_qtnm_cur_id') THEN
+        CREATE INDEX "IX_mark_qtnm_qtnm_cur_id" ON mark_qtnm USING btree (qtnm_cur_id);
     END IF;
 
     -- Check and create index IX_mark_qtnm_rec_branch_id

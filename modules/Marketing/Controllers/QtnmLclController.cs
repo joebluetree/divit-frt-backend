@@ -10,6 +10,7 @@ using Common.DTO.Marketing;
 //Name : Sourav V
 //Created Date : 03/01/2025
 //Remark : this file defines paths or route for accessing functions Repository
+//version 2: getdefault for currency and exrate added in all qtn(lcl,air,fcl)
 
 namespace Marketing.Controllers
 {
@@ -18,7 +19,7 @@ namespace Marketing.Controllers
     public class QtnmLclController : Controller
     {
         private readonly IQtnmLclRepository mRepository;
-        public QtnmLclController (IQtnmLclRepository Repository)
+        public QtnmLclController(IQtnmLclRepository Repository)
         {
             this.mRepository = Repository;
         }
@@ -50,6 +51,22 @@ namespace Marketing.Controllers
             catch (Exception Ex)
             {
                 return BadRequest(Lib.getErrorMessage(Ex));
+            }
+        }
+
+        [HttpGet]
+        [Route("GetDefaultData")]
+        public async Task<IActionResult> GetDefaultData(int company_id, int branch_id)
+        {
+            try
+            {
+
+                var RetData = await mRepository.GetDefaultData(company_id,branch_id);
+                return Ok(RetData);
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Ex.Message.ToString());
             }
         }
 

@@ -13,10 +13,10 @@ namespace Common.DTO.SeaImport
     {
         public int hbl_id { get; set; } = 0;
         public int hbl_mbl_id { get; set; } = 0;//fk
-        public string? hbl_mbl_refno { get; set; }= "";
-        public string? hbl_mbl_no { get; set; }= "";
-        public string? hbl_mbl_pol_etd { get; set; }= "";
-        public string? hbl_mbl_pod_eta { get; set; }= "";
+        public string? hbl_mbl_refno { get; set; } = "";
+        public string? hbl_mbl_no { get; set; } = "";
+        public string? hbl_mbl_pol_etd { get; set; } = "";
+        public string? hbl_mbl_pod_eta { get; set; } = "";
         public int hbl_cfno { get; set; } = 0;
         public string? hbl_houseno { get; set; } = "";
         public int? hbl_shipment_stage_id { get; set; } = 0;
@@ -81,7 +81,7 @@ namespace Common.DTO.SeaImport
         public string? hbl_it_no { get; set; } = "";
         public string? hbl_is_itshipment { get; set; } = "";
         public string? hbl_it_port { get; set; } = "";
-        public string? hbl_it_date { get; set; }= "";
+        public string? hbl_it_date { get; set; } = "";
         public int? hbl_packages { get; set; } = 0;
         public int? hbl_uom_id { get; set; } = 0;
         public string? hbl_uom_name { get; set; } = "";
@@ -91,7 +91,7 @@ namespace Common.DTO.SeaImport
         public decimal? hbl_cft { get; set; } = 0;
         public int? hbl_pcs { get; set; } = 0;
         public string? hbl_commodity { get; set; } = "";
-        public string? hbl_frt_status_name { get; set;} = "";
+        public string? hbl_frt_status_name { get; set; } = "";
         public int? hbl_ship_term_id { get; set; } = 0;
         public string? hbl_ship_term_name { get; set; } = "";
         public int? hbl_incoterm_id { get; set; } = 0;
@@ -134,7 +134,7 @@ namespace Common.DTO.SeaImport
         public int desc_parent_id { get; set; } = 0;
         public string? desc_parent_type { get; set; } = "";
         public List<cargo_container_dto>? house_cntr { get; set; }
-        
+
         public cargo_desc_dto? marks1 { get; set; }
         public cargo_desc_dto? marks2 { get; set; }
         public cargo_desc_dto? marks3 { get; set; }
@@ -153,7 +153,9 @@ namespace Common.DTO.SeaImport
         public cargo_desc_dto? marks16 { get; set; }
         public cargo_desc_dto? marks17 { get; set; }
         public int? rec_memo_count { get; set; }
-        public string? rec_memo_attached { get; set; }        
+        public string? rec_memo_attached { get; set; }
+        public int? rec_telex_count { get; set; }
+        public string? rec_telex_attached { get; set; }
         
     }
 }

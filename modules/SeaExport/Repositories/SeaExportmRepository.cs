@@ -317,7 +317,7 @@ namespace SeaExport.Repositories
                             hbl_pcs = e.hbl_pcs,
                             hbl_handled_name = e.handledby!.param_name,
                             hbl_frt_status_name = e.hbl_frt_status_name,
-                            rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateFormat),
+                            rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                             rec_created_by = e.rec_created_by,
                         });
 
@@ -359,7 +359,6 @@ namespace SeaExport.Repositories
                 context.Database.BeginTransaction();
                 cargo_sea_exportm_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await saveCntrAsync(_Record.mbl_id, mode, _Record);
-                // await 
                 _Record.master_cntr = await getCntrAsync(_Record.mbl_id);
                 _Record.master_house = await GetHouseAsync(_Record.mbl_id);
                 context.Database.CommitTransaction();
@@ -389,10 +388,12 @@ namespace SeaExport.Repositories
             string unit = "";
 
 
-            if (Lib.IsBlank(record_dto.mbl_agent_name))
-                str += "Master Agent Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_ref_date))
+                str += "Ref Date Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_shipment_stage_name))
                 str += "Shipment Stage Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_agent_name))
+                str += "Master Agent Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_handled_name))
                 str += "Handled By Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_frt_status_name))
@@ -591,10 +592,10 @@ namespace SeaExport.Repositories
 
                 return record_dto;
             }
-            catch (Exception)
+            catch (Exception Ex)
             {
-                // throw new Exception(Ex.Message.ToString());
-                throw;
+                throw new Exception(Ex.Message.ToString());
+                // throw;
             }
 
         }
@@ -666,8 +667,6 @@ namespace SeaExport.Repositories
 
         public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)
         {
-            // int iDefaultCfNo = int.Parse(DefaultCfNo!);
-
             var CfNo = context.cargo_masterm
             .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.mbl_mode == smbl_mode)
             .Select(e => e.mbl_cfno)
@@ -913,7 +912,7 @@ namespace SeaExport.Repositories
                 .TrackColumn("mbl_direct", "Direct Shipment")
                 .TrackColumn("mbl_place_delivery", "Place of Delivery")
                 .TrackColumn("mbl_pol_name", "Port of Loading")
-                .TrackColumn("mbl_pol_etd", "ETD (POL)", "date")
+                .TrackColumn("mbl_pol_etd", "ETD (POL)")
                 .TrackColumn("mbl_pod_name", "Port of Discharge")
                 .TrackColumn("mbl_pod_eta", "ETA (POD)", "date")
                 .TrackColumn("mbl_pofd_name", "Place of Final Delivery")

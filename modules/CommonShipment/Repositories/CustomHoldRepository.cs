@@ -190,8 +190,8 @@ namespace CommonShipment.Repositories
         {
             Boolean bRet = true;
             string str = "";
-            if (Lib.IsBlank(record_dto.custom_remarks))
-                str += "Remarks Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.custom_title))
+                str += "Title Cannot Be Blank!";
 
             if (str != "")
             {

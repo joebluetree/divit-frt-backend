@@ -1,182 +1,496 @@
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id,  rec_version, rec_locked, rec_created_by, rec_created_date)
+ SELECT 501, 'ACCGROUP', 'A/c Group', 'accounts/accgroupList', '{''type'':''ACCGROUP''}', 'Y', 1, 20, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 501);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id,  rec_version, rec_locked, rec_created_by, rec_created_date)
- SELECT 501, 'ACCGROUP', 'A/c Group', 'accounts/accgroupList', '{''type'':''ACCGROUP''}', 'Y', 1, 20, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 501);
+SELECT 502, 'ACCTM-MAINCODE', 'A/c Main Code', 'accounts/acctmList', '{''type'':''MAIN-CODE''}', 'Y', 2, 20, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 502);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id,  rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 502, 'ACCTM-MAINCODE', 'A/c Main Code', 'accounts/acctmList', '{''type'':''MAIN-CODE''}', 'Y', 2, 20, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 502);
+SELECT 503, 'ACCTM', 'A/c Master', 'accounts/acctmList', '{''type'':''ACC-CODE''}', 'Y', 3, 20, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 503);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id,  rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 503, 'ACCTM', 'A/c Master', 'accounts/acctmList', '{''type'':''ACC-CODE''}', 'Y', 3, 20, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 503);
-
-INSERT INTO mast_menum
-(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 701, 'COMPANY', 'Company Master', 'admin/companyList', '{''type'':''COMPANY''}', 'Y', 1, 21, 1, 1, 'N', 'ADMIN',  NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 701);
+SELECT 504, 'SEA-EXPORT-INVOICE', 'Sea Export Master A/R & A/P', 'accounts/invoicemList', '{''type'':''SEA-EXPORT-INVOICE''}', 'N', 4, 20, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 504);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id,  rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 702, 'BRANCH', 'Branch Master', 'admin/branchList', '{''type'':''BRANCH''}', 'Y', 2, 21, 1, 1, 'N', 'ADMIN',NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 702);
+SELECT 505, 'SEA-IMPORT-INVOICE', 'Sea Import Master A/R & A/P', 'accounts/invoicemList', '{''type'':''SEA-IMPORT-INVOICE''}', 'N', 5, 20, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 505);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id,  rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 703, 'MODULE', 'Module Master', 'admin/moduleList', '{''type'':''MODULE''}', 'Y', 3, 21, 1, 1, 'N', 'ADMIN',NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 703);
+SELECT 506, 'AIR-EXPORT-INVOICE', 'Air Export Master A/R & A/P', 'accounts/invoicemList', '{''type'':''AIR-EXPORT-INVOICE''}', 'N', 6, 20, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 506);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id,  rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 704, 'USER', 'User Master', 'admin/userList', '{''type'':''USER''}', 'Y', 4, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 704);
+SELECT 507, 'AIR-IMPORT-INVOICE', 'Air Import Master A/R & A/P', 'accounts/invoicemList', '{''type'':''AIR-IMPORT-INVOICE''}', 'N', 7, 20, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 507);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id,  rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 705, 'MENU', 'Menu Master', 'admin/menuList', '{''type'':''MENU''}', 'Y', 5, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 705);
+SELECT 508, 'OTHEROP-INVOICE', 'Other Operation A/R & A/P', 'accounts/invoicemList', '{''type'':''OTHEROP-INVOICE''}', 'N', 8, 20, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 508);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 701, 'COMPANY', 'Company Master', 'admin/companyList', '{''type'':''COMPANY''}', 'Y', 1, 21, 1, 1, 'N', 'ADMIN',  NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 701);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id,  rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 706, 'RIGHTS', 'User Rights', 'admin/rightsList', '{''type'':''RIGHTS''}', 'Y', 6, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 706);
+SELECT 702, 'BRANCH', 'Branch Master', 'admin/branchList', '{''type'':''BRANCH''}', 'Y', 2, 21, 1, 1, 'N', 'ADMIN',NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 702);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id,  rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 703, 'MODULE', 'Module Master', 'admin/moduleList', '{''type'':''MODULE''}', 'Y', 3, 21, 1, 1, 'N', 'ADMIN',NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 703);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id,  rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 704, 'USER', 'User Master', 'admin/userList', '{''type'':''USER''}', 'Y', 4, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 704);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id,  rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 705, 'MENU', 'Menu Master', 'admin/menuList', '{''type'':''MENU''}', 'Y', 5, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 705);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id,  rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 706, 'RIGHTS', 'User Rights', 'admin/rightsList', '{''type'':''RIGHTS''}', 'Y', 6, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 706);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 707, 'COUNTRY', 'Country Master', 'masters/paramList', '{''type'':''COUNTRY''}', 'Y', 7, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 707);
+SELECT 707, 'COUNTRY', 'Country Master', 'masters/paramList', '{''type'':''COUNTRY''}', 'Y', 7, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 707);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 708, 'STATE', 'State Master', 'masters/paramList', '{''type'':''STATE''}', 'Y', 8, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 708);
+SELECT 708, 'STATE', 'State Master', 'masters/paramList', '{''type'':''STATE''}', 'Y', 8, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 708);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 709, 'COMPANY-SETTINGS', 'Company Settings', 'admin/settingsList', '{''type'':''COMPANY-SETTINGS''}', 'Y', 9, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 709);
+SELECT 709, 'COMPANY-SETTINGS', 'Company Settings', 'admin/settingsList', '{''type'':''COMPANY-SETTINGS''}', 'Y', 9, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 709);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 710, 'BRANCH-SETTINGS', 'Branch Settings', 'admin/settingsList', '{''type'':''BRANCH-SETTINGS''}', 'Y', 10, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 710);
+SELECT 710, 'BRANCH-SETTINGS', 'Branch Settings', 'admin/settingsList', '{''type'':''BRANCH-SETTINGS''}', 'Y', 10, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 710);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 711, 'CUSTOMER', 'Customer Master', 'masters/customerList', '{''type'':''CUSTOMER''}', 'Y', 11, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 711);
+SELECT 711, 'CUSTOMER', 'Customer Master', 'masters/customerList', '{''type'':''CUSTOMER''}', 'Y', 11, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 711);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 800, 'TRACKING', 'Container Tracking', 'tnt/trackList', '{''type'':''TRACKING''}', 'Y', 12, 22, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 800);
+SELECT 800, 'TRACKING', 'Container Tracking', 'tnt/trackList', '{''type'':''TRACKING''}', 'Y', 12, 22, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 800);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 801, 'SEACARRIER', 'Ocean Carrier', 'masters/paramList', '{''type'':''SEA CARRIER''}', 'Y', 13, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 801);
+SELECT 801, 'SEA-CARRIER', 'Ocean Carrier', 'masters/paramList', '{''type'':''SEA-CARRIER''}', 'Y', 13, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 801);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 802, 'AIRCARRIER', 'Air Carrier', 'masters/paramList', '{''type'':''AIR CARRIER''}', 'Y', 14, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 802);
+SELECT 802, 'AIR-CARRIER', 'Air Carrier', 'masters/paramList', '{''type'':''AIR-CARRIER''}', 'Y', 14, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 802);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 810, 'PARAM-SETTINGS', 'Param Settings', 'admin/settingsList', '{''type'':''PARAM-SETTINGS''}', 'N', 15, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 810);
+SELECT 809, 'HISTORY', 'Log History', 'admin/historyList', '{''type'':''HISTORY''}', 'Y', 15, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 809);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 811, 'SALESMAN', 'Salesman', 'masters/paramList', '{''type'':''SALESMAN''}', 'Y', 16, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 811);
+SELECT 810, 'PARAM-SETTINGS', 'Param Settings', 'admin/settingsList', '{''type'':''PARAM-SETTINGS''}', 'N', 15, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 810);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 812, 'SEA-PORT', 'Sea port', 'masters/paramList', '{''type'':''SEA-PORT''}', 'Y', 17, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 812);
+SELECT 811, 'SALESMAN', 'Salesman', 'masters/paramList', '{''type'':''SALESMAN''}', 'Y', 16, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 811);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 813, 'AIR-PORT', 'Air port', 'masters/paramList', '{''type'':''AIR-PORT''}', 'Y', 18, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 813);
+SELECT 812, 'SEA-PORT', 'Sea port', 'masters/paramList', '{''type'':''SEA-PORT''}', 'Y', 17, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 812);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 814, 'CUSTOMER-GROUP', 'Customer Group', 'masters/paramList', '{''type'':''CUSTOMER-GROUP''}', 'Y', 19, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 814);
+SELECT 813, 'AIR-PORT', 'Air port', 'masters/paramList', '{''type'':''AIR-PORT''}', 'Y', 18, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 813);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 815, 'INVOICE-DESCRIPTION', 'Invoice Description', 'masters/paramList', '{''type'':''INVOICE-DESCRIPTION''}', 'Y', 20, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 815);
+SELECT 814, 'CUSTOMER-GROUP', 'Customer Group', 'masters/paramList', '{''type'':''CUSTOMER-GROUP''}', 'Y', 19, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 814);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 816, 'CHQ-FORMAT', 'Check Format', 'masters/paramList', '{''type'':''CHQ-FORMAT''}', 'Y', 21, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 816);
+SELECT 815, 'INVOICE-DESCRIPTION', 'Invoice Description', 'masters/paramList', '{''type'':''INVOICE-DESCRIPTION''}', 'Y', 20, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 815);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 817, 'CURRENCY', 'Currency Master', 'masters/paramList', '{''type'':''CURRENCY''}', 'Y', 22, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 817);
+SELECT 816, 'CHQ-FORMAT', 'Check Format', 'masters/paramList', '{''type'':''CHQ-FORMAT''}', 'Y', 21, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 816);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 818, 'FREIGHT-STATUS', 'Freight Status', 'masters/paramList', '{''type'':''FREIGHT-STATUS''}', 'Y', 23, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 818);
+SELECT 817, 'CURRENCY', 'Currency Master', 'masters/paramList', '{''type'':''CURRENCY''}', 'Y', 22, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 817);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 819, 'NOMINATION', 'Nomination Status', 'masters/paramList', '{''type'':''NOMINATION''}', 'Y', 24, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 819);
+SELECT 818, 'FREIGHT-STATUS', 'Freight Status', 'masters/paramList', '{''type'':''FREIGHT-STATUS''}', 'Y', 23, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 818);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 820, 'CONTAINER-TYPE', 'Container Type', 'masters/paramList', '{''type'':''CONTAINER-TYPE''}', 'Y', 25, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 820);
+SELECT 819, 'NOMINATION', 'Nomination Status', 'masters/paramList', '{''type'':''NOMINATION''}', 'Y', 24, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 819);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 821, 'CARGO-MOVEMENT', 'Cargo Movement', 'masters/paramList', '{''type'':''CARGO-MOVEMENT''}', 'Y', 26, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 821);
+SELECT 820, 'CONTAINER-TYPE', 'Container Type', 'masters/paramList', '{''type'':''CONTAINER-TYPE''}', 'Y', 25, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 820);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 822, 'CONTACT-GROUP', 'Contact Group', 'masters/paramList', '{''type'':''CONTACT-GROUP''}', 'Y', 27, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 822);
+SELECT 821, 'CARGO-MOVEMENT', 'Cargo Movement', 'masters/paramList', '{''type'':''CARGO-MOVEMENT''}', 'Y', 26, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 821);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 823, 'HAWB-FORMAT', 'HAWB Format', 'masters/paramList', '{''type'':''HAWB-FORMAT''}', 'Y', 28, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 823);
+SELECT 822, 'CONTACT-GROUP', 'Contact Group', 'masters/paramList', '{''type'':''CONTACT-GROUP''}', 'Y', 27, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 822);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 824, 'HBL-FORMAT', 'HBL Format', 'masters/paramList', '{''type'':''HBL-FORMAT''}', 'Y', 29, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 824);
+SELECT 823, 'HAWB-FORMAT', 'HAWB Format', 'masters/paramList', '{''type'':''HAWB-FORMAT''}', 'Y', 28, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 823);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 825, 'COO-FORMAT', 'COO Format', 'masters/paramList', '{''type'':''COO-FORMAT''}', 'Y', 30, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 825);
+SELECT 824, 'HBL-FORMAT', 'HBL Format', 'masters/paramList', '{''type'':''HBL-FORMAT''}', 'Y', 29, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 824);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 826, 'CNTR-MOVE-STATUS', 'Container Tracking Events', 'masters/paramList', '{''type'':''CNTR-MOVE-STATUS''}', 'Y', 31, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 826);
+SELECT 825, 'COO-FORMAT', 'COO Format', 'masters/paramList', '{''type'':''COO-FORMAT''}', 'Y', 30, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 825);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 827, 'SHIP-MOVE-STATUS', 'Ocean Shipment Tracking Events', 'masters/paramList', '{''type'':''SHIP-MOVE-STATUS''}', 'Y', 32, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 827);
+SELECT 826, 'CNTR-MOVE-STATUS', 'Container Tracking Events', 'masters/paramList', '{''type'':''CNTR-MOVE-STATUS''}', 'Y', 31, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 826);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 828, 'AIR-MOVE-STATUS', 'Air Shipment Tracking Events', 'masters/paramList', '{''type'':''AIR-MOVE-STATUS''}', 'Y', 33, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 828);
+SELECT 827, 'SHIP-MOVE-STATUS', 'Ocean Shipment Tracking Events', 'masters/paramList', '{''type'':''SHIP-MOVE-STATUS''}', 'Y', 32, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 827);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 829, 'BUDGET-TYPE', 'Budget Category', 'masters/paramList', '{''type'':''BUDGET-TYPE''}', 'Y', 34, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 829);
+SELECT 828, 'AIR-MOVE-STATUS', 'Air Shipment Tracking Events', 'masters/paramList', '{''type'':''AIR-MOVE-STATUS''}', 'Y', 33, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 828);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 830, 'FORM-CATEGORY', 'Form Category', 'masters/paramList', '{''type'':''FORM-CATEGORY''}', 'Y', 35, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 830);
+SELECT 829, 'BUDGET-TYPE', 'Budget Category', 'masters/paramList', '{''type'':''BUDGET-TYPE''}', 'Y', 34, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 829);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 831, 'UNIT-MASTER', 'Unit Master', 'masters/paramList', '{''type'':''UNIT-MASTER''}', 'Y', 36, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 831);
+SELECT 830, 'FORM-CATEGORY', 'Form Category', 'masters/paramList', '{''type'':''FORM-CATEGORY''}', 'Y', 35, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 830);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 832, 'WIRETRANSM', 'Wire Transfer Instruction', 'masters/wiretransmList', '{''type'':''WIRETRANSM''}', 'Y', 37, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 832);
+SELECT 831, 'UNIT-MASTER', 'Unit Master', 'masters/paramList', '{''type'':''UNIT-MASTER''}', 'Y', 36, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 831);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 833, 'REMARKS', 'Remarks', 'masters/remarkList', '{''type'':''REMARKS''}', 'Y', 38, 21, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 833);
+SELECT 832, 'MBL-STATUS', 'MBL Status', 'masters/paramList', '{''type'':''MBL-STATUS''}', 'Y', 37, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 832);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 901, 'QUOTATIONS-LCL', 'Quotations Lcl & Local', 'marketing/qtnmlclList', '{''type'':''QUOTATIONS-LCL''}', 'Y', 1, 23, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 901);
+SELECT 850, 'WIRETRANSM', 'Wire Transfer Instruction', 'masters/wiretransmList', '{''type'':''WIRETRANSM''}', 'Y', 50, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 850);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 902, 'QUOTATIONS-FCL', 'Quotations Fcl', 'marketing/qtnmfclList', '{''type'':''QUOTATIONS-FCL''}', 'Y', 2, 23, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 902);
+SELECT 851, 'REMARKS', 'Remarks', 'masters/remarkList', '{''type'':''REMARKS''}', 'Y', 51, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 851);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 903, 'QUOTATIONS-AIR', 'Quotations Air', 'marketing/qtnmairList', '{''type'':''QUOTATIONS-AIR''}', 'Y', 3, 23, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 903);
+SELECT 852, 'CUSTOMER-MEMO', 'Customer Memo', 'shared/genmemoList', '{''type'':''CUSTOMER-MEMO''}', 'N', 52, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 852);
 
 INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
-SELECT 1001, 'MAIL-SERVER', 'Mail Server Settings', 'admin/mailservermList', '{''type'':''MAIL-SERVER''}', 'Y', 1, 24, 1, 1, 'N', 'ADMIN', NOW() WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1001);
+SELECT 853, 'CUSTOMER-SOP', 'Customer SOP', 'shared/genmemoList', '{''type'':''CUSTOMER-SOP''}', 'N', 53, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 853);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 854, 'CUSTOMER-QTNM', 'Quotation Memo', 'shared/genmemoList', '{''type'':''CUSTOMER-QTNM''}', 'N', 54, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 854);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 855, 'CUSTOMER-ACC', 'Accounting Alert', 'shared/genmemoList', '{''type'':''CUSTOMER-ACC''}', 'N', 55, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 855);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 856, 'SEA-EXP-RIDER', 'Sea Export Rider', 'shared/genmemoList', '{''type'':''SEA-EXP-RIDER''}', 'N', 56, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 856);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 857, 'SEA-IMP-RIDER', 'Sea Import Rider', 'shared/genmemoList', '{''type'':''SEA-IMP-RIDER''}', 'N', 57, 21, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 857);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 901, 'QUOTATIONS-LCL', 'Quotations Lcl & Local', 'marketing/qtnmlclList', '{''type'':''QUOTATIONS-LCL''}', 'Y', 1, 23, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 901);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 902, 'QUOTATIONS-FCL', 'Quotations Fcl', 'marketing/qtnmfclList', '{''type'':''QUOTATIONS-FCL''}', 'Y', 2, 23, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 902);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 903, 'QUOTATIONS-AIR', 'Quotations Air', 'marketing/qtnmairList', '{''type'':''QUOTATIONS-AIR''}', 'Y', 3, 23, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 903);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1010, 'SEA-EXPORT-M', 'Sea Export Master', 'seaexport/seaexportmList', '{''type'':''SEA-EXPORT-M''}', 'Y', 1, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1010);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1011, 'SEA-EXPORT-H', 'Sea Export House', 'seaexport/seaexporthList', '{''type'':''SEA-EXPORT-H''}', 'Y', 2, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1011);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1012, 'SEA-IMPORT-M', 'Sea Import Master', 'seaimport/seaimportmList', '{''type'':''SEA-IMPORT-M''}', 'Y', 3, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1012);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1013, 'SEA-IMPORT-H', 'Sea Import House', 'seaimport/seaimporthList', '{''type'':''SEA-IMPORT-H''}', 'Y', 4, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1013);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1014, 'AIR-EXPORT-M', 'Air Export Master', 'airexport/airexportList', '{''type'':''AIR-EXPORT-M''}', 'Y', 5, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1014);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1015, 'AIR-EXPORT-H', 'Air Export House', 'airexport/airexporthList', '{''type'':''AIR-EXPORT-H''}', 'Y', 6, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1015);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1016, 'AIR-IMPORT-M', 'Air Import Master', 'airimport/airimportList', '{''type'':''AIR-IMPORT-M''}', 'Y', 7, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1016);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1017, 'AIR-IMPORT-H', 'Air Import House', 'airimport/airimporthList', '{''type'':''AIR-IMPORT-H''}', 'Y', 8, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1017);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1018, 'OTHEROP', 'Other Operation', 'otherop/otheropList', '{''type'':''OTHEROP''}', 'Y', 9, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1018);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1019, 'DELIVERY-ORDER', 'Delivery Order', 'common-shipment/deliveryorderList', '{''type'':''DELIVERY-ORDER''}', 'Y', 10, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1019);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1050, 'CUSTOM-HOLD', 'Custom Hold', 'common-shipment/customholdEdit', '{''type'':''CUSTOM-HOLD''}', 'N', 20, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1050);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1051, 'SEA-IMPORT-M-DO', 'Delivery Order', 'common-shipment/deliveryorderList', '{''type'':''SEA-IMPORT-M-DO''}', 'N', 30, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1051);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1052, 'SEA-IMPORT-H-DO', 'Delivery Order', 'common-shipment/deliveryorderList', '{''type'':''SEA-IMPORT-H-DO''}', 'N', 31, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1052);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1053, 'AIR-IMPORT-H-DO', 'Delivery Order', 'common-shipment/deliveryorderList', '{''type'':''AIR-IMPORT-H-DO''}', 'N', 32, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1053);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1054, 'OTHEROP-DO', 'Delivery Order', 'common-shipment/deliveryorderList', '{''type'':''OTHEROP-DO''}', 'N', 33, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1054);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1055, 'SEA-IMP-M-DEVAN', 'Devanning Instruction', 'common-shipment/devaninstList', '{''type'':''SEA-IMP-M-DEVAN''}', 'N', 35, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1055);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1056, 'SEA-IMP-H-DEVAN', 'Devanning Instruction', 'common-shipment/devaninstList', '{''type'':''SEA-IMP-M-DEVAN''}', 'N', 36, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1056);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1057, 'AIR-EXP-M-MEMO', 'Internal Memo', 'common-shipment/memoList', '{''type'':''AIR-EXP-M-MEMO''}', 'N', 37, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1057);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1058, 'AIR-IMP-H-MEMO', 'Internal Memo', 'common-shipment/memoList', '{''type'':''AIR-IMP-H-MEMO''}', 'N', 38, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1058);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1059, 'AIR-IMP-M-MEMO', 'Internal Memo', 'common-shipment/memoList', '{''type'':''AIR-IMP-M-MEMO''}', 'N', 39, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1059);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1060, 'OTHEROP-MEMO', 'Internal Memo', 'common-shipment/memoList', '{''type'':''OTHEROP-MEMO''}', 'N', 40, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1060);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1061, 'SEA-EXP-M-MEMO', 'Internal Memo', 'common-shipment/memoList', '{''type'':''SEA-EXP-M-MEMO''}', 'N', 41, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1061);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1062, 'SEA-IMP-H-MEMO', 'Internal Memo', 'common-shipment/memoList', '{''type'':''SEA-IMP-H-MEMO''}', 'N', 42, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1062);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1063, 'SEA-IMP-M-MEMO', 'Internal Memo', 'common-shipment/memoList', '{''type'':''SEA-IMP-M-MEMO''}', 'N', 43, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1063);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1064, 'AIR-EXPORT-SLIP', 'Air Export Master Messenger Slip', 'common-shipment/messengerslipList', '{''type'':''AIR-EXPORT-SLIP''}', 'N', 44, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1064);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1065, 'AIR-IMPORT-SLIP', 'Air Import Master Messenger Slip', 'common-shipment/messengerslipList', '{''type'':''AIR-IMPORT-SLIP''}', 'N', 45, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1065);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1066, 'SEA-EXPORT-SLIP', 'Sea Export Master Messenger Slip', 'common-shipment/messengerslipList', '{''type'':''SEA-EXPORT-SLIP''}', 'N', 46, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1066);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1067, 'SEA-IMPORT-SLIP', 'Sea Import Master Messenger Slip', 'common-shipment/messengerslipList', '{''type'':''SEA-IMPORT-SLIP''}', 'N', 47, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1067);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1068, 'OTHEROP-SLIP', 'Other Operation Messenger Slip', 'common-shipment/messengerslipList', '{''type'':''OTHEROP-SLIP''}', 'N', 48, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1068);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1070, 'MESSENGER-SLIP', 'Messenger Slip', 'common-shipment/messengerslipList', '{''type'':''MESSENGER-SLIP'', ''parent_type'':''GENERAL''}', 'N', 49, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1070);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1071, 'SEA-EXP-FOLLOWUP', 'Follow Up', 'common-shipment/followupEdit', '{''type'':''SEA-EXP-FOLLOWUP''}', 'N', 50, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1071);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1072, 'SEA-IMP-FOLLOWUP', 'Follow Up', 'common-shipment/followupEdit', '{''type'':''SEA-IMP-FOLLOWUP''}', 'N', 51, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1072);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1073, 'AIR-EXP-FOLLOWUP', 'Follow Up', 'common-shipment/followupEdit', '{''type'':''AIR-EXP-FOLLOWUP''}', 'N', 52, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1073);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1074, 'AIR-IMP-FOLLOWUP', 'Follow Up', 'common-shipment/followupEdit', '{''type'':''AIR-IMP-FOLLOWUP''}', 'N', 53, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1074);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1075, 'OTHEROP-FOLLOWUP', 'Follow Up', 'common-shipment/followupEdit', '{''type'':''OTHEROP-FOLLOWUP''}', 'N', 54, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1075);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1080, 'SEA-EXP-ATTACHMENT', 'Sea Export Attachment', 'shared/fileuploadEdit', '{''type'':''SEA-EXP-ATTACHMENT''}', 'N', 60, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1080);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1081, 'SEA-IMP-ATTACHMENT', 'Sea Import Attachment', 'shared/fileuploadEdit', '{''type'':''SEA-IMP-ATTACHMENT''}', 'N', 61, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1081);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1082, 'AIR-EXP-ATTACHMENT', 'Air Export Attachment', 'shared/fileuploadEdit', '{''type'':''AIR-EXP-ATTACHMENT''}', 'N', 62, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1082);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1083, 'AIR-IMP-ATTACHMENT', 'Air Import Attachment', 'shared/fileuploadEdit', '{''type'':''AIR-IMP-ATTACHMENT''}', 'N', 63, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1083);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1084, 'OTHEROP-ATTACHMENT', 'Other Operation Attachment', 'shared/fileuploadEdit', '{''type'':''OTHEROP-ATTACHMENT''}', 'N', 64, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1084);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1084, 'SEA-EXPORT-COO', 'Ocean Export Certificate of Origin', 'seaexport/cooEdit', '{''type'':''SEA-EXPORT-COO''}', 'N', 70, 25, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1084);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1001, 'MAIL-SERVER', 'Mail Server Settings', 'admin/mailservermList', '{''type'':''MAIL-SERVER''}', 'Y', 1, 24, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1001);
 
 UPDATE mast_menum SET menu_param = REPLACE(menu_param, '*', '''');

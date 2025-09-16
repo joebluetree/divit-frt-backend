@@ -46,11 +46,10 @@ namespace Database.Models.Marketing
         public string? qtnm_plfd_name { get; set; }
         public string? qtnm_trans_time { get; set; }
         public string? qtnm_routing { get; set; }
-        public decimal qtnm_amt { get; set; }        
+        public decimal? qtnm_amt { get; set; }
+        public int? qtnm_cur_id { get; set; }
+        public decimal? qtnm_exrate { get; set; }
         public string? rec_files_attached { get; set; }
-
-        
-
         public int? rec_files_count { get; set; }        
 
 
@@ -69,8 +68,11 @@ namespace Database.Models.Marketing
         [ForeignKey("qtnm_pod_id")]
         public mast_param? pod { get; set; }
 
+        [ForeignKey("qtnm_cur_id")]
+        public mast_param? currency { get; set; }
+
         
-        public List <mark_qtnd_lcl>? qtnd_lcl { get; set; } 
+        public List<mark_qtnd_lcl>? qtnd_lcl { get; set; } 
 
         public List <mark_qtnd_fcl>? qtnd_fcl { get; set; } 
 

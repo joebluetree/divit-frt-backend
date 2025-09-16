@@ -53,6 +53,21 @@ namespace Marketing.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetDefaultData")]
+        public async Task<IActionResult> GetDefaultData(int id)
+        {
+            try
+            {
+                
+                var RetData = await mRepository.GetDefaultData(id);
+                return Ok(RetData);
+            }
+            catch (Exception Ex) {
+                return BadRequest(Ex.Message.ToString());
+            }
+        }
+
         [HttpPost]
         [Route("SaveAsync")]
         public async Task<IActionResult> SaveAsync(int id, string mode, [FromBody] mark_qtnm_dto rec)

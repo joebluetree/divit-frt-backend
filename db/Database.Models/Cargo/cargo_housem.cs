@@ -203,6 +203,8 @@ namespace Database.Models.Cargo
         public string? hbl_invoiceno { get; set; }
         public string? rec_memo_attached { get; set; }
         public int? rec_memo_count { get; set; }
+        public string? rec_telex_attached { get; set; }
+        public int? rec_telex_count { get; set; }
 
         [ForeignKey("hbl_mbl_id")]
         public cargo_masterm? master { get; set; }

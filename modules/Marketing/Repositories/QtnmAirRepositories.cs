@@ -19,6 +19,7 @@ using Marketing.Printing;
 //Created Date : 10/01/2025
 //Remark : this file defines functions like Save, Delete, getList and getRecords which save/retrieve data
 // version 2 04/07/2025 : print added
+// version 3 08/09/2025 : Currency Added
 
 namespace Marketing.Repositories
 {
@@ -210,6 +211,9 @@ namespace Marketing.Repositories
                     qtnm_salesman_name = e.salesman!.param_name,
                     qtnm_move_type = e.qtnm_move_type,
                     qtnm_commodity = e.qtnm_commodity,
+                    qtnm_cur_id = e.qtnm_cur_id,
+                    qtnm_cur_code = e.currency!.param_code,
+                    qtnm_exrate = e.qtnm_exrate,
 
                     rec_files_count = e.rec_files_count,
                     rec_files_attached = e.rec_files_attached,
@@ -223,6 +227,11 @@ namespace Marketing.Repositories
 
                 if (Record == null)
                     throw new Exception("No Qtn Found");
+
+                var result = CommonLib.GetBranchsettings(context,Record!.rec_company_id, Record.rec_branch_id, "EXRATE DECIMAL");
+
+                if (result.ContainsKey("EXRATE DECIMAL"))
+                    Record.exrate_decimal = Lib.StringToInteger(result["EXRATE DECIMAL"]);
 
                 Record.qtnd_air = await GetDetailsAsync(Record.qtnm_id);
                 Record.remk_remarks = await CommonLib.GetRemarksDetailsAsync(context, Record.qtnm_id, Record.qtnm_type);
@@ -279,7 +288,44 @@ namespace Marketing.Repositories
 
             return records;
         }
+        public async Task<mark_qtnm_dto> GetDefaultData(int id) // for getting default currency and exrate decimal
+        {
+            try
+            {
+                mark_qtnm_dto? Record_dto = null;
 
+                var caption = "CURRENCY,EXRATE DECIMAL";
+
+                var result = CommonLib.GetBranchsettings(context,Record_dto!.rec_company_id, Record_dto.rec_branch_id, caption);
+
+                if (result.ContainsKey("CURRENCY"))
+                {
+                    Record_dto.qtnm_cur_id = Lib.StringToInteger(result["CURRENCY"]);
+
+                    var cur = await context.mast_param                                // to get cur_code and exrate using default cur_id
+                        .Where(p => p.param_id == Record_dto.qtnm_cur_id)
+                        .FirstOrDefaultAsync();
+
+                    if (cur != null)
+                    {
+                        Record_dto.qtnm_cur_code = cur.param_code ?? "";
+                        Record_dto.qtnm_exrate = Lib.StringToDecimal(cur.param_value1 ?? "0");
+                    }
+                }
+
+                if (result.ContainsKey("EXRATE DECIMAL"))
+                    Record_dto.exrate_decimal = Lib.StringToInteger(result["EXRATE DECIMAL"]);    
+
+                if (Record_dto == null)
+                    throw new Exception("No Data Found");
+
+                return Record_dto;
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
+            }
+        }
 
         public async Task<mark_qtnm_dto> SaveAsync(int id, string mode, mark_qtnm_dto record_dto)
         {
@@ -333,6 +379,10 @@ namespace Marketing.Repositories
                 str += "Sales Rep. Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.qtnm_move_type))
                 str += "Move Type Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.qtnm_cur_code))
+                str += "Currency Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.qtnm_exrate))
+                str += "Exrate Cannot Be Blank!";
 
             foreach (mark_qtnd_air_dto rec in record_dto.qtnd_air!)
             {
@@ -452,6 +502,8 @@ namespace Marketing.Repositories
                 Record.qtnm_salesman_id = record_dto.qtnm_salesman_id;
                 Record.qtnm_move_type = record_dto.qtnm_move_type;
                 Record.qtnm_commodity = record_dto.qtnm_commodity;
+                Record.qtnm_cur_id = record_dto.qtnm_cur_id;
+                Record.qtnm_exrate = record_dto.qtnm_exrate;
 
                 if (mode == "add")
                     await context.mark_qtnm.AddAsync(Record);
@@ -634,7 +686,9 @@ namespace Marketing.Repositories
                 qtnm_valid_date = Lib.FormatDate(old_record.qtnm_valid_date, Lib.outputDateFormat),
                 qtnm_salesman_name = old_record.salesman!.param_name,
                 qtnm_move_type = old_record.qtnm_move_type,
-                qtnm_commodity = old_record.qtnm_commodity
+                qtnm_commodity = old_record.qtnm_commodity,
+                qtnm_cur_code = old_record.currency?.param_code,
+                qtnm_exrate = old_record.qtnm_exrate,
             };
 
             await new LogHistorym<mark_qtnm_dto>(context)
@@ -654,6 +708,8 @@ namespace Marketing.Repositories
                 .TrackColumn("qtnm_salesman_name", "Salesman name")
                 .TrackColumn("qtnm_move_type", "Move Type")
                 .TrackColumn("qtnm_commodity", "Commodity")
+                .TrackColumn("qtnm_cur_code", "Currency")
+                .TrackColumn("qtnm_exrate", "Ex-Rate","decimal")
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
         }

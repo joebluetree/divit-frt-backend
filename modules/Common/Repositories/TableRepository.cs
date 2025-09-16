@@ -113,6 +113,8 @@ namespace Common.Repositories
 
             files.Add("Accounts\\acc_groupm.txt");
             files.Add("Accounts\\acc_acctm.txt");
+            files.Add("Accounts\\acc_invoicem.txt");
+            files.Add("Accounts\\acc_invoiced.txt");
 
             files.Add("Marketing\\mark_qtnm.txt");
             files.Add("Marketing\\mark_qtnd_lcl.txt");

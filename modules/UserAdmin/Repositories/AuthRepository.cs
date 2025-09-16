@@ -154,9 +154,24 @@ namespace UserAdmin.Repositories
 
                 module_list = module_list.FindAll(f => f.module_is_installed == "Y");
 
-                List<string> valueList = new List<string> { "DEICMALS", "DATE-FORMAT" };
+                List<string> valueList = new List<string> { "DECIMALS", "DATE-FORMAT" };  // for company settings
                 List<mast_settings_dto> company_settings_list = await context.mast_settings
                             .Where(w => w.rec_company_id == comp_id && valueList.Contains(w.caption!))
+                            .Select(e => new mast_settings_dto
+                            {
+                                caption = e.caption,
+                                type = e.type,
+                                code = e.code,
+                                name = e.name,
+                                value = e.value,
+                                param_id = e.param_id,
+                            }).ToListAsync();
+
+                List<string> bSettingList = new List<string> { "EXRATE DECIMAL", "CURRENCY" };  // for branch settings default value
+                List<mast_settings_dto> branch_settings_list = await context.mast_settings
+                            .Where(w => w.rec_company_id == comp_id
+                                    && w.rec_branch_id == branch_id
+                                    && bSettingList.Contains(w.caption!))
                             .Select(e => new mast_settings_dto
                             {
                                 caption = e.caption,
@@ -173,6 +188,7 @@ namespace UserAdmin.Repositories
                 RetData.Add("module_list", module_list);
                 RetData.Add("menu_list", Records);
                 RetData.Add("company_settings_list", company_settings_list);
+                RetData.Add("branch_settings_list", branch_settings_list);
 
                 return RetData;
             }

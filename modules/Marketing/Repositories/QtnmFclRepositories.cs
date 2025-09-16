@@ -22,7 +22,8 @@ namespace Marketing.Repositories
     //Name : Alen Cherian
     //Date : 03/01/2025
     //Command :  Create Repository for the Quotation Fcl.
-    // version 2 04/07/2025 : print added
+    // version 2 04/07/2025 : print added (Sourav V)
+    // version 3 08/09/2025 : Currency Added (Sourav V)
     public class QtnmFclRepository : IQtnmFclRepository
     {
 
@@ -48,7 +49,7 @@ namespace Marketing.Repositories
                 var action = data["action"].ToString();
                 if (action == null)
                     action = "search";
-                    
+
                 var title = data["title"].ToString();
                 var user_name = data["global_user_name"].ToString();
                 var qtnm_to_name = "";
@@ -214,6 +215,9 @@ namespace Marketing.Repositories
                     qtnm_commodity = e.qtnm_commodity,
                     rec_files_attached = e.rec_files_attached,
                     rec_files_count = e.rec_files_count,
+                    qtnm_cur_id = e.qtnm_cur_id,
+                    qtnm_cur_code = e.currency!.param_code,
+                    qtnm_exrate = e.qtnm_exrate,
 
                     rec_version = e.rec_version,
                     rec_branch_id = e.rec_branch_id,
@@ -225,6 +229,11 @@ namespace Marketing.Repositories
 
                 if (Record == null)
                     throw new Exception("No Qtn Found");
+
+                var result = CommonLib.GetBranchsettings(context,Record!.rec_company_id, Record.rec_branch_id, "EXRATE DECIMAL");
+
+                if (result.ContainsKey("EXRATE DECIMAL"))
+                    Record.exrate_decimal = Lib.StringToInteger(result["EXRATE DECIMAL"]);
 
                 Record.qtnd_fcl = await GetDetailsAsync(Record.qtnm_id);
                 Record.remk_remarks = await CommonLib.GetRemarksDetailsAsync(context, Record.qtnm_id, Record.qtnm_type);
@@ -280,7 +289,44 @@ namespace Marketing.Repositories
 
             return records;
         }
+        public async Task<mark_qtnm_dto> GetDefaultData(int id) // for getting default currency and exrate decimal
+        {
+            try
+            {
+                mark_qtnm_dto? Record_dto = null;
 
+                var caption = "CURRENCY,EXRATE DECIMAL";
+
+                var result = CommonLib.GetBranchsettings(context,Record_dto!.rec_company_id, Record_dto.rec_branch_id, caption);
+
+                if (result.ContainsKey("CURRENCY"))
+                {
+                    Record_dto.qtnm_cur_id = Lib.StringToInteger(result["CURRENCY"]);
+
+                    var cur = await context.mast_param                                // to get cur_code and exrate using default cur_id
+                        .Where(p => p.param_id == Record_dto.qtnm_cur_id)
+                        .FirstOrDefaultAsync();
+
+                    if (cur != null)
+                    {
+                        Record_dto.qtnm_cur_code = cur.param_code ?? "";
+                        Record_dto.qtnm_exrate = Lib.StringToDecimal(cur.param_value1 ?? "0");
+                    }
+                }
+
+                if (result.ContainsKey("EXRATE DECIMAL"))
+                    Record_dto.exrate_decimal = Lib.StringToInteger(result["EXRATE DECIMAL"]);    
+
+                if (Record_dto == null)
+                    throw new Exception("No Data Found");
+
+                return Record_dto;
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
+            }
+        }
         public async Task<mark_qtnm_dto> SaveAsync(int id, string mode, mark_qtnm_dto record_dto)
         {
             try
@@ -318,16 +364,20 @@ namespace Marketing.Repositories
             string code = "";
             string name = "";
 
+            if (Lib.IsBlank(record_dto.qtnm_date))
+                str += "Quote Date Cannot Be Blank!";
             if (Lib.IsZero(record_dto.qtnm_to_id))
                 str += "Quote To Cannot Be Blank!";
             if (Lib.IsZero(record_dto.qtnm_salesman_id))
                 str += "Sales Rep. Cannot Be Blank!";
-            if (Lib.IsBlank(record_dto.qtnm_date))
-                str += "Quote Date Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.qtnm_quot_by))
                 str += "Quote By Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.qtnm_move_type))
                 str += "Move Type Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.qtnm_cur_code))
+                str += "Currency Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.qtnm_exrate))
+                str += "Exrate Cannot Be Blank!";
 
             foreach (mark_qtnd_fcl_dto rec in record_dto.qtnd_fcl!)
             {
@@ -411,7 +461,9 @@ namespace Marketing.Repositories
                 {
                     //if the mode is edit, the get the records from the database
                     Record = await context.mark_qtnm
+                        .Include(c => c.customer)
                         .Include(c => c.salesman)
+                        .Include(c => c.currency)
                         .Where(f => f.qtnm_id == id)
                         .FirstOrDefaultAsync();
                     //check the record is null or not.
@@ -438,6 +490,10 @@ namespace Marketing.Repositories
                 Record.qtnm_salesman_id = record_dto.qtnm_salesman_id;
                 Record.qtnm_move_type = record_dto.qtnm_move_type;
                 Record.qtnm_commodity = record_dto.qtnm_commodity;
+                Record.qtnm_cur_id = record_dto.qtnm_cur_id;
+                Record.qtnm_exrate = record_dto.qtnm_exrate;
+                Record.qtnm_amt = GetTotalAmount(record_dto.qtnd_fcl);
+
                 if (mode == "add")  //add the record to database
                     await context.mark_qtnm.AddAsync(Record);
                 context.SaveChanges();//Save changes in database
@@ -458,26 +514,27 @@ namespace Marketing.Repositories
                 }
                 return record_dto;
             }
-            catch (Exception)
+            catch (Exception Ex)
             {
-                throw;
+                throw new Exception(Ex.Message.ToString());
             }
 
         }
-
-        //The function for total amount of Logistics Charges and Surcharges
-        public decimal? GetTotalAmount(mark_qtnd_fcl_dto record_dto)
+        // Sum total amount from all detail lines
+        public decimal GetTotalAmount(List<mark_qtnd_fcl_dto>? details)
         {
-            var totcost = new List<decimal?>
-            {
-                record_dto.qtnd_of,
-                record_dto.qtnd_pss,
-                record_dto.qtnd_baf,
-                record_dto.qtnd_isps,
-                record_dto.qtnd_haulage,
-                record_dto.qtnd_ifs
-            };
-            return totcost.Sum();
+            if (details == null || details.Count == 0)
+                return 0;
+
+            var totAmt = details.Sum(d =>
+                (d.qtnd_of ?? 0) +
+                (d.qtnd_pss ?? 0) +
+                (d.qtnd_baf ?? 0) +
+                (d.qtnd_isps ?? 0) +
+                (d.qtnd_haulage ?? 0) +
+                (d.qtnd_ifs ?? 0)
+            );
+            return totAmt;
         }
 
         public async Task<mark_qtnm_dto> SaveDetailsAsync(int id, string mode, mark_qtnm_dto record_dto)
@@ -512,7 +569,7 @@ namespace Marketing.Repositories
 
                 foreach (var rec in records_dto)
                 {
-                    var tot_amt = GetTotalAmount(rec);
+                    var tot_amt = GetTotalAmount(records_dto);
 
                     if (rec.qtnd_id == 0)
                     {
@@ -629,6 +686,7 @@ namespace Marketing.Repositories
                 qtnm_id = old_record.qtnm_id,
                 qtnm_cfno = old_record.qtnm_cfno,
                 qtnm_no = old_record.qtnm_no,
+                qtnm_to_code = old_record.customer?.cust_code,
                 qtnm_to_name = old_record.qtnm_to_name,
                 qtnm_to_addr1 = old_record.qtnm_to_addr1,
                 qtnm_to_addr2 = old_record.qtnm_to_addr2,
@@ -639,7 +697,9 @@ namespace Marketing.Repositories
                 qtnm_valid_date = Lib.FormatDate(old_record.qtnm_valid_date, Lib.outputDateFormat),
                 qtnm_salesman_name = old_record.salesman?.param_name,
                 qtnm_move_type = old_record.qtnm_move_type,
-                qtnm_commodity = old_record.qtnm_commodity
+                qtnm_commodity = old_record.qtnm_commodity,
+                qtnm_cur_code = old_record.currency?.param_code,
+                qtnm_exrate = old_record.qtnm_exrate,
 
             };
 
@@ -650,6 +710,7 @@ namespace Marketing.Repositories
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
                 .TrackColumn("qtnm_cfno", "CF-No", "integer")
                 .TrackColumn("qtnm_no", "Quotation-No")
+                .TrackColumn("qtnm_to_code", "To Code")
                 .TrackColumn("qtnm_to_name", "To Name")
                 .TrackColumn("qtnm_to_addr1", "To Address 1")
                 .TrackColumn("qtnm_to_addr2", "To Address 2")
@@ -657,11 +718,12 @@ namespace Marketing.Repositories
                 .TrackColumn("qtnm_to_addr4", "To Address 4")
                 .TrackColumn("qtnm_date", "Quotation Date")
                 .TrackColumn("qtnm_quot_by", "Quoted By")
-                .TrackColumn("qtnm_valid_date", "Valid Until")
+                .TrackColumn("qtnm_valid_date", "Validity")
                 .TrackColumn("qtnm_salesman_name", "Salesman Name")
                 .TrackColumn("qtnm_move_type", "Move Type")
                 .TrackColumn("qtnm_commodity", "Commodity")
-
+                .TrackColumn("qtnm_cur_code", "Currency")
+                .TrackColumn("qtnm_exrate", "Ex-Rate", "decimal")
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
 

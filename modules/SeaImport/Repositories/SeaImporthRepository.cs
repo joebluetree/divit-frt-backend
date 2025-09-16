@@ -310,6 +310,8 @@ namespace SeaImport.Repositories
                     hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateFormat),
                     rec_memo_count = e.rec_memo_count,
                     rec_memo_attached = e.rec_memo_attached,
+                    rec_telex_count = e.rec_telex_count,
+                    rec_telex_attached = e.rec_telex_attached,
                     rec_version = e.rec_version,
 
                     rec_created_by = e.rec_created_by,
@@ -567,6 +569,8 @@ namespace SeaImport.Repositories
                 str += "Consignee Code Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.hbl_consignee_name))
                 str += "Consignee Name Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.hbl_commodity))
+                str += "Good's Description Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.hbl_frt_status_name))
                 str += "Fright Status Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.hbl_bltype))
@@ -1383,7 +1387,7 @@ namespace SeaImport.Repositories
                 cntr_movement = record.cntr_movement,
                 cntr_pieces = record.cntr_pieces,
                 cntr_packages_unit_name = record.packunit?.param_name,
-                cntr_packages = record.cntr_packages,
+                cntr_packages = record.cntr_packages,   
                 cntr_cbm = record.cntr_cbm,
                 cntr_weight_uom = record.cntr_weight_uom,
                 cntr_weight = record.cntr_weight,

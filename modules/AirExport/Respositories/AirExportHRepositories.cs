@@ -475,18 +475,22 @@ namespace AirExport.Repositories
                 var hawb_id = settings.FirstOrDefault(s => s.caption == "HAWB-FORMAT")?.value;
                 var hawb_name = settings.FirstOrDefault(s => s.caption == "HAWB-FORMAT")?.name;
 
-                var query1 = context.mast_param
-                    .Where(f => f.param_type == "SHIPSTAGE AI" && f.param_name == "NIL");
-
-                Record = await query1.Select(e => new cargo_air_exporth_dto
-                {
-                    hbl_shipment_stage_id = e.param_id,
-                    hbl_shipment_stage_name = e.param_name,
-                }).FirstOrDefaultAsync();
+                var shipmentStage = await context.mast_param
+                    .Where(f => f.param_type == "SHIPSTAGE AI" && f.param_name == "NIL")
+                    .Select(e => new 
+                    {
+                        e.param_id,
+                        e.param_name
+                    })
+                    .FirstOrDefaultAsync();
 
                 if (Record != null)
                 {
-
+                    if (shipmentStage != null)
+                    {
+                        Record.hbl_shipment_stage_id = shipmentStage.param_id;
+                        Record.hbl_shipment_stage_name = shipmentStage.param_name;
+                    }
                     Record.hbl_agent_name = agentname;
                     Record.hbl_agent_city = agentcity;
                     Record.hbl_exp_ref1 = agentname;

@@ -189,7 +189,7 @@ namespace SeaImport.Repositories
                     mbl_liner_id = e.mbl_liner_id,
                     mbl_liner_name = e.liner!.param_name,
                     mbl_coloader_id = e.mbl_coloader_id,
-                    mbl_coloader_name = e.coloader!.param_name,
+                    mbl_coloader_name = e.coloader!.cust_name,
                     mbl_handled_id = e.mbl_handled_id,
                     mbl_handled_name = e.handledby!.param_name,
                     mbl_salesman_id = e.mbl_salesman_id,
@@ -403,10 +403,12 @@ namespace SeaImport.Repositories
             DateTime? eta_date = Lib.ParseDate(record_dto.mbl_pod_eta!) ?? null;
 
 
-            if (Lib.IsBlank(record_dto.mbl_agent_name))
-                str += "Master Agent Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_ref_date))
+                str += "Ref Date Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_shipment_stage_name))
                 str += "Shipment Stage Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.mbl_agent_name))
+                str += "Master Agent Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_handled_name))
                 str += "Handled By Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.mbl_frt_status_name))
@@ -847,7 +849,7 @@ namespace SeaImport.Repositories
                 mbl_no = old_record.mbl_no,
                 mbl_agent_name = old_record.agent?.cust_name,
                 mbl_liner_name = old_record.liner?.param_name,
-                mbl_coloader_name = old_record.coloader?.param_name,
+                mbl_coloader_name = old_record.coloader?.cust_name,
                 mbl_handled_name = old_record.handledby?.param_name,
                 mbl_salesman_name = old_record.salesman?.param_name,
                 mbl_frt_status_name = old_record.mbl_frt_status_name,
