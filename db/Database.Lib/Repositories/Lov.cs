@@ -52,7 +52,7 @@ namespace Database.Lib.Repositories
                             rec.module_id,
                             rec.module_name,
                             rec.module_parent_id,
-                            module_parent_name = rec.module.module_name,
+                            module_parent_name = rec.module!.module_name,
                             rec.module_is_installed,
                             rec.module_order,
                             rec.rec_company_id
@@ -334,7 +334,7 @@ namespace Database.Lib.Repositories
             string subtable = "";
 
             if (data.ContainsKey("subtable"))
-                subtable = data["subtable"].ToString().ToUpper();
+                subtable = data["subtable"].ToString()!.ToUpper();
 
             var query = from rec in context.mast_param
                         where rec.rec_company_id == comp_id && rec.param_type == subtable
@@ -362,9 +362,6 @@ namespace Database.Lib.Repositories
             return RetData;
         }
     }
-
-
-
 
 }
 

@@ -114,6 +114,8 @@ builder.Services.AddScoped<ISeaImporthRepository, SeaImporthRepository>();
 builder.Services.AddScoped<IAccGroupRepository, AccGroupRepository>();
 builder.Services.AddScoped<IAcctmRepository, AcctmRepository>();
 builder.Services.AddScoped<IInvoicemRepository, InvoicemRepository>();
+builder.Services.AddScoped<IOpenBalanceRepository, OpenBalanceRepository>();
+builder.Services.AddScoped<IAccTransRepository, AccTransRepository>();
 
 //AirExport
 builder.Services.AddScoped<IAirExportRepository, AirExportRepository>();

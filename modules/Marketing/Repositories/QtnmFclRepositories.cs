@@ -756,7 +756,7 @@ namespace Marketing.Repositories
                 .Table("mark_qtnm_dto", log_date)
                 .PrimaryKey("qtnd_id", record_dto.qtnm_id)
                 .RefNo(record_dto.qtnm_no!)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_edited_by!)
                 .TrackColumn("qtnd_pol_name", "POL Name")
                 .TrackColumn("qtnd_pod_name", "POD Name")
                 .TrackColumn("qtnd_carrier_name", "Carrier Name")

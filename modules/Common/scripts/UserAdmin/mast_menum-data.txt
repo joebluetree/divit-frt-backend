@@ -39,6 +39,11 @@ SELECT 508, 'OTHEROP-INVOICE', 'Other Operation A/R & A/P', 'accounts/invoicemLi
 WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 508);
 
 INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id,  rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 509, 'OPENING-BALANCE', 'Opening Balance', 'accounts/openbalanceList', '{''type'':''OPENING-BALANCE''}', 'Y', 9, 20, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 509);
+
+INSERT INTO mast_menum
 (menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
 SELECT 701, 'COMPANY', 'Company Master', 'admin/companyList', '{''type'':''COMPANY''}', 'Y', 1, 21, 1, 1, 'N', 'ADMIN',  NOW()
 WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 701);

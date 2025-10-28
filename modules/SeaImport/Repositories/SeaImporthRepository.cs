@@ -308,6 +308,7 @@ namespace SeaImport.Repositories
                     hbl_pickup_date = Lib.FormatDate(e.hbl_pickup_date, Lib.outputDateFormat),
                     hbl_empty_ret_date = Lib.FormatDate(e.hbl_empty_ret_date, Lib.outputDateFormat),
                     hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateFormat),
+                    hbl_isf_attached = e.hbl_isf_attached,
                     rec_memo_count = e.rec_memo_count,
                     rec_memo_attached = e.rec_memo_attached,
                     rec_telex_count = e.rec_telex_count,
@@ -1404,7 +1405,7 @@ namespace SeaImport.Repositories
                 .Table("cargo_housem", log_date)
                 .PrimaryKey("cntr_id", record_dto.hbl_id)
                 .RefNo(record_dto.hbl_houseno!)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_edited_by!)
                 .TrackColumn("cntr_catg", "Category")
                 .TrackColumn("cntr_no", "Container No")
                 .TrackColumn("cntr_type_name", "Container Type Name")

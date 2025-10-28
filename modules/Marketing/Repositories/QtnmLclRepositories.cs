@@ -795,7 +795,7 @@ namespace Marketing.Repositories
                 .Table("mark_qtnm", log_date)
                 .PrimaryKey("qtnd_id", record_dto.qtnm_id)
                 .RefNo(record_dto.qtnm_no!)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_edited_by!)
                 .TrackColumn("qtnd_acc_name", "Account Name")
                 .TrackColumn("qtnd_amt", "Amount", "decimal")
                 .TrackColumn("qtnd_per", "PER")

@@ -66,6 +66,8 @@ namespace Database
         public DbSet<acc_acctm> acc_acctm { get; set; } = null!;
         public DbSet<acc_invoicem> acc_invoicem { get; set; } = null!;
         public DbSet<acc_invoiced> acc_invoiced { get; set; } = null!;
+        public DbSet<acc_ledgerh> acc_ledgerh { get; set; } = null!;
+        public DbSet<acc_ledgerd> acc_ledgerd { get; set; } = null!;
 
         //TnT
         public DbSet<tnt_tracking_data> tnt_tracking_data { get; set; } = null!;

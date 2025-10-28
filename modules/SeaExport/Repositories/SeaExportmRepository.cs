@@ -936,18 +936,10 @@ namespace SeaExport.Repositories
                 cntr_no = record.cntr_no,
                 cntr_type_name = record.cntrtype?.param_name,
                 cntr_sealno = record.cntr_sealno,
-                cntr_movement = record.cntr_movement,
                 cntr_pieces = record.cntr_pieces,
                 cntr_packages_unit_name = record.packunit?.param_name,
                 cntr_cbm = record.cntr_cbm,
-                cntr_weight_uom = record.cntr_weight_uom,
                 cntr_weight = record.cntr_weight,
-                cntr_rider = record.cntr_rider,
-                cntr_tare_weight = record.cntr_tare_weight,
-                cntr_pick_date = Lib.FormatDate(record.cntr_pick_date, Lib.outputDateFormat),
-                cntr_return_date = Lib.FormatDate(record.cntr_return_date, Lib.outputDateFormat),
-                cntr_lfd = Lib.FormatDate(record.cntr_lfd, Lib.outputDateFormat),
-                cntr_discharge_date = Lib.FormatDate(record.cntr_discharge_date, Lib.outputDateFormat),
                 // cntr_order = record.cntr_order
             }).ToList();
 
@@ -960,18 +952,16 @@ namespace SeaExport.Repositories
                 .TrackColumn("cntr_no", "Container No")
                 .TrackColumn("cntr_type_name", "Container Type Name")
                 .TrackColumn("cntr_sealno", "Seal No")
-                .TrackColumn("cntr_movement", "Movement")
                 .TrackColumn("cntr_pieces", "Pieces", "int")
                 .TrackColumn("cntr_packages_unit_name", "Packages Unit")
                 .TrackColumn("cntr_cbm", "CBM", "decimal")
-                .TrackColumn("cntr_weight_uom", "Weight UOM")
                 .TrackColumn("cntr_weight", "Weight", "decimal")
-                .TrackColumn("cntr_rider", "Rider")
-                .TrackColumn("cntr_tare_weight", "Tare Weight", "decimal")
-                .TrackColumn("cntr_pick_date", "Pick Date")
-                .TrackColumn("cntr_return_date", "Return Date")
-                .TrackColumn("cntr_lfd", "LFD")
-                .TrackColumn("cntr_discharge_date", "Discharge Date")
+                // .TrackColumn("cntr_rider", "Rider")
+                // .TrackColumn("cntr_tare_weight", "Tare Weight", "decimal")
+                // .TrackColumn("cntr_pick_date", "Pick Date")
+                // .TrackColumn("cntr_return_date", "Return Date")
+                // .TrackColumn("cntr_lfd", "LFD")
+                // .TrackColumn("cntr_discharge_date", "Discharge Date")
                 // .TrackColumn("cntr_order", "Order", "int")
                 .SetRecords(old_records_dto, record_dto.master_cntr!)
                 .LogChangesAsync();

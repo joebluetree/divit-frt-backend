@@ -567,7 +567,7 @@ namespace Masters.Repositories
                 .Table("mast_wiretransm", log_date)
                 .PrimaryKey("wtid_id", record_dto.wtim_id)
                 .RefNo(record_dto.wtim_refno!)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_edited_by!)
                 .TrackColumn("wtid_bank_name", "Bank name")
                  .TrackColumn("wtid_benef_name", "Beneficiary name")
                 .TrackColumn("wtid_benef_ref", "Reference")

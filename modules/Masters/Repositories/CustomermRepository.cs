@@ -1033,7 +1033,7 @@ namespace Masters.Repositories
                 .Table("mast_customerm", log_date)
                 .PrimaryKey("cont_id", record_dto.cust_id)
                 .RefNo(record_dto.cust_name!)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_edited_by!)
                 .TrackColumn("cont_title", "Title")
                 .TrackColumn("cont_name", "Contact Name")
                 .TrackColumn("cont_group_name", "Group Name")
