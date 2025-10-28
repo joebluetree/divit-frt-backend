@@ -1082,7 +1082,7 @@ namespace OtherOp.Repositories
                 .Table("cargo_masterm", log_date)
                 .PrimaryKey("hbl_id", record_dto.oth_id)
                 .RefNo(record_dto.oth_refno!)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_edited_by!)
 
                 .TrackColumn("oth_hbl_no", "House No")
                 .TrackColumn("oth_bltype", "BL Type")
@@ -1162,7 +1162,7 @@ namespace OtherOp.Repositories
                 .Table("cargo_masterm", log_date)
                 .PrimaryKey("cntr_id", record_dto.oth_id)
                 .RefNo(record_dto.oth_refno!)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_edited_by!)
                 .TrackColumn("cntr_no", "Container No")
                 .TrackColumn("cntr_type_name", "Container Type Name")
                 .TrackColumn("cntr_sealno", "Seal No")

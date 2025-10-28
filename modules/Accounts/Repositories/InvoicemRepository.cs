@@ -879,7 +879,7 @@ namespace Accounts.Repositories
                 .Table("acc_invoicem", log_date)
                 .PrimaryKey("invd_id", record_dto.inv_id)
                 .RefNo(record_dto.inv_no!)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_edited_by!)
                 .TrackColumn("invd_acc_code", "Account Code")
                 .TrackColumn("invd_acc_name", "Account Name")
                 .TrackColumn("invd_qty", "Quantity", "decimal")

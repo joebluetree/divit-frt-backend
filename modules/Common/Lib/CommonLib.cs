@@ -287,6 +287,10 @@ namespace Common.Lib
             {
                 await UpdateTelexDocCount(context, parent_id, parent_type);
             }
+            if (parent_type == "SEA IMPORT ISF")
+            {
+                await UpdateISFDocCount(context, parent_id, parent_type);
+            }
             if (parent_type == "CUSTOMER")
             {
                 await UpdateCustomerDocCount(context, parent_id, parent_type);
@@ -342,6 +346,24 @@ namespace Common.Lib
             {
                 master_Record.rec_telex_count = FilesCount;
                 master_Record.rec_telex_attached = "Y";
+                await context.SaveChangesAsync();
+            }
+        }
+        public static async Task UpdateISFDocCount(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+            int FilesCount = 0;
+            FilesCount = context.mast_fileupload
+                .Count(f => f.files_parent_id == parent_id && f.files_parent_type == parent_type && f.files_status == "N");
+
+            var master_Record = context.cargo_housem
+                .Where(m => m.hbl_id == parent_id && m.hbl_mode == "SEA IMPORT")
+                .FirstOrDefault();
+
+            if (master_Record != null)
+            {
+                // master_Record.rec_telex_count = FilesCount;
+                master_Record.hbl_isf_attached = "Y";
                 await context.SaveChangesAsync();
             }
         }

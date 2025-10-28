@@ -398,7 +398,7 @@ namespace Masters.Repositories
                 .Table("mast_remarkm", log_date)
                 .PrimaryKey("remd_id", record_dto.rem_id)
                 .RefNo(record_dto.rem_name!)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_edited_by!)
                 .TrackColumn("remd_desc1", "Description")
                 .SetRecords(old_records_dto, record_dto.rem_remarks!)
                 .LogChangesAsync();

@@ -1316,7 +1316,7 @@ namespace SeaExport.Repositories
                 .Table("cargo_housem", log_date)
                 .PrimaryKey("cntr_id", record_dto.hbl_id)
                 .RefNo(record_dto.hbl_houseno!)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_edited_by!)
                 .TrackColumn("cntr_catg", "Category")
                 .TrackColumn("cntr_no", "Container No")
                 .TrackColumn("cntr_type_name", "Container Type Name")

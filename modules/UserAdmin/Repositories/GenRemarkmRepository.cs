@@ -408,7 +408,7 @@ namespace UserAdmin.Repositories
                 .Table("gen_remarkm", log_date)
                 .PrimaryKey("remk_id", record_dto.remk_id)
                 .RefNo(record_dto.remk_desc!)
-                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_created_by!)
+                .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, 0, record_dto.rec_edited_by!)
                 .TrackColumn("remk_desc", "Description")
                 .SetRecords(old_records_dto, record_dto.remk_remarks!)
                 .LogChangesAsync();

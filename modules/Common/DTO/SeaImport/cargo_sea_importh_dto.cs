@@ -129,8 +129,8 @@ namespace Common.DTO.SeaImport
         public string? hbl_go_date { get; set; } = "";
         public string? hbl_pickup_date { get; set; } = "";
         public string? hbl_empty_ret_date { get; set; } = "";
-        public string? hbl_delivery_date { get; set; }
-
+        public string? hbl_delivery_date { get; set; } = "";
+        public string? hbl_isf_attached { get; set; } = "";
         public int desc_parent_id { get; set; } = 0;
         public string? desc_parent_type { get; set; } = "";
         public List<cargo_container_dto>? house_cntr { get; set; }
