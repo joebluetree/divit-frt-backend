@@ -16,6 +16,7 @@ using Common.DTO.Accounts;
 //Name : Sourav V
 //Created Date : 15/10/2025
 //Remark : this file defines functions like Save, Delete, getList and getRecords which save/retrieve data
+//versio 2 : updated AllValid Condition 28/10/2025
 
 namespace Accounts.Repositories
 {
@@ -51,7 +52,7 @@ namespace Accounts.Repositories
                 var company_id = 0;
                 var branch_id = 0;
                 var jvh_type = data["jvh_type"].ToString();
-                
+
                 if (data.ContainsKey("jvh_from_date"))
                     jvh_from_date = data["jvh_from_date"].ToString();
                 if (data.ContainsKey("jvh_to_date"))
@@ -120,7 +121,7 @@ namespace Accounts.Repositories
                     rec_edited_by = e.rec_edited_by,
                     rec_edited_date = Lib.FormatDate(e.rec_edited_date, Lib.outputDateTimeFormat),
                 }).ToListAsync();
-                
+
                 RetData.Add("records", Records);
                 RetData.Add("page", _page);
 
@@ -203,7 +204,7 @@ namespace Accounts.Repositories
                             jv_refdate = Lib.FormatDate(e.jv_refdate, Lib.outputDateFormat),
                             jv_acc_id = e.jv_acc_id,
                             jv_acc_code = e.accounts!.acc_code,
-                            jv_acc_name = e.accounts!.acc_name,
+                            jv_acc_name = e.jv_acc_name,
                             jv_status = e.jv_status,
                             jv_famt = e.jv_famt,
                             jv_cur_id = e.jv_cur_id,
@@ -320,20 +321,31 @@ namespace Accounts.Repositories
                 str += "Date Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.jvh_narration))
                 str += "Narration Cannot Be Blank!";
-            // if (Lib.IsZero(record_dto.jvh_exrate))
-            //     str += "Exrate Cannot Be Blank!";
+            if (!Lib.IsBlank(record_dto.jvh_shipment_ref) && Lib.IsBlank(record_dto.jvh_shipment_date))
+                str += "Reference Date Cannot Be Blank!";
+            if (Lib.IsBlank(record_dto.jvh_shipment_ref) && !Lib.IsBlank(record_dto.jvh_shipment_date))
+                str += "Reference Cannot Be Blank!";
 
             foreach (acc_ledgerd_dto rec in record_dto.ledger_details!)
             {
                 if (Lib.IsBlank(rec.jv_acc_code))
-                    acc_code = "A/C Code Cannot Be Blank!";
+                    acc_code = "A/C Code Cannot Be Blank! ";
                 if (Lib.IsZero(rec.jv_dcamt))
-                    amt = "Amount Cannot Be Blank!";
+                    amt = "Amount Cannot Be Blank! ";
             }
 
-            if (record_dto.ledger_details!.Count == 0)
+            if (record_dto.ledger_details!.Count < 2)
             {
-                str += "Ledger Line Item Need To Be Entered";
+                str += "Minimum Two Ledger Line Item Need To Be Entered! ";
+            }
+
+            decimal totalDebit = this.FindTotal(record_dto, "DR") ?? 0;
+            decimal totalCredit = this.FindTotal(record_dto, "CR") ?? 0;
+            // decimal? nBalance = 
+
+            if (totalCredit != totalDebit)
+            {
+                str += "Debits and Credits Should Be Balanced! ";
             }
 
             if (acc_code != "")
@@ -392,7 +404,7 @@ namespace Accounts.Repositories
                     Record.rec_created_date = DbLib.GetDateTime();
                     Record.rec_locked = "N";
 
-                    Record.jvh_type = record_dto.jvh_type;     
+                    Record.jvh_type = record_dto.jvh_type;
                     Record.jvh_status = "POSTED"; // in OP status is always POSTED
                 }
                 else
@@ -428,7 +440,7 @@ namespace Accounts.Repositories
                     await context.acc_ledgerh.AddAsync(Record);
 
                 await context.SaveChangesAsync();
-                
+
                 record_dto.jvh_id = Record.jvh_id;
                 record_dto.jvh_vrno = Record.jvh_vrno;
                 record_dto.jvh_docno = Record.jvh_docno;
@@ -501,7 +513,7 @@ namespace Accounts.Repositories
                         record.rec_edited_date = DbLib.GetDateTime();
                     }
                     record.jv_header_id = id;
-                    
+
                     // same as header
                     record.jv_status = record_dto.jvh_status;
                     record.jv_year = record_dto.jvh_year;
@@ -512,11 +524,12 @@ namespace Accounts.Repositories
                     record.jv_refno = record_dto.jvh_refno;
                     record.jv_refdate = Lib.ParseDate(record_dto.jvh_refdate!);
                     record.jv_shipment_ref = record_dto.jvh_shipment_ref;
-                    record.jv_shipment_date = Lib.ParseDate(record_dto.jvh_shipment_date!);                
+                    record.jv_shipment_date = Lib.ParseDate(record_dto.jvh_shipment_date!);
                     record.jv_narration = record_dto.jvh_narration;
 
                     //separte column only for detail table
                     record.jv_acc_id = rec.jv_acc_id;
+                    record.jv_acc_name = rec.jv_acc_name;
                     record.jv_famt = rec.jv_famt;
                     record.jv_cur_id = rec.jv_cur_id;
                     record.jv_exrate = rec.jv_exrate;
@@ -525,12 +538,12 @@ namespace Accounts.Repositories
                     if (rec.jv_drcr == "DR")
                     {
                         record.jv_debit = rec.jv_dcamt;
-                        record.jv_credit = 0;                    
+                        record.jv_credit = 0;
                     }
                     if (rec.jv_drcr == "CR")
                     {
                         record.jv_credit = rec.jv_dcamt;
-                        record.jv_debit = 0;   
+                        record.jv_debit = 0;
                     }
                     record.jv_inv_id = rec.jv_inv_id;
                     record.jv_remarks = rec.jv_remarks;
@@ -557,6 +570,18 @@ namespace Accounts.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+        public decimal? FindTotal(acc_ledgerh_dto record_dto, string jv_drcr)
+        {
+            if (record_dto.ledger_details == null || record_dto.ledger_details.Count == 0)
+                return 0;
+
+            decimal? total = record_dto.ledger_details
+                    .Where(x => x.jv_drcr == jv_drcr)
+                    .Sum(x => x.jv_dcamt);
+
+            return total;
+        }
+
         public async Task UpdateSummary(acc_ledgerh_dto record_dto)
         {
             try
@@ -565,15 +590,9 @@ namespace Accounts.Repositories
                 if (record_dto.ledger_details == null || record_dto.ledger_details.Count == 0)
                     return;
 
-                decimal totalDebit = record_dto.ledger_details
-                    ?.Where(x => x.jv_drcr == "DR")
-                    .Sum(x => x.jv_dcamt) ?? 0;
+                decimal totalDebit = this.FindTotal(record_dto, "DR") ?? 0;
+                decimal totalCredit = this.FindTotal(record_dto, "CR") ?? 0;
 
-                decimal totalCredit = record_dto.ledger_details
-                    ?.Where(x => x.jv_drcr == "CR")
-                    .Sum(x => x.jv_dcamt) ?? 0;
-
-                
                 var header = await context.acc_ledgerh
                     .FirstOrDefaultAsync(x => x.jvh_id == record_dto.jvh_id);
 
@@ -622,11 +641,11 @@ namespace Accounts.Repositories
                 }
                 else
                 {
-                    var _Quote = context.acc_ledgerd
+                    var _Ledgerd = context.acc_ledgerd
                      .Where(c => c.jv_header_id == id);
-                    if (_Quote.Any())
+                    if (_Ledgerd.Any())
                     {
-                        context.acc_ledgerd.RemoveRange(_Quote);
+                        context.acc_ledgerd.RemoveRange(_Ledgerd);
 
                     }
                     context.Remove(_Record);
@@ -684,7 +703,7 @@ namespace Accounts.Repositories
                 .TrackColumn("jvh_shipment_ref", "Ref #")
                 .TrackColumn("jvh_shipment_date", "Ref. Date", "date")
                 .TrackColumn("jvh_cur_code", "Currency")
-                .TrackColumn("jvh_exrate", "Ex-Rate","decimal")
+                .TrackColumn("jvh_exrate", "Ex-Rate", "decimal")
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
         }
@@ -703,7 +722,7 @@ namespace Accounts.Repositories
                 jv_refdate = Lib.FormatDate(record.jv_refdate, Lib.outputDateFormat),
                 jv_acc_id = record.jv_acc_id,
                 jv_acc_code = record.accounts?.acc_code,
-                jv_acc_name = record.accounts?.acc_name,
+                jv_acc_name = record.jv_acc_name,
                 jv_famt = record.jv_famt,
                 jv_cur_id = record.jv_cur_id,
                 jv_cur_code = record.currency?.param_code,

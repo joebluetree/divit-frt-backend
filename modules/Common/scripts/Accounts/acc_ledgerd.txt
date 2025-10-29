@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS acc_ledgerd (
 	jv_credit numeric(15,3) NULL,
 	jv_inv_id int4 NULL,
 	jv_remarks varchar(100) NULL,
-	jv_narration varchar(100) NULL,
+	jv_narration varchar(200) NULL,
 	jv_doc_type varchar(30) NULL,
 	jv_bank	varchar(60) NULL,
 	jv_chqno varchar(30) NULL,

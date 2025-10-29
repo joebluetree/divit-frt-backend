@@ -18,6 +18,7 @@ namespace Database.Models.Accounts
         public string? jv_refno { get; set; }
         public DateTime? jv_refdate { get; set; }
         public int? jv_acc_id { get; set; }
+        public string? jv_acc_name { get; set; }
         public string? jv_shipment_ref { get; set; }
         public DateTime? jv_shipment_date { get; set; }
         public string? jv_status { get; set; }
