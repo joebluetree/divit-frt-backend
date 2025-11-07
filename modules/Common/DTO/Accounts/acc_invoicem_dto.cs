@@ -9,6 +9,7 @@ namespace Common.DTO.Accounts
         public int inv_cfno { get; set; }
         public string? inv_no { get; set; }
         public string? inv_date { get; set; }
+        public int inv_year { get; set; }
         public int? inv_cust_id { get; set; }
         public string? inv_cust_code { get; set; }
         public string? inv_cust_name { get; set; }

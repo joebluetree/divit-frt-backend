@@ -64,6 +64,7 @@ namespace Common.Repositories
             files.Add("UserAdmin\\mast_settings.txt");
             files.Add("UserAdmin\\mast_history.txt");
             files.Add("UserAdmin\\mast_fileuploadm.txt");
+            files.Add("UserAdmin\\mast_yearm.txt");
 
             files.Add("Masters\\mast_param.txt");
             files.Add("Masters\\mast_param_air-carrier.txt");

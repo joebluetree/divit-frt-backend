@@ -340,7 +340,14 @@ namespace UserAdmin.Repositories
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "INV-AP-PREFIX", "", "STRING", "", "", "", "", 38);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "INV-AP-STARTING-NO", "", "INT", "", "", "", "",39);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "CURRENCY", "", "TABLE", "param,currency,param_id,param_code,param_name", "", "", "",40 );
-            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "EXRATE DECIMAL", "", "INT", "", "", "", "",41);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "EXRATE DECIMAL", "", "INT", "", "", "", "", 41);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "OPENING-BALANCE-PREFIX", "", "STRING", "", "", "", "", 42);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "OPENING-BALANCE-STARTING-NO", "", "INT", "", "", "", "", 43);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "ACCTRANS-RECEIPT-PREFIX", "", "STRING", "", "", "", "", 44);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "ACCTRANS-RECEIPT-STARTING-NO", "", "INT", "", "", "", "", 45);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "ACCTRANS-PAYMENT-PREFIX", "", "STRING", "", "", "", "", 46);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "ACCTRANS-PAYMENT-STARTING-NO", "", "INT", "", "", "", "", 47);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "PAGE SIZE", "", "INT", "", "", "", "", 48);
 
             return retValue;
         }

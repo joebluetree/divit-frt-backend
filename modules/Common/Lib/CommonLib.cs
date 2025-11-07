@@ -670,7 +670,8 @@ namespace Common.Lib
                     .Where(f => f.inv_mbl_id == parent_id && f.rec_deleted == "N")
                     .Select(f => new {
                         f.inv_arap,
-                        f.inv_total})
+                        f.inv_total
+                    })
                     .ToListAsync();
 
                 var incTotal = invoiceList.Where(f => f.inv_arap == "A/R").Sum(f => f.inv_total);
@@ -682,6 +683,58 @@ namespace Common.Lib
 
                 await context.SaveChangesAsync();
             }
+        }
+        public static string IsValidDate(AppDbContext _context, int? year, int rec_company_id, string date)
+        {
+            context = _context;
+
+            var YearRecord = context.mast_yearm
+            .Where(m => m.year_code == year && m.rec_company_id == rec_company_id)
+            .FirstOrDefault();
+
+            var errormessage = "";
+            if (YearRecord != null)
+            {
+                if (YearRecord.year_closed == "Y")
+                {
+                    errormessage = "Year Closed!";
+                }
+                else    //check Date only if year_closed == N
+                {
+                    var Date = Database.Lib.Lib.ParseDate(date);
+                    if ( Date >= YearRecord.year_start_date  && Date <= YearRecord.year_end_date)
+                    {
+                        errormessage = "";
+                    }
+                    else
+                    {
+                        var startDate = Database.Lib.Lib.FormatDate(YearRecord.year_start_date, Database.Lib.Lib.DisplayDateFormat);
+                        var endDate = Database.Lib.Lib.FormatDate(YearRecord.year_end_date, Database.Lib.Lib.DisplayDateFormat);
+                        errormessage = $"Date Should Be in Between {startDate} and {endDate} ! ";//false
+                    }
+                }
+            }
+            return errormessage;
+        }
+        //check both record and year lock
+        public static string IsYearLocked (AppDbContext _context, int year_code ,int rec_company_id, string rec_locked)
+        {
+            context = _context;
+            var error = "";
+
+            error = rec_locked == "Y" ? "RECORD LOCKED" : "";
+
+            var yearLocked = context.mast_yearm
+                .Where(f => f.year_code == year_code && f.rec_company_id == rec_company_id)
+                .Select(f => f.year_closed)
+                .FirstOrDefault();
+
+            if(yearLocked == "Y")
+            {
+                error += (Database.Lib.Lib.IsBlank(error) ? "" : " , ") + "YEAR LOCKED";
+            }
+            
+            return error;
         }
 
         public static async Task<FileDownloadResult_Dto> GetFileAsync(string filePath)

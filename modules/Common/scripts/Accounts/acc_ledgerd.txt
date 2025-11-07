@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS acc_ledgerd (
 	jv_refno varchar(30) NULL,
 	jv_refdate date NULL,
 	jv_acc_id int4 NULL,
+	jv_acc_name varchar(60) NULL,
 	jv_status varchar(50) NULL,
 	jv_shipment_ref varchar(60) NULL,
 	jv_shipment_date date NULL,

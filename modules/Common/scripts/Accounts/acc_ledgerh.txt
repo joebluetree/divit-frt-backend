@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS acc_ledgerh (
 	rec_company_id int4 NOT NULL,
 	rec_branch_id int4 NOT NULL,
 	CONSTRAINT pk_acc_ledgerh_jvh_id PRIMARY KEY (jvh_id),
+	CONSTRAINT fk_acc_ledgerh_jvh_year FOREIGN KEY (jvh_year, rec_company_id) REFERENCES mast_yearm(year_code,rec_company_id),
 	CONSTRAINT fk_acc_ledgerh_jvh_cur_id FOREIGN KEY (jvh_cur_id) REFERENCES mast_param(param_id),
 	CONSTRAINT fk_acc_ledgerh_rec_company_id FOREIGN KEY (rec_company_id) REFERENCES mast_companym(comp_id),
     CONSTRAINT fk_acc_ledgerh_rec_branch_id FOREIGN KEY (rec_branch_id) REFERENCES mast_branchm(branch_id)
@@ -35,6 +36,10 @@ CREATE TABLE IF NOT EXISTS acc_ledgerh (
 
 DO $$  
 BEGIN
+	IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_acc_ledgerh_jvh_year') THEN
+        CREATE INDEX "IX_acc_ledgerh_jvh_year" ON acc_ledgerh USING btree (jvh_year);
+    END IF;
+
 	IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_acc_ledgerh_jvh_cur_id') THEN
         CREATE INDEX "IX_acc_ledgerh_jvh_cur_id" ON acc_ledgerh USING btree (jvh_cur_id);
     END IF;

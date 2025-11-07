@@ -90,10 +90,12 @@ namespace Accounts.Repositories
                 {
                     inv_id = e.inv_id,
                     inv_date = Lib.FormatDate(e.inv_date, Lib.outputDateFormat),
+                    inv_year = e.inv_year,
                     inv_no = e.inv_no,
                     inv_cust_id = e.inv_cust_id,
                     inv_cust_name = e.inv_cust_name,
                     inv_arap = e.inv_arap,
+                    inv_mbl_refno = e.inv_mbl_refno,
                     inv_houseno = e.inv_houseno,
                     inv_total = e.inv_total,
                     inv_paid = e.inv_paid,
@@ -157,6 +159,7 @@ namespace Accounts.Repositories
                     inv_cfno = e.inv_cfno,
                     inv_no = e.inv_no,
                     inv_date = Lib.FormatDate(e.inv_date, Lib.outputDateFormat),
+                    inv_year = e.inv_year,
                     inv_cust_id = e.inv_cust_id,
                     inv_cust_code = e.customer!.cust_code,
                     inv_cust_name = e.inv_cust_name,
@@ -393,6 +396,8 @@ namespace Accounts.Repositories
 
             if (Lib.IsBlank(record_dto.inv_date))
                 str += "Date Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.inv_year))
+                str += "Fin-year Cannot Be Blank!";
             if (Lib.IsZero(record_dto.inv_cust_id))
                 str += "Customer Cannot Be Blank!";
             if (Lib.IsZero(record_dto.inv_cur_id))
@@ -415,6 +420,10 @@ namespace Accounts.Repositories
                 if (Lib.IsZero(rec.invd_exrate))
                     exrate = "ExRate Cannot Be Blank!";
             }
+            
+            var isDateValid = CommonLib.IsValidDate(context, record_dto.inv_year!, record_dto.rec_company_id, record_dto.inv_date!);
+            if (!Lib.IsBlank(isDateValid))
+                str += isDateValid;
 
             if (record_dto.invoiced.Count == 0)
             {
@@ -531,6 +540,7 @@ namespace Accounts.Repositories
                     await logHistory(Record, record_dto);
 
                 Record.inv_date = Lib.ParseDate(record_dto.inv_date!);
+                Record.inv_year = record_dto.inv_year;
                 Record.inv_cust_id = record_dto.inv_cust_id;
                 Record.inv_cust_name = record_dto.inv_cust_name;
                 Record.inv_mbl_refno = record_dto.inv_mbl_refno;
@@ -794,6 +804,7 @@ namespace Accounts.Repositories
                 inv_cfno = old_record.inv_cfno,
                 inv_no = old_record.inv_no,
                 inv_date = Lib.FormatDate(old_record.inv_date, Lib.outputDateFormat),
+                inv_year = old_record.inv_year,
                 inv_cust_code = old_record.customer?.cust_code,
                 inv_cust_name = old_record.inv_cust_name,
                 inv_mbl_refno = old_record.inv_mbl_refno,
@@ -830,6 +841,7 @@ namespace Accounts.Repositories
                 .SetCompanyInfo(record_dto.rec_version, record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.rec_created_by!)
                 .TrackColumn("inv_no", "Invoice No")
                 .TrackColumn("inv_date", "Invoice Date", "date")
+                .TrackColumn("inv_year", "Financial Year")
                 .TrackColumn("inv_cust_name", "Customer Name")
                 .TrackColumn("inv_mbl_refno", "MBL Ref No")
                 .TrackColumn("inv_arrnotice", "Arrival Notice")

@@ -17,7 +17,7 @@ namespace Accounts.Repositories
     {
         private readonly AppDbContext context;
         private DateTime log_date;
-        private string stype = "OP";
+        // private string stype = "OP";
 
         public OpenBalanceRepository(AppDbContext _context)
         {
@@ -36,27 +36,17 @@ namespace Accounts.Repositories
                     action = "search";
 
                 var jv_docno = "";
-                var jv_type = "";
                 var jv_year = 0;
                 var company_id = 0;
                 var branch_id = 0;
 
+                var jv_type = data["jv_type"].ToString();
                 if (data.ContainsKey("jv_docno"))
                     jv_docno = data["jv_docno"].ToString();
-                if (data.ContainsKey("jv_type"))
-                    jv_type = data["jv_type"].ToString();
-                if (data.ContainsKey("jv_year"))
-                    jv_year = int.Parse(data["jv_year"].ToString()!);
-                if (jv_year == 0)
-                    throw new Exception("Financial Year Not Found");
-                if (data.ContainsKey("rec_company_id"))
-                    company_id = int.Parse(data["rec_company_id"].ToString()!);
-                if (company_id == 0)
-                    throw new Exception("Company Id Not Found");
-                if (data.ContainsKey("rec_branch_id"))
-                    branch_id = int.Parse(data["rec_branch_id"].ToString()!);
-                if (branch_id == 0)
-                    throw new Exception("Branch Id Not Found");
+
+                jv_year = Lib.GetValidIntValue(data!, "jv_year", "Financial Year Not Found");
+                company_id = Lib.GetValidIntValue(data!, "rec_company_id", "Company Id Not Found");
+                branch_id = Lib.GetValidIntValue(data!, "rec_branch_id", "Branch Id Not Found");
 
                 _page.currentPageNo = int.Parse(data["currentPageNo"].ToString()!);
                 _page.pages = int.Parse(data["pages"].ToString()!);
@@ -66,8 +56,8 @@ namespace Accounts.Repositories
                 IQueryable<acc_ledgerd> query = context.acc_ledgerd;
 
                 query = query.Where(w => w.rec_company_id == company_id);
-                query = query.Where(w => w.rec_branch_id == branch_id && w.jv_year == jv_year);
-                query = query.Where(w => w.jv_type == stype);
+                query = query.Where(w => w.rec_branch_id == branch_id && w.jv_year == jv_year);//&& w.jv_year == jv_year
+                query = query.Where(w => w.jv_type == jv_type);
 
                 if (!Lib.IsBlank(jv_docno))
                 {
@@ -97,6 +87,7 @@ namespace Accounts.Repositories
                     jv_id = e.jv_id,
                     jv_header_id = e.jv_header_id,
                     jv_date = Lib.FormatDate(e.jv_date, Lib.outputDateFormat),
+                    jv_year = e.jv_year,
                     jv_vrno = e.jv_vrno,
                     jv_docno = e.jv_docno,
                     jv_type = e.jv_type,
@@ -111,6 +102,7 @@ namespace Accounts.Repositories
                     jv_refdate = Lib.FormatDate(e.jv_refdate, Lib.outputDateFormat),
                     jv_shipment_ref = e.jv_shipment_ref,
                     jv_shipment_date = Lib.FormatDate(e.jv_shipment_date, Lib.outputDateFormat),
+                    jv_narration = e.jv_narration,
 
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
@@ -166,6 +158,8 @@ namespace Accounts.Repositories
                     jvh_shipment_date = Lib.FormatDate(e.jvh_shipment_date, Lib.outputDateFormat),
 
                     rec_version = e.rec_version,
+                    rec_locked = e.rec_locked,
+                    rec_error = "",
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                     rec_edited_by = e.rec_edited_by,
@@ -176,6 +170,8 @@ namespace Accounts.Repositories
 
                 if (Record == null)
                     throw new Exception("No Data Found");
+
+                Record!.rec_error = CommonLib.IsYearLocked(context, Record.jvh_year, Record.rec_company_id, Record.rec_locked!);
 
                 Record.ledger_detail = await GetDetailsAsync(Record.jvh_id);
                 return Record;
@@ -313,6 +309,8 @@ namespace Accounts.Repositories
 
             if (Lib.IsBlank(record_dto.jvh_date))
                 str += "Date Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.jvh_year))
+                str += "Fin-year Cannot Be Blank!";
             if (!Lib.IsBlank(record_dto.jvh_refno) && Lib.IsBlank(record_dto.jvh_refdate))
                 str += "inv.date Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.jvh_refno) && !Lib.IsBlank(record_dto.jvh_refdate))
@@ -333,6 +331,11 @@ namespace Accounts.Repositories
                 if (Lib.IsZero(record_dto.ledger_detail.jv_exrate))
                     str += "Exrate Cannot Be Blank!";
             }
+            
+            var isDateValid = CommonLib.IsValidDate(context, record_dto.jvh_year!, record_dto.rec_company_id, record_dto.jvh_date!);
+            if (!Lib.IsBlank(isDateValid))
+                str += isDateValid;
+            
             if (Lib.IsBlank(record_dto.jvh_narration))
                 str += "Narration Cannot Be Blank!";
 
@@ -365,25 +368,25 @@ namespace Accounts.Repositories
                 if (mode == "add")
                 {
                     //if prefix and starting no: provided in branch settings
-                    // var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "INV-AR-PREFIX,INV-AR-STARTING-NO");
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "OPENING-BALANCE-PREFIX,OPENING-BALANCE-STARTING-NO");
 
                     var DefaultCfNo = 1;
                     var Defaultprefix = "OP-";
 
-                    // if (result.ContainsKey(startNo))
-                    // {
-                    //     DefaultCfNo = Lib.StringToInteger(result[startNo]);
-                    // }
-                    // if (result.ContainsKey(prefix))
-                    // {
-                    //     Defaultprefix = result[prefix].ToString();
-                    // }
-                    // if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
-                    // {
-                    //     throw new Exception("Missing Opening Balance Prefix/Starting-Number in Branch Settings");
-                    // }
+                    if (result.ContainsKey("OPENING-BALANCE-STARTING-NO"))
+                    {
+                        DefaultCfNo = Lib.StringToInteger(result["OPENING-BALANCE-STARTING-NO"]);
+                    }
+                    if (result.ContainsKey("OPENING-BALANCE-PREFIX"))
+                    {
+                        Defaultprefix = result["OPENING-BALANCE-PREFIX"].ToString();
+                    }
+                    if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
+                    {
+                        throw new Exception("Missing Opening Balance Prefix/Starting-Number in Branch Settings");
+                    }
 
-                    int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
+                    int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.jvh_type!, DefaultCfNo);
                     if (Lib.IsZero(iNextNo))
                     {
                         throw new Exception("Ref Number Cannot Be Generated");
@@ -402,7 +405,7 @@ namespace Accounts.Repositories
                     Record.rec_created_date = DbLib.GetDateTime();
                     Record.rec_locked = "N";
 
-                    Record.jvh_type = stype;
+                    Record.jvh_type = record_dto.jvh_type;
                     Record.jvh_status = "POSTED"; // in OP status is always POSTED
                 }
                 else
@@ -481,7 +484,6 @@ namespace Accounts.Repositories
                 if (mode == "edit")
                     await logHistoryDetail(records!, record_dto);
 
-                // int nextorder = 1; // to make list in order of creation 
 
                 if (records_dto.jv_id == 0)
                 {
@@ -491,7 +493,7 @@ namespace Accounts.Repositories
                     record.rec_created_by = record_dto.rec_created_by;
                     record.rec_created_date = DbLib.GetDateTime();
                     record.rec_locked = "N";
-                    record.jv_type = stype;
+                    record.jv_type = record_dto.jvh_type;
                 }
                 else
                 {
@@ -546,8 +548,8 @@ namespace Accounts.Repositories
                     await context.acc_ledgerd.AddAsync(record);
 
                 context.SaveChanges();
-                
 
+                records_dto.jv_year = record.jv_year;
                 records_dto.jv_credit = record.jv_credit;
                 records_dto.jv_debit = record.jv_debit;
 
@@ -559,12 +561,12 @@ namespace Accounts.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
-        public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)
+        public int GetNextCfNo(int company_id, int? branch_id, string jvh_type,int DefaultCfNo)
         {
             // int iDefaultCfNo = int.Parse(DefaultCfNo!);
 
             var CfNo = context.acc_ledgerh
-            .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.jvh_type == stype)
+            .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.jvh_type == jvh_type)
             .Select(e => e.jvh_vrno)
             .DefaultIfEmpty()
             .Max();

@@ -17,6 +17,10 @@ CREATE TABLE IF NOT EXISTS mast_yearm
 
 DO $$  
 BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'uq_mast_yearm_year_code') THEN
+        CREATE UNIQUE INDEX uq_mast_yearm_year_code ON mast_yearm USING btree (year_code, rec_company_id);
+    END IF;
+
     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_mast_yearm_rec_company_id') THEN  
         CREATE INDEX "IX_mast_yearm_rec_company_id" ON mast_yearm USING btree (rec_company_id);  
     END IF;  

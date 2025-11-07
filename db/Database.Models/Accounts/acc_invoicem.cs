@@ -13,6 +13,7 @@ namespace Database.Models.Accounts
         public int inv_cfno { get; set; }
         public string? inv_no { get; set; }
         public DateTime? inv_date { get; set; }
+        public int inv_year { get; set; }
         public int? inv_cust_id { get; set; }
         public string? inv_cust_name { get; set; }
         public string? inv_mbl_refno { get; set; }

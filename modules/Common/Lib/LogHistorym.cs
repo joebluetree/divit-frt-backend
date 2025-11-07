@@ -236,7 +236,7 @@ namespace Common.Lib
             }
             if (data_type.ToLower() == "date")
             {
-                if (oldValue != newValue)
+                if (Database.Lib.Lib.ParseDate(oldValue!) != Database.Lib.Lib.ParseDate(newValue!))
                     bRet = true;
             }
             if (data_type.ToLower() == "int")
