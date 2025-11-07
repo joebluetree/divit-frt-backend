@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS acc_invoicem (
 	inv_cfno int4 NOT NULL,
 	inv_no varchar(30) NULL,
 	inv_date date NULL,
+	inv_year int4 NULL,
 	inv_cust_id int4 NULL,
 	inv_cust_name varchar(100) NULL,
 	inv_mbl_refno varchar(30) NULL,
@@ -51,11 +52,16 @@ CREATE TABLE IF NOT EXISTS acc_invoicem (
 	CONSTRAINT fk_acc_invoicem_rec_company_id FOREIGN KEY (rec_company_id) REFERENCES mast_companym(comp_id),
     CONSTRAINT fk_acc_invoicem_rec_branch_id FOREIGN KEY (rec_branch_id) REFERENCES mast_branchm(branch_id),
     CONSTRAINT fk_acc_invoicem_inv_cust_id FOREIGN KEY (inv_cust_id) REFERENCES mast_customerm(cust_id),
-    CONSTRAINT fk_acc_invoicem_inv_cur_id FOREIGN KEY (inv_cur_id) REFERENCES mast_param(param_id)
+    CONSTRAINT fk_acc_invoicem_inv_cur_id FOREIGN KEY (inv_cur_id) REFERENCES mast_param(param_id),
+	CONSTRAINT fk_acc_invoicem_inv_year FOREIGN KEY (inv_year, rec_company_id) REFERENCES mast_yearm(year_code,rec_company_id)
 );
 
 DO $$  
 BEGIN
+	IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'IX_acc_invoicem_inv_year') THEN
+        CREATE INDEX "IX_acc_invoicem_inv_year" ON acc_invoicem USING btree (inv_year);
+    END IF;
+
     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE  indexname = 'IX_acc_invoicem_inv_cust_id') THEN
 		CREATE INDEX "IX_acc_invoicem_inv_cust_id" ON acc_invoicem USING btree (inv_cust_id);
     END IF;

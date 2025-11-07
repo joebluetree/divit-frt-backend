@@ -167,7 +167,7 @@ namespace UserAdmin.Repositories
                                 param_id = e.param_id,
                             }).ToListAsync();
 
-                List<string> bSettingList = new List<string> { "EXRATE DECIMAL", "CURRENCY" };  // for branch settings default value
+                List<string> bSettingList = new List<string> { "EXRATE DECIMAL", "CURRENCY", "PAGE SIZE" };  // for branch settings default value
                 List<mast_settings_dto> branch_settings_list = await context.mast_settings
                             .Where(w => w.rec_company_id == comp_id
                                     && w.rec_branch_id == branch_id

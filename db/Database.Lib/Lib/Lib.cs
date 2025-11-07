@@ -287,6 +287,19 @@ namespace Database.Lib
             }
             return (int)File_Size;
         }
+        public static int GetValidIntValue(Dictionary<string, object?> data, string key, string errorMessage)
+        {
+            if (!data.TryGetValue(key, out var value) ||
+                value == null ||
+                !int.TryParse(value.ToString(), out int result) ||
+                result == 0)
+            {
+                throw new Exception(errorMessage);
+            }
+
+            return result;
+        }
+
 
     }
 

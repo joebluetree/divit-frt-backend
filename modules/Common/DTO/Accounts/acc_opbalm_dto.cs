@@ -11,6 +11,7 @@ namespace Common.DTO.Accounts
         public string? jv_docno { get; set; } = "";
         public string? jv_type { get; set; } = "";
         public string? jv_date { get; set; } = "";
+        public int? jv_year { get; set; } = 0;
         public string? jv_refno { get; set; } = "";
         public string? jv_refdate { get; set; } = "";
         public string? jv_acc_code { get; set; } = "";
@@ -22,5 +23,6 @@ namespace Common.DTO.Accounts
         public decimal? jv_dcamt { get; set; } = 0;
         public decimal? jv_debit { get; set; } = 0;
         public decimal? jv_credit { get; set; } = 0;
+        public string? jv_narration { get; set; } = "";
     }
 }

@@ -12,6 +12,7 @@ using Database.Models.Cargo;
 using Accounts.Interfaces;
 using Database.Models.Accounts;
 using Common.DTO.Accounts;
+using System.Threading.Tasks;
 
 //Name : Sourav V
 //Created Date : 15/10/2025
@@ -110,11 +111,11 @@ namespace Accounts.Repositories
                     jvh_docno = e.jvh_docno,
                     jvh_type = e.jvh_type,
                     jvh_date = Lib.FormatDate(e.jvh_date, Lib.outputDateFormat),
-                    jvh_refno = e.jvh_refno,
-                    jvh_refdate = Lib.FormatDate(e.jvh_refdate, Lib.outputDateFormat),
-                    jvh_debit = e.jvh_debit,
-                    jvh_credit = e.jvh_credit,
-                    jvh_balance = e.jvh_debit - e.jvh_credit,
+                    jvh_year = e.jvh_year,
+                    jvh_shipment_ref = e.jvh_shipment_ref,
+                    jvh_shipment_date = Lib.FormatDate(e.jvh_shipment_date, Lib.outputDateFormat),
+                    jvh_narration = e.jvh_narration,
+                    jvh_debit = e.jvh_debit,// debit or credit (since both are same here)
 
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
@@ -145,6 +146,7 @@ namespace Accounts.Repositories
                     jvh_id = e.jvh_id,
                     jvh_vrno = e.jvh_vrno,
                     jvh_year = e.jvh_year,
+                    // jvh_year_name = e.year!.year_name,
                     jvh_docno = e.jvh_docno,
                     jvh_type = e.jvh_type,
                     jvh_date = Lib.FormatDate(e.jvh_date, Lib.outputDateFormat),
@@ -170,11 +172,6 @@ namespace Accounts.Repositories
 
                 if (Record == null)
                     throw new Exception("No Record Found");
-
-                // var result = CommonLib.GetBranchsettings(context,Record!.rec_company_id, Record.rec_branch_id, "EXRATE DECIMAL");
-
-                // if (result.ContainsKey("EXRATE DECIMAL"))
-                //     Record.exrate_decimal = Lib.StringToInteger(result["EXRATE DECIMAL"]);
 
                 Record.ledger_details = await GetDetailsAsync(Record.jvh_id);
 
@@ -319,6 +316,8 @@ namespace Accounts.Repositories
 
             if (Lib.IsBlank(record_dto.jvh_date))
                 str += "Date Cannot Be Blank!";
+            if (Lib.IsZero(record_dto.jvh_year))
+                str += "Fin-year Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.jvh_narration))
                 str += "Narration Cannot Be Blank!";
             if (!Lib.IsBlank(record_dto.jvh_shipment_ref) && Lib.IsBlank(record_dto.jvh_shipment_date))
@@ -333,6 +332,10 @@ namespace Accounts.Repositories
                 if (Lib.IsZero(rec.jv_dcamt))
                     amt = "Amount Cannot Be Blank! ";
             }
+
+            var isDateValid = CommonLib.IsValidDate(context, record_dto.jvh_year!, record_dto.rec_company_id, record_dto.jvh_date!);
+            if (!Lib.IsBlank(isDateValid))
+                str += isDateValid;
 
             if (record_dto.ledger_details!.Count < 2)
             {
@@ -379,12 +382,38 @@ namespace Accounts.Repositories
 
                 if (mode == "add")
                 {
-                    //if prefix and starting no: provided in branch settings
-                    // var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "INV-AR-PREFIX,INV-AR-STARTING-NO");
+                    string prefix = "";
+                    string startNo = "";
+                    if (record_dto.jvh_type == "RECEIPT")
+                    {
+                        prefix = "ACCTRANS-RECEIPT-PREFIX";
+                        startNo = "ACCTRANS-RECEIPT-STARTING-NO";
+                    }
+                    if (record_dto.jvh_type == "PAYMENT")
+                    {
+                        prefix = "ACCTRANS-PAYMENT-PREFIX";
+                        startNo = "ACCTRANS-PAYMENT-STARTING-NO";
+                    }
+                    
+                    var caption = prefix + "," + startNo; // to pass string by coma seprated
+
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, caption);// 
 
                     var DefaultCfNo = 1;
-                    var Defaultprefix = "RE-";
-
+                    var Defaultprefix = "";
+                    
+                    if (result.ContainsKey(startNo))
+                    {
+                        DefaultCfNo = Lib.StringToInteger(result[startNo]);
+                    }
+                    if (result.ContainsKey(prefix))
+                    {
+                        Defaultprefix = result[prefix].ToString();
+                    }
+                    if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
+                    {
+                        throw new Exception("Missing AccTrans (" + record_dto.jvh_type + ") Prefix/Starting-Number in Branch Settings");
+                    }
                     int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, record_dto.jvh_type!, DefaultCfNo);
                     if (Lib.IsZero(iNextNo))
                     {
@@ -606,6 +635,8 @@ namespace Accounts.Repositories
                 // header.rec_edited_date = DbLib.GetDateTime();
 
                 await context.SaveChangesAsync();
+                record_dto.jvh_debit = header.jvh_debit;
+                record_dto.jvh_credit = header.jvh_credit;
             }
             catch (Exception ex)
             {

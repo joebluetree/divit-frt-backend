@@ -7,6 +7,7 @@ namespace Common.DTO.Accounts
     {
         public int jvh_id { get; set; } = 0;
         public int jvh_year { get; set; } = 0;
+        public string? jvh_year_name { get; set; } = "";
         public int jvh_vrno { get; set; } = 0;
         public string? jvh_docno { get; set; } = "";
         public string? jvh_type { get; set; } = "";
@@ -25,7 +26,8 @@ namespace Common.DTO.Accounts
         public string? jvh_shipment_date { get; set; } = "";
         public decimal? jvh_debit { get; set; } = 0;
         public decimal? jvh_credit { get; set; } = 0;
-        public decimal? jvh_balance { get; set; } = 0;
+        public decimal? jvh_amount { get; set; } = 0;
+        public string? rec_error { get; set; } = "";
         public acc_ledgerd_dto? ledger_detail { get; set; }
         public List<acc_ledgerd_dto>? ledger_details { get; set; } 
     }

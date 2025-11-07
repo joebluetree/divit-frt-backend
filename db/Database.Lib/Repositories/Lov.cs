@@ -362,6 +362,37 @@ namespace Database.Lib.Repositories
             return RetData;
         }
     }
+    public class Lov_year : ILov
+    {
+        public async Task<Dictionary<string, object>> getRecordsAsync(AppDbContext context, Dictionary<string, object> data, int comp_id = 0, string search_string = "")
+        {
+            Dictionary<string, object> RetData = new Dictionary<string, object>();
+
+            var query = from rec in context.mast_yearm
+                        where rec.rec_company_id == comp_id
+                        select new
+                        {
+                            rec.year_id,
+                            rec.year_code,
+                            rec.year_name,
+                        };
+
+
+
+            if (search_string != "" && search_string != null)
+                query = query.Where(w => w.year_code == Lib.StringToInteger(search_string) );// w.year_name.Contains(search_string.ToUpper()) ||
+
+            query = query
+                .OrderBy(c => c.year_code);
+
+            var Records = await query
+                .ToListAsync();
+
+            RetData.Add("records", Records);
+
+            return RetData;
+        }
+    }
 
 }
 
