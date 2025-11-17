@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using DataBase.Pdf;
 using Common.UserAdmin.DTO;
 using Masters.Interfaces;
+using Npgsql.Replication;
 
 //Name : Sourav V
 //Created Date : 29/01/2025
@@ -174,107 +175,20 @@ namespace Common.Lib
 
             return str;
         }
-
-        public static async Task DeleteFollowUp(AppDbContext _context, int id)
-        {
-            context = _context;
-
-            var followup = await context.cargo_followup
-                .Where(c => c.cf_mbl_id == id).ToListAsync();
-            if (followup.Any())
-            {
-                context.cargo_followup.RemoveRange(followup);
-            }
-        }
-
-        public static async Task DeleteDeliveryOrder(AppDbContext _context, int id)
+        public static async Task DeleteDeliveryOrder(AppDbContext _context, int id ,string type, int rec_company_id)
         {
             context = _context;
 
             var _deliveryOrders = await context.cargo_delivery_order
-                .Where(c => c.do_parent_id == id).ToListAsync();
+                .Where(c => c.do_parent_id == id && c.do_category == type && c.rec_company_id == rec_company_id)
+                .ToListAsync();
 
             if (_deliveryOrders.Any())
             {
                 context.cargo_delivery_order.RemoveRange(_deliveryOrders);
             }
         }
-        public static async Task DeleteDesc(AppDbContext _context, int id)
-        {
-            context = _context;
 
-            var descriptions = await context.cargo_desc
-                .Where(c => c.desc_parent_id == id).ToListAsync();
-
-            if (descriptions.Any())
-            {
-                context.cargo_desc.RemoveRange(descriptions);
-            }
-        }
-
-
-        public static async Task DeleteMessengerSlip(AppDbContext _context, int id)
-        {
-            context = _context;
-
-            var MessengerSlip = await context.cargo_slip
-                .Where(c => c.cs_mbl_id == id).ToListAsync();
-            if (MessengerSlip.Any())
-            {
-                context.cargo_slip.RemoveRange(MessengerSlip);
-            }
-        }
-
-
-        public static async Task DeleteHouses(AppDbContext _context, int id)
-        {
-            context = _context;
-
-            // Get all house IDs under the given mbl_id
-            var houses = await context.cargo_housem
-                .Where(c => c.hbl_mbl_id == id)
-                .ToListAsync();
-
-            var houseid = houses.Select(c => c.hbl_id).ToList();
-
-            if (houseid.Any())
-            {
-
-
-                await DeleteDesc(context, id);
-
-                // Delete cargo_housem records by creating stub entities
-                context.cargo_housem.RemoveRange(houses);
-                // Save all changes
-                await context.SaveChangesAsync();
-            }
-        }
-
-
-        public static async Task DeleteContainer(AppDbContext _context, int id)
-        {
-            context = _context;
-
-            var containers = await context.cargo_container
-                .Where(c => c.cntr_hbl_id == id || c.cntr_mbl_id == id).ToListAsync();
-
-            if (containers.Any())
-            {
-                context.cargo_container.RemoveRange(containers);
-            }
-        }
-        public static async Task DeleteMemo(AppDbContext _context, int id)
-        {
-            context = _context;
-
-            var _Memo = await context.cargo_memo
-                .Where(c => c.memo_parent_id == id).ToListAsync();
-
-            if (_Memo.Any())
-            {
-                context.cargo_memo.RemoveRange(_Memo);
-            }
-        }
 
         public static async Task SaveDocsSummary(AppDbContext _context, int? parent_id, string? parent_type)
         {
@@ -717,7 +631,7 @@ namespace Common.Lib
             return errormessage;
         }
         //check both record and year lock
-        public static string IsYearLocked (AppDbContext _context, int year_code ,int rec_company_id, string rec_locked)
+        public static string IsYearLocked(AppDbContext _context, int year_code, int rec_company_id, string rec_locked)
         {
             context = _context;
             var error = "";
@@ -729,14 +643,34 @@ namespace Common.Lib
                 .Select(f => f.year_closed)
                 .FirstOrDefault();
 
-            if(yearLocked == "Y")
+            if (yearLocked == "Y")
             {
                 error += (Database.Lib.Lib.IsBlank(error) ? "" : " , ") + "YEAR LOCKED";
             }
-            
+
             return error;
         }
+        public static bool HouseExists(AppDbContext context, int? id, int rec_company_id)
+        {
+            var HouseExists = context.cargo_housem
+            .Any(f => f.hbl_mbl_id == id && f.rec_company_id == rec_company_id);
 
+            return HouseExists;
+        }
+        public static bool InvoiceExists(AppDbContext context, int? id, int rec_company_id)
+        {
+            var invoiceExists = context.acc_invoicem
+            .Any(f => f.inv_mbl_id == id && f.rec_company_id == rec_company_id);
+
+            return invoiceExists;
+        }
+        public static bool FollowupExists(AppDbContext context, int? id, int rec_company_id)
+        {
+            var FollowupExists = context.cargo_followup
+            .Any(f => f.cf_mbl_id == id && f.rec_company_id == rec_company_id);
+
+            return FollowupExists;
+        }
         public static async Task<FileDownloadResult_Dto> GetFileAsync(string filePath)
         {
             if (Database.Lib.Lib.IsBlank(filePath) || !System.IO.File.Exists(filePath))
@@ -896,6 +830,111 @@ namespace Common.Lib
             return bottomLine;
         }
 
+        //delete functions
+        public static async Task DeleteCoo(AppDbContext _context, int id, string type, int rec_company_id)
+        {
+            context = _context;
+
+            var _CooLists = await context.cargo_coo
+                .Where(c => c.mbld_parent_id == id && c.mbld_mode == type && c.rec_company_id == rec_company_id)
+                .ToListAsync();
+
+            foreach (var coo in _CooLists)
+            {
+                await DeleteDesc(context, coo.mbld_id, "COO-DESC");
+                context.cargo_coo.Remove(coo);
+            }
+        }
+        public static async Task DeleteContainer(AppDbContext _context, int id, string type)
+        {
+            context = _context;
+
+            if (type == "HOUSE")
+            {
+                var containers = await context.cargo_container
+                    .Where(c => c.cntr_hbl_id == id).ToListAsync();
+
+                if (containers.Any())
+                {
+                    context.cargo_container.RemoveRange(containers);
+                }
+            }
+            if (type == "MASTER")
+            {
+                var containers = await context.cargo_container
+                .Where(c => c.cntr_mbl_id == id).ToListAsync();
+
+                if (containers.Any())
+                {
+                    context.cargo_container.RemoveRange(containers);
+                }
+            }
+        }
+        public static async Task DeleteDesc(AppDbContext _context, int hbl_id, string type)
+        {
+            context = _context;
+
+            var descriptions = await context.cargo_desc
+                .Where(c => c.desc_parent_id == hbl_id && c.desc_parent_type == type)
+                .ToListAsync();
+
+            if (descriptions.Any())
+            {
+                context.cargo_desc.RemoveRange(descriptions);
+            }
+        }
+        public static async Task DeleteMemo(AppDbContext _context, int id, string type, int rec_company_id)
+        {
+            context = _context;
+
+            var _Memo = await context.cargo_memo
+                .Where(c => c.memo_parent_id == id && c.memo_parent_type == type && c.rec_company_id == rec_company_id)
+                .ToListAsync();
+
+            if (_Memo.Any())
+            {
+                context.cargo_memo.RemoveRange(_Memo);
+            }
+        }
+        public static async Task DeleteMessengerSlip(AppDbContext _context, int id, string type)
+        {
+            context = _context;
+
+            var MessengerSlip = await context.cargo_slip
+                .Where(c => c.cs_mbl_id == id && c.cs_mode == type)
+                .ToListAsync();
+                
+            if (MessengerSlip.Any())
+            {
+                context.cargo_slip.RemoveRange(MessengerSlip);
+            }
+        }
+        public static async Task DeleteGenRemark(AppDbContext _context, int id, string type)
+        {
+            context = _context;
+
+            var _Remark = await context.gen_remarkm
+                .Where(c => c.remk_parent_id == id && c.remk_parent_type == type)
+                .ToListAsync();
+
+            if (_Remark.Any())
+            {
+                context.gen_remarkm.RemoveRange(_Remark);
+            }
+        }
+        public static async Task DeleteDevanInst(AppDbContext _context, int id, string type)
+        {
+            context = _context;
+
+            var _DevanInst = await context.cargo_devan_inst
+                .Where(c => c.di_parent_id == id && c.di_parent_type == type)
+                .ToListAsync();
+
+            if (_DevanInst.Any())
+            {
+                context.cargo_devan_inst.RemoveRange(_DevanInst);
+            }
+        }
     }
 
 }

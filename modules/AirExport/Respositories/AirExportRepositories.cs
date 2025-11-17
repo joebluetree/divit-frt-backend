@@ -608,11 +608,22 @@ namespace AirExport.Repositories
                     RetData.Add("status", false);
                     RetData.Add("message", "No Record Found");
                 }
+                if (CommonLib.HouseExists(context, id, _Record!.rec_company_id))
+                {
+                    throw new Exception("Cannot Delete, House Exists");
+                }
+                if (CommonLib.InvoiceExists(context, id, _Record!.rec_company_id))
+                {
+                    throw new Exception("Cannot Delete, Invoice Exists");
+                }
+                if (CommonLib.FollowupExists(context, id, _Record!.rec_company_id))
+                {
+                    throw new Exception("Cannot Delete, Follow Up Exists");
+                }
                 else
                 {
-                    await CommonLib.DeleteHouses(context, id);
-                    await CommonLib.DeleteMessengerSlip(context, id);
-                    await CommonLib.DeleteFollowUp(context, id);
+                    await CommonLib.DeleteMessengerSlip(context, id, "AIR EXPORT");
+                    await CommonLib.DeleteMemo(context, id, "AIREXP-CNTR-MEMO", _Record.rec_company_id);
 
                     context.Remove(_Record);
                     await context.SaveChangesAsync();

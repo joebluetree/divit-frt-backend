@@ -849,15 +849,19 @@ namespace AirImport.Repositories
                     RetData.Add("status", false);
                     RetData.Add("message", "No Record Found");
                 }
+                if (CommonLib.InvoiceExists(context, id, _Record!.rec_company_id))
+                {
+                    throw new Exception("Cannot Delete, Invoice Exists");
+                }
                 else
                 {
-                    await CommonLib.DeleteDesc(context, id);
-                    await CommonLib.DeleteDeliveryOrder(context, id);
-                    await CommonLib.DeleteMemo(context, id);
+                    await CommonLib.DeleteDesc(context, id, "AI-DESC");
+                    await CommonLib.DeleteDeliveryOrder(context, id, "AIR-IMPORT-H", _Record.rec_company_id);
+                    await CommonLib.DeleteMemo(context, id, "AIRIMP-SHIP-MEMO", _Record.rec_company_id);
 
                     context.Remove(_Record);
                     await context.SaveChangesAsync();
-                    await CommonLib.SaveMasterSummary(this.context, mbl_id);
+                    await CommonLib.SaveMasterSummary(context, mbl_id);
 
                     context.Database.CommitTransaction();
 

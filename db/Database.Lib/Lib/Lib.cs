@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using Database.Models.BaseTables;
 using Database.Models.Cargo;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -133,7 +134,18 @@ namespace Database.Lib
             
 
         }
+        public static DateOnly? ParseDateOnly(string dateString)
+        {
+            if (string.IsNullOrWhiteSpace(dateString))
+                return null;
 
+            if (DateOnly.TryParse(dateString, out var parsedDate))
+            {
+                return parsedDate;
+            }
+            return null;
+        }
+        
         public static DateTime? ParseDate(string dateString)
         {
             if (string.IsNullOrWhiteSpace(dateString))
@@ -146,9 +158,10 @@ namespace Database.Lib
                 dateString = $"{parts[0]}-{month:D2}-{day:D2}";
             }
 
-            if (DateTime.TryParseExact(dateString,BACK_END_DATE_FORMAT,CultureInfo.InvariantCulture,DateTimeStyles.None,out var parsedDate))
+            if (DateTime.TryParseExact(dateString, BACK_END_DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
-                return DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
+                DateTime Dt = DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
+                return Dt;
             }
             return null;
         }
@@ -170,6 +183,10 @@ namespace Database.Lib
 
 
         public static string FormatDate(DateTime? date, string format)
+        {
+            return date.HasValue ? date.Value.ToString(format) : null;
+        }
+        public static string FormatDate(DateOnly? date, string format)
         {
             return date.HasValue ? date.Value.ToString(format) : null;
         }

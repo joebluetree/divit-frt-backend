@@ -52,6 +52,8 @@ namespace Accounts.Repositories
                 var jvh_docno = "";
                 var company_id = 0;
                 var branch_id = 0;
+                DateOnly? from_date = null;
+                DateOnly? to_date = null;
                 var jvh_type = data["jvh_type"].ToString();
 
                 if (data.ContainsKey("jvh_from_date"))
@@ -62,14 +64,8 @@ namespace Accounts.Repositories
                     jvh_to_name = data["jvh_to_name"].ToString();
                 if (data.ContainsKey("jvh_docno"))
                     jvh_docno = data["jvh_docno"].ToString();
-                if (data.ContainsKey("rec_company_id"))
-                    company_id = int.Parse(data["rec_company_id"].ToString()!);
-                if (company_id == 0)
-                    throw new Exception("Company Id Not Found");
-                if (data.ContainsKey("rec_branch_id"))
-                    branch_id = int.Parse(data["rec_branch_id"].ToString()!);
-                if (branch_id == 0)
-                    throw new Exception("Branch Id Not Found");
+                company_id = Lib.GetValidIntValue(data!, "rec_company_id", "Company Id Not Found");
+                branch_id = Lib.GetValidIntValue(data!, "rec_branch_id", "Branch Id Not Found");
 
                 _page.currentPageNo = int.Parse(data["currentPageNo"].ToString()!);
                 _page.pages = int.Parse(data["pages"].ToString()!);
@@ -80,12 +76,23 @@ namespace Accounts.Repositories
 
                 query = query.Where(w => w.rec_company_id == company_id);
                 query = query.Where(w => w.rec_branch_id == branch_id);
-                query = query.Where(w => w.jvh_type!.Contains(jvh_type!));
+                query = query.Where(w => w.jvh_type == jvh_type!);
 
                 if (!Lib.IsBlank(jvh_docno))
                 {
                     query = query.Where(w => w.jvh_docno!.Contains(jvh_docno!));
                 }
+                if (!Lib.IsBlank(jvh_from_date))
+                {
+                    from_date = Lib.ParseDateOnly(jvh_from_date!);
+                    query = query.Where(w =>w.jvh_date >= from_date);
+                }
+                if (!Lib.IsBlank(jvh_to_date))
+                {
+                    to_date = Lib.ParseDateOnly(jvh_to_date!);
+                    query = query.Where(w => w.jvh_date <= to_date);
+                }
+
                 if (action == "SEARCH")
                 {
                     _page.rows = query.Count();
@@ -162,6 +169,8 @@ namespace Accounts.Repositories
                     jvh_shipment_date = Lib.FormatDate(e.jvh_shipment_date, Lib.outputDateFormat),
 
                     rec_version = e.rec_version,
+                    rec_locked = e.rec_locked,
+                    rec_error = "",
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                     rec_edited_by = e.rec_edited_by,
@@ -173,6 +182,8 @@ namespace Accounts.Repositories
                 if (Record == null)
                     throw new Exception("No Record Found");
 
+                Record!.rec_error = CommonLib.IsYearLocked(context, Record.jvh_year, Record.rec_company_id, Record.rec_locked!);
+                
                 Record.ledger_details = await GetDetailsAsync(Record.jvh_id);
 
                 return Record;
@@ -384,16 +395,9 @@ namespace Accounts.Repositories
                 {
                     string prefix = "";
                     string startNo = "";
-                    if (record_dto.jvh_type == "RECEIPT")
-                    {
-                        prefix = "ACCTRANS-RECEIPT-PREFIX";
-                        startNo = "ACCTRANS-RECEIPT-STARTING-NO";
-                    }
-                    if (record_dto.jvh_type == "PAYMENT")
-                    {
-                        prefix = "ACCTRANS-PAYMENT-PREFIX";
-                        startNo = "ACCTRANS-PAYMENT-STARTING-NO";
-                    }
+
+                    prefix = $"ACCTRANS-{record_dto.jvh_type}-PREFIX";
+                    startNo = $"ACCTRANS-{record_dto.jvh_type}-STARTING-NO";
                     
                     var caption = prefix + "," + startNo; // to pass string by coma seprated
 
@@ -455,20 +459,20 @@ namespace Accounts.Repositories
                     await logHistory(Record, record_dto);
 
                 Record.jvh_year = record_dto.jvh_year;
-                Record.jvh_date = Lib.ParseDate(record_dto.jvh_date!);
+                Record.jvh_date = Lib.ParseDateOnly(record_dto.jvh_date!);
                 Record.jvh_refno = record_dto.jvh_refno;
-                Record.jvh_refdate = Lib.ParseDate(record_dto.jvh_refdate!);
+                Record.jvh_refdate = Lib.ParseDateOnly(record_dto.jvh_refdate!);
                 Record.jvh_remarks = record_dto.jvh_remarks;
                 Record.jvh_narration = record_dto.jvh_narration;
-                Record.jvh_master_date = Lib.ParseDate(record_dto.jvh_master_date!);
+                Record.jvh_master_date = Lib.ParseDateOnly(record_dto.jvh_master_date!);
                 Record.jvh_is_payroll = record_dto.jvh_is_payroll;
                 Record.jvh_shipment_ref = record_dto.jvh_shipment_ref;
-                Record.jvh_shipment_date = Lib.ParseDate(record_dto.jvh_shipment_date!);
+                Record.jvh_shipment_date = Lib.ParseDateOnly(record_dto.jvh_shipment_date!);
 
                 if (mode == "add")
                     await context.acc_ledgerh.AddAsync(Record);
 
-                await context.SaveChangesAsync();
+                context.SaveChanges();
 
                 record_dto.jvh_id = Record.jvh_id;
                 record_dto.jvh_vrno = Record.jvh_vrno;
@@ -510,10 +514,11 @@ namespace Accounts.Repositories
                     .Where(w => w.jv_header_id == id)
                     .ToListAsync();
 
-                int nextorder = 1;
                 if (mode == "edit")
                     await logHistoryDetail(records, record_dto);
-
+                
+                int nextorder = 1;
+                
                 foreach (var existing_record in records)
                 {
                     var rec = records_dto.Find(f => f.jv_id == existing_record.jv_id);
@@ -549,11 +554,11 @@ namespace Accounts.Repositories
                     record.jv_type = record_dto.jvh_type;
                     record.jv_vrno = record_dto.jvh_vrno;
                     record.jv_docno = record_dto.jvh_docno;
-                    record.jv_date = Lib.ParseDate(record_dto.jvh_date!);
+                    record.jv_date = Lib.ParseDateOnly(record_dto.jvh_date!);
                     record.jv_refno = record_dto.jvh_refno;
-                    record.jv_refdate = Lib.ParseDate(record_dto.jvh_refdate!);
+                    record.jv_refdate = Lib.ParseDateOnly(record_dto.jvh_refdate!);
                     record.jv_shipment_ref = record_dto.jvh_shipment_ref;
-                    record.jv_shipment_date = Lib.ParseDate(record_dto.jvh_shipment_date!);
+                    record.jv_shipment_date = Lib.ParseDateOnly(record_dto.jvh_shipment_date!);
                     record.jv_narration = record_dto.jvh_narration;
 
                     //separte column only for detail table
@@ -579,8 +584,8 @@ namespace Accounts.Repositories
                     record.jv_doc_type = rec.jv_doc_type;
                     record.jv_bank = rec.jv_bank;
                     record.jv_chqno = rec.jv_chqno;
-                    record.jv_chq_date = Lib.ParseDate(rec.jv_chq_date!);
-                    record.jv_master_date = Lib.ParseDate(rec.jv_master_date!);
+                    record.jv_chq_date = Lib.ParseDateOnly(rec.jv_chq_date!);
+                    record.jv_master_date = Lib.ParseDateOnly(rec.jv_master_date!);
                     record.jv_tax_amt = rec.jv_tax_amt;
                     record.jv_tax_per = rec.jv_tax_per;
                     record.jv_is_payroll = rec.jv_is_payroll;
@@ -611,7 +616,7 @@ namespace Accounts.Repositories
             return total;
         }
 
-        public async Task UpdateSummary(acc_ledgerh_dto record_dto)
+        public async Task   UpdateSummary(acc_ledgerh_dto record_dto)
         {
             try
             {
@@ -702,13 +707,12 @@ namespace Accounts.Repositories
                 jvh_docno = old_record.jvh_docno,
                 jvh_type = old_record.jvh_type,
                 jvh_date = Lib.FormatDate(old_record.jvh_date, Lib.outputDateFormat),
+                jvh_year = old_record.jvh_year,
                 jvh_refno = old_record.jvh_refno,
                 jvh_refdate = Lib.FormatDate(old_record.jvh_refdate, Lib.outputDateFormat),
-                jvh_status = old_record.jvh_status,
+                // jvh_status = old_record.jvh_status,
                 jvh_remarks = old_record.jvh_remarks,
                 jvh_narration = old_record.jvh_narration,
-                jvh_master_date = Lib.FormatDate(old_record.jvh_master_date, Lib.outputDateFormat),
-                jvh_is_payroll = old_record.jvh_is_payroll,
                 jvh_shipment_ref = old_record.jvh_shipment_ref,
                 jvh_shipment_date = Lib.FormatDate(old_record.jvh_shipment_date, Lib.outputDateFormat),
                 jvh_cur_code = old_record.currency?.param_code,
@@ -724,13 +728,12 @@ namespace Accounts.Repositories
                 .TrackColumn("jvh_docno", "Document No")
                 .TrackColumn("jvh_type", "Voucher Type")
                 .TrackColumn("jvh_date", "Voucher Date", "date")
+                .TrackColumn("jvh_year", "Fin-Year")
                 .TrackColumn("jvh_refno", "Inv No")
                 .TrackColumn("jvh_refdate", "Inv Date", "date")
-                .TrackColumn("jvh_status", "Status")
+                // .TrackColumn("jvh_status", "Status")
                 .TrackColumn("jvh_remarks", "Remarks")
                 .TrackColumn("jvh_narration", "Narration")
-                .TrackColumn("jvh_master_date", "Master Date", "date")
-                .TrackColumn("jvh_is_payroll", "Is Payroll")
                 .TrackColumn("jvh_shipment_ref", "Ref #")
                 .TrackColumn("jvh_shipment_date", "Ref. Date", "date")
                 .TrackColumn("jvh_cur_code", "Currency")

@@ -13,18 +13,18 @@ namespace Database.Models.Accounts
         public int jvh_vrno { get; set; }
         public string? jvh_docno { get; set; }
         public string? jvh_type { get; set; }
-        public DateTime? jvh_date { get; set; }
+        public DateOnly? jvh_date { get; set; }
         public string? jvh_refno { get; set; }
-        public DateTime? jvh_refdate { get; set; }
+        public DateOnly? jvh_refdate { get; set; }
         public string? jvh_status { get; set; }
         public int? jvh_cur_id { get; set; }
         public decimal? jvh_exrate { get; set; }
         public string? jvh_remarks { get; set; }
         public string? jvh_narration { get; set; }
-        public DateTime? jvh_master_date { get; set; }
+        public DateOnly? jvh_master_date { get; set; }
         public string? jvh_is_payroll { get; set; }
         public string? jvh_shipment_ref { get; set; }
-        public DateTime? jvh_shipment_date { get; set; }
+        public DateOnly? jvh_shipment_date { get; set; }
         public decimal? jvh_credit { get; set; }
         public decimal? jvh_debit { get; set; }
 

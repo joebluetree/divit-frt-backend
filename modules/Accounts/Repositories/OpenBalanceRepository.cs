@@ -44,7 +44,7 @@ namespace Accounts.Repositories
                 if (data.ContainsKey("jv_docno"))
                     jv_docno = data["jv_docno"].ToString();
 
-                jv_year = Lib.GetValidIntValue(data!, "jv_year", "Financial Year Not Found");
+                jv_year = Lib.GetValidIntValue(data!, "jv_year", "Fin-Year Not Found");
                 company_id = Lib.GetValidIntValue(data!, "rec_company_id", "Company Id Not Found");
                 branch_id = Lib.GetValidIntValue(data!, "rec_branch_id", "Branch Id Not Found");
 
@@ -427,15 +427,15 @@ namespace Accounts.Repositories
                     await logHistory(Record, record_dto);
 
                 Record.jvh_year = record_dto.jvh_year;
-                Record.jvh_date = Lib.ParseDate(record_dto.jvh_date!);
+                Record.jvh_date = Lib.ParseDateOnly(record_dto.jvh_date!);
                 Record.jvh_refno = record_dto.jvh_refno;
-                Record.jvh_refdate = Lib.ParseDate(record_dto.jvh_refdate!);
+                Record.jvh_refdate = Lib.ParseDateOnly(record_dto.jvh_refdate!);
                 Record.jvh_remarks = record_dto.jvh_remarks;
                 Record.jvh_narration = record_dto.jvh_narration;
-                Record.jvh_master_date = Lib.ParseDate(record_dto.jvh_master_date!);
+                Record.jvh_master_date = Lib.ParseDateOnly(record_dto.jvh_master_date!);
                 Record.jvh_is_payroll = record_dto.jvh_is_payroll;
                 Record.jvh_shipment_ref = record_dto.jvh_shipment_ref;
-                Record.jvh_shipment_date = Lib.ParseDate(record_dto.jvh_shipment_date!);
+                Record.jvh_shipment_date = Lib.ParseDateOnly(record_dto.jvh_shipment_date!);
 
                 if (mode == "add")
                     await context.acc_ledgerh.AddAsync(Record);
@@ -510,11 +510,11 @@ namespace Accounts.Repositories
                 record.jv_year = record_dto.jvh_year;
                 record.jv_vrno = record_dto.jvh_vrno;
                 record.jv_docno = record_dto.jvh_docno;
-                record.jv_date = Lib.ParseDate(record_dto.jvh_date!);
+                record.jv_date = Lib.ParseDateOnly(record_dto.jvh_date!);
                 record.jv_refno = record_dto.jvh_refno;
-                record.jv_refdate = Lib.ParseDate(record_dto.jvh_refdate!);
+                record.jv_refdate = Lib.ParseDateOnly(record_dto.jvh_refdate!);
                 record.jv_shipment_ref = record_dto.jvh_shipment_ref;
-                record.jv_shipment_date = Lib.ParseDate(record_dto.jvh_shipment_date!);
+                record.jv_shipment_date = Lib.ParseDateOnly(record_dto.jvh_shipment_date!);
                 record.jv_narration = record_dto.jvh_narration;
 
                 //separte column only for detail table
@@ -539,8 +539,8 @@ namespace Accounts.Repositories
                 record.jv_doc_type = records_dto.jv_doc_type;
                 record.jv_bank = records_dto.jv_bank;
                 record.jv_chqno = records_dto.jv_chqno;
-                record.jv_chq_date = Lib.ParseDate(records_dto.jv_chq_date!);
-                record.jv_master_date = Lib.ParseDate(records_dto.jv_master_date!);
+                record.jv_chq_date = Lib.ParseDateOnly(records_dto.jv_chq_date!);
+                record.jv_master_date = Lib.ParseDateOnly(records_dto.jv_master_date!);
                 record.jv_is_payroll = records_dto.jv_is_payroll;
                 record.jv_ctr = records_dto.jv_ctr;
 
@@ -625,6 +625,7 @@ namespace Accounts.Repositories
                 jvh_docno = old_record.jvh_docno,
                 jvh_type = old_record.jvh_type,
                 jvh_date = Lib.FormatDate(old_record.jvh_date, Lib.outputDateFormat),
+                jvh_year = old_record.jvh_year,
                 jvh_refno = old_record.jvh_refno,
                 jvh_refdate = Lib.FormatDate(old_record.jvh_refdate, Lib.outputDateFormat),
                 jvh_status = old_record.jvh_status,
@@ -646,6 +647,7 @@ namespace Accounts.Repositories
                 .TrackColumn("jvh_docno", "Document No")
                 .TrackColumn("jvh_type", "Voucher Type")
                 .TrackColumn("jvh_date", "Voucher Date", "date")
+                .TrackColumn("jvh_year", "Fin-Year")
                 .TrackColumn("jvh_refno", "Inv No")
                 .TrackColumn("jvh_refdate", "Inv Date", "date")
                 .TrackColumn("jvh_status", "Status")

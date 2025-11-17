@@ -813,6 +813,11 @@ namespace Masters.Repositories
                 }
                 else
                 {
+                    await DeleteGenRemark(id, "CUSTOMER-MEMO", _Record!.rec_company_id);
+                    await DeleteGenRemark(id, "CUSTOMER-SOP", _Record!.rec_company_id);
+                    await DeleteGenRemark(id, "CUSTOMER-QTNM", _Record!.rec_company_id);
+                    await DeleteGenRemark(id, "CUSTOMER-ACC", _Record!.rec_company_id);
+
                     var _Contact = context.mast_contactm
                     .Where(c => c.cont_parent_id == id);
                     if (_Contact.Any())
@@ -830,6 +835,17 @@ namespace Masters.Repositories
             {
                 Lib.getErrorMessage(Ex, "fk", "cust_parent_id", "Child Company Exists");
                 throw;
+            }
+        }
+        private async Task DeleteGenRemark( int id, string type, int rec_company_id)
+        {
+            var _Remark = await context.gen_remarkm
+                .Where(c => c.remk_parent_id == id && c.remk_parent_type == type && c.rec_company_id == rec_company_id)
+                .ToListAsync();
+
+            if (_Remark != null)
+            {
+                context.gen_remarkm.RemoveRange(_Remark);
             }
         }
         public async Task logHistory(mast_customerm old_record, mast_customerm_dto record_dto)
