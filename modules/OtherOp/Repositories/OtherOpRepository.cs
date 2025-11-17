@@ -937,13 +937,23 @@ namespace OtherOp.Repositories
                     RetData.Add("status", false);
                     RetData.Add("message", "No Record Found");
                 }
+                if (CommonLib.InvoiceExists(context, id, _Record!.rec_company_id))
+                {
+                    throw new Exception("Cannot Delete, Invoice Exists");
+                }
+                if (CommonLib.FollowupExists(context, id, _Record!.rec_company_id))
+                {
+                    throw new Exception("Cannot Delete, Follow Up Exists");
+                }
                 else
                 {
 
-                    await CommonLib.DeleteContainer(context, id);
-                    await CommonLib.DeleteHouses(context, id);
-                    await CommonLib.DeleteDeliveryOrder(context, id);
-                    await CommonLib.DeleteMemo(context, id);
+                    await CommonLib.DeleteContainer(context, id, "MASTER");
+                    await CommonLib.DeleteMessengerSlip(context, id, "OTHERS");
+                    await CommonLib.DeleteDeliveryOrder(context, id, "OTHERS", _Record.rec_company_id);
+                    await CommonLib.DeleteMemo(context, id, "OTH-CNTR-MEMO", _Record.rec_company_id);
+
+                    await DeleteHouses(id, "OTHERS");
 
                     context.Remove(_Record);
                     context.SaveChanges();
@@ -960,6 +970,20 @@ namespace OtherOp.Repositories
                 context.Database.RollbackTransaction();
                 throw;
             }
+        }
+        public async Task DeleteHouses(int mbl_id, string type)
+        {   
+            var houses = await context.cargo_housem
+                .Where(c => c.hbl_mbl_id == mbl_id && c.hbl_mode == type)
+                .ToListAsync();
+
+             foreach (var house in houses)
+            {
+                await CommonLib.DeleteContainer(context, house.hbl_id, "HOUSE");
+                context.cargo_housem.Remove(house);
+            }
+            
+            await context.SaveChangesAsync();
         }
 
         public async Task logHistory(cargo_masterm old_record, cargo_otherop_dto record_dto)

@@ -979,9 +979,13 @@ namespace AirExport.Repositories
                     RetData.Add("status", false);
                     RetData.Add("message", "No Record Found");
                 }
+                if (CommonLib.InvoiceExists(context, id, _Record!.rec_company_id))
+                {
+                    throw new Exception("Cannot Delete, Invoice Exists");
+                }
                 else
                 {
-                    await CommonLib.DeleteDesc(context, id);
+                    await CommonLib.DeleteDesc(context, id, "AE-DESC");
                     
                     context.Remove(_Record);
                     await context.SaveChangesAsync();

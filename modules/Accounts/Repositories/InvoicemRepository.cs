@@ -44,14 +44,9 @@ namespace Accounts.Repositories
                     rec_deleted = data["rec_deleted"].ToString();
                 if (data.ContainsKey("parent_id"))
                     parent_id = int.Parse(data["parent_id"].ToString()!);
-                if (data.ContainsKey("rec_company_id"))
-                    company_id = int.Parse(data["rec_company_id"].ToString()!);
-                if (company_id == 0)
-                    throw new Exception("Company Id Not Found");
-                if (data.ContainsKey("rec_branch_id"))
-                    branch_id = int.Parse(data["rec_branch_id"].ToString()!);
-                if (branch_id == 0)
-                    throw new Exception("Branch Id Not Found");
+                    
+                company_id = Lib.GetValidIntValue(data!, "rec_company_id", "Company Id Not Found");
+                branch_id = Lib.GetValidIntValue(data!, "rec_branch_id", "Branch Id Not Found");
 
                 _page.currentPageNo = int.Parse(data["currentPageNo"].ToString()!);
                 _page.pages = int.Parse(data["pages"].ToString()!);
@@ -201,6 +196,8 @@ namespace Accounts.Repositories
                     rec_check_attached = e.rec_check_attached,
 
                     rec_version = e.rec_version,
+                    rec_locked = e.rec_locked,
+                    rec_error = "",
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                     rec_edited_by = e.rec_edited_by,
@@ -212,7 +209,9 @@ namespace Accounts.Repositories
                 if (Record == null)
                     throw new Exception("No Data Found");
 
-                var result = CommonLib.GetBranchsettings(context,Record!.rec_company_id, Record.rec_branch_id, "EXRATE DECIMAL");
+                var result = CommonLib.GetBranchsettings(context, Record!.rec_company_id, Record.rec_branch_id, "EXRATE DECIMAL");
+                
+                Record!.rec_error = CommonLib.IsYearLocked(context, Record.inv_year, Record.rec_company_id, Record.rec_locked!);
 
                 if (result.ContainsKey("EXRATE DECIMAL"))
                     Record.exrate_decimal = Lib.StringToInteger(result["EXRATE DECIMAL"]);
@@ -293,9 +292,6 @@ namespace Accounts.Repositories
                         Record_dto.inv_exrate = Lib.StringToDecimal(cur.param_value1 ?? "0");
                     }
                 }
-
-                // if (result.ContainsKey("EXRATE DECIMAL"))
-                //     Record_dto.exrate_decimal = Lib.StringToInteger(result["EXRATE DECIMAL"]);
 
                 if (Record_dto == null)
                     throw new Exception("No Data Found");
@@ -539,7 +535,7 @@ namespace Accounts.Repositories
                 if (mode == "edit")
                     await logHistory(Record, record_dto);
 
-                Record.inv_date = Lib.ParseDate(record_dto.inv_date!);
+                Record.inv_date = Lib.ParseDateOnly(record_dto.inv_date!);
                 Record.inv_year = record_dto.inv_year;
                 Record.inv_cust_id = record_dto.inv_cust_id;
                 Record.inv_cust_name = record_dto.inv_cust_name;

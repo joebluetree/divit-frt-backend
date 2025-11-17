@@ -670,9 +670,6 @@ namespace SeaExport.Repositories
                 }
                 else
                 {
-                    await CommonLib.DeleteDesc(context, id);
-                    await CommonLib.DeleteMemo(context, id);
-
                     context.Remove(_Record);
                     context.SaveChanges();
 

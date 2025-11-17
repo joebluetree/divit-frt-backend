@@ -190,7 +190,7 @@ namespace CommonShipment.Repositories
                 {
                     // Load from cargo house(sea import) table
                     Record = await context.cargo_housem
-                        .Where(f => f.hbl_id == id && f.hbl_mode == parent_type)
+                        .Where(f => f.hbl_id == id && f.hbl_mode == "SEA IMPORT")
                         .Select(e => new cargo_devan_inst_dto
                         {
                             di_parent_id = e.hbl_id,

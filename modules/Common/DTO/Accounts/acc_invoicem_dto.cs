@@ -65,6 +65,7 @@ namespace Common.DTO.Accounts
         public string? rec_files_attached { get; set; }
         public int? rec_check_count { get; set; }
         public string? rec_check_attached { get; set; }
+        public string? rec_error { get; set; }
         public List<acc_invoiced_dto>? invoiced { get; set; } 
     }
 }

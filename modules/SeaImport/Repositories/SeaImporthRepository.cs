@@ -1159,13 +1159,17 @@ namespace SeaImport.Repositories
                     RetData.Add("status", false);
                     RetData.Add("message", "No Record Found");
                 }
+                if (CommonLib.InvoiceExists(context, id, _Record!.rec_company_id))
+                {
+                    throw new Exception("Cannot Delete, Invoice Exists");
+                }
                 else
                 {
-
-                    await CommonLib.DeleteContainer(context, id);
-                    await CommonLib.DeleteDesc(context, id);
-                    await CommonLib.DeleteDeliveryOrder(context, id);
-                    await CommonLib.DeleteMemo(context, id);
+                    await CommonLib.DeleteContainer(context, id, "HOUSE");
+                    await CommonLib.DeleteDesc(context, id, "SI-DESC");
+                    await CommonLib.DeleteDeliveryOrder(context, id ,"SEA IMPORT H" ,_Record.rec_company_id);
+                    await CommonLib.DeleteMemo(context, id, "SEAIMP-SHIP-MEMO" ,_Record!.rec_company_id);
+                    await CommonLib.DeleteDevanInst(context, id, "SEA IMPORT H");
 
                     var mbl_id = _Record.hbl_mbl_id;
                     context.Remove(_Record);

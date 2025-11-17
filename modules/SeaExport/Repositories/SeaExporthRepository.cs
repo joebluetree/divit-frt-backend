@@ -1105,13 +1105,17 @@ namespace SeaExport.Repositories
                     RetData.Add("status", false);
                     RetData.Add("message", "No Record Found");
                 }
+                if (CommonLib.InvoiceExists(context, _Record!.hbl_mbl_id, _Record.rec_company_id))
+                {
+                    throw new Exception("Cannot Delete, Invoice Exists");
+                }
                 else
                 {
-                    await CommonLib.DeleteContainer(context, id);
-                    await CommonLib.DeleteDesc(context, id);
-                    await CommonLib.DeleteMemo(context, id);
+                    await CommonLib.DeleteContainer(context, id, "HOUSE");
+                    await CommonLib.DeleteDesc(context, id, "SE-DESC");
+                    await CommonLib.DeleteGenRemark(context, id, "SEA EXPORT");
 
-                    var mbl_id = _Record.hbl_mbl_id;
+                    var mbl_id = _Record!.hbl_mbl_id;
                     context.Remove(_Record);
                     context.SaveChanges();
                     await CommonLib.SaveMasterSummary(this.context, mbl_id);
@@ -1127,6 +1131,17 @@ namespace SeaExport.Repositories
             {
                 context.Database.RollbackTransaction();
                 throw;
+            }
+        }
+        private async Task DeleteGenRemark( int id, string type, int rec_company_id)
+        {
+            var _Remark = await context.gen_remarkm
+                .Where(c => c.remk_parent_id == id && c.remk_parent_type == type && c.rec_company_id == rec_company_id)
+                .ToListAsync();
+
+            if (_Remark != null)
+            {
+                context.gen_remarkm.RemoveRange(_Remark);
             }
         }
         public async Task logHistory(cargo_housem old_record, cargo_sea_exporth_dto record_dto)

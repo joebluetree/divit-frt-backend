@@ -811,13 +811,25 @@ namespace SeaImport.Repositories
                     RetData.Add("status", false);
                     RetData.Add("message", "No Record Found");
                 }
+                if (CommonLib.HouseExists(context, id, _Record!.rec_company_id))
+                {
+                    throw new Exception("Cannot Delete, House Exists");
+                }
+                if (CommonLib.InvoiceExists(context, id, _Record!.rec_company_id))
+                {
+                    throw new Exception("Cannot Delete, Invoice Exists");
+                }
+                if (CommonLib.FollowupExists(context, id, _Record!.rec_company_id))
+                {
+                    throw new Exception("Cannot Delete, Follow Up Exists");
+                }
                 else
                 {
-                    await CommonLib.DeleteContainer(context, id);
-                    await CommonLib.DeleteHouses(context, id);
-                    await CommonLib.DeleteDesc(context, id);
-                    await CommonLib.DeleteDeliveryOrder(context, id);
-                    await CommonLib.DeleteMemo(context, id);
+                    await CommonLib.DeleteContainer(context, id, "MASTER");
+                    await CommonLib.DeleteMessengerSlip(context, id, "SEA IMPORT");
+                    await CommonLib.DeleteDeliveryOrder(context, id, "SEA-IMPORT-M", _Record.rec_company_id);
+                    await CommonLib.DeleteMemo(context, id, "SEAIMP-CNTR-MEMO", _Record.rec_company_id);
+                    await CommonLib.DeleteDevanInst(context, id, "SEA IMPORT");
 
                     context.Remove(_Record);
                     context.SaveChanges();
@@ -835,7 +847,6 @@ namespace SeaImport.Repositories
                 throw;
             }
         }
-
         public async Task logHistory(cargo_masterm old_record, cargo_sea_importm_dto record_dto)
         {
 

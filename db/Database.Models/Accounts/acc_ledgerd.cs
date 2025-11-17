@@ -14,13 +14,13 @@ namespace Database.Models.Accounts
         public int jv_vrno { get; set; }
         public string? jv_docno { get; set; }
         public string? jv_type { get; set; }
-        public DateTime? jv_date { get; set; }
+        public DateOnly? jv_date { get; set; }
         public string? jv_refno { get; set; }
-        public DateTime? jv_refdate { get; set; }
+        public DateOnly? jv_refdate { get; set; }
         public int? jv_acc_id { get; set; }
         public string? jv_acc_name { get; set; }
         public string? jv_shipment_ref { get; set; }
-        public DateTime? jv_shipment_date { get; set; }
+        public DateOnly? jv_shipment_date { get; set; }
         public string? jv_status { get; set; }
         public decimal? jv_famt { get; set; }
         public int? jv_cur_id { get; set; }
@@ -35,8 +35,8 @@ namespace Database.Models.Accounts
         public string? jv_doc_type { get; set; }
         public string? jv_bank { get; set; }
         public string? jv_chqno { get; set; }
-        public DateTime? jv_chq_date { get; set; }
-        public DateTime? jv_master_date { get; set; }
+        public DateOnly? jv_chq_date { get; set; }
+        public DateOnly? jv_master_date { get; set; }
         public string? jv_is_payroll { get; set; }
         public decimal? jv_tax_amt { get; set; }
         public decimal? jv_tax_per { get; set; }

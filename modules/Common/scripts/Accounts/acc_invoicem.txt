@@ -53,6 +53,8 @@ CREATE TABLE IF NOT EXISTS acc_invoicem (
     CONSTRAINT fk_acc_invoicem_rec_branch_id FOREIGN KEY (rec_branch_id) REFERENCES mast_branchm(branch_id),
     CONSTRAINT fk_acc_invoicem_inv_cust_id FOREIGN KEY (inv_cust_id) REFERENCES mast_customerm(cust_id),
     CONSTRAINT fk_acc_invoicem_inv_cur_id FOREIGN KEY (inv_cur_id) REFERENCES mast_param(param_id),
+	CONSTRAINT fk_acc_invoicem_inv_cur_id FOREIGN KEY (inv_cur_id) REFERENCES mast_param(param_id),
+	CONSTRAINT fk_acc_invoicem_inv_cur_id FOREIGN KEY (inv_cur_id) REFERENCES mast_param(param_id),
 	CONSTRAINT fk_acc_invoicem_inv_year FOREIGN KEY (inv_year, rec_company_id) REFERENCES mast_yearm(year_code,rec_company_id)
 );
 
