@@ -34,7 +34,7 @@ namespace Database.Models.Masters
         public int? cust_handled_id { get; set; }
         public int? cust_location_id { get; set; }
         public decimal cust_credit_limit { get; set; }
-        public DateTime? cust_est_dt { get; set; }
+        public DateOnly? cust_est_dt { get; set; }
         public string? cust_row_type { get; set; }
         public string? cust_is_parent { get; set; }
         public string? cust_is_shipper { get; set; }
@@ -90,7 +90,7 @@ namespace Database.Models.Masters
         public string? cust_bond_yn { get; set; }
         public string? cust_punch_from { get; set; }
         public string? cust_bond_no { get; set; }
-        public DateTime? cust_bond_expdt { get; set; }
+        public DateOnly? cust_bond_expdt { get; set; }
 
         public int? cust_branch_id { get; set; }
         public string? cust_protected { get; set; }

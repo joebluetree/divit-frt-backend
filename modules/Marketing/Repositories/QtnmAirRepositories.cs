@@ -58,8 +58,8 @@ namespace Marketing.Repositories
                 var qtnm_no = "";
                 var company_id = 0;
                 var branch_id = 0;
-                DateTime? from_date = null;
-                DateTime? to_date = null;
+                DateOnly? from_date = null;
+                DateOnly? to_date = null;
 
                 if (data.ContainsKey("qtnm_type"))
                     qtnm_type = data["qtnm_type"].ToString();
@@ -94,12 +94,12 @@ namespace Marketing.Repositories
 
                 if (!Lib.IsBlank(qtnm_from_date))
                 {
-                    from_date = Lib.ParseDate(qtnm_from_date!);
+                    from_date = Lib.ParseDateOnly(qtnm_from_date!);
                     query = query.Where(w => w.qtnm_date >= from_date);
                 }
                 if (!Lib.IsBlank(qtnm_to_date))
                 {
-                    to_date = Lib.ParseDate(qtnm_to_date!);
+                    to_date = Lib.ParseDateOnly(qtnm_to_date!);
                     query = query.Where(w => w.qtnm_date <= to_date);
                 }
                 if (!Lib.IsBlank(qtnm_to_name))
@@ -496,9 +496,9 @@ namespace Marketing.Repositories
                 Record.qtnm_to_addr2 = record_dto.qtnm_to_addr2;
                 Record.qtnm_to_addr3 = record_dto.qtnm_to_addr3;
                 Record.qtnm_to_addr4 = record_dto.qtnm_to_addr4;
-                Record.qtnm_date = Lib.ParseDate(record_dto.qtnm_date!);
+                Record.qtnm_date = Lib.ParseDateOnly(record_dto.qtnm_date!);
                 Record.qtnm_quot_by = record_dto.qtnm_quot_by;
-                Record.qtnm_valid_date = Lib.ParseDate(record_dto.qtnm_valid_date!);
+                Record.qtnm_valid_date = Lib.ParseDateOnly(record_dto.qtnm_valid_date!);
                 Record.qtnm_salesman_id = record_dto.qtnm_salesman_id;
                 Record.qtnm_move_type = record_dto.qtnm_move_type;
                 Record.qtnm_commodity = record_dto.qtnm_commodity;

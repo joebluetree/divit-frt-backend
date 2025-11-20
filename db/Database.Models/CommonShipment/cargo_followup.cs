@@ -19,7 +19,7 @@ namespace Database.Models.CommonShipment
         public int? cf_user_id { get; set; }
         public string? cf_mode { get; set; }
         public string? cf_remarks { get; set; }
-        public DateTime? cf_followup_date { get; set; }
+        public DateOnly? cf_followup_date { get; set; }
         public int? cf_assigned_id { get; set; }
 
 

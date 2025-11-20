@@ -18,6 +18,7 @@ namespace AirImport.Repositories
     //Date : 31/03/2025
     //Command :  Create Repository for the Air Import House.
     //version 1.0
+    //version 2.0 - 17/11/2025 : Changed DateTime to DateOnly and parsedDateonly( for date only column)  -   Sourav V
 
     public class AirImportHRepository : IAirImportHRepository
     {
@@ -53,8 +54,8 @@ namespace AirImport.Repositories
                 var branch_id = 0;
                 var hbl_from_date = "";
                 var hbl_to_date = "";
-                DateTime? from_date = null;
-                DateTime? to_date = null;
+                DateOnly? from_date = null;
+                DateOnly? to_date = null;
 
 
                 if (data.ContainsKey("hbl_houseno"))
@@ -84,12 +85,12 @@ namespace AirImport.Repositories
 
                 if (!Lib.IsBlank(hbl_from_date))
                 {
-                    from_date = Lib.ParseDate(hbl_from_date!);
+                    from_date = Lib.ParseDateOnly(hbl_from_date!);
                     query = query.Where(w => w.hbl_date >= from_date);
                 }
                 if (!Lib.IsBlank(hbl_to_date))
                 {
-                    to_date = Lib.ParseDate(hbl_to_date!);
+                    to_date = Lib.ParseDateOnly(hbl_to_date!);
                     query = query.Where(w => w.hbl_date <= to_date);
                 }
                 if (!Lib.IsBlank(hbl_houseno))
@@ -590,8 +591,8 @@ namespace AirImport.Repositories
                 Record.hbl_remark1 = record_dto.hbl_remark1;
                 Record.hbl_remark2 = record_dto.hbl_remark2;
                 Record.hbl_remark3 = record_dto.hbl_remark3;
-                Record.hbl_lfd_date = Lib.ParseDate(record_dto.hbl_lfd_date!);
-                Record.hbl_pickup_date = Lib.ParseDate(record_dto.hbl_pickup_date!);
+                Record.hbl_lfd_date = Lib.ParseDateOnly(record_dto.hbl_lfd_date!);
+                Record.hbl_pickup_date = Lib.ParseDateOnly(record_dto.hbl_pickup_date!);
                 Record.hbl_careof_id = record_dto.hbl_careof_id;
                 Record.hbl_pono = record_dto.hbl_pono;
                 Record.hbl_paid_status_id = record_dto.hbl_paid_status_id;
@@ -606,14 +607,14 @@ namespace AirImport.Repositories
                 Record.hbl_paid_remarks = record_dto.hbl_paid_remarks;
                 Record.hbl_incoterm_id = record_dto.hbl_incoterm_id;
                 Record.hbl_invoiceno = record_dto.hbl_invoiceno;
-                Record.hbl_delivery_date = Lib.ParseDate(record_dto.hbl_delivery_date!);
+                Record.hbl_delivery_date = Lib.ParseDateOnly(record_dto.hbl_delivery_date!);
 
                 Record.hbl_it_no = record_dto.hbl_it_no;
                 Record.hbl_it_no2 = record_dto.hbl_it_no2;
                 Record.hbl_it_no3 = record_dto.hbl_it_no3;
-                Record.hbl_it_date = Lib.ParseDate(record_dto.hbl_it_date!);
-                Record.hbl_it_date2 = Lib.ParseDate(record_dto.hbl_it_date2!);
-                Record.hbl_it_date3 = Lib.ParseDate(record_dto.hbl_it_date3!);
+                Record.hbl_it_date = Lib.ParseDateOnly(record_dto.hbl_it_date!);
+                Record.hbl_it_date2 = Lib.ParseDateOnly(record_dto.hbl_it_date2!);
+                Record.hbl_it_date3 = Lib.ParseDateOnly(record_dto.hbl_it_date3!);
                 Record.hbl_it_port = record_dto.hbl_it_port;
                 Record.hbl_it_port2 = record_dto.hbl_it_port2;
                 Record.hbl_it_port3 = record_dto.hbl_it_port3;
@@ -626,8 +627,8 @@ namespace AirImport.Repositories
 
                 Record.hbl_bltype = record_dto.hbl_bltype;
                 Record.hbl_place_final = record_dto.hbl_place_final;
-                Record.hbl_plf_eta = Lib.ParseDate(record_dto.hbl_plf_eta!);
-                Record.hbl_delivery_date = Lib.ParseDate(record_dto.hbl_delivery_date!);
+                Record.hbl_plf_eta = Lib.ParseDateOnly(record_dto.hbl_plf_eta!);
+                Record.hbl_delivery_date = Lib.ParseDateOnly(record_dto.hbl_delivery_date!);
                 //Mode = add, Then add values to the table cargo_housem.
                 if (mode == "add")
                     await context.cargo_housem.AddAsync(Record);
@@ -849,7 +850,7 @@ namespace AirImport.Repositories
                     RetData.Add("status", false);
                     RetData.Add("message", "No Record Found");
                 }
-                if (CommonLib.InvoiceExists(context, id, _Record!.rec_company_id))
+                if (CommonLib.InvoiceExists(context, id, "HOUSE", _Record!.rec_company_id))
                 {
                     throw new Exception("Cannot Delete, Invoice Exists");
                 }

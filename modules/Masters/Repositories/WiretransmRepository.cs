@@ -38,8 +38,8 @@ namespace Masters.Repositories
                 var branch_id = 0;
                 var wtim_from_date = "";
                 var wtim_to_date = "";
-                DateTime? from_date = null;
-                DateTime? to_date = null;
+                DateOnly? from_date = null;
+                DateOnly? to_date = null;
 
                 if (data.ContainsKey("wtim_refno"))
                     wtim_refno = data["wtim_refno"].ToString();
@@ -67,12 +67,12 @@ namespace Masters.Repositories
 
                 if (!Lib.IsBlank(wtim_from_date))
                 {
-                    from_date = Lib.ParseDate(wtim_from_date!);
+                    from_date = Lib.ParseDateOnly(wtim_from_date!);
                     query = query.Where(w => w.wtim_date >= from_date);
                 }
                 if (!Lib.IsBlank(wtim_to_date))
                 {
-                    to_date = Lib.ParseDate(wtim_to_date!);
+                    to_date = Lib.ParseDateOnly(wtim_to_date!);
                     query = query.Where(w => w.wtim_date <= to_date);
                 }
                 if (!Lib.IsBlank(wtim_refno))
@@ -350,7 +350,7 @@ namespace Masters.Repositories
                 Record.wtim_acc_no = record_dto.wtim_acc_no;
                 Record.wtim_req_type = record_dto.wtim_req_type;
                 Record.wtim_from_name = record_dto.wtim_from_name;
-                Record.wtim_date = Lib.ParseDate(record_dto.wtim_date!);
+                Record.wtim_date = Lib.ParseDateOnly(record_dto.wtim_date!);
                 Record.wtim_sender_ref = record_dto.wtim_sender_ref;
                 Record.wtim_your_ref = record_dto.wtim_your_ref;
                 Record.wtim_is_urgent = record_dto.wtim_is_urgent;

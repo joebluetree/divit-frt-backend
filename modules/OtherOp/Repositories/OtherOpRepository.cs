@@ -16,6 +16,12 @@ using Marketing.Printing;
 
 namespace OtherOp.Repositories
 {
+    //Name : Sourav V
+    //Created Date : 06/05/2025
+    //Remark : this file defines functions like Save, Delete, getList and getRecords which save/retrieve data
+    //version v1-06/05/2025: added full repository
+    //version v2-17/11/2025: modified DateTime to DateOnly(for Date Only Column)
+
     public class OtherOpRepository : IOtherOpRepository
     {
         private readonly AppDbContext context;
@@ -49,8 +55,8 @@ namespace OtherOp.Repositories
                 var company_id = 0;
                 var branch_id = 0;
 
-                DateTime? from_date = null;
-                DateTime? to_date = null;
+                DateOnly? from_date = null;
+                DateOnly? to_date = null;
 
                 if (data.ContainsKey("oth_mode"))
                     oth_mode = data["oth_mode"].ToString();
@@ -84,12 +90,12 @@ namespace OtherOp.Repositories
 
                 if (!Lib.IsBlank(oth_from_date))
                 {
-                    from_date = Lib.ParseDate(oth_from_date!);
+                    from_date = Lib.ParseDateOnly(oth_from_date!);
                     query = query.Where(w => w.mbl_ref_date >= from_date);
                 }
                 if (!Lib.IsBlank(oth_to_date))
                 {
-                    to_date = Lib.ParseDate(oth_to_date!);
+                    to_date = Lib.ParseDateOnly(oth_to_date!);
                     query = query.Where(w => w.mbl_ref_date <= to_date);
                 }
                 if (!Lib.IsBlank(oth_refno))
@@ -530,7 +536,7 @@ namespace OtherOp.Repositories
                 if (mode == "edit")
                     await logHistory(Record, record_dto);
 
-                Record.mbl_ref_date = Lib.ParseDate(record_dto.oth_ref_date!);
+                Record.mbl_ref_date = Lib.ParseDateOnly(record_dto.oth_ref_date!);
                 Record.mbl_shipment_stage_id = record_dto.oth_shipment_stage_id;
                 Record.mbl_no = record_dto.oth_mbl_no;
                 Record.mbl_agent_id = record_dto.oth_agent_id;
@@ -539,9 +545,9 @@ namespace OtherOp.Repositories
                 Record.mbl_salesman_id = record_dto.oth_salesman_id;
                 Record.mbl_frt_status_name = record_dto.oth_mbl_frt_status;
                 Record.mbl_pol_id = record_dto.oth_pol_id;
-                Record.mbl_pol_etd = Lib.ParseDate(record_dto.oth_pol_etd!);
+                Record.mbl_pol_etd = Lib.ParseDateOnly(record_dto.oth_pol_etd!);
                 Record.mbl_pod_id = record_dto.oth_pod_id;
-                Record.mbl_pod_eta = Lib.ParseDate(record_dto.oth_pod_eta!);
+                Record.mbl_pod_eta = Lib.ParseDateOnly(record_dto.oth_pod_eta!);
                 Record.mbl_place_delivery = record_dto.oth_place_delivery;
                 Record.mbl_country_id = record_dto.oth_country_id;
                 Record.mbl_vessel_name = record_dto.oth_vessel_name;
@@ -660,6 +666,7 @@ namespace OtherOp.Repositories
                     record.cntr_no = rec.cntr_no;
                     record.cntr_type_id = rec.cntr_type_id;
                     record.cntr_sealno = rec.cntr_sealno;
+                    record.cntr_movement = rec.cntr_movement;
                     record.cntr_pieces = rec.cntr_pieces;
                     record.cntr_packages_unit_id = rec.cntr_packages_unit_id;
                     record.cntr_teu = CommonLib.UpdateTeuValue(rec.cntr_type_name!);
@@ -668,10 +675,10 @@ namespace OtherOp.Repositories
                     record.cntr_weight = rec.cntr_weight;
                     record.cntr_rider = rec.cntr_rider;
                     record.cntr_tare_weight = rec.cntr_tare_weight;
-                    record.cntr_pick_date = Lib.ParseDate(rec.cntr_pick_date!);
-                    record.cntr_return_date = Lib.ParseDate(rec.cntr_return_date!);
-                    record.cntr_lfd = Lib.ParseDate(rec.cntr_lfd!);
-                    record.cntr_discharge_date = Lib.ParseDate(rec.cntr_discharge_date!);
+                    record.cntr_pick_date = Lib.ParseDateOnly(rec.cntr_pick_date!);
+                    record.cntr_return_date = Lib.ParseDateOnly(rec.cntr_return_date!);
+                    record.cntr_lfd = Lib.ParseDateOnly(rec.cntr_lfd!);
+                    record.cntr_discharge_date = Lib.ParseDateOnly(rec.cntr_discharge_date!);
                     record.cntr_order = nextorder++;
 
                     if (rec.cntr_id == 0)
@@ -748,7 +755,7 @@ namespace OtherOp.Repositories
                 record.hbl_location_add4 = record_dto.oth_location_add4;
 
                 record.hbl_it_no = record_dto.oth_it_no;
-                record.hbl_it_date = Lib.ParseDate(record_dto.oth_it_date!);
+                record.hbl_it_date = Lib.ParseDateOnly(record_dto.oth_it_date!);
                 record.hbl_it_port = record_dto.oth_it_port;
 
                 record.hbl_frt_status_name = record_dto.oth_hbl_frt_status;
@@ -764,7 +771,7 @@ namespace OtherOp.Repositories
                 record.hbl_handled_id = record_dto.oth_handled_id;
                 record.hbl_salesman_id = record_dto.oth_salesman_id;
                 record.hbl_isf_no = record_dto.oth_isf_no;
-                record.hbl_lfd_date = Lib.ParseDate(record_dto.oth_lfd_date!);
+                record.hbl_lfd_date = Lib.ParseDateOnly(record_dto.oth_lfd_date!);
                 record.hbl_shipment_stage_id = record_dto.oth_shipment_stage_id;
 
                 record.hbl_is_pl = record_dto.oth_is_pl;
@@ -887,6 +894,7 @@ namespace OtherOp.Repositories
                     record.cntr_no = m.cntr_no;
                     record.cntr_type_id = m.cntr_type_id;
                     record.cntr_sealno = m.cntr_sealno;
+                    record.cntr_movement = m.cntr_movement;
                     record.cntr_pieces = m.cntr_pieces;
                     record.cntr_packages_unit_id = m.cntr_packages_unit_id;
                     record.cntr_teu = m.cntr_teu;
@@ -937,7 +945,7 @@ namespace OtherOp.Repositories
                     RetData.Add("status", false);
                     RetData.Add("message", "No Record Found");
                 }
-                if (CommonLib.InvoiceExists(context, id, _Record!.rec_company_id))
+                if (CommonLib.InvoiceExists(context, id, "MASTER", _Record!.rec_company_id))
                 {
                     throw new Exception("Cannot Delete, Invoice Exists");
                 }

@@ -21,6 +21,7 @@ namespace AirExport.Repositories
     //Command :  Create Repository for the Air Export.
     //version 1.0
     //version 1.1 - Added Shipment Label Service(16/06/2025).
+    //version 2.0 - 17/11/2025 : Changed DateTime to DateOnly and parsedDateonly( for date only column)  -   Sourav V
 
     public class AirExportRepository : IAirExportRepository
     {
@@ -55,8 +56,8 @@ namespace AirExport.Repositories
                 var branch_id = 0;
                 var mbl_from_date = "";
                 var mbl_to_date = "";
-                DateTime? from_date = null;
-                DateTime? to_date = null;
+                DateOnly? from_date = null;
+                DateOnly? to_date = null;
 
                 if (data.ContainsKey("mbl_refno"))
                     mbl_refno = data["mbl_refno"].ToString();
@@ -84,12 +85,12 @@ namespace AirExport.Repositories
 
                 if (!Lib.IsBlank(mbl_from_date))
                 {
-                    from_date = Lib.ParseDate(mbl_from_date!);
+                    from_date = Lib.ParseDateOnly(mbl_from_date!);
                     query = query.Where(w => w.mbl_ref_date >= from_date);
                 }
                 if (!Lib.IsBlank(mbl_to_date))
                 {
-                    to_date = Lib.ParseDate(mbl_to_date!);
+                    to_date = Lib.ParseDateOnly(mbl_to_date!);
                     query = query.Where(w => w.mbl_ref_date <= to_date);
                 }
                 if (!Lib.IsBlank(mbl_refno))
@@ -463,14 +464,14 @@ namespace AirExport.Repositories
                     await logHistory(Record, record_dto);
 
                 Record.mbl_shipment_stage_id = record_dto.mbl_shipment_stage_id;
-                Record.mbl_ref_date = Lib.ParseDate(record_dto.mbl_ref_date!);
+                Record.mbl_ref_date = Lib.ParseDateOnly(record_dto.mbl_ref_date!);
                 Record.mbl_no = record_dto.mbl_no;
                 Record.mbl_agent_id = record_dto.mbl_agent_id;
                 Record.mbl_frt_status_name = record_dto.mbl_frt_status_name;
                 Record.mbl_pol_id = record_dto.mbl_pol_id;
-                Record.mbl_pol_etd = Lib.ParseDate(record_dto.mbl_pol_etd!);
+                Record.mbl_pol_etd = Lib.ParseDateOnly(record_dto.mbl_pol_etd!);
                 Record.mbl_pod_id = record_dto.mbl_pod_id;
-                Record.mbl_pod_eta = Lib.ParseDate(record_dto.mbl_pod_eta!);
+                Record.mbl_pod_eta = Lib.ParseDateOnly(record_dto.mbl_pod_eta!);
                 Record.mbl_country_id = record_dto.mbl_country_id;
                 Record.mbl_liner_id = record_dto.mbl_liner_id;
                 Record.mbl_by_carrier1 = record_dto.mbl_by_carrier1;
@@ -612,7 +613,7 @@ namespace AirExport.Repositories
                 {
                     throw new Exception("Cannot Delete, House Exists");
                 }
-                if (CommonLib.InvoiceExists(context, id, _Record!.rec_company_id))
+                if (CommonLib.InvoiceExists(context, id, "MASTER", _Record!.rec_company_id))
                 {
                     throw new Exception("Cannot Delete, Invoice Exists");
                 }

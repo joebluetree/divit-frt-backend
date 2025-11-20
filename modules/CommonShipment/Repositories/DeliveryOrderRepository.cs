@@ -57,8 +57,8 @@ namespace CommonShipment.Repositories
                 var company_id = 0;
                 var branch_id = 0;
 
-                DateTime? from_date = null;
-                DateTime? to_date = null;
+                DateOnly? from_date = null;
+                DateOnly? to_date = null;
 
                 if (data.ContainsKey("do_from_date"))
                     do_from_date = data["do_from_date"].ToString();
@@ -88,12 +88,12 @@ namespace CommonShipment.Repositories
 
                 if (!Lib.IsBlank(do_from_date))
                 {
-                    from_date = Lib.ParseDate(do_from_date!);
+                    from_date = Lib.ParseDateOnly(do_from_date!);
                     query = query.Where(w => w.do_order_date >= from_date);
                 }
                 if (!Lib.IsBlank(do_to_date))
                 {
-                    to_date = Lib.ParseDate(do_to_date!);
+                    to_date = Lib.ParseDateOnly(do_to_date!);
                     query = query.Where(w => w.do_order_date <= to_date);
                 }
                 if (!Lib.IsBlank(do_order_no))
@@ -597,7 +597,7 @@ namespace CommonShipment.Repositories
                 Record.do_addr1 = record_dto.do_addr1;
                 Record.do_addr2 = record_dto.do_addr2;
                 Record.do_addr3 = record_dto.do_addr3;
-                Record.do_date = Lib.ParseDate(record_dto.do_date!);
+                Record.do_date = Lib.ParseDateOnly(record_dto.do_date!);
                 Record.do_time = record_dto.do_time;
                 Record.do_attn = record_dto.do_attn;
                 Record.do_tel = record_dto.do_tel;
@@ -654,14 +654,14 @@ namespace CommonShipment.Repositories
                 Record.do_export_doc = do_export_doc;
 
                 Record.do_order_no = record_dto.do_order_no;
-                Record.do_order_date = Lib.ParseDate(record_dto.do_order_date!);
+                Record.do_order_date = Lib.ParseDateOnly(record_dto.do_order_date!);
                 if (!Lib.IsBlank(record_dto.do_category))
                     Record.do_category = record_dto.do_category;
                 else
                     Record.do_category = "GENERAL";
 
                 Record.do_is_delivery_sent = record_dto.do_is_delivery_sent;
-                Record.do_delivery_date = Lib.ParseDate(record_dto.do_delivery_date!);
+                Record.do_delivery_date = Lib.ParseDateOnly(record_dto.do_delivery_date!);
 
 
                 if (mode == "add")

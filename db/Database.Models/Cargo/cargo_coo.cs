@@ -5,7 +5,7 @@ using Database.Models.UserAdmin;
 
 //Name    : Sourav V
 //Created : 18/06/2025
-//Remark  : Converted from PostgreSQL definition for Master B/L
+//Remark  : Converted from PostgreSQL definition for COO (sea export master)
 
 namespace Database.Models.Cargo
 {

@@ -20,7 +20,7 @@ public class mast_wiretransm //: baseTable
     public string? wtim_acc_no { get; set; }
     public string? wtim_req_type { get; set; }
     public string? wtim_from_name { get; set; }
-    public DateTime? wtim_date { get; set; }
+    public DateOnly? wtim_date { get; set; }
     public string? wtim_sender_ref { get; set; }
     public string? wtim_your_ref { get; set; }
     public string? wtim_is_urgent { get; set; }

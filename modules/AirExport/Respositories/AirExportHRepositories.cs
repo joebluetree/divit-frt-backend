@@ -18,6 +18,7 @@ namespace AirExport.Repositories
     //Date : 27/02/2025
     //Command :  Create Repository for the Air Export House.
     //version 1.0
+    //version 2.0 - 17/11/2025 : Changed DateTime to DateOnly and parsedDateonly( for date only column)  -   Sourav V
 
     public class AirExportHRepository : IAirExportHRepository
     {
@@ -54,8 +55,8 @@ namespace AirExport.Repositories
                 var branch_id = 0;
                 var hbl_from_date = "";
                 var hbl_to_date = "";
-                DateTime? from_date = null;
-                DateTime? to_date = null;
+                DateOnly? from_date = null;
+                DateOnly? to_date = null;
 
 
                 if (data.ContainsKey("hbl_mbl_refno"))
@@ -87,12 +88,12 @@ namespace AirExport.Repositories
 
                 if (!Lib.IsBlank(hbl_from_date))
                 {
-                    from_date = Lib.ParseDate(hbl_from_date!);
+                    from_date = Lib.ParseDateOnly(hbl_from_date!);
                     query = query.Where(w => w.hbl_date >= from_date);
                 }
                 if (!Lib.IsBlank(hbl_to_date))
                 {
-                    to_date = Lib.ParseDate(hbl_to_date!);
+                    to_date = Lib.ParseDateOnly(hbl_to_date!);
                     query = query.Where(w => w.hbl_date <= to_date);
                 }
                 if (!Lib.IsBlank(hbl_mbl_refno))
@@ -240,7 +241,7 @@ namespace AirExport.Repositories
                     hbl_mbl_refno = e.master!.mbl_refno,
                     hbl_shipment_stage_id = e.hbl_shipment_stage_id,
                     hbl_shipment_stage_name = e.shipstage!.param_name,
-                    hbl_date = Lib.FormatDate(e.hbl_date, Lib.outputDateTimeFormat),
+                    hbl_date = Lib.FormatDate(e.hbl_date, Lib.outputDateFormat),
                     hbl_mode = e.hbl_mode,
                     hbl_shipper_id = e.hbl_shipper_id,
                     hbl_shipper_code = e.shipper!.cust_code,
@@ -323,8 +324,8 @@ namespace AirExport.Repositories
                     hbl_by1_carrier = e.hbl_by1_carrier,
                     hbl_by2 = e.hbl_by2,
                     hbl_by2_carrier = e.hbl_by2_carrier,
-                    hbl_issued_date = Lib.FormatDate(e.hbl_issued_date, Lib.outputDateTimeFormat),
-                    hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateTimeFormat),
+                    hbl_issued_date = Lib.FormatDate(e.hbl_issued_date, Lib.outputDateFormat),
+                    hbl_delivery_date = Lib.FormatDate(e.hbl_delivery_date, Lib.outputDateFormat),
                     hbl_issued_by = e.hbl_issued_by,
 
 
@@ -678,7 +679,7 @@ namespace AirExport.Repositories
                 //Save values to the database from dto.
 
                 Record.hbl_shipment_stage_id = record_dto.hbl_shipment_stage_id;
-                Record.hbl_date = Lib.ParseDate(record_dto.hbl_date!);
+                Record.hbl_date = Lib.ParseDateOnly(record_dto.hbl_date!);
                 Record.hbl_shipper_id = record_dto.hbl_shipper_id;
                 Record.hbl_shipper_name = record_dto.hbl_shipper_name;
                 Record.hbl_shipper_add1 = record_dto.hbl_shipper_add1;
@@ -754,8 +755,8 @@ namespace AirExport.Repositories
                 Record.hbl_by1_carrier = record_dto.hbl_by1_carrier;
                 Record.hbl_by2 = record_dto.hbl_by2;
                 Record.hbl_by2_carrier = record_dto.hbl_by2_carrier;
-                Record.hbl_issued_date = Lib.ParseDate(record_dto.hbl_issued_date!);
-                Record.hbl_delivery_date = Lib.ParseDate(record_dto.hbl_delivery_date!);
+                Record.hbl_issued_date = Lib.ParseDateOnly(record_dto.hbl_issued_date!);
+                Record.hbl_delivery_date = Lib.ParseDateOnly(record_dto.hbl_delivery_date!);
                 Record.hbl_issued_by = record_dto.hbl_issued_by;
 
                 //Mode = add, Then add values to the table cargo_housem.
@@ -979,7 +980,7 @@ namespace AirExport.Repositories
                     RetData.Add("status", false);
                     RetData.Add("message", "No Record Found");
                 }
-                if (CommonLib.InvoiceExists(context, id, _Record!.rec_company_id))
+                if (CommonLib.InvoiceExists(context, id, "HOUSE", _Record!.rec_company_id))
                 {
                     throw new Exception("Cannot Delete, Invoice Exists");
                 }

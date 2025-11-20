@@ -16,7 +16,7 @@ namespace Database.Models.Cargo
         public int hbl_mbl_id { get; set; }
         public int hbl_cfno { get; set; }
         public string? hbl_houseno { get; set; }
-        public DateTime? hbl_date { get; set; }
+        public DateOnly? hbl_date { get; set; }
         public string? hbl_bltype { get; set; }
         public string? hbl_mode { get; set; }
         public int? hbl_shipper_id { get; set; }
@@ -61,25 +61,25 @@ namespace Database.Models.Cargo
         public string? hbl_ams_fileno { get; set; }
         public string? hbl_sub_house { get; set; }//
         public string? hbl_it_no { get; set; }
-        public DateTime? hbl_it_date { get; set; }
+        public DateOnly? hbl_it_date { get; set; }
         public string? hbl_it_port { get; set; }
         public int? hbl_it_pcs { get; set; }
         public decimal? hbl_it_wt { get; set; }
         public string? hbl_it_no2 { get; set; }//
-        public DateTime? hbl_it_date2 { get; set; }//
+        public DateOnly? hbl_it_date2 { get; set; }//
         public string? hbl_it_port2 { get; set; }//
         public int? hbl_it_pcs2 { get; set; }//
         public decimal? hbl_it_wt2 { get; set; }//
         public string? hbl_it_no3 { get; set; }//
-        public DateTime? hbl_it_date3 { get; set; }//
+        public DateOnly? hbl_it_date3 { get; set; }//
         public string? hbl_it_port3 { get; set; }
         public int? hbl_it_pcs3 { get; set; }
         public decimal? hbl_it_wt3 { get; set; }
         public int? hbl_telex_released_id { get; set; }
         public string? hbl_place_delivery { get; set; }
         public string? hbl_place_final { get; set; }
-        public DateTime? hbl_pld_eta { get; set; }
-        public DateTime? hbl_plf_eta { get; set; }
+        public DateOnly? hbl_pld_eta { get; set; }
+        public DateOnly? hbl_plf_eta { get; set; }
         public string? hbl_frt_status_name { get; set; }
         public int? hbl_ship_term_id { get; set; }
         public int? hbl_uom_id { get; set; }
@@ -104,11 +104,11 @@ namespace Database.Models.Cargo
         public string? hbl_devan_instr1 { get; set; }
         public string? hbl_devan_instr2 { get; set; }
         public string? hbl_devan_instr3 { get; set; }
-        public DateTime? hbl_lfd_date { get; set; }
-        public DateTime? hbl_go_date { get; set; }
+        public DateOnly? hbl_lfd_date { get; set; }
+        public DateOnly? hbl_go_date { get; set; }
         public string? hbl_place_receipt { get; set; }
         public string? hbl_pod_name { get; set; }
-        public DateTime? hbl_pofd_eta { get; set; }
+        public DateOnly? hbl_pofd_eta { get; set; }
         public int? hbl_pofd_id { get; set; }
         public string? hbl_pofd_name { get; set; }
         public string? hbl_pol_name { get; set; }
@@ -149,7 +149,7 @@ namespace Database.Models.Cargo
         public string? hbl_is_arranged { get; set; }
         public string? hbl_is_cntrized { get; set; }
         public string? hbl_issued_by { get; set; }
-        public DateTime? hbl_issued_date { get; set; }
+        public DateOnly? hbl_issued_date { get; set; }
         public string? hbl_lcno { get; set; }
         public string? hbl_oc_status { get; set; }
         public string? hbl_origin { get; set; }
@@ -168,8 +168,8 @@ namespace Database.Models.Cargo
         public decimal? hbl_inc_total_cbm { get; set; }
         public decimal? hbl_exp_total_cbm { get; set; }
         public decimal? hbl_revenue_cbm { get; set; }
-        public DateTime? hbl_pickup_date { get; set; }
-        public DateTime? hbl_empty_ret_date { get; set; }
+        public DateOnly? hbl_pickup_date { get; set; }
+        public DateOnly? hbl_empty_ret_date { get; set; }
         public string? hbl_obl_slno { get; set; }
         public string? hbl_obl_telex { get; set; }
         public int? hbl_careof_id { get; set; }
@@ -192,14 +192,14 @@ namespace Database.Models.Cargo
         public string? hbl_custom_reles_status { get; set; }
         public string? hbl_is_delivery { get; set; }
         public string? hbl_paid_remarks { get; set; }
-        public DateTime? hbl_delivery_date { get; set; }
-        public DateTime? hbl_custom_clear_date { get; set; }
+        public DateOnly? hbl_delivery_date { get; set; }
+        public DateOnly? hbl_custom_clear_date { get; set; }
         public int? hbl_container_tot { get; set; }
         public int? hbl_incoterm_id { get; set; } //changed
         public string? hbl_software_name { get; set; }
         public string? hbl_an_sent { get; set; }
         public string? hbl_an_sent_by { get; set; }
-        public DateTime? hbl_an_sent_date { get; set; }
+        public DateOnly? hbl_an_sent_date { get; set; }
         public string? hbl_invoiceno { get; set; }
         public string? rec_memo_attached { get; set; }
         public int? rec_memo_count { get; set; }
@@ -262,8 +262,6 @@ namespace Database.Models.Cargo
 
         [ForeignKey("hbl_incoterm_id")] //changed
         public mast_param? incoterm { get; set; }
-
-
 
         [ConcurrencyCheck]
         public int rec_version { get; set; }
