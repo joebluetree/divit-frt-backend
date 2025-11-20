@@ -26,7 +26,7 @@ namespace Database.Models.Cargo
         public string? do_addr1 { get; set; }
         public string? do_addr2 { get; set; }
         public string? do_addr3 { get; set; }
-        public DateTime? do_date { get; set; }
+        public DateOnly? do_date { get; set; }
         public string? do_time { get; set; }
         public string? do_attn { get; set; }
         public string? do_tel { get; set; }
@@ -78,10 +78,10 @@ namespace Database.Models.Cargo
         public string? do_freight { get; set; }
         public string? do_export_doc { get; set; }
         public string? do_order_no { get; set; }
-        public DateTime? do_order_date { get; set; }
+        public DateOnly? do_order_date { get; set; }
         public string? do_category { get; set; }
         public string? do_is_delivery_sent { get; set; }
-        public DateTime? do_delivery_date { get; set; }
+        public DateOnly? do_delivery_date { get; set; }
 
         [ConcurrencyCheck]
         public int rec_version { get; set; } 

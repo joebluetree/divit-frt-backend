@@ -15,6 +15,11 @@ using SeaImport.Printing;
 
 namespace SeaImport.Repositories
 {
+    //Name : Sourav V
+    //Created Date : 15/04/2025
+    //Remark : this file defines functions like Save, Delete, getList and getRecords which save/retrieve data
+    //version v1-15-04-2025: added full repository
+    //         v2 17/11/2025:   modified DateTime To DateOnly
     public class SeaImportmRepository : ISeaImportmRepository
     {
         private readonly AppDbContext context;
@@ -48,8 +53,8 @@ namespace SeaImport.Repositories
                 var company_id = 0;
                 var branch_id = 0;
 
-                DateTime? from_date = null;
-                DateTime? to_date = null;
+                DateOnly? from_date = null;
+                DateOnly? to_date = null;
 
                 if (data.ContainsKey("mbl_mode"))
                     mbl_mode = data["mbl_mode"].ToString();
@@ -83,12 +88,12 @@ namespace SeaImport.Repositories
 
                 if (!Lib.IsBlank(mbl_from_date))
                 {
-                    from_date = Lib.ParseDate(mbl_from_date!);
+                    from_date = Lib.ParseDateOnly(mbl_from_date!);
                     query = query.Where(w => w.mbl_ref_date >= from_date);
                 }
                 if (!Lib.IsBlank(mbl_to_date))
                 {
-                    to_date = Lib.ParseDate(mbl_to_date!);
+                    to_date = Lib.ParseDateOnly(mbl_to_date!);
                     query = query.Where(w => w.mbl_ref_date <= to_date);
                 }
                 if (!Lib.IsBlank(mbl_refno))
@@ -399,8 +404,8 @@ namespace SeaImport.Repositories
             string type = "";
             string cntr_no = "";
             string unit = "";
-            DateTime? etd_date = Lib.ParseDate(record_dto.mbl_pol_etd!) ?? null;
-            DateTime? eta_date = Lib.ParseDate(record_dto.mbl_pod_eta!) ?? null;
+            DateOnly? etd_date = Lib.ParseDateOnly(record_dto.mbl_pol_etd!) ?? null;
+            DateOnly? eta_date = Lib.ParseDateOnly(record_dto.mbl_pod_eta!) ?? null;
 
 
             if (Lib.IsBlank(record_dto.mbl_ref_date))
@@ -556,7 +561,7 @@ namespace SeaImport.Repositories
                 if (mode == "edit")
                     await logHistory(Record, record_dto);
 
-                Record.mbl_ref_date = Lib.ParseDate(record_dto.mbl_ref_date!);
+                Record.mbl_ref_date = Lib.ParseDateOnly(record_dto.mbl_ref_date!);
                 if (Record.mbl_shipment_stage_id != record_dto.mbl_shipment_stage_id)
                 {
                     Record.mbl_shipment_stage_id = record_dto.mbl_shipment_stage_id;
@@ -576,21 +581,21 @@ namespace SeaImport.Repositories
                 Record.mbl_cntr_type = record_dto.mbl_cntr_type;
                 Record.mbl_incoterm_id = record_dto.mbl_incoterm_id;
                 Record.mbl_pol_id = record_dto.mbl_pol_id;
-                Record.mbl_pol_etd = Lib.ParseDate(record_dto.mbl_pol_etd!);
+                Record.mbl_pol_etd = Lib.ParseDateOnly(record_dto.mbl_pol_etd!);
                 Record.mbl_pod_id = record_dto.mbl_pod_id;
-                Record.mbl_pod_eta = Lib.ParseDate(record_dto.mbl_pod_eta!);
+                Record.mbl_pod_eta = Lib.ParseDateOnly(record_dto.mbl_pod_eta!);
 
                 Record.mbl_place_delivery = record_dto.mbl_place_delivery;
 
-                Record.mbl_pofd_eta = Lib.ParseDate(record_dto.mbl_pofd_eta!);
+                Record.mbl_pofd_eta = Lib.ParseDateOnly(record_dto.mbl_pofd_eta!);
                 Record.mbl_country_id = record_dto.mbl_country_id;
                 Record.mbl_vessel_id = record_dto.mbl_vessel_id;
                 Record.mbl_vessel_name = record_dto.mbl_vessel_name;
                 Record.mbl_voyage = record_dto.mbl_voyage;
                 Record.mbl_status_id = record_dto.mbl_status_id;
-                Record.mbl_ombl_sent_on = Lib.ParseDate(record_dto.mbl_of_sent_on!);
+                Record.mbl_ombl_sent_on = Lib.ParseDateOnly(record_dto.mbl_of_sent_on!);
                 Record.mbl_ombl_sent_ampm = record_dto.mbl_ombl_sent_ampm;
-                Record.mbl_of_sent_on = Lib.ParseDate(record_dto.mbl_of_sent_on!);
+                Record.mbl_of_sent_on = Lib.ParseDateOnly(record_dto.mbl_of_sent_on!);
                 Record.mbl_cargo_loc_id = record_dto.mbl_cargo_loc_id;
                 Record.mbl_cargo_loc_name = record_dto.mbl_cargo_loc_name;
                 Record.mbl_cargo_loc_add1 = record_dto.mbl_cargo_loc_add1;
@@ -713,6 +718,7 @@ namespace SeaImport.Repositories
                     record.cntr_no = rec.cntr_no;
                     record.cntr_type_id = rec.cntr_type_id;
                     record.cntr_sealno = rec.cntr_sealno;
+                    record.cntr_movement = rec.cntr_movement;
                     record.cntr_pieces = rec.cntr_pieces;
                     record.cntr_packages_unit_id = rec.cntr_packages_unit_id;
                     record.cntr_teu = CommonLib.UpdateTeuValue(rec.cntr_type_name!);
@@ -721,10 +727,10 @@ namespace SeaImport.Repositories
                     record.cntr_weight = rec.cntr_weight;
                     record.cntr_rider = rec.cntr_rider;
                     record.cntr_tare_weight = rec.cntr_tare_weight;
-                    record.cntr_pick_date = Lib.ParseDate(rec.cntr_pick_date!);
-                    record.cntr_return_date = Lib.ParseDate(rec.cntr_return_date!);
-                    record.cntr_lfd = Lib.ParseDate(rec.cntr_lfd!);
-                    record.cntr_discharge_date = Lib.ParseDate(rec.cntr_discharge_date!);
+                    record.cntr_pick_date = Lib.ParseDateOnly(rec.cntr_pick_date!);
+                    record.cntr_return_date = Lib.ParseDateOnly(rec.cntr_return_date!);
+                    record.cntr_lfd = Lib.ParseDateOnly(rec.cntr_lfd!);
+                    record.cntr_discharge_date = Lib.ParseDateOnly(rec.cntr_discharge_date!);
                     record.cntr_order = nextorder++;
 
                     if (rec.cntr_id == 0)
@@ -815,7 +821,7 @@ namespace SeaImport.Repositories
                 {
                     throw new Exception("Cannot Delete, House Exists");
                 }
-                if (CommonLib.InvoiceExists(context, id, _Record!.rec_company_id))
+                if (CommonLib.InvoiceExists(context, id, "MASTER", _Record!.rec_company_id))
                 {
                     throw new Exception("Cannot Delete, Invoice Exists");
                 }

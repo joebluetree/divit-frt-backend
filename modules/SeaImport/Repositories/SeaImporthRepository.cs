@@ -20,6 +20,7 @@ using SeaImport.Printing;
 //Remark : this file defines functions like Save, Delete, getList and getRecords which save/retrieve data
 //version v1-01-04-2025: added full repository
 //        v2-08-04-2025: hbl_houseno updated branchsettings removed
+//         v3 17/11/2025:   modified DateTime To DateOnly
 
 
 namespace SeaImport.Repositories
@@ -58,8 +59,8 @@ namespace SeaImport.Repositories
                 var company_id = 0;
                 var branch_id = 0;
 
-                DateTime? from_date = null;
-                DateTime? to_date = null;
+                // DateOnly? from_date = null;
+                // DateOnly? to_date = null;
 
                 if (data.ContainsKey("hbl_mode"))
                     hbl_mode = data["hbl_mode"].ToString();
@@ -96,20 +97,34 @@ namespace SeaImport.Repositories
 
                 if (!Lib.IsBlank(hbl_from_date))
                 {
-                    from_date = Lib.ParseDate(hbl_from_date!);
-                    if (hbl_date_type == "Created Date")
+                    if (hbl_date_type == "Created Date"){
+                        DateTime? from_date = null;
+                        from_date = Lib.ParseDate(hbl_from_date!);
                         query = query.Where(w => w.rec_created_date.Date >= from_date);
+                    }
                     if (hbl_date_type == "Ref Date")
-                        query = query.Where(w => w.master!.mbl_ref_date.HasValue && w.master!.mbl_ref_date.Value.Date >= from_date);    
+                    {
+                        DateOnly? from_date = null;
+                        from_date = Lib.ParseDateOnly(hbl_from_date!);
+                        query = query.Where(w => w.master!.mbl_ref_date >= from_date);    
+                    }
+                        
                 }
                 if (!Lib.IsBlank(hbl_to_date))
                 {
-                    to_date = Lib.ParseDate(hbl_to_date!);
+                    
                     if (hbl_date_type == "Created Date")
-                        query = query.Where(w => w.rec_created_date.Date <= to_date);
-                    if (hbl_date_type == "Ref Date")
-                        query = query.Where(w => w.master!.mbl_ref_date.HasValue && w.master!.mbl_ref_date.Value.Date <= to_date);
-                        // query = query.Where(w => w.master!.mbl_date <= to_date);
+                    {
+                        DateTime? to_date = null;
+                        to_date = Lib.ParseDate(hbl_to_date!);
+                        query = query.Where(w => w.rec_created_date.Date <= to_date);                        
+                    }
+
+                    if (hbl_date_type == "Ref Date"){
+                        DateOnly? to_date = null;
+                        to_date = Lib.ParseDateOnly(hbl_to_date!);
+                        query = query.Where(w => w.master!.mbl_ref_date <= to_date);
+                    }
                 }
                 if (Lib.IsBlank(hbl_from_date) && Lib.IsBlank(hbl_to_date))
                 {
@@ -571,7 +586,7 @@ namespace SeaImport.Repositories
             if (Lib.IsBlank(record_dto.hbl_consignee_name))
                 str += "Consignee Name Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.hbl_commodity))
-                str += "Good's Description Cannot Be Blank!";
+                str += "Description Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.hbl_frt_status_name))
                 str += "Fright Status Cannot Be Blank!";
             if (Lib.IsBlank(record_dto.hbl_bltype))
@@ -767,13 +782,13 @@ namespace SeaImport.Repositories
 
                 Record.hbl_place_final = record_dto.hbl_place_final;
                 Record.hbl_place_delivery = record_dto.hbl_place_delivery;
-                Record.hbl_pld_eta = Lib.ParseDate(record_dto.hbl_pld_eta!);
+                Record.hbl_pld_eta = Lib.ParseDateOnly(record_dto.hbl_pld_eta!);
                 Record.hbl_frt_status_name = record_dto.hbl_frt_status_name;
-                Record.hbl_plf_eta = Lib.ParseDate(record_dto.hbl_plf_eta!);
+                Record.hbl_plf_eta = Lib.ParseDateOnly(record_dto.hbl_plf_eta!);
                 Record.hbl_it_no = record_dto.hbl_it_no;
                 Record.hbl_is_itshipment = record_dto.hbl_is_itshipment;
                 Record.hbl_it_port = record_dto.hbl_it_port;
-                Record.hbl_it_date = Lib.ParseDate(record_dto.hbl_it_date!);
+                Record.hbl_it_date = Lib.ParseDateOnly(record_dto.hbl_it_date!);
                 Record.hbl_lbs = record_dto.hbl_lbs;
                 Record.hbl_weight = record_dto.hbl_weight;
                 Record.hbl_cft = record_dto.hbl_cft;
@@ -814,7 +829,7 @@ namespace SeaImport.Repositories
                 Record.hbl_is_ci = record_dto.hbl_is_ci;
                 Record.hbl_is_carr_an = record_dto.hbl_is_carr_an;
                 Record.hbl_custom_reles_status = record_dto.hbl_custom_reles_status;
-                Record.hbl_custom_clear_date = Lib.ParseDate(record_dto.hbl_custom_clear_date!);
+                Record.hbl_custom_clear_date = Lib.ParseDateOnly(record_dto.hbl_custom_clear_date!);
                 Record.hbl_is_delivery = record_dto.hbl_is_delivery;
                 Record.hbl_paid_status_id = record_dto.hbl_paid_status_id;
                 Record.hbl_paid_remarks = record_dto.hbl_paid_remarks;
@@ -834,11 +849,11 @@ namespace SeaImport.Repositories
                 Record.hbl_remark1 = record_dto.hbl_remark1;
                 Record.hbl_remark2 = record_dto.hbl_remark2;
                 Record.hbl_remark3 = record_dto.hbl_remark3;
-                Record.hbl_lfd_date = Lib.ParseDate(record_dto.hbl_lfd_date!);
-                Record.hbl_go_date = Lib.ParseDate(record_dto.hbl_go_date!);
-                Record.hbl_pickup_date = Lib.ParseDate(record_dto.hbl_pickup_date!);
-                Record.hbl_empty_ret_date = Lib.ParseDate(record_dto.hbl_empty_ret_date!);
-                Record.hbl_delivery_date = Lib.ParseDate(record_dto.hbl_delivery_date!);
+                Record.hbl_lfd_date = Lib.ParseDateOnly(record_dto.hbl_lfd_date!);
+                Record.hbl_go_date = Lib.ParseDateOnly(record_dto.hbl_go_date!);
+                Record.hbl_pickup_date = Lib.ParseDateOnly(record_dto.hbl_pickup_date!);
+                Record.hbl_empty_ret_date = Lib.ParseDateOnly(record_dto.hbl_empty_ret_date!);
+                Record.hbl_delivery_date = Lib.ParseDateOnly(record_dto.hbl_delivery_date!);
 
 
                 if (mode == "add")
@@ -956,10 +971,10 @@ namespace SeaImport.Repositories
                     record.cntr_weight = rec.cntr_weight;
                     record.cntr_rider = rec.cntr_rider;
                     record.cntr_tare_weight = rec.cntr_tare_weight;
-                    record.cntr_pick_date = Lib.ParseDate(rec.cntr_pick_date!);
-                    record.cntr_return_date = Lib.ParseDate(rec.cntr_return_date!);
-                    record.cntr_lfd = Lib.ParseDate(rec.cntr_lfd!);
-                    record.cntr_discharge_date = Lib.ParseDate(rec.cntr_discharge_date!);
+                    record.cntr_pick_date = Lib.ParseDateOnly(rec.cntr_pick_date!);
+                    record.cntr_return_date = Lib.ParseDateOnly(rec.cntr_return_date!);
+                    record.cntr_lfd = Lib.ParseDateOnly(rec.cntr_lfd!);
+                    record.cntr_discharge_date = Lib.ParseDateOnly(rec.cntr_discharge_date!);
                     record.cntr_order = nextorder++;
 
                     if (rec.cntr_id == 0)
@@ -1159,7 +1174,7 @@ namespace SeaImport.Repositories
                     RetData.Add("status", false);
                     RetData.Add("message", "No Record Found");
                 }
-                if (CommonLib.InvoiceExists(context, id, _Record!.rec_company_id))
+                if (CommonLib.InvoiceExists(context, id, "HOUSE", _Record!.rec_company_id))
                 {
                     throw new Exception("Cannot Delete, Invoice Exists");
                 }

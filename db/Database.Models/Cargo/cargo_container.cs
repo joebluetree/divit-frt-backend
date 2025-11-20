@@ -2,6 +2,7 @@
 // Created Date : 25/02/2025
 // Remark : this file initializes data variables and their data type used in cntr_details table
 //version : v1 - 25-02-2025
+//version : v2 - 17-11-2025 modified datetime to dateonly
 
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -33,10 +34,10 @@ namespace Database.Models.Cargo
         public decimal? cntr_weight { get; set; }
         public string? cntr_rider { get; set; }
         public decimal? cntr_tare_weight { get; set; }
-        public DateTime? cntr_pick_date { get; set; }
-        public DateTime? cntr_return_date { get; set; }
-        public DateTime? cntr_lfd { get; set; }
-        public DateTime? cntr_discharge_date { get; set; }
+        public DateOnly? cntr_pick_date { get; set; }
+        public DateOnly? cntr_return_date { get; set; }
+        public DateOnly? cntr_lfd { get; set; }
+        public DateOnly? cntr_discharge_date { get; set; }
         public int cntr_order { get; set; }
         
         [ForeignKey("cntr_mbl_id")]

@@ -220,8 +220,8 @@ namespace UserAdmin.Repositories
 
                 Record.year_code = record_dto.year_code;
                 Record.year_name = record_dto.year_name;
-                Record.year_start_date = Lib.ParseDate(record_dto.year_start_date!);
-                Record.year_end_date = Lib.ParseDate(record_dto.year_end_date!);
+                Record.year_start_date = Lib.ParseDateOnly(record_dto.year_start_date!);
+                Record.year_end_date = Lib.ParseDateOnly(record_dto.year_end_date!);
                 Record.year_closed = record_dto.year_closed;
 
                 if(record_dto.year_default == "Y")//Record.year_default=="N" && 

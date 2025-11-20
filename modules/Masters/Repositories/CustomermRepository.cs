@@ -677,7 +677,7 @@ namespace Masters.Repositories
                 Record.cust_bond_yn = record_dto.cust_bond_yn;
                 Record.cust_punch_from = record_dto.cust_punch_from;
                 Record.cust_bond_no = record_dto.cust_bond_no;
-                Record.cust_bond_expdt = Lib.ParseDate(record_dto.cust_bond_expdt!);
+                Record.cust_bond_expdt = Lib.ParseDateOnly(record_dto.cust_bond_expdt!);
 
                 Record.cust_branch_id = record_dto.cust_branch_id;
                 Record.cust_protected = record_dto.cust_protected;
@@ -685,7 +685,7 @@ namespace Masters.Repositories
 
                 Record.cust_row_type = record_dto.cust_row_type;
                 Record.cust_credit_limit = record_dto.cust_credit_limit ?? 0;
-                Record.cust_est_dt = Lib.ParseDate(record_dto.cust_est_dt!);
+                Record.cust_est_dt = Lib.ParseDateOnly(record_dto.cust_est_dt!);
 
                 Record.cust_parent_id = record_dto.cust_parent_id;
 

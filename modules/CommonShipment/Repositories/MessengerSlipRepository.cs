@@ -44,8 +44,8 @@ namespace CommonShipment.Repositories
                 var cs_from_date = "";
                 var cs_to_date = "";
                 var parent_type = "";
-                DateTime? from_date = null;
-                DateTime? to_date = null;
+                DateOnly? from_date = null;
+                DateOnly? to_date = null;
 
 
                 if (data.ContainsKey("cs_from_date"))
@@ -77,12 +77,12 @@ namespace CommonShipment.Repositories
 
                 if (!Lib.IsBlank(cs_from_date))
                 {
-                    from_date = Lib.ParseDate(cs_from_date!);
+                    from_date = Lib.ParseDateOnly(cs_from_date!);
                     query = query.Where(w => w.cs_date >= from_date);
                 }
                 if (!Lib.IsBlank(cs_to_date))
                 {
-                    to_date = Lib.ParseDate(cs_to_date!);
+                    to_date = Lib.ParseDateOnly(cs_to_date!);
                     query = query.Where(w => w.cs_date <= to_date);
                 }
 
@@ -410,7 +410,7 @@ namespace CommonShipment.Repositories
                 if (mode == "edit")
                     await logHistory(Record, record_dto);
 
-                Record.cs_date = Lib.ParseDate(record_dto.cs_date!);
+                Record.cs_date = Lib.ParseDateOnly(record_dto.cs_date!);
                 Record.cs_time = record_dto.cs_time;
                 Record.cs_ampm = record_dto.cs_ampm;
                 Record.cs_to_id = record_dto.cs_to_id;

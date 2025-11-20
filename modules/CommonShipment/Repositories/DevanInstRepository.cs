@@ -317,7 +317,7 @@ namespace CommonShipment.Repositories
                 Record.di_remark2 = record_dto.di_remark2;
                 Record.di_remark3 = record_dto.di_remark3;
                 Record.di_is_devan_sent = record_dto.di_is_devan_sent;
-                Record.di_devan_date = Lib.ParseDate(record_dto.di_devan_date!);
+                Record.di_devan_date = Lib.ParseDateOnly(record_dto.di_devan_date!);
 
                 if (mode == "add")
                     await context.cargo_devan_inst.AddAsync(Record);

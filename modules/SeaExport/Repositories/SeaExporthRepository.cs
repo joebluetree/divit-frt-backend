@@ -59,8 +59,8 @@ namespace SeaExport.Repositories
                 var company_id = 0;
                 var branch_id = 0;
 
-                DateTime? from_date = null;
-                DateTime? to_date = null;
+                DateOnly? from_date = null;
+                DateOnly? to_date = null;
 
                 if (data.ContainsKey("hbl_mode"))
                     hbl_mode = data["hbl_mode"].ToString();
@@ -95,12 +95,12 @@ namespace SeaExport.Repositories
 
                 if (!Lib.IsBlank(hbl_from_date))
                 {
-                    from_date = Lib.ParseDate(hbl_from_date!);
+                    from_date = Lib.ParseDateOnly(hbl_from_date!);
                     query = query.Where(w => w.master!.mbl_date >= from_date);
                 }
                 if (!Lib.IsBlank(hbl_to_date))
                 {
-                    to_date = Lib.ParseDate(hbl_to_date!);
+                    to_date = Lib.ParseDateOnly(hbl_to_date!);
                     query = query.Where(w => w.master!.mbl_date <= to_date);
                 }
                 if (!Lib.IsBlank(hbl_houseno))
@@ -780,8 +780,8 @@ namespace SeaExport.Repositories
                 Record.hbl_by1 = record_dto.hbl_by1;
                 Record.hbl_by2 = record_dto.hbl_by2;
                 Record.hbl_issued_place = record_dto.hbl_issued_place;
-                Record.hbl_issued_date = Lib.ParseDate(record_dto.hbl_issued_date!);
-                Record.hbl_delivery_date = Lib.ParseDate(record_dto.hbl_delivery_date!);
+                Record.hbl_issued_date = Lib.ParseDateOnly(record_dto.hbl_issued_date!);
+                Record.hbl_delivery_date = Lib.ParseDateOnly(record_dto.hbl_delivery_date!);
                 Record.hbl_originals = record_dto.hbl_originals;
 
 
@@ -900,10 +900,10 @@ namespace SeaExport.Repositories
                     record.cntr_weight = rec.cntr_weight;
                     record.cntr_rider = rec.cntr_rider;
                     record.cntr_tare_weight = rec.cntr_tare_weight;
-                    record.cntr_pick_date = Lib.ParseDate(rec.cntr_pick_date!);
-                    record.cntr_return_date = Lib.ParseDate(rec.cntr_return_date!);
-                    record.cntr_lfd = Lib.ParseDate(rec.cntr_lfd!);
-                    record.cntr_discharge_date = Lib.ParseDate(rec.cntr_discharge_date!);
+                    record.cntr_pick_date = Lib.ParseDateOnly(rec.cntr_pick_date!);
+                    record.cntr_return_date = Lib.ParseDateOnly(rec.cntr_return_date!);
+                    record.cntr_lfd = Lib.ParseDateOnly(rec.cntr_lfd!);
+                    record.cntr_discharge_date = Lib.ParseDateOnly(rec.cntr_discharge_date!);
                     record.cntr_order = nextorder++;
 
                     if (rec.cntr_id == 0)
@@ -1105,7 +1105,7 @@ namespace SeaExport.Repositories
                     RetData.Add("status", false);
                     RetData.Add("message", "No Record Found");
                 }
-                if (CommonLib.InvoiceExists(context, _Record!.hbl_mbl_id, _Record.rec_company_id))
+                if (CommonLib.InvoiceExists(context, id, "HOUSE", _Record!.rec_company_id))
                 {
                     throw new Exception("Cannot Delete, Invoice Exists");
                 }

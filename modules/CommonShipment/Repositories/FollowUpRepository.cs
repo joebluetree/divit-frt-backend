@@ -319,7 +319,7 @@ namespace CommonShipment.Repositories
                     await logHistory(Record, record_dto);
 
                 //Save values to the database from dto.
-                Record.cf_followup_date = Lib.ParseDate(record_dto.cf_followup_date!);
+                Record.cf_followup_date = Lib.ParseDateOnly(record_dto.cf_followup_date!);
                 Record.cf_remarks = record_dto.cf_remarks;
 
                 if (mode == "add")

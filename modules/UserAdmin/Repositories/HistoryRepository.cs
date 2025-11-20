@@ -36,6 +36,7 @@ public class HistoryRepository : IHistoryRepository
             var log_table = "";
             var log_table_row_id = 0;
             var log_desc = "";
+            var log_type = "";
             var company_id = 0;
             var branch_id = 0;
             var log_from_date = "";
@@ -52,6 +53,9 @@ public class HistoryRepository : IHistoryRepository
 
             if (data.ContainsKey("log_desc"))
                 log_desc = data["log_desc"].ToString();
+                
+            if (data.ContainsKey("log_type"))
+                log_type = data["log_type"].ToString();
 
             if (data.ContainsKey("log_from_date"))
                 log_from_date = data["log_from_date"].ToString();
@@ -68,7 +72,13 @@ public class HistoryRepository : IHistoryRepository
                 branch_id = int.Parse(data["rec_branch_id"].ToString()!);
             if (branch_id == 0)
                 throw new Exception("Branch Id Not Found");
-
+            
+            if (Lib.IsZero(log_table_row_id) && Lib.IsBlank(log_type))/// for new record history return blank record
+            {
+                RetData.Add("records", new List<mast_history_dto>());
+                RetData.Add("page", _page);
+                return RetData;
+            }
             _page.currentPageNo = int.Parse(data["currentPageNo"].ToString()!);
             _page.pages = int.Parse(data["pages"].ToString()!);
             _page.rows = int.Parse(data["rows"].ToString()!);

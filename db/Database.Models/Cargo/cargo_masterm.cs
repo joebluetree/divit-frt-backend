@@ -17,25 +17,25 @@ namespace Database.Models.Cargo
         public int mbl_id { get; set; }
         public int mbl_cfno { get; set; }
         public string? mbl_refno { get; set; }
-        public DateTime? mbl_ref_date { get; set; }
+        public DateOnly? mbl_ref_date { get; set; }
         public string? mbl_mode { get; set; }
-        public DateTime? mbl_date { get; set; }
+        public DateOnly? mbl_date { get; set; }
         public int? mbl_agent_id { get; set; }
         public int? mbl_liner_id { get; set; }
         public string? mbl_liner_bookingno { get; set; }
         public int? mbl_country_id { get; set; }
         public string? mbl_direct { get; set; }
         public int? mbl_pol_id { get; set; }
-        public DateTime? mbl_pol_etd { get; set; }
+        public DateOnly? mbl_pol_etd { get; set; }
         public int? mbl_pod_id { get; set; }
-        public DateTime? mbl_pod_eta { get; set; }
+        public DateOnly? mbl_pod_eta { get; set; }
         public string? mbl_place_delivery { get; set; }
         public int? mbl_pofd_id { get; set; }
-        public DateTime? mbl_pofd_eta { get; set; }
+        public DateOnly? mbl_pofd_eta { get; set; }
         public string? mbl_frt_status_name { get; set; }
         public int? mbl_ship_term_id { get; set; }
         public string? mbl_cntr_type { get; set; }
-        public DateTime? mbl_it_date { get; set; }
+        public DateOnly? mbl_it_date { get; set; }
         public string? mbl_it_port { get; set; }
         public int? mbl_cargo_loc_id { get; set; }
         public string? mbl_cargo_loc_name { get; set; }
@@ -56,11 +56,11 @@ namespace Database.Models.Cargo
         public int? mbl_jobtype_id { get; set; }
         public int? mbl_salesman_id { get; set; }
         public string? mbl_rotation_no { get; set; }
-        public int? mbl_status_id { get; set; } //changed
+        public int? mbl_status_id { get; set; } 
         public string? mbl_is_sea_waybill { get; set; }
-        public DateTime? mbl_ombl_sent_on { get; set; }
+        public DateOnly? mbl_ombl_sent_on { get; set; }
         public string? mbl_pending_status { get; set; }
-        public DateTime? mbl_unlock_date { get; set; }
+        public DateOnly? mbl_unlock_date { get; set; }
         public string? mbl_ombl_sent_ampm { get; set; }
         public int? mbl_book_slno { get; set; }
         public string? mbl_3rdparty { get; set; }
@@ -70,18 +70,18 @@ namespace Database.Models.Cargo
         public string? mbl_cntr_desc { get; set; }
         public string? mbl_por { get; set; }
         public int? mbl_cooformat_id { get; set; }
-        public DateTime? mbl_of_sent_on { get; set; }
+        public DateOnly? mbl_of_sent_on { get; set; }
         public int? mbl_coloader_id { get; set; }
         public int? mbl_customer_id { get; set; }
         public string? mbl_software_name { get; set; }
         public string? mbl_it_tot { get; set; }
-        public int? mbl_incoterm_id { get; set; } //changed
+        public int? mbl_incoterm_id { get; set; } 
         public string? mbl_bo_attended_code { get; set; }
-        public DateTime? mbl_bo_attended_date { get; set; }
+        public DateOnly? mbl_bo_attended_date { get; set; }
         public string? mbl_house_nos { get; set; }
-        public DateTime? mbl_carrier_an_recd_dt { get; set; }
-        public DateTime? mbl_an_sent_dt { get; set; }
-        public DateTime? mbl_stage_changed_date { get; set; }
+        public DateOnly? mbl_carrier_an_recd_dt { get; set; }
+        public DateOnly? mbl_an_sent_dt { get; set; }
+        public DateOnly? mbl_stage_changed_date { get; set; }
         public int? mbl_shipment_stage_id { get; set; }
         public string? mbl_no { get; set; }
         public int? mbl_vessel_id { get; set; }
@@ -181,13 +181,13 @@ namespace Database.Models.Cargo
         public mast_param? shipterm { get; set; }
 
         [ForeignKey("mbl_incoterm_id")]
-        public mast_param? incoterm { get; set; } //changed
+        public mast_param? incoterm { get; set; }
 
         [ForeignKey("mbl_status_id")]
-        public mast_param? mblstatus { get; set; } //changed
+        public mast_param? mblstatus { get; set; }
 
         [ForeignKey("mbl_cargo_loc_id")]
-        public mast_customerm? cargoloc { get; set; } //changed
+        public mast_customerm? cargoloc { get; set; }
 
         [ForeignKey("mbl_devan_loc_id")]
         public mast_customerm? devanloc { get; set; }

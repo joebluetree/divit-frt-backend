@@ -21,7 +21,7 @@ namespace Database.Models.CommonShipment
         public string? cs_refno { get; set; }
         public int? cs_mbl_id { get; set; }
         public string? cs_mode { get; set; }
-        public DateTime? cs_date { get; set; }
+        public DateOnly? cs_date { get; set; }
         public string? cs_time { get; set; }
         public string? cs_ampm { get; set; }
         public int? cs_to_id { get; set; }

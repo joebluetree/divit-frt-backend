@@ -615,7 +615,7 @@ namespace Common.Lib
                 }
                 else    //check Date only if year_closed == N
                 {
-                    var Date = Database.Lib.Lib.ParseDate(date);
+                    var Date = Database.Lib.Lib.ParseDateOnly(date);
                     if ( Date >= YearRecord.year_start_date  && Date <= YearRecord.year_end_date)
                     {
                         errormessage = "";
@@ -657,11 +657,19 @@ namespace Common.Lib
 
             return HouseExists;
         }
-        public static bool InvoiceExists(AppDbContext context, int? id, int rec_company_id)
+        public static bool InvoiceExists(AppDbContext context, int? id,string type, int rec_company_id)
         {
-            var invoiceExists = context.acc_invoicem
-            .Any(f => f.inv_mbl_id == id && f.rec_company_id == rec_company_id);
-
+            var invoiceExists = false;
+            if(type == "MASTER")
+            {
+                invoiceExists = context.acc_invoicem
+                .Any(f => f.inv_mbl_id == id && f.rec_company_id == rec_company_id);
+            }
+            if(type == "HOUSE")
+            {
+                invoiceExists = context.acc_invoicem
+                .Any(f => f.inv_hbl_id == id && f.rec_company_id == rec_company_id);
+            }
             return invoiceExists;
         }
         public static bool FollowupExists(AppDbContext context, int? id, int rec_company_id)

@@ -35,7 +35,7 @@ namespace Database.Models.CommonShipment
         public string? di_remark2 { get; set; }
         public string? di_remark3 { get; set; }
         public string? di_is_devan_sent { get; set; }
-        public DateTime? di_devan_date { get; set; }
+        public DateOnly? di_devan_date { get; set; }
 
         [ConcurrencyCheck]
         public int rec_version { get; set; }

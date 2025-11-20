@@ -18,6 +18,7 @@ namespace AirImport.Repositories
     //Name : Alen Cherian
     //Date : 28/03/2025
     //Command :  Create Repository for the Air Import.
+    //version 2.0 - 17/11/2025 : Changed DateTime to DateOnly and parsedDateonly( for date only column)  -   Sourav V
 
     public class AirImportRepository : IAirImportRepository
     {
@@ -52,8 +53,8 @@ namespace AirImport.Repositories
                 var branch_id = 0;
                 var mbl_from_date = "";
                 var mbl_to_date = "";
-                DateTime? from_date = null;
-                DateTime? to_date = null;
+                DateOnly? from_date = null;
+                DateOnly? to_date = null;
 
                 if (data.ContainsKey("mbl_refno"))
                     mbl_refno = data["mbl_refno"].ToString();
@@ -83,12 +84,12 @@ namespace AirImport.Repositories
 
                 if (!Lib.IsBlank(mbl_from_date))
                 {
-                    from_date = Lib.ParseDate(mbl_from_date!);
+                    from_date = Lib.ParseDateOnly(mbl_from_date!);
                     query = query.Where(w => w.mbl_ref_date >= from_date);
                 }
                 if (!Lib.IsBlank(mbl_to_date))
                 {
-                    to_date = Lib.ParseDate(mbl_to_date!);
+                    to_date = Lib.ParseDateOnly(mbl_to_date!);
                     query = query.Where(w => w.mbl_ref_date <= to_date);
                 }
                 if (!Lib.IsBlank(mbl_refno))
@@ -461,14 +462,14 @@ namespace AirImport.Repositories
                     await logHistory(Record, record_dto);
 
                 Record.mbl_shipment_stage_id = record_dto.mbl_shipment_stage_id;
-                Record.mbl_ref_date = Lib.ParseDate(record_dto.mbl_ref_date!);
+                Record.mbl_ref_date = Lib.ParseDateOnly(record_dto.mbl_ref_date!);
                 Record.mbl_no = record_dto.mbl_no;
                 Record.mbl_agent_id = record_dto.mbl_agent_id;
                 Record.mbl_frt_status_name = record_dto.mbl_frt_status_name;
                 Record.mbl_pol_id = record_dto.mbl_pol_id;
-                Record.mbl_pol_etd = Lib.ParseDate(record_dto.mbl_pol_etd!);
+                Record.mbl_pol_etd = Lib.ParseDateOnly(record_dto.mbl_pol_etd!);
                 Record.mbl_pod_id = record_dto.mbl_pod_id;
-                Record.mbl_pod_eta = Lib.ParseDate(record_dto.mbl_pod_eta!);
+                Record.mbl_pod_eta = Lib.ParseDateOnly(record_dto.mbl_pod_eta!);
                 Record.mbl_country_id = record_dto.mbl_country_id;
                 Record.mbl_liner_id = record_dto.mbl_liner_id;
 
@@ -486,8 +487,8 @@ namespace AirImport.Repositories
                 Record.mbl_cargo_loc_add4 = record_dto.mbl_cargo_loc_add4;
                 Record.mbl_incoterm_id = record_dto.mbl_incoterm_id;
 
-                Record.mbl_an_sent_dt = Lib.ParseDate(record_dto.mbl_an_sent_dt!);
-                Record.mbl_stage_changed_date = Lib.ParseDate(record_dto.mbl_stage_changed_date!);
+                Record.mbl_an_sent_dt = Lib.ParseDateOnly(record_dto.mbl_an_sent_dt!);
+                Record.mbl_stage_changed_date = Lib.ParseDateOnly(record_dto.mbl_stage_changed_date!);
 
                 if (mode == "add")
                     await context.cargo_masterm.AddAsync(Record);
@@ -547,7 +548,7 @@ namespace AirImport.Repositories
                 {
                     throw new Exception("Cannot Delete, House Exists");
                 }
-                if (CommonLib.InvoiceExists(context, id, _Record!.rec_company_id))
+                if (CommonLib.InvoiceExists(context, id, "MASTER", _Record!.rec_company_id))
                 {
                     throw new Exception("Cannot Delete, Invoice Exists");
                 }

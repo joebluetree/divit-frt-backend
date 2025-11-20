@@ -11,8 +11,8 @@ namespace Database.Models.UserAdmin
         public int year_id { get; set; }
         public int year_code { get; set; }
         public string? year_name { get; set; }
-        public DateTime? year_start_date { get; set; }
-        public DateTime? year_end_date { get; set; }
+        public DateOnly? year_start_date { get; set; }
+        public DateOnly? year_end_date { get; set; }
         public string? year_closed { get; set; }
         public string? year_default { get; set; }
 
