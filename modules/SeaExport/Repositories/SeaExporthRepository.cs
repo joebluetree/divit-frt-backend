@@ -96,12 +96,12 @@ namespace SeaExport.Repositories
                 if (!Lib.IsBlank(hbl_from_date))
                 {
                     from_date = Lib.ParseDateOnly(hbl_from_date!);
-                    query = query.Where(w => w.master!.mbl_date >= from_date);
+                    query = query.Where(w => w.master!.mbl_ref_date >= from_date);
                 }
                 if (!Lib.IsBlank(hbl_to_date))
                 {
                     to_date = Lib.ParseDateOnly(hbl_to_date!);
-                    query = query.Where(w => w.master!.mbl_date <= to_date);
+                    query = query.Where(w => w.master!.mbl_ref_date <= to_date);
                 }
                 if (!Lib.IsBlank(hbl_houseno))
                     query = query.Where(w => w.hbl_houseno!.Contains(hbl_houseno!));
@@ -494,7 +494,9 @@ namespace SeaExport.Repositories
                 cargo_sea_exporth_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await saveCntrAsync(_Record.hbl_id, mode, _Record);
                 _Record = await SaveCargoDesc(_Record.hbl_id, mode, record_dto);
-                await CommonLib.SaveMasterSummary(this.context, record_dto.hbl_mbl_id);
+                await CommonLib.SaveMasterSummary(this.context, record_dto.hbl_mbl_id, shbl_mode);
+                await CommonLib.SaveHouseCntrSummary(this.context, _Record.hbl_mbl_id, _Record.hbl_id);
+                await CommonLib.UpdateHouseInvoiceSummary(this.context, _Record.hbl_mbl_id);
 
                 _Record.house_cntr = await getCntrAsync(_Record.hbl_id);
 
@@ -783,7 +785,8 @@ namespace SeaExport.Repositories
                 Record.hbl_issued_date = Lib.ParseDateOnly(record_dto.hbl_issued_date!);
                 Record.hbl_delivery_date = Lib.ParseDateOnly(record_dto.hbl_delivery_date!);
                 Record.hbl_originals = record_dto.hbl_originals;
-
+                Record.hbl_container_tot = record_dto.house_cntr!.Count();
+                // Record.hbl_cntr_summary = GetCntrSummaryList()
 
                 if (mode == "add")
                     await context.cargo_housem.AddAsync(Record);
@@ -830,7 +833,37 @@ namespace SeaExport.Repositories
             CfNo = CfNo == 0 ? DefaultCfNo : CfNo + 1;
             return CfNo;
         }
+        public string GetCntrSummaryList(int hbl_id)
+        {
+            var cntr_list = context.cargo_container
+            .Where(c => c.cntr_hbl_id == hbl_id)
+            .Include(i => i.cntrtype)
+            .Select(c => new
+            {
+                c.cntr_no,
+                cntr_type = c.cntrtype!.param_name
+            })
+            .ToList();
+            // var cntr_length = 0;
+            
+            // if (cntr_list.Count == 0)
+            //     return string.Empty;
 
+            var finalResult = "";
+            // var first = true;
+
+            foreach(var cntr in cntr_list)
+            {
+                var item = $"{cntr.cntr_no}/{cntr.cntr_type}";
+
+                var new_length = finalResult.Length + item .Length;
+                
+                if(new_length < 500)
+                    finalResult += item;
+            }
+
+            return finalResult;
+        }
         public async Task<cargo_sea_exporth_dto> saveCntrAsync(int id, string mode, cargo_sea_exporth_dto record_dto)
         {
             cargo_container? record;
@@ -1116,9 +1149,10 @@ namespace SeaExport.Repositories
                     await CommonLib.DeleteGenRemark(context, id, "SEA EXPORT");
 
                     var mbl_id = _Record!.hbl_mbl_id;
+                    var mbl_mode = _Record!.hbl_mode;
                     context.Remove(_Record);
                     context.SaveChanges();
-                    await CommonLib.SaveMasterSummary(this.context, mbl_id);
+                    await CommonLib.SaveMasterSummary(this.context, mbl_id, mbl_mode);
 
                     context.Database.CommitTransaction();
 

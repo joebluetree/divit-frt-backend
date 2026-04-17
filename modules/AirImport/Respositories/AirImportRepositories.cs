@@ -60,8 +60,6 @@ namespace AirImport.Repositories
                     mbl_refno = data["mbl_refno"].ToString();
                 if (data.ContainsKey("mbl_from_date"))
                     mbl_from_date = data["mbl_from_date"].ToString();
-                if (data.ContainsKey("mbl_from_date"))
-                    mbl_from_date = data["mbl_from_date"].ToString();
                 if (data.ContainsKey("mbl_to_date"))
                     mbl_to_date = data["mbl_to_date"].ToString();
 
@@ -322,6 +320,7 @@ namespace AirImport.Repositories
                 context.Database.BeginTransaction();
                 cargo_air_importm_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record.air_import = await GetDetailsAsync(_Record.mbl_id);
+                await CommonLib.UpdateHouseInvoiceSummary(this.context, _Record.mbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -666,8 +665,8 @@ namespace AirImport.Repositories
                 context = context,
                 User_name = user_name,
                 Mbl_type = title,
-                FromDate = searchInfo.ContainsKey("hbl_from_date") ? searchInfo["hbl_from_date"] : "",
-                ToDate = searchInfo.ContainsKey("hbl_to_date") ? searchInfo["hbl_to_date"] : "",
+                FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
                 
             };
             bc.Process();
@@ -701,8 +700,8 @@ namespace AirImport.Repositories
                 context = context,
                 User_name = user_name,
                 Mbl_type = title,
-                FromDate = searchInfo.ContainsKey("hbl_from_date") ? searchInfo["hbl_from_date"] : "",
-                ToDate = searchInfo.ContainsKey("hbl_to_date") ? searchInfo["hbl_to_date"] : "",
+                FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
             };
             bc.Process();
 

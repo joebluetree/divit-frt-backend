@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\db\Database.Lib\Database.Lib.csproj" />
+    <ProjectReference Include="..\..\db\Database.Models\Database.Models.csproj" />
+    <ProjectReference Include="..\..\db\database\database.csproj" />
+    <ProjectReference Include="..\AirExport\AirExport.csproj" />
+    <ProjectReference Include="..\AirImport\AirImport.csproj" />
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Masters\Masters.csproj" />
+    <ProjectReference Include="..\OtherOp\OtherOp.csproj" />
+    <ProjectReference Include="..\SeaExport\SeaExport.csproj" />
+    <ProjectReference Include="..\SeaImport\SeaImport.csproj" />
+    <ProjectReference Include="..\UserAdmin\UserAdmin.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.8" />
+  </ItemGroup>
+
+</Project>

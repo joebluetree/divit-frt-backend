@@ -1,4 +1,5 @@
 ﻿using Common.DTO.Accounts;
+using Database.Models.Cargo;
 
 namespace Accounts.Interfaces
 {
@@ -11,6 +12,7 @@ namespace Accounts.Interfaces
         Task<acc_invoicem_dto> SaveAsync(int id ,string mode , acc_invoicem_dto record);
         Task<acc_invoicem_dto> SaveParentAsync(int id,string mode, acc_invoicem_dto record);
         Task<acc_invoicem_dto> SaveMemoAsync(int id, acc_invoicem_dto record);
+        Task<Dictionary<string, object>> PrintInvoiceAsync(Dictionary<string, object> data);
         Task<Dictionary<string, object>> DeleteDetailsAsync(int id);//, acc_invoicem_dto record
         Task<Dictionary<string, object>> DeleteAsync(int id);
 

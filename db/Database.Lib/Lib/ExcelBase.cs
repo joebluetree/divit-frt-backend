@@ -10,8 +10,14 @@ namespace Masters.Interfaces
     {
         void CreateSheet(string sheetName);
         void CellValue(int rowIndex, int colIndex, object data, CellFormat? options = null);
+        float GetRowHeight(int rowIndex);
         void AutoSizeColumns(int columnCount);
         void AutoSizeColumn(int columnNumber);
+        void AutoSizeRow(int rowIndex);
+        void PrintGridlines(bool isGrid);
+        void SetColumnBreak(int column);
+        void SetRowHeight(int rowIndex, float height);
+        void SetRowBreak(int row);
         void Save(string filePath);
     }
     public class CellFormat
@@ -26,6 +32,7 @@ namespace Masters.Interfaces
         public bool WrapText { get; set; } = false;
         public string Case { get; set; } = "U";      // "U" = UPPER, "L" = lower, "" = original
         public int? ColumnWidth { get; set; }           // Optional: width in characters
+        public float? RowHeight { get; set; } = null;
         public int MergeCols { get; set; } = 0; // How many additional columns to merge (default 0 = no merge)
         public int MergeRows { get; set; } = 0; // How many additional rows to merge (default 0 = no merge)
 
@@ -59,7 +66,23 @@ namespace Masters.Interfaces
         {
             sheet.AutoSizeColumn(columnNumber);
         }
-
+        public void PrintGridlines (bool isGrid = true)
+        {
+            sheet.DisplayGridlines = isGrid;
+        }
+        public void SetRowBreak(int row)
+        {
+            sheet.SetRowBreak(row);
+        }
+        public void SetColumnBreak(int column)
+        {
+            sheet.SetColumnBreak(column);
+        }
+        public void SetRowHeight(int rowIndex, float height)
+        {
+            IRow row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
+            row.HeightInPoints = height;
+        }
         public void Save(string filePath)
         {
             using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
@@ -129,16 +152,23 @@ namespace Masters.Interfaces
             if (!Lib.IsBlank(options.Border))
             {
                 string border = options.Border?.ToUpper() ?? "";
+                if (border.Contains("D")) style.BorderTop = BorderStyle.Dotted;
                 if (border.Contains("A") || border.Contains("L")) style.BorderLeft = BorderStyle.Thin;
                 if (border.Contains("A") || border.Contains("R")) style.BorderRight = BorderStyle.Thin;
                 if (border.Contains("A") || border.Contains("T")) style.BorderTop = BorderStyle.Thin;
                 if (border.Contains("A") || border.Contains("B")) style.BorderBottom = BorderStyle.Thin;
+                // if (border.Contains("D")) style.BorderTop = BorderStyle.Dotted;
             }
             // Set column width if specified
             if (options.ColumnWidth.HasValue)
             {
                 sheet.SetColumnWidth(colIndex, options.ColumnWidth.Value * 256); // NPOI expects width in 1/256th character units
             }
+            if (options.RowHeight.HasValue)
+            {
+                row.HeightInPoints = options.RowHeight.Value;
+            }
+
 
             // Apply final style
             cell.CellStyle = style;
@@ -194,10 +224,46 @@ namespace Masters.Interfaces
         // }
             if (options.Merge < 0)
             {
-                cell.SetCellValue(value);
+                string text = data?.ToString() ?? "";
+                if (int.TryParse(text, out int inum))
+                {
+                    cell.SetCellValue(inum);   // numeric cell
+                }
+                if (double.TryParse(text, out double dnum))
+                {
+                    int decimals = text.Contains('.') ? text.Length - text.IndexOf('.') - 1 : 0;
+                    string format = decimals > 0 ? "0." + new string('0', decimals) : "0";
+                    
+                    ICellStyle numericStyle = workbook.CreateCellStyle();
+                    numericStyle.CloneStyleFrom(style);
+                    numericStyle.DataFormat = workbook.CreateDataFormat().GetFormat(format);
+
+                    cell.CellStyle = numericStyle;
+                    cell.SetCellValue(dnum);
+                }
+                else
+                {
+                    cell.SetCellValue(text);  // string cell
+                }
             }
         }
+        public void AutoSizeRow(int rowIndex)
+        {
+            IRow row = sheet.GetRow(rowIndex);
+            if (row != null)
+            {
+                sheet.AutoSizeRow(rowIndex);
+            }
+        }        
+        public float GetRowHeight(int rowIndex)
+        {
+            IRow row = sheet.GetRow(rowIndex);
+            if (row == null)
+                return sheet.DefaultRowHeightInPoints;
 
+            // If height not explicitly set, Excel uses default
+            return row.HeightInPoints > 0 ? row.HeightInPoints : sheet.DefaultRowHeightInPoints;
+        }
 
     }
 }

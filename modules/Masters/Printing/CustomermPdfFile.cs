@@ -61,6 +61,8 @@ namespace Masters.Printing
         private ColumnFormat Col_CustType = new();
         private ColumnFormat Col_ClientType = new();
         private ColumnFormat Col_Contact = new();
+        private ColumnFormat Col_Column = new();// for ':' in header datas
+        private ColumnFormat Col_Head_data = new();// for start and width of data part in header
 
 
         public CustomermPdfFile()
@@ -110,7 +112,9 @@ namespace Masters.Printing
             this.Col_ClientType = new ColumnFormat { Left = 395, Width = 70 };
             this.Col_Contact = new ColumnFormat { Left = 465, Width = 65 };
             
-        
+            this.Col_Column = new ColumnFormat { Left = 100, Width = 10 };// ':'
+            this.Col_Head_data = new ColumnFormat { Left = 110, Width = 100 };
+
             pdf.CreateDocument(File_Name);
             CreateReport();
             pdf.CloseDocument();
@@ -179,8 +183,8 @@ namespace Masters.Printing
 
             var currentDate = DbLib.GetDateTime();
             Date = Lib.FormatDate(currentDate, Lib.DisplayDateTimeFormat);
-            FromDate = Lib.FormatDate(Lib.ParseDate(FromDate), Lib.DisplayDateFormat);
-            ToDate = Lib.FormatDate(Lib.ParseDate(ToDate), Lib.DisplayDateFormat);
+            var SFromDate = Lib.FormatDate(Lib.ParseDate(FromDate), Lib.DisplayDateFormat) ?? "";
+            var SToDate = Lib.FormatDate(Lib.ParseDate(ToDate), Lib.DisplayDateFormat) ?? "";
 
             string ptintInfo = $"PRINTED ON : {Date} / {User_name}     PAGE#: {PageNumber}";
 
@@ -191,20 +195,43 @@ namespace Masters.Printing
             currentY += Line_Height + 3;
 
             int halfWidth = Row_Width / 2; // to assign From and to date in same row
-            pdf.AddText(currentY, Col, halfWidth, Line_Height, "FROM DATE: " + FromDate, new TextFormat { FontSize = 10 });
-            pdf.AddText(currentY, Col + halfWidth, halfWidth, Line_Height, "TO DATE: " + ToDate, new TextFormat { FontSize = 10 });
-            currentY += Line_Height;
+            float LeftY = currentY;
+            pdf.AddText(LeftY, Col, halfWidth, Line_Height, "FROM DATE", new TextFormat { FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Head_data.Left , Col_Head_data.Width , Line_Height, SFromDate.ToUpper(), new TextFormat { FontSize = 10 });
+            LeftY += Line_Height;
+            pdf.AddText(LeftY, Col, halfWidth, Line_Height, "TO DATE", new TextFormat { FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Head_data.Left , Col_Head_data.Width , Line_Height, SToDate.ToUpper(), new TextFormat { FontSize = 10 });
+            LeftY += Line_Height;
+            pdf.AddText(LeftY, Col, halfWidth, Line_Height, "CODE", new TextFormat { FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Head_data.Left , Col_Head_data.Width , Line_Height, CustCode, new TextFormat { FontSize = 10 });
+            LeftY += Line_Height;
+            pdf.AddText(LeftY, Col, halfWidth, Line_Height, "NAME", new TextFormat { FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Head_data.Left , Col_Head_data.Width , Line_Height, Name, new TextFormat { FontSize = 10 });
 
-            pdf.AddText(currentY, Col, halfWidth, Line_Height, "CODE: " + CustCode, new TextFormat { FontSize = 10 });
-            pdf.AddText(currentY, Col + halfWidth, halfWidth, Line_Height, "NAME: " + Name, new TextFormat { FontSize = 10 });
-            currentY += Line_Height;
+            float RightY = currentY;
+            var RightCol = Col + halfWidth;
+            pdf.AddText(RightY, RightCol , halfWidth, Line_Height, "CREATED-BY", new TextFormat { FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Head_data.Left , Col_Head_data.Width , Line_Height, CreatedBy, new TextFormat { FontSize = 10 });
+            RightY += Line_Height;
+            pdf.AddText(RightY, RightCol , halfWidth, Line_Height, "EDITED-BY", new TextFormat { FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Head_data.Left , Col_Head_data.Width , Line_Height, EditedBy, new TextFormat { FontSize = 10 });
+            RightY += Line_Height;
+            pdf.AddText(RightY, RightCol , halfWidth, Line_Height, "FIRM-CODE", new TextFormat { FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Head_data.Left , Col_Head_data.Width , Line_Height, FirmCode, new TextFormat { FontSize = 10 });
+            RightY += Line_Height;
+            pdf.AddText(RightY, RightCol , halfWidth, Line_Height, "IS-BLACK-ACCOUNT", new TextFormat { FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Head_data.Left , Col_Head_data.Width , Line_Height, IsBlackAcc, new TextFormat { FontSize = 10 });
 
-            pdf.AddText(currentY, Col, halfWidth, Line_Height, "CREATED-BY: " + CreatedBy, new TextFormat { FontSize = 10 });
-            pdf.AddText(currentY, Col + halfWidth, halfWidth, Line_Height, "EDITED-BY: " + EditedBy, new TextFormat { FontSize = 10 });
-            currentY += Line_Height;
+            currentY = RightY;
 
-            pdf.AddText(currentY, Col, halfWidth, Line_Height, "FIRM-CODE: " + FirmCode, new TextFormat { FontSize = 10 });
-            pdf.AddText(currentY, Col + halfWidth, halfWidth, Line_Height, "IS-BLACK-ACCOUNT: " + IsBlackAcc, new TextFormat { FontSize = 10 });
             currentY += Line_Height;
             pdf.AddText(currentY, Col, Row_Width, Line_Height, ptintInfo, new TextFormat { FontSize = 10 });
             currentY += Line_Height + 5;

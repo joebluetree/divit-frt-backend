@@ -86,6 +86,12 @@ namespace DataBase.Pdf
                 Page_Height = iTextSharp.text.PageSize.A4.Height;
                 Page_Width = iTextSharp.text.PageSize.A4.Width;
             }
+            if (PageSize == "LANDSCAPE")
+            {
+                doc.SetPageSize(iTextSharp.text.PageSize.A4.Rotate());
+                Page_Height = iTextSharp.text.PageSize.A4.Width;
+                Page_Width = iTextSharp.text.PageSize.A4.Height;
+            }
             else
             {
                 iTextSharp.text.Rectangle _size = new iTextSharp.text.Rectangle(Page_Width, Page_Height);
@@ -142,6 +148,11 @@ namespace DataBase.Pdf
             {
                 rect.BorderWidthTop = 0.1f;
                 rect.BorderColorTop = BaseColor.BLACK;
+            }
+            if (options.Border.IndexOf("b") >= 0)
+            {
+                rect.BorderWidthBottom = 0.002f;
+                rect.BorderColorBottom = BaseColor.LIGHT_GRAY;
             }
 
 

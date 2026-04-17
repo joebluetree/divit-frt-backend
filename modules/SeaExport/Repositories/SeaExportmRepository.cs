@@ -188,7 +188,6 @@ namespace SeaExport.Repositories
             try
             {
                 IQueryable<cargo_masterm> query = context.cargo_masterm;
-                //.Include(e => e.customer);
 
                 query = query.Where(f => f.mbl_id == id);
 
@@ -331,7 +330,7 @@ namespace SeaExport.Repositories
             {
                 IQueryable<mast_param> query = context.mast_param;
 
-                query = query.Where(f => f.param_type == "SHIPSTAGE OE" && f.param_name == "NIL");
+                query = query.Where(f => f.param_type == "SHIPSTAGE-OE" && f.param_name == "NIL");
 
                 var Record = await query.Select(e => new cargo_sea_exportm_dto
                 {
@@ -349,6 +348,14 @@ namespace SeaExport.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
+        public decimal? GetCbmTotal(cargo_sea_exportm_dto record_dto)
+        {
+            decimal? cbmTotal = 0;
+            if (record_dto.master_cntr != null)//|| record_dto.master_cntr!.Any()
+                cbmTotal = record_dto.master_cntr.Sum(c => c.cntr_cbm);
+            return cbmTotal;
+        }
+
 
         public async Task<cargo_sea_exportm_dto> SaveAsync(int id, string mode, cargo_sea_exportm_dto record_dto)
         {
@@ -361,6 +368,8 @@ namespace SeaExport.Repositories
                 _Record = await saveCntrAsync(_Record.mbl_id, mode, _Record);
                 _Record.master_cntr = await getCntrAsync(_Record.mbl_id);
                 _Record.master_house = await GetHouseAsync(_Record.mbl_id);
+                await CommonLib.SaveMasterCntrSummary(this.context, _Record.mbl_id, "M");
+                await CommonLib.UpdateHouseInvoiceSummary(this.context, _Record.mbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -568,6 +577,7 @@ namespace SeaExport.Repositories
                 Record.mbl_45 = record_dto.mbl_45;
                 Record.mbl_teu = record_dto.mbl_teu;
                 Record.mbl_container_tot = record_dto.mbl_container_tot;
+                Record.mbl_cntr_cbm = GetCbmTotal(record_dto);
 
                 if (mode == "add")
                     await context.cargo_masterm.AddAsync(Record);

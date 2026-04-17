@@ -15,10 +15,10 @@ namespace Accounts.Controllers
         {
             this.mRepository = _Repository;
         }
-        
+
         [HttpPost]
         [Route("GetListAsync")]
-        public async Task<IActionResult> GetListAsync( [FromBody] Dictionary<string, object> data )
+        public async Task<IActionResult> GetListAsync([FromBody] Dictionary<string, object> data)
         {
             try
             {
@@ -37,11 +37,12 @@ namespace Accounts.Controllers
         {
             try
             {
-                
+
                 var RetData = await mRepository.GetRecordAsync(id);
                 return Ok(RetData);
             }
-            catch (Exception Ex) {
+            catch (Exception Ex)
+            {
                 return BadRequest(Ex.Message.ToString());
             }
         }
@@ -52,11 +53,12 @@ namespace Accounts.Controllers
         {
             try
             {
-                
+
                 var RetData = await mRepository.GetDefaultData(id);
                 return Ok(RetData);
             }
-            catch (Exception Ex) {
+            catch (Exception Ex)
+            {
                 return BadRequest(Ex.Message.ToString());
             }
         }
@@ -67,18 +69,19 @@ namespace Accounts.Controllers
         {
             try
             {
-                
+
                 var RetData = await mRepository.GetQtnmlistData(qtnm_no);
                 return Ok(RetData);
             }
-            catch (Exception Ex) {
+            catch (Exception Ex)
+            {
                 return BadRequest(Ex.Message.ToString());
             }
         }
-        
+
         [HttpPost]
         [Route("SaveAsync")]
-        public async Task<IActionResult> SaveAsync(int id, string mode , [FromBody] acc_invoicem_dto rec)
+        public async Task<IActionResult> SaveAsync(int id, string mode, [FromBody] acc_invoicem_dto rec)
         {
             try
             {
@@ -114,6 +117,21 @@ namespace Accounts.Controllers
             {
                 var RetData = await mRepository.DeleteDetailsAsync(id);//, rec
                 return Ok(RetData);
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Ex.Message.ToString());
+            }
+        }
+
+        [HttpPost]
+        [Route("PrintInvoiceAsync")]
+        public async Task<IActionResult> PrintInvoiceAsync([FromBody] Dictionary<string, object> data)
+        {
+            try
+            {
+                var record = await mRepository.PrintInvoiceAsync(data);
+                return Ok(record);
             }
             catch (Exception Ex)
             {

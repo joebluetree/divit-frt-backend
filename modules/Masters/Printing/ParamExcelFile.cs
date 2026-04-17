@@ -68,8 +68,8 @@ namespace Masters.Printing
 
             foreach (mast_param_dto dr in Dt_List)
             {
-                excel.CellValue(rowIndex, colIndex, dr.param_code!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 20 });
-                excel.CellValue(rowIndex++, colIndex + 1, dr.param_name!, new CellFormat { Border = "A", FontSize = 9, ColumnWidth = 60 });
+                excel.CellValue(rowIndex, colIndex, dr.param_code!, new CellFormat { Border = "A", FontSize = 9 });
+                excel.CellValue(rowIndex++, colIndex + 1, dr.param_name!, new CellFormat { Border = "A", FontSize = 9 });
             }
             excel.Save(File_Name);
         }
@@ -78,7 +78,7 @@ namespace Masters.Printing
         {
             int rowIndex = 0;
             int colIndex = 0;
-            int col_count = 1;
+            int col_count = 2;
             excel.CreateSheet("Sheet1");
 
             var currentDate = DbLib.GetDateTime();
@@ -86,12 +86,14 @@ namespace Masters.Printing
 
             rowIndex = CommonLib.WriteBranchAddressExcel(rowIndex, colIndex, col_count, Company_id, Branch_id, context!, excel);
             rowIndex += 1;
-            excel.CellValue(rowIndex, colIndex, Title, new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 80, Merge = col_count });
+            excel.CellValue(rowIndex, colIndex, Title.ToUpper() + " LIST", new CellFormat { Border = "TB", Style = "B", FontSize = 10 });
+            excel.CellValue(rowIndex, colIndex + 1, "", new CellFormat { Border = "TB", FontSize = 10 });
             rowIndex += 1;
-            excel.CellValue(rowIndex, colIndex, "Name    :" + Name, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = col_count });
+            excel.CellValue(rowIndex, colIndex, "NAME", new CellFormat { FontSize = 10 });
+            excel.CellValue(rowIndex, colIndex + 1, Name, new CellFormat { FontSize = 10 });
             rowIndex += 1;
 
-            excel.CellValue(rowIndex, colIndex, "PRINTED : " + Date + " / " + User_name, new CellFormat { FontSize = 10, ColumnWidth = 80, Merge = col_count  });
+            excel.CellValue(rowIndex, colIndex, "PRINTED : " + Date + " / " + User_name, new CellFormat { FontSize = 10  });
 
             rowIndex += 1;
             excel.CellValue(rowIndex, colIndex, "CODE", new CellFormat { Border = "A", Style = "B", FontSize = 10, ColumnWidth = 20 });

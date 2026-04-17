@@ -26,7 +26,7 @@ namespace AirImport.Repositories
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
         private DateTime log_date;
-        string hbl_mode = "AIR IMPORT";
+        string shbl_mode = "AIR IMPORT";
 
 
         public AirImportHRepository(AppDbContext _context, IAuditLog _auditLog)
@@ -81,17 +81,17 @@ namespace AirImport.Repositories
                 _page.pageSize = int.Parse(data["pageSize"].ToString()!);
 
                 IQueryable<cargo_housem> query = context.cargo_housem;
-                query = query.Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.hbl_mode == hbl_mode);
+                query = query.Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.hbl_mode == shbl_mode);
 
                 if (!Lib.IsBlank(hbl_from_date))
                 {
                     from_date = Lib.ParseDateOnly(hbl_from_date!);
-                    query = query.Where(w => w.hbl_date >= from_date);
+                    query = query.Where(w => w.master!.mbl_ref_date >= from_date);
                 }
                 if (!Lib.IsBlank(hbl_to_date))
                 {
                     to_date = Lib.ParseDateOnly(hbl_to_date!);
-                    query = query.Where(w => w.hbl_date <= to_date);
+                    query = query.Where(w => w.master!.mbl_ref_date <= to_date);
                 }
                 if (!Lib.IsBlank(hbl_houseno))
                     query = query.Where(w => w.hbl_houseno!.Contains(hbl_houseno!));
@@ -195,7 +195,7 @@ namespace AirImport.Repositories
             {
                 IQueryable<cargo_housem> query = context.cargo_housem;
 
-                query = query.Where(f => f.hbl_id == id && f.hbl_mode == hbl_mode);
+                query = query.Where(f => f.hbl_id == id && f.hbl_mode == shbl_mode);
 
 
                 var Record = await query.Select(e => new cargo_air_importh_dto
@@ -361,7 +361,7 @@ namespace AirImport.Repositories
             try
             {
                 var query = context.cargo_masterm
-                    .Where(f => f.mbl_id == id && f.mbl_mode == hbl_mode);
+                    .Where(f => f.mbl_id == id && f.mbl_mode == shbl_mode);
 
                 var Record = await query
                     .Select(e => new cargo_air_importh_dto
@@ -406,7 +406,8 @@ namespace AirImport.Repositories
                 context.Database.BeginTransaction();
                 cargo_air_importh_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await SaveCargoDesc(_Record.hbl_id, mode, _Record);
-                await CommonLib.SaveMasterSummary(this.context, _Record.hbl_mbl_id);
+                await CommonLib.SaveMasterSummary(this.context, record_dto.hbl_mbl_id, shbl_mode);
+                await CommonLib.UpdateHouseInvoiceSummary(this.context, _Record.hbl_mbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -503,7 +504,7 @@ namespace AirImport.Repositories
                     
                     Record = new cargo_housem();  //Assigning the values to the database elements
                     Record.hbl_cfno = iNextNo;
-                    Record.hbl_mode = hbl_mode;
+                    Record.hbl_mode = shbl_mode;
                     Record.hbl_mbl_id = record_dto.hbl_mbl_id;
 
                     Record.rec_company_id = record_dto.rec_company_id;
@@ -822,7 +823,7 @@ namespace AirImport.Repositories
         public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)
         {
             var CfNo = context.cargo_housem
-                .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.hbl_mode == hbl_mode)
+                .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.hbl_mode == shbl_mode)
                 .Select(e => e.hbl_cfno)
                 .DefaultIfEmpty()
                 .Max();
@@ -844,6 +845,7 @@ namespace AirImport.Repositories
                     .Where(f => f.hbl_id == id)
                     .FirstOrDefaultAsync();
                 var mbl_id = _Record?.hbl_mbl_id;
+                var mbl_mode = _Record?.hbl_mode;
 
                 if (_Record == null)
                 {
@@ -862,7 +864,7 @@ namespace AirImport.Repositories
 
                     context.Remove(_Record);
                     await context.SaveChangesAsync();
-                    await CommonLib.SaveMasterSummary(context, mbl_id);
+                    await CommonLib.SaveMasterSummary(context, mbl_id, mbl_mode);
 
                     context.Database.CommitTransaction();
 

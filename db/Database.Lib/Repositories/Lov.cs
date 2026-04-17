@@ -257,13 +257,13 @@ namespace Database.Lib.Repositories
             if (search_string != "" && search_string != null)
                 query = query.Where(w => w.cust_name.Contains(search_string.ToUpper()) || w.cust_code.Contains(search_string.ToUpper()));
 
-            /*
+            
             if(  data.ContainsKey("cust_is_parent"))
             {
                 var cust_is_parent = data["cust_is_parent"].ToString();
                 query = query.Where(w => w.cust_is_parent == cust_is_parent);
             }
-            */
+            
             query = query
                 .OrderBy(c => c.cust_name);
 
@@ -343,7 +343,8 @@ namespace Database.Lib.Repositories
                             rec.param_id,
                             rec.param_code,
                             rec.param_name,
-                            rec.param_value1
+                            rec.param_value1,
+                            rec.param_order
                         };
 
 
@@ -352,7 +353,7 @@ namespace Database.Lib.Repositories
                 query = query.Where(w => w.param_code.Contains(search_string.ToUpper()) || w.param_name.Contains(search_string.ToUpper()));
 
             query = query
-                .OrderBy(c => c.param_name);
+                .OrderBy(c => c.param_order);
 
             var Records = await query
                 .ToListAsync();

@@ -99,9 +99,9 @@ namespace Database.Models.Cargo
         public string? hbl_bl_req { get; set; }
         public string? hbl_remark1 { get; set; }
         public string? hbl_remark2 { get; set; }
+        public string? hbl_devan_instr1 { get; set; }
         public string? hbl_remark3 { get; set; }
 
-        public string? hbl_devan_instr1 { get; set; }
         public string? hbl_devan_instr2 { get; set; }
         public string? hbl_devan_instr3 { get; set; }
         public DateOnly? hbl_lfd_date { get; set; }
@@ -205,6 +205,8 @@ namespace Database.Models.Cargo
         public int? rec_memo_count { get; set; }
         public string? rec_telex_attached { get; set; }
         public int? rec_telex_count { get; set; }
+        public string? hbl_cntr_nos { get; set; }
+        public string? hbl_ar_inv_nos { get; set; }
 
         [ForeignKey("hbl_mbl_id")]
         public cargo_masterm? master { get; set; }

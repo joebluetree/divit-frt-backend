@@ -259,6 +259,9 @@ namespace CommonShipment.Repositories
             Boolean bRet = true;
 
             string str = "";
+                        
+            if (Lib.IsBlank(record_dto.cf_assigned_name))
+                str += "Assigned To Cannot Be Blank!";
 
             if (str != "")
             {
@@ -286,7 +289,6 @@ namespace CommonShipment.Repositories
                     Record = new cargo_followup();  //Assigning the values to the database elements
                     Record.cf_mbl_id = record_dto.cf_mbl_id;
                     Record.cf_user_id = record_dto.cf_user_id;
-                    Record.cf_assigned_id = record_dto.cf_assigned_id;
                     Record.cf_mode = record_dto.cf_mode;
 
                     Record.rec_company_id = record_dto.rec_company_id;
@@ -319,6 +321,7 @@ namespace CommonShipment.Repositories
                     await logHistory(Record, record_dto);
 
                 //Save values to the database from dto.
+                Record.cf_assigned_id = record_dto.cf_assigned_id;
                 Record.cf_followup_date = Lib.ParseDateOnly(record_dto.cf_followup_date!);
                 Record.cf_remarks = record_dto.cf_remarks;
 
@@ -348,9 +351,9 @@ namespace CommonShipment.Repositories
 
                 return record_dto;
             }
-            catch (Exception)
+            catch (Exception Ex)
             {
-                throw;
+                throw new Exception(Ex.Message, Ex);
             }
 
         }
@@ -399,12 +402,12 @@ namespace CommonShipment.Repositories
             {
                 cf_id = old_record.cf_id,
                 cf_mbl_id = old_record.cf_mbl_id,
-                cf_mbl_refno = old_record.master!.mbl_refno,
+                cf_mbl_refno = old_record.master?.mbl_refno,
                 cf_mode = old_record.cf_mode,
-                cf_mbl_ref_date = Lib.FormatDate(old_record.master!.mbl_ref_date, Lib.outputDateFormat),
-                cf_user_name = old_record.user!.user_name,
+                cf_mbl_ref_date = Lib.FormatDate(old_record.master?.mbl_ref_date, Lib.outputDateFormat),
+                cf_user_name = old_record.user?.user_name,
                 cf_remarks = old_record.cf_remarks,
-                cf_assigned_name = old_record.assigned!.user_name, //handled
+                cf_assigned_name = old_record.assigned?.user_name, //handled
                 cf_followup_date = Lib.FormatDate(old_record.cf_followup_date, Lib.outputDateFormat),
 
             };

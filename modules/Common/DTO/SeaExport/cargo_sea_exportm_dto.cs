@@ -51,10 +51,10 @@ namespace Common.DTO.SeaExport
         public string? mbl_voyage { get; set; } = "";
         public int? mbl_book_slno { get; set; } = 0;
         public decimal? mbl_teu { get; set; } = 0;
-        public decimal? mbl_20 { get; set; } = 0;
-        public decimal? mbl_40 { get; set; } = 0;
-        public decimal? mbl_40hq { get; set; } = 0;
-        public decimal? mbl_45 { get; set; } = 0;
+        public int? mbl_20 { get; set; } = 0;
+        public int? mbl_40 { get; set; } = 0;
+        public int? mbl_40hq { get; set; } = 0;
+        public int? mbl_45 { get; set; } = 0;
         public int? mbl_container_tot { get; set; } = 0;
         public int? mbl_house_tot { get; set; } = 0;
         public int? rec_files_count { get; set; }

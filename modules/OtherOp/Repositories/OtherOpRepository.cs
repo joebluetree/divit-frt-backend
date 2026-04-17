@@ -11,8 +11,7 @@ using Database.Models.Cargo;
 using System.Diagnostics.Eventing.Reader;
 using OtherOp.Interfaces;
 using Common.DTO.OtherOp;
-using SeaExport.Printing;
-using Marketing.Printing;
+using OtherOp.Printing;
 
 namespace OtherOp.Repositories
 {
@@ -27,7 +26,7 @@ namespace OtherOp.Repositories
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
         private DateTime log_date;
-        private string oth_mode = "OTHERS";
+        // private string oth_mode = "OTHERS";
         public OtherOpRepository(AppDbContext _context, IAuditLog _auditLog)
         {
             this.context = _context;
@@ -86,7 +85,7 @@ namespace OtherOp.Repositories
 
                 query = query.Where(w => w.rec_company_id == company_id);
                 query = query.Where(w => w.rec_branch_id == branch_id);
-                query = query.Where(w => w.mbl_mode == "OTHERS");
+                query = query.Where(w => w.mbl_mode == oth_mode);
 
                 if (!Lib.IsBlank(oth_from_date))
                 {
@@ -353,7 +352,7 @@ namespace OtherOp.Repositories
             {
                 IQueryable<mast_param> query = context.mast_param;
 
-                query = query.Where(f => f.param_type == "SHIPSTAGE OTH" && f.param_name == "NIL");
+                query = query.Where(f => f.param_type == "SHIPSTAGE-OTH" && f.param_name == "NIL");
 
                 var Record = await query.Select(e => new cargo_otherop_dto
                 {
@@ -391,6 +390,11 @@ namespace OtherOp.Repositories
                 cargo_otherop_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await saveCntrAsync(_Record.oth_id, "M", mode, _Record);
                 _Record = await SaveHouseAsync(_Record.oth_id, mode, _Record);
+                await CommonLib.SaveMasterCntrSummary(this.context, _Record.oth_id, "M");
+                await CommonLib.SaveMasterSummary(this.context, record_dto.oth_id, record_dto.oth_mode);
+                await CommonLib.SaveHouseCntrSummary(this.context, _Record.oth_id, _Record.oth_hbl_id);
+                await CommonLib.UpdateHouseInvoiceSummary(this.context, _Record.oth_id);
+                await CommonLib.UpdateHouseInvoiceSummary(this.context, _Record.oth_id);
 
                 _Record.otherop_cntr = await getCntrAsync(_Record.oth_id, "M");
 
@@ -465,37 +469,52 @@ namespace OtherOp.Repositories
                 if (mode == "add")
                 {
 
-                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, "OTHER-OPERATION-PREFIX,OTHER-OPERATION-STARTING-NO");// 
+                    string prefix = "";
+                    string startNo = "";
+                    if (record_dto.oth_mode == "OTHERS")
+                    {
+                        prefix = "OTHER-OPERATION-PREFIX";
+                        startNo = "OTHER-OPERATION-STARTING-NO";
+                    }
+                    if (record_dto.oth_mode == "INTERNAL-PAYMENT")
+                    {
+                        prefix = "INTERNAL-PAYMENT-PREFIX";
+                        startNo = "INTERNAL-PAYMENT-STARTING-NO";
+                    }
+
+                    var caption = prefix + "," + startNo; // to pass string by coma seprated
+
+                    var result = CommonLib.GetBranchsettings(this.context, record_dto.rec_company_id, record_dto.rec_branch_id, caption);// 
 
                     var DefaultCfNo = 0;
                     var Defaultprefix = "";
 
-                    if (result.ContainsKey("OTHER-OPERATION-STARTING-NO"))
+                    if (result.ContainsKey(startNo))
                     {
-                        DefaultCfNo = Lib.StringToInteger(result["OTHER-OPERATION-STARTING-NO"]);
+                        DefaultCfNo = Lib.StringToInteger(result[startNo]);
                     }
-                    if (result.ContainsKey("OTHER-OPERATION-PREFIX"))
+                    if (result.ContainsKey(prefix))
                     {
-                        Defaultprefix = result["OTHER-OPERATION-PREFIX"].ToString();
+                        Defaultprefix = result[prefix].ToString();
                     }
                     if (Lib.IsBlank(Defaultprefix) || Lib.IsZero(DefaultCfNo))
                     {
-                        throw new Exception("Missing Other Operation Prefix/Starting-Number in Branch Settings");
+                        throw new Exception("Missing Prefix/Starting-Number in Branch Settings");
                     }
 
-                    int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo);
+                    int iNextNo = GetNextCfNo(record_dto.rec_company_id, record_dto.rec_branch_id, DefaultCfNo, record_dto.oth_mode!);
                     if (Lib.IsZero(iNextNo))
                     {
                         throw new Exception("Ref Number Cannot Be Generated");
                     }
 
-                    string sqtn_no = $"{Defaultprefix}{iNextNo}";  // for setting quote no by adding propper prefix (here QL - Quotation LCL)
-                    string stype = oth_mode;
+                    string soth_no = $"{Defaultprefix}{iNextNo}";  // for setting quote no by adding propper prefix (here QL - Quotation LCL)
+                    string stype = record_dto.oth_mode!;
 
                     Record = new cargo_masterm();
 
                     Record.mbl_cfno = iNextNo;
-                    Record.mbl_refno = sqtn_no;
+                    Record.mbl_refno = soth_no;
                     Record.mbl_mode = stype;
 
                     Record.rec_company_id = record_dto.rec_company_id;
@@ -503,8 +522,6 @@ namespace OtherOp.Repositories
                     Record.rec_created_by = record_dto.rec_created_by;
                     Record.rec_created_date = DbLib.GetDateTime();
                     Record.rec_locked = "N";
-
-                    Record.mbl_mode = oth_mode;
                 }
                 else
                 {
@@ -563,7 +580,7 @@ namespace OtherOp.Repositories
                 Record.mbl_45 = record_dto.oth_45;
                 Record.mbl_teu = record_dto.oth_teu;
                 Record.mbl_container_tot = record_dto.oth_container_tot;
-                Record.mbl_cbm_tot = GetCbmTotal(record_dto);
+                Record.mbl_cntr_cbm = GetCbmTotal(record_dto);
 
                 if (mode == "add")
                     await context.cargo_masterm.AddAsync(Record);
@@ -594,7 +611,7 @@ namespace OtherOp.Repositories
             }
 
         }
-        public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)
+        public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo, string oth_mode)
         {
             // int iDefaultCfNo = int.Parse(DefaultCfNo!);
 
@@ -707,7 +724,7 @@ namespace OtherOp.Repositories
                         rec_created_by = record_dto.rec_created_by,
                         rec_created_date = DbLib.GetDateTime(),
                         rec_locked = "N",
-                        hbl_mode = oth_mode
+                        hbl_mode = record_dto.oth_mode
                     };
                 }
                 else
@@ -957,9 +974,10 @@ namespace OtherOp.Repositories
                 {
 
                     await CommonLib.DeleteContainer(context, id, "MASTER");
-                    await CommonLib.DeleteMessengerSlip(context, id, "OTHERS");
-                    await CommonLib.DeleteDeliveryOrder(context, id, "OTHERS", _Record.rec_company_id);
-                    await CommonLib.DeleteMemo(context, id, "OTH-CNTR-MEMO", _Record.rec_company_id);
+                    await CommonLib.DeleteMessengerSlip(context, id, _Record.mbl_mode!);
+                    await CommonLib.DeleteDeliveryOrder(context, id, _Record.mbl_mode!, _Record.rec_company_id);
+                    await CommonLib.DeleteMemo(context, id, $"{_Record.mbl_mode}-MEMO", _Record.rec_company_id);
+                    await CommonLib.SaveMasterSummary(this.context, _Record.mbl_id, _Record.mbl_mode);
 
                     await DeleteHouses(id, "OTHERS");
 

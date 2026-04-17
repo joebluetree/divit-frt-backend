@@ -70,10 +70,10 @@ namespace Common.DTO.SeaImport
         public string? mbl_devan_loc_add3 { get; set; }
         public string? mbl_devan_loc_add4 { get; set; }  
         public decimal? mbl_teu { get; set; } = 0;
-        public decimal? mbl_20 { get; set; } = 0;
-        public decimal? mbl_40 { get; set; } = 0;
-        public decimal? mbl_40hq { get; set; } = 0;
-        public decimal? mbl_45 { get; set; } = 0;
+        public int? mbl_20 { get; set; } = 0;
+        public int? mbl_40 { get; set; } = 0;
+        public int? mbl_40hq { get; set; } = 0;
+        public int? mbl_45 { get; set; } = 0;
         public int? mbl_container_tot { get; set; } = 0;
         public int? mbl_house_tot { get; set; } = 0;
         public decimal? mbl_cbm_tot { get; set; } = 0;

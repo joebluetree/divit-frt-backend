@@ -82,6 +82,21 @@ namespace Marketing.Controllers
                 return BadRequest(Lib.getErrorMessage(Ex));
             }
         }
+        
+        [HttpPost]
+        [Route("PrintQuotationAsync")]
+        public async Task<IActionResult> PrintQuotationAsync([FromBody] Dictionary<string, object> data)
+        {
+            try
+            {
+                var record = await mRepository.PrintQuotationAsync(data);
+                return Ok(record);
+            }
+            catch (Exception Ex)
+            {
+                return BadRequest(Ex.Message.ToString());
+            }
+        }
 
         [HttpGet]
         [Route("DeleteAsync")]

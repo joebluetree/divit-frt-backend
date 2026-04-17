@@ -348,6 +348,11 @@ namespace UserAdmin.Repositories
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "ACCTRANS-PAYMENT-PREFIX", "", "STRING", "", "", "", "", 46);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "ACCTRANS-PAYMENT-STARTING-NO", "", "INT", "", "", "", "", 47);
             retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "PAGE SIZE", "", "INT", "", "", "", "", 48);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "TERMS AND SERVICE 1", "", "STRING", "", "", "", "", 49);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "TERMS AND SERVICE 2", "", "STRING", "", "", "", "", 50);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "INTERNAL-PAYMENT-STARTING-NO", "", "INT", "", "", "", "", 51);
+            retValue = await addSettingsAsync(comp_id, branch_id, param_id, user_code, category, "INTERNAL-PAYMENT-PREFIX", "", "STRING", "", "", "", "", 52);
+            
 
             return retValue;
         }
