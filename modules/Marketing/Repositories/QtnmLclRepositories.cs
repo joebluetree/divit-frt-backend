@@ -12,12 +12,14 @@ using Common.DTO.Marketing;
 using Common.Lib;
 using Database.Models.Cargo;
 using Marketing.Printing;
+using Common.DTO.UserAdmin;
 
 //Name : Sourav V
 //Created Date : 03/01/2025
 //Remark : this file defines functions like Save, Delete, getList and getRecords which save/retrieve data
-// version :2 03/07/2025 - print menu added
+// version :2 03/07/2025 - print List menu added
 // version 3 08/09/2025 : Currency Added
+// version 4 16/12/2025 : Quotation Report Print function added
 
 namespace Marketing.Repositories
 {
@@ -72,14 +74,9 @@ namespace Marketing.Repositories
                     qtnm_no = data["qtnm_no"].ToString();
                 if (data.ContainsKey("qtnm_pld_name"))
                     qtnm_pld_name = data["qtnm_pld_name"].ToString();
-                if (data.ContainsKey("rec_company_id"))
-                    company_id = int.Parse(data["rec_company_id"].ToString()!);
-                if (company_id == 0)
-                    throw new Exception("Company Id Not Found");
-                if (data.ContainsKey("rec_branch_id"))
-                    branch_id = int.Parse(data["rec_branch_id"].ToString()!);
-                if (branch_id == 0)
-                    throw new Exception("Branch Id Not Found");
+
+                company_id = Lib.GetValidIntValue(data!, "rec_company_id", "Company Id Not Found");
+                branch_id = Lib.GetValidIntValue(data!, "rec_branch_id", "Branch Id Not Found");
 
                 _page.currentPageNo = int.Parse(data["currentPageNo"].ToString()!);
                 _page.pages = int.Parse(data["pages"].ToString()!);
@@ -669,6 +666,122 @@ namespace Marketing.Repositories
             decimal nTotal = record_dto.qtnd_lcl!.Sum(x => x.qtnd_amt) ?? 0;
             return nTotal;
         }
+        public async Task<Dictionary<string, object>> PrintQuotationAsync(Dictionary<string, object> data)
+        {
+            try
+            {
+                Dictionary<string, object> RetData = new Dictionary<string, object>();
+                var fileDataList = new List<filesm>();
+
+                int qtnm_id = 0;
+                string user_name = "";    
+
+                if (data.ContainsKey("id"))
+                    qtnm_id = int.Parse(data["id"].ToString()!);
+
+                if (data.ContainsKey("user_name"))
+                    user_name = data["user_name"]?.ToString() ?? "";
+
+                if (qtnm_id == 0)
+                    throw new Exception("Quotation ID not provided");
+
+                var query = context.mark_qtnd_lcl
+                    .Include(x => x.acctm)
+                    .Include(x => x.qtnm)
+                    .Where(x => x.qtnd_qtnm_id == qtnm_id);
+
+                var Records = await query
+                    .OrderBy(x => x.qtnd_id)
+                    .Select(e => new mark_qtnd_lcl_dto
+                    {
+                        qtnd_id = e.qtnd_id,
+                        qtnd_qtnm_id = e.qtnd_qtnm_id,
+                        qtnd_acc_id = e.qtnd_acc_id,
+                        qtnd_acc_code = e.acctm!.acc_code,
+                        qtnd_acc_name = e.qtnd_acc_name,
+                        qtnd_amt = e.qtnd_amt,
+                        qtnd_per = e.qtnd_per,
+
+                        rec_company_id = e.rec_company_id,
+                        rec_branch_id = e.rec_branch_id,
+                        rec_created_by = e.rec_created_by,
+                        rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat)
+                    })
+                    .ToListAsync();
+
+                if (Records.Count == 0)
+                    throw new Exception("Quotation details not found");
+
+                var header = await context.mark_qtnm
+                        .Include(x => x.customer)
+                        .Include(x => x.currency)
+                        .Include(x => x.salesman)
+                        .Where(x => x.qtnm_id == qtnm_id)
+                        .FirstOrDefaultAsync();
+
+                if (header == null)
+                    throw new Exception("Quotation header not found");
+
+                var searchInfo = new Dictionary<string, string>
+                {
+                    { "qtnm_type", sqtnm_type},
+                    { "cust_name", header.qtnm_to_name!},
+                    { "cust_address1", header.customer!.cust_address1!},
+                    { "cust_address2", header.customer!.cust_address2!},
+                    { "cust_address3", header.customer!.cust_address3!},
+                    { "cust_attn", header.customer!.cust_contact!},
+
+                    { "qtnm_no", header.qtnm_no!},
+                    { "qtnm_date", Lib.FormatDate(header.qtnm_date, Lib.DisplayDateFormat)},
+                    { "qtnm_quot_by", header.qtnm_quot_by!},
+                    { "qtnm_salesman_name", header.salesman!.param_name!},
+                    { "qtnm_valid_date", Lib.FormatDate(header.qtnm_valid_date, Lib.DisplayDateFormat)},
+                    { "qtnm_move_type", header.qtnm_move_type!},
+
+                    { "qtnm_por_name", header.qtnm_por_name!},
+                    { "qtnm_pol_name", header.qtnm_pol_name!},
+                    { "qtnm_pod_name", header.qtnm_pod_name!},
+                    { "qtnm_pld_name", header.qtnm_pld_name!},
+                    { "qtnm_plfd_name", header.qtnm_plfd_name!},
+
+                    { "qtnm_commodity", header.qtnm_commodity!},
+                    { "qtnm_package", header.qtnm_package!},
+                    { "qtnm_kgs", header.qtnm_kgs.ToString()!},
+                    { "qtnm_lbs", header.qtnm_lbs.ToString()!},
+                    { "qtnm_cbm", header.qtnm_cbm.ToString()!},
+                    { "qtnm_cft", header.qtnm_cft.ToString()!},
+                    { "qtnm_trans_time", header.qtnm_trans_time!},
+                    { "qtnm_routing", header.qtnm_routing!},
+                    { "qtnm_cur_code", header.currency!.param_code!},
+                };
+                var RemkList = new List<gen_remarkm_dto>();
+
+                RemkList = await context.gen_remarkm
+                    .Where(c => c.remk_parent_id == header.qtnm_id && c.remk_parent_type == header.qtnm_type)
+                    .OrderBy(c => c.remk_order)
+                    .Select(c => new gen_remarkm_dto
+                    {
+                        remk_desc = c.remk_desc,
+                        remk_order = c.remk_order
+                    })
+                    .ToListAsync();
+                // Records.Add(RemkList)
+                var pdfResult = ProcessReportPdfAsync(Records, "QUOTATION", header.rec_company_id, user_name!, header.rec_branch_id, searchInfo, RemkList);
+                fileDataList.Add(pdfResult); 
+
+                var excelResult = ProcessReportExcelAsync(Records, "QUOTATION", header.rec_company_id, user_name!, header.rec_branch_id, searchInfo, RemkList);
+                fileDataList.Add(excelResult);
+
+                RetData.Add("fileData", fileDataList);
+                RetData.Add("action", "PRINT");
+
+                return RetData;
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
+            }
+        }
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
             try
@@ -880,7 +993,133 @@ namespace Marketing.Repositories
             };
             return record;
         }
+        public filesm ProcessReportPdfAsync(List<mark_qtnd_lcl_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo, List<gen_remarkm_dto> remarkList)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
 
+            LclReportPdfFile bc = new LclReportPdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Name = searchInfo.ContainsKey("qtnm_no") ? searchInfo["qtnm_no"] : "",
+                QtnmType = searchInfo.ContainsKey("qtnm_type") ? searchInfo["qtnm_type"] : "",
+
+                CustomerName = searchInfo.ContainsKey("cust_name") ? searchInfo["cust_name"] : "",
+                CustAddress1 = searchInfo.ContainsKey("cust_address1") ? searchInfo["cust_address1"] : "",
+                CustAddress2 = searchInfo.ContainsKey("cust_address2") ? searchInfo["cust_address2"] : "",
+                CustAddress3 = searchInfo.ContainsKey("cust_address3") ? searchInfo["cust_address3"] : "",
+                CustAttn = searchInfo.ContainsKey("cust_attn") ? searchInfo["cust_attn"] : "",
+
+                QuoteNo = searchInfo.ContainsKey("qtnm_no") ? searchInfo["qtnm_no"] : "",
+                QuoteDate = searchInfo.ContainsKey("qtnm_date") ? searchInfo["qtnm_date"] : "",
+                QuoteBy = searchInfo.ContainsKey("qtnm_quot_by") ? searchInfo["qtnm_quot_by"] : "",
+                QtnmSalesman = searchInfo.ContainsKey("qtnm_salesman_name") ? searchInfo["qtnm_salesman_name"] : "",
+                QtnmValidDate = searchInfo.ContainsKey("qtnm_valid_date") ? searchInfo["qtnm_valid_date"] : "",
+                QtnmMoveType = searchInfo.ContainsKey("qtnm_move_type") ? searchInfo["qtnm_move_type"] : "",
+
+                QtnmPOR = searchInfo.ContainsKey("qtnm_por_name") ? searchInfo["qtnm_por_name"] : "",
+                QtnmPOL = searchInfo.ContainsKey("qtnm_pol_name") ? searchInfo["qtnm_pol_name"] : "",
+                QtnmPOD = searchInfo.ContainsKey("qtnm_pod_name") ? searchInfo["qtnm_pod_name"] : "",
+                QtnmPLD = searchInfo.ContainsKey("qtnm_pld_name") ? searchInfo["qtnm_pld_name"] : "",
+                QtnmPLFD = searchInfo.ContainsKey("qtnm_plfd_name") ? searchInfo["qtnm_plfd_name"] : "",
+
+                QtnmCommodity = searchInfo.ContainsKey("qtnm_commodity") ? searchInfo["qtnm_commodity"] : "",
+                QtnmPackage = searchInfo.ContainsKey("qtnm_package") ? searchInfo["qtnm_package"] : "",
+                QtnmKGS = searchInfo.ContainsKey("qtnm_kgs") ? searchInfo["qtnm_kgs"] : "",
+                QtnmLBS = searchInfo.ContainsKey("qtnm_lbs") ? searchInfo["qtnm_lbs"] : "",
+                QtnmCBM = searchInfo.ContainsKey("qtnm_cbm") ? searchInfo["qtnm_cbm"] : "",
+                QtnmCFT = searchInfo.ContainsKey("qtnm_cft") ? searchInfo["qtnm_cft"] : "",
+                QtnmTransTime = searchInfo.ContainsKey("qtnm_trans_time") ? searchInfo["qtnm_trans_time"] : "",
+                QtnmRouting = searchInfo.ContainsKey("qtnm_routing") ? searchInfo["qtnm_routing"] : "",
+                QtnmCurCode = searchInfo.ContainsKey("qtnm_cur_code") ? searchInfo["qtnm_cur_code"] : "",
+                RemkList = remarkList
+
+            };
+            bc.Process();
+
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
+
+            var file = bc.FList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
+        public filesm ProcessReportExcelAsync(List<mark_qtnd_lcl_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo, List<gen_remarkm_dto> remarkList)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
+
+            LclReportExcelFile bc = new LclReportExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                Name = searchInfo.ContainsKey("qtnm_no") ? searchInfo["qtnm_no"] : "",
+                QtnmType = searchInfo.ContainsKey("qtnm_type") ? searchInfo["qtnm_type"] : "",
+
+                CustomerName = searchInfo.ContainsKey("cust_name") ? searchInfo["cust_name"] : "",
+                CustAddress1 = searchInfo.ContainsKey("cust_address1") ? searchInfo["cust_address1"] : "",
+                CustAddress2 = searchInfo.ContainsKey("cust_address2") ? searchInfo["cust_address2"] : "",
+                CustAddress3 = searchInfo.ContainsKey("cust_address3") ? searchInfo["cust_address3"] : "",
+                CustAttn = searchInfo.ContainsKey("cust_attn") ? searchInfo["cust_attn"] : "",
+
+                QuoteNo = searchInfo.ContainsKey("qtnm_no") ? searchInfo["qtnm_no"] : "",
+                QuoteDate = searchInfo.ContainsKey("qtnm_date") ? searchInfo["qtnm_date"] : "",
+                QuoteBy = searchInfo.ContainsKey("qtnm_quot_by") ? searchInfo["qtnm_quot_by"] : "",
+                QtnmSalesman = searchInfo.ContainsKey("qtnm_salesman_name") ? searchInfo["qtnm_salesman_name"] : "",
+                QtnmValidDate = searchInfo.ContainsKey("qtnm_valid_date") ? searchInfo["qtnm_valid_date"] : "",
+                QtnmMoveType = searchInfo.ContainsKey("qtnm_move_type") ? searchInfo["qtnm_move_type"] : "",
+
+                QtnmPOR = searchInfo.ContainsKey("qtnm_por_name") ? searchInfo["qtnm_por_name"] : "",
+                QtnmPOL = searchInfo.ContainsKey("qtnm_pol_name") ? searchInfo["qtnm_pol_name"] : "",
+                QtnmPOD = searchInfo.ContainsKey("qtnm_pod_name") ? searchInfo["qtnm_pod_name"] : "",
+                QtnmPLD = searchInfo.ContainsKey("qtnm_pld_name") ? searchInfo["qtnm_pld_name"] : "",
+                QtnmPLFD = searchInfo.ContainsKey("qtnm_plfd_name") ? searchInfo["qtnm_plfd_name"] : "",
+
+                QtnmCommodity = searchInfo.ContainsKey("qtnm_commodity") ? searchInfo["qtnm_commodity"] : "",
+                QtnmPackage = searchInfo.ContainsKey("qtnm_package") ? searchInfo["qtnm_package"] : "",
+                QtnmKGS = searchInfo.ContainsKey("qtnm_kgs") ? searchInfo["qtnm_kgs"] : "",
+                QtnmLBS = searchInfo.ContainsKey("qtnm_lbs") ? searchInfo["qtnm_lbs"] : "",
+                QtnmCBM = searchInfo.ContainsKey("qtnm_cbm") ? searchInfo["qtnm_cbm"] : "",
+                QtnmCFT = searchInfo.ContainsKey("qtnm_cft") ? searchInfo["qtnm_cft"] : "",
+                QtnmTransTime = searchInfo.ContainsKey("qtnm_trans_time") ? searchInfo["qtnm_trans_time"] : "",
+                QtnmRouting = searchInfo.ContainsKey("qtnm_routing") ? searchInfo["qtnm_routing"] : "",
+                QtnmCurCode = searchInfo.ContainsKey("qtnm_cur_code") ? searchInfo["qtnm_cur_code"] : "",
+                RemkList = remarkList
+
+            };
+            bc.Process();
+
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
+
+            var file = bc.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
     }
-
 }

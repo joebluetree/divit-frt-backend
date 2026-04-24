@@ -120,7 +120,7 @@ namespace AirExport.Repositories
                     mbl_refno = e.mbl_refno,
                     mbl_ref_date = Lib.FormatDate(e.mbl_ref_date, Lib.outputDateFormat),
                     mbl_no = e.mbl_no,
-                    mbl_agent_id = e.agent!.cust_id,
+                    mbl_agent_id = e.mbl_agent_id,
                     mbl_agent_name = e.agent!.cust_name,
                     mbl_liner_id = e.liner!.param_id,
                     mbl_liner_name = e.liner!.param_name,
@@ -324,6 +324,7 @@ namespace AirExport.Repositories
                 context.Database.BeginTransaction();
                 cargo_air_exportm_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record.air_export = await GetDetailsAsync(_Record.mbl_id);
+                await CommonLib.UpdateHouseInvoiceSummary(this.context, _Record.mbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }

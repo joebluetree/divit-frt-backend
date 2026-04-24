@@ -105,11 +105,11 @@ namespace Database.Models.Cargo
         public string? mbl_to_port2 { get; set; }
         public string? mbl_to_port3 { get; set; }
         public decimal? mbl_teu { get; set; }
-        public decimal? mbl_20 { get; set; }
-        public decimal? mbl_40 { get; set; }
-        public decimal? mbl_40hq { get; set; }
-        public decimal? mbl_45 { get; set; }
-        public decimal? mbl_pcs { get; set; }
+        public int? mbl_20 { get; set; }
+        public int? mbl_40 { get; set; }
+        public int? mbl_40hq { get; set; }
+        public int? mbl_45 { get; set; }
+        public int? mbl_pcs { get; set; }
         public decimal? mbl_weight { get; set; }
         public decimal? mbl_weight_lbs { get; set; }
         public decimal? mbl_chwt { get; set; }
@@ -134,9 +134,11 @@ namespace Database.Models.Cargo
         public string? mbl_profit_req { get; set; }
         public string? mbl_bo_status { get; set; }
         public string? mbl_inv_remarks { get; set; }
+        public string? mbl_ar_inv_nos { get; set; }
         public int? rec_files_count { get; set; }
         public string? rec_memo_attached { get; set; }
         public int? rec_memo_count { get; set; }
+        public string? mbl_cntr_nos { get; set; }
 
         [ConcurrencyCheck]
         public int rec_version { get; set; }
@@ -202,7 +204,7 @@ namespace Database.Models.Cargo
         public mast_customerm? customer { get; set; }
 
         [ForeignKey("mbl_consignee_id")]
-        public mast_param? consignee { get; set; }
+        public mast_customerm? consignee { get; set; }
 
         [ForeignKey("mbl_jobtype_id")]
         public mast_param? jobtype { get; set; }

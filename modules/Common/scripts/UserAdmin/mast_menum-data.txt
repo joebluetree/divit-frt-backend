@@ -498,4 +498,25 @@ INSERT INTO mast_menum
 SELECT 1001, 'MAIL-SERVER', 'Mail Server Settings', 'admin/mailservermList', '{''type'':''MAIL-SERVER''}', 'Y', 1, 24, 1, 1, 'N', 'ADMIN', NOW()
 WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1001);
 
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1120, 'SHIPSTAGE-OE', 'Shipment Stage Ocean Export', 'masters/paramList', '{''type'':''SHIPSTAGE-OE''}', 'Y', 40, 26, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1120);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1121, 'SHIPSTAGE-OI', 'Shipment Stage Ocean Import', 'masters/paramList', '{''type'':''SHIPSTAGE-OI''}', 'Y', 41, 26, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1121);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1122, 'SHIPSTAGE-AE', 'Shipment Stage Air Export', 'masters/paramList', '{''type'':''SHIPSTAGE-AE''}', 'Y', 42, 26, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1122);
+
+INSERT INTO mast_menum
+(menu_id, menu_code, menu_name, menu_route, menu_param, menu_visible, menu_order, menu_module_id, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date)
+SELECT 1123, 'SHIPSTAGE-AI', 'Shipment Stage Air Import', 'masters/paramList', '{''type'':''SHIPSTAGE-AI''}', 'Y', 43, 26, 1, 1, 'N', 'ADMIN', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM mast_menum WHERE menu_id = 1123);
+
+
 UPDATE mast_menum SET menu_param = REPLACE(menu_param, '*', '''');

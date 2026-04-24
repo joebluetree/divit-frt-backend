@@ -26,7 +26,7 @@ namespace AirExport.Repositories
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
         private DateTime log_date;
-        string hbl_mode = "AIR EXPORT";
+        string shbl_mode = "AIR EXPORT";
 
 
         public AirExportHRepository(AppDbContext _context, IAuditLog _auditLog)
@@ -84,7 +84,7 @@ namespace AirExport.Repositories
                 _page.pageSize = int.Parse(data["pageSize"].ToString()!);
 
                 IQueryable<cargo_housem> query = context.cargo_housem;
-                query = query.Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.hbl_mode == hbl_mode);
+                query = query.Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.hbl_mode == shbl_mode);
 
                 if (!Lib.IsBlank(hbl_from_date))
                 {
@@ -229,7 +229,7 @@ namespace AirExport.Repositories
             {
                 IQueryable<cargo_housem> query = context.cargo_housem;
 
-                query = query.Where(f => f.hbl_id == id && f.hbl_mode == hbl_mode);
+                query = query.Where(f => f.hbl_id == id && f.hbl_mode == shbl_mode);
 
 
                 var Record = await query.Select(e => new cargo_air_exporth_dto
@@ -441,7 +441,7 @@ namespace AirExport.Repositories
             try
             {
                 var query = context.cargo_masterm
-                    .Where(f => f.mbl_id == id && f.mbl_mode == hbl_mode);
+                    .Where(f => f.mbl_id == id && f.mbl_mode == shbl_mode);
 
                 var Record = await query
                     .Select(e => new cargo_air_exporth_dto
@@ -525,7 +525,8 @@ namespace AirExport.Repositories
                 context.Database.BeginTransaction();
                 cargo_air_exporth_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await SaveCargoDesc(_Record.hbl_id, mode, _Record);
-                await CommonLib.SaveMasterSummary(this.context, _Record.hbl_mbl_id);
+                await CommonLib.SaveMasterSummary(this.context, record_dto.hbl_mbl_id, shbl_mode);
+                await CommonLib.UpdateHouseInvoiceSummary(this.context, _Record.hbl_mbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -639,7 +640,7 @@ namespace AirExport.Repositories
                     Record = new cargo_housem();  //Assigning the values to the database elements
                     Record.hbl_cfno = iNextNo;
                     Record.hbl_houseno = sref_no;
-                    Record.hbl_mode = hbl_mode;
+                    Record.hbl_mode = shbl_mode;
                     Record.hbl_mbl_id = record_dto.hbl_mbl_id;
 
                     Record.rec_company_id = record_dto.rec_company_id;
@@ -952,7 +953,7 @@ namespace AirExport.Repositories
         public int GetNextCfNo(int company_id, int? branch_id, int DefaultCfNo)
         {
             var CfNo = context.cargo_housem
-                .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.hbl_mode == hbl_mode)
+                .Where(i => i.rec_company_id == company_id && i.rec_branch_id == branch_id && i.hbl_mode == shbl_mode)
                 .Select(e => e.hbl_cfno)
                 .DefaultIfEmpty()
                 .Max();
@@ -974,6 +975,7 @@ namespace AirExport.Repositories
                     .Where(f => f.hbl_id == id)
                     .FirstOrDefaultAsync();
                 var mbl_id = _Record?.hbl_mbl_id;
+                var mbl_mode = _Record?.hbl_mode;
 
                 if (_Record == null)
                 {
@@ -990,7 +992,7 @@ namespace AirExport.Repositories
                     
                     context.Remove(_Record);
                     await context.SaveChangesAsync();
-                    await CommonLib.SaveMasterSummary(this.context, mbl_id);
+                    await CommonLib.SaveMasterSummary(this.context, mbl_id, mbl_mode);
 
                     context.Database.CommitTransaction();
 

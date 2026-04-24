@@ -157,8 +157,15 @@ namespace Database.Lib
             {
                 dateString = $"{parts[0]}-{month:D2}-{day:D2}";
             }
-
-            if (DateTime.TryParseExact(dateString, BACK_END_DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            // add possible date time format for parsing date
+            string[] formats =
+            {
+                BACK_END_DATE_FORMAT,          // existing format
+                "yyyy-MM-dd",
+                "yyyy-MM-dd'T'HHmmss",
+                "yyyy-MM-dd'T'HH:mm:ss"
+            };
+            if (DateTime.TryParseExact(dateString, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
                 DateTime Dt = DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
                 return Dt;

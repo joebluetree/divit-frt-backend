@@ -22,6 +22,7 @@ using Npgsql.Replication;
 //Name : Sourav V
 //Created Date : 29/01/2025
 //Remark : this file defines common functions which is used in multiple repositories
+//version 2 : 07/01/2026 added mbl_mode in save summary function 
 
 namespace Common.Lib
 {
@@ -104,28 +105,55 @@ namespace Common.Lib
             }
             return teu;
         }
-        public static async Task SaveMasterSummary(AppDbContext _context, int? mbl_id)//,cargo_sea_exporth_dto record_dto
+        public static async Task SaveMasterSummary(AppDbContext _context, int? mbl_id, string? mbl_mode)//,cargo_sea_exporth_dto record_dto
         {
             context = _context;
 
+            int? shipper_id = null;
+            int? consignee_id = null;
+
             var houseList = context.cargo_housem
-                .Where(h => h.hbl_mbl_id == mbl_id)
+                .Where(h => h.hbl_mbl_id == mbl_id && h.hbl_mode == mbl_mode)
                 .ToList();
 
             int houseCount = houseList.Count;
             int ShipperCount = houseList
-                .Where(h => h.hbl_mbl_id == mbl_id)
+                .Where(h => h.hbl_mbl_id == mbl_id && h.hbl_mode == mbl_mode)
                 .Select(h => h.hbl_shipper_name)
                 .Distinct() //only unique count. needed
                 .Count();
             int ConsigneeCount = houseList
-                .Where(h => h.hbl_mbl_id == mbl_id)
+                .Where(h => h.hbl_mbl_id == mbl_id && h.hbl_mode == mbl_mode)
                 .Select(h => h.hbl_consignee_name)
                 .Distinct()
                 .Count();
+            int TotalPCS = houseList
+                .Where(h => h.hbl_mbl_id == mbl_id && h.hbl_mode == mbl_mode)
+                .Sum(h => h.hbl_packages ?? 0);
+            decimal TotalWeight = houseList
+                .Where(h => h.hbl_mbl_id == mbl_id && h.hbl_mode == mbl_mode)
+                .Sum(h => h.hbl_weight ?? 0);
+            decimal TotalCBM = houseList
+                .Where(h => h.hbl_mbl_id == mbl_id && h.hbl_mode == mbl_mode)
+                .Sum(h => h.hbl_cbm ?? 0);
+            decimal TotalChwt = houseList
+                .Where(h => h.hbl_mbl_id == mbl_id && h.hbl_mode == mbl_mode)
+                .Sum(h => h.hbl_chwt ?? 0);
+            
+            int countY = houseList.Count(h => h.hbl_is_itshipment == "Y");
+            int countN = houseList.Count(h => h.hbl_is_itshipment == "N");
 
+            string itShipmentCount = $"{countY}Y{countN}N";
+
+            if(!Database.Lib.Lib.IsZero(houseCount))
+            {
+                var house = houseList[0];
+                shipper_id = ShipperCount == 1 ? house.hbl_shipper_id : null;
+                consignee_id = ConsigneeCount == 1 ? house.hbl_consignee_id : null;
+            }
+            
             var master_Record = context.cargo_masterm
-                .Where(m => m.mbl_id == mbl_id)
+                .Where(m => m.mbl_id == mbl_id && m.mbl_mode == mbl_mode)
                 .FirstOrDefault();
 
             if (master_Record != null)
@@ -133,9 +161,100 @@ namespace Common.Lib
                 master_Record.mbl_house_tot = houseCount;
                 master_Record.mbl_shipper_tot = ShipperCount;
                 master_Record.mbl_consignee_tot = ConsigneeCount;
+                master_Record.mbl_pcs = TotalPCS;
+                master_Record.mbl_weight = TotalWeight;
+                master_Record.mbl_cbm = TotalCBM;
+                master_Record.mbl_chwt = TotalChwt;
+                master_Record.mbl_consignee_id = consignee_id;
+                master_Record.mbl_shipper_id = shipper_id;
+                master_Record.mbl_it_tot = itShipmentCount;
                 await context.SaveChangesAsync();
             }
         }
+        public static async Task SaveHouseCntrSummary(AppDbContext _context, int? mbl_id, int? hbl_id)
+        {
+            context = _context;
+
+            var cntr_list = context.cargo_container
+            .Where(c => c.cntr_mbl_id == mbl_id && c.cntr_hbl_id == hbl_id)
+            .Include(i => i.cntrtype)
+            .Select(c => new
+            {
+                c.cntr_no,
+                cntr_type = c.cntrtype!.param_name
+            })
+            .ToList();
+
+            var finalResult = "";
+            var first = true;
+
+            foreach (var cntr in cntr_list)
+            {
+                var item = $"{cntr.cntr_no}/{cntr.cntr_type}";
+
+                var total_length = finalResult.Length + item.Length + (first ? 0 : 1);// 1 for comma
+
+                if (total_length < 500)
+                    finalResult += (first ? "" : ", ") + item;
+
+                if (total_length >= 500)
+                    break;
+                first = false;
+            }
+
+            var _Record = context.cargo_housem
+                 .Where(m => m.hbl_id == hbl_id)
+                 .FirstOrDefault();
+
+            if (_Record != null)
+            {
+                _Record.hbl_cntr_nos = finalResult;
+                await context.SaveChangesAsync();
+            }
+
+        }
+        public static async Task SaveMasterCntrSummary(AppDbContext _context, int? mbl_id, string? cntr_catg)
+        {
+            context = _context;
+
+            var cntr_list = context.cargo_container
+            .Where(c => c.cntr_mbl_id == mbl_id && c.cntr_catg == cntr_catg)
+            .Include(i => i.cntrtype)
+            .Select(c => new
+            {
+                c.cntr_no,
+                cntr_type = c.cntrtype!.param_name
+            })
+            .ToList();
+
+            var finalResult = "";
+            var first = true;
+
+            foreach (var cntr in cntr_list)
+            {
+                var item = $"{cntr.cntr_no}/{cntr.cntr_type}";
+
+                var total_length = finalResult.Length + item.Length + (first ? 0 : 1);// 1 for comma
+
+                if (total_length < 500)
+                    finalResult += (first ? "" : ", ") + item;
+
+                if (total_length >= 500)
+                    break;
+                first = false;
+            }
+
+            var _Record = context.cargo_masterm
+                .Where(m => m.mbl_id == mbl_id)
+                .FirstOrDefault();
+
+            if (_Record != null)
+            {
+                _Record.mbl_cntr_nos = finalResult;
+                await context.SaveChangesAsync();
+            }
+        }
+
         public static async Task UpdateHouseShipmentStage(AppDbContext _context, int mbl_id, int? newShipmentStageId)
         {
             context = _context;
@@ -175,7 +294,7 @@ namespace Common.Lib
 
             return str;
         }
-        public static async Task DeleteDeliveryOrder(AppDbContext _context, int id ,string type, int rec_company_id)
+        public static async Task DeleteDeliveryOrder(AppDbContext _context, int id, string type, int rec_company_id)
         {
             context = _context;
 
@@ -221,7 +340,7 @@ namespace Common.Lib
             {
                 await UpdateInvDocCount(context, parent_id, parent_type);
             }
-            if (parent_type == "A/R CHECK COPY" || parent_type == "A/P CHECK COPY" )
+            if (parent_type == "A/R CHECK COPY" || parent_type == "A/P CHECK COPY")
             {
                 await UpdateCheckCopyCount(context, parent_id, parent_type);
             }
@@ -385,7 +504,7 @@ namespace Common.Lib
             string? Memo_type = GetMemoType(parent_type);
 
             // Determine where to save the memo count and mapped type
-            if (parent_type == "SEAIMP-CNTR-MEMO" || parent_type == "AIRIMP-CNTR-MEMO" || parent_type == "SEAEXP-CNTR-MEMO" || parent_type == "AIREXP-CNTR-MEMO" || parent_type == "OTH-CNTR-MEMO")
+            if (parent_type == "SEAIMP-CNTR-MEMO" || parent_type == "AIRIMP-CNTR-MEMO" || parent_type == "SEAEXP-CNTR-MEMO" || parent_type == "AIREXP-CNTR-MEMO" || parent_type == "OTHERS-MEMO" || parent_type == "PS-MEMO")
             {
 
                 var masterRecord = context.cargo_masterm
@@ -423,8 +542,10 @@ namespace Common.Lib
                 result = "SEA EXPORT";
             if (parent_type == "AIREXP-CNTR-MEMO")
                 result = "AIR EXPORT";
-            if (parent_type == "OTH-CNTR-MEMO")
+            if (parent_type == "OTHERS-MEMO")
                 result = "OTHERS";
+            if (parent_type == "PS-MEMO")
+                result = "PS";
 
             return result;
         }
@@ -432,7 +553,8 @@ namespace Common.Lib
         {
             var memoTypes = new List<string>
             {
-                "OTH-CNTR-MEMO",
+                "OTHERS-MEMO",
+                "PS-MEMO",
                 "SEAIMP-CNTR-MEMO",
                 "SEAIMP-SHIP-MEMO",
                 "AIREXP-CNTR-MEMO",
@@ -582,21 +704,99 @@ namespace Common.Lib
             {
                 var invoiceList = await context.acc_invoicem
                     .Where(f => f.inv_mbl_id == parent_id && f.rec_deleted == "N")
-                    .Select(f => new {
+                    .Select(f => new
+                    {
                         f.inv_arap,
-                        f.inv_total
+                        f.inv_total,
+                        f.inv_cust_id,
                     })
                     .ToListAsync();
 
                 var incTotal = invoiceList.Where(f => f.inv_arap == "A/R").Sum(f => f.inv_total);
                 var expTotal = invoiceList.Where(f => f.inv_arap == "A/P").Sum(f => f.inv_total);
+                var profit = incTotal - expTotal;
+                var cust_id = invoiceList.Where(f => f.inv_arap == "A/R").Select(f => f.inv_cust_id).Distinct().ToList();
+
+                decimal? profit_per = 0;
+                if(!Database.Lib.Lib.IsZero(incTotal))
+                    profit_per = (profit / incTotal) * 100; // profit margin
 
                 masterRecord.mbl_inc_total = incTotal;
                 masterRecord.mbl_exp_total = expTotal;
-                masterRecord.mbl_revenue = incTotal - expTotal;
+                masterRecord.mbl_revenue = profit;
+                masterRecord.mbl_per = profit_per;
+                masterRecord.mbl_customer_id = cust_id.Count() == 1 ? cust_id.FirstOrDefault() : null;
 
                 await context.SaveChangesAsync();
             }
+        }
+        public static async Task UpdateHouseInvoiceSummary(AppDbContext _context, int? mbl_id)
+        {
+            context = _context;
+
+            var HouseRecord = await context.cargo_housem
+            .Where(m => m.hbl_mbl_id == mbl_id )
+            .ToListAsync();
+
+            var invoiceList = await context.acc_invoicem
+                .Where(f => f.inv_mbl_id == mbl_id && f.rec_deleted == "N")
+                .ToListAsync();
+            decimal totalMasterAR = invoiceList
+                .Where(i => i.inv_hbl_id == null && i.inv_arap == "A/R")
+                .Sum(i => i.inv_total ?? 0);
+
+            decimal totalMasterAP = invoiceList
+                .Where(i => i.inv_hbl_id == null && i.inv_arap == "A/P")
+                .Sum(i => i.inv_total ?? 0);
+
+            decimal totalHouseCbm = HouseRecord.Sum(h => h.hbl_cbm ?? 0);
+            decimal totalHouseWt  = HouseRecord.Sum(h => h.hbl_weight ?? 0);    //change Weight( _chwt or _weight here)
+
+            foreach (var house in HouseRecord)
+            {
+                decimal houseRevenue = 0;
+                decimal houseExpense = 0;
+
+                var houseInv = invoiceList
+                    .Where(i => i.inv_hbl_id == house.hbl_id);
+
+                decimal houseAR = houseInv
+                    .Where(i => i.inv_arap == "A/R")
+                    .Sum(i => i.inv_total ?? 0);
+
+                decimal houseAP = houseInv
+                    .Where(i => i.inv_arap == "A/P")
+                    .Sum(i => i.inv_total ?? 0);
+
+                houseRevenue += houseAR;
+                houseExpense += houseAP;
+
+                decimal CBMratio = 0;
+                decimal WTratio = 0;
+
+                if (totalHouseCbm > 0)
+                    CBMratio = (house.hbl_cbm ?? 0) / totalHouseCbm;
+                if (totalHouseWt > 0)
+                    WTratio = (house.hbl_weight ?? 0) / totalHouseWt;   //change weight if required
+
+                decimal allocatedARCBM = totalMasterAR * CBMratio;
+                decimal allocatedAPCBM = totalMasterAP * CBMratio;
+                decimal allocatedARWT = totalMasterAR * WTratio;
+                decimal allocatedAPWT = totalMasterAP * WTratio;
+
+                var houseRevenue_cbm = houseRevenue + allocatedARCBM;
+                var houseExpense_cbm = houseExpense + allocatedAPCBM;
+                var houseRevenue_wt = houseRevenue + allocatedARWT;
+                var houseExpense_wt = houseExpense + allocatedAPWT;
+
+                house.hbl_inc_total_cbm = Math.Round(houseRevenue_cbm, 3);
+                house.hbl_exp_total_cbm = Math.Round(houseExpense_cbm, 3);
+                house.hbl_revenue_cbm  = house.hbl_inc_total_cbm - house.hbl_exp_total_cbm;
+                house.hbl_inc_total_wt = Math.Round(houseRevenue_wt, 3);
+                house.hbl_exp_total_wt = Math.Round(houseExpense_wt, 3);
+                house.hbl_revenue_wt  = house.hbl_inc_total_wt - house.hbl_exp_total_wt;
+            }
+            await context.SaveChangesAsync();
         }
         public static string IsValidDate(AppDbContext _context, int? year, int rec_company_id, string date)
         {
@@ -616,7 +816,7 @@ namespace Common.Lib
                 else    //check Date only if year_closed == N
                 {
                     var Date = Database.Lib.Lib.ParseDateOnly(date);
-                    if ( Date >= YearRecord.year_start_date  && Date <= YearRecord.year_end_date)
+                    if (Date >= YearRecord.year_start_date && Date <= YearRecord.year_end_date)
                     {
                         errormessage = "";
                     }
@@ -657,15 +857,15 @@ namespace Common.Lib
 
             return HouseExists;
         }
-        public static bool InvoiceExists(AppDbContext context, int? id,string type, int rec_company_id)
+        public static bool InvoiceExists(AppDbContext context, int? id, string type, int rec_company_id)
         {
             var invoiceExists = false;
-            if(type == "MASTER")
+            if (type == "MASTER")
             {
                 invoiceExists = context.acc_invoicem
                 .Any(f => f.inv_mbl_id == id && f.rec_company_id == rec_company_id);
             }
-            if(type == "HOUSE")
+            if (type == "HOUSE")
             {
                 invoiceExists = context.acc_invoicem
                 .Any(f => f.inv_hbl_id == id && f.rec_company_id == rec_company_id);
@@ -822,7 +1022,7 @@ namespace Common.Lib
             return rowIndex;
         }
 
-        public static bool IsPageBreak(float Row, int Line_Height, int Page_Height)
+        public static bool IsPageBreak(float Row, float Line_Height, int Page_Height)
         {
             bool rec = false;
             if ((Row + Line_Height) >= Page_Height)
@@ -911,7 +1111,7 @@ namespace Common.Lib
             var MessengerSlip = await context.cargo_slip
                 .Where(c => c.cs_mbl_id == id && c.cs_mode == type)
                 .ToListAsync();
-                
+
             if (MessengerSlip.Any())
             {
                 context.cargo_slip.RemoveRange(MessengerSlip);

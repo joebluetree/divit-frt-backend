@@ -41,6 +41,8 @@ using CommonShipment.Repositories;
 using OtherOp.Interfaces;
 using OtherOp.Repositories;
 using Cargo.Interfaces;
+using Report.Interfaces;
+using Report.Repositories;
 
 
 
@@ -136,9 +138,21 @@ builder.Services.AddScoped<IDeliveryOrderRepository, DeliveryOrderRepository>();
 builder.Services.AddScoped<IMessengerSlipRepository, MessengerSlipRepository>();
 builder.Services.AddScoped<IDevanInstRepository, DevanInstRepository>();
 builder.Services.AddScoped<ICustomHoldRepository, CustomHoldRepository>();
+builder.Services.AddScoped<IProfitReportRepository, ProfitReportRepository>();
 
-
-
+// Report
+builder.Services.AddScoped<IOpHandleRepository, OpHandleRepository>();
+builder.Services.AddScoped<ICustomerListRepository, CustomerListRepository>();
+builder.Services.AddScoped<ISeaVolumeRepository, SeaVolumeRepository>();
+builder.Services.AddScoped<IAirVolumeRepository, AirVolumeRepository>();
+builder.Services.AddScoped<IAgentShipmentRepository, AgentShipmentRepository>();
+builder.Services.AddScoped<IConsigneeShipmentRepository, ConsigneeShipmentRepository>();
+builder.Services.AddScoped<IDSRRepository, DSRRepository>();
+builder.Services.AddScoped<IITShipmentRepository, ITShipmentRepository>();
+builder.Services.AddScoped<IMasterProfitRepository, MasterProfitRepository>();
+builder.Services.AddScoped<IHouseProfitRepository, HouseProfitRepository>();
+builder.Services.AddScoped<IInvoiceIssueRepository, InvoiceIssueRepository>();
+builder.Services.AddScoped<IShipmentLogRepository, ShipmentLogRepository>();
 
 //Tnt
 builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();

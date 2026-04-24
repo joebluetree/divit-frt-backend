@@ -401,7 +401,7 @@ namespace CommonShipment.Repositories
                     Record!.deliveryorder_cntr = await GetMastCntrAsync(id);
                 }
 
-                if (parent_type == "OTHERS")
+                if (parent_type == "OTHERS" || parent_type == "PS")
                 {
                     var query = context.cargo_housem
                         .Where(f => f.hbl_mbl_id == id && f.hbl_mode == parent_type);

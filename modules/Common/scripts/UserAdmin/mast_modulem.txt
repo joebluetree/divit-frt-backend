@@ -56,6 +56,11 @@ INSERT INTO mast_modulem
 SELECT 24, 'Settings', 'Y', 5, 1, 1, 'N', 'ADMIN', '2025-01-29 10:50:35.493', NULL, NULL
 WHERE NOT EXISTS (SELECT 1 FROM mast_modulem WHERE module_id = 24);
 
+INSERT INTO mast_modulem
+(module_id, module_name, module_is_installed, module_order, rec_company_id, rec_version, rec_locked, rec_created_by, rec_created_date, rec_edited_by, rec_edited_date)
+SELECT 25, 'Report', 'Y', 6, 1, 1, 'N', 'ADMIN', '2026-01-29 10:50:35.493', NULL, NULL
+WHERE NOT EXISTS (SELECT 1 FROM mast_modulem WHERE module_id = 25);
+
 SELECT setval(pg_get_serial_sequence('mast_modulem', 'module_id'), 
               COALESCE(MAX(module_id), 1), 
               true) 

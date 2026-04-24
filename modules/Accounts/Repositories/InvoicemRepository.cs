@@ -11,6 +11,11 @@ using Common.DTO.Accounts;
 using Common.Lib.Accounts;
 using Common.Lib;
 using NPOI.SS.Formula.Functions;
+using Database.Models.Cargo;
+using Accounts.Printing;
+using Marketing.Printing;
+using NPOI.HSSF.Record;
+using Common.DTO.OtherOp;
 
 namespace Accounts.Repositories
 {
@@ -44,7 +49,7 @@ namespace Accounts.Repositories
                     rec_deleted = data["rec_deleted"].ToString();
                 if (data.ContainsKey("parent_id"))
                     parent_id = int.Parse(data["parent_id"].ToString()!);
-                    
+
                 company_id = Lib.GetValidIntValue(data!, "rec_company_id", "Company Id Not Found");
                 branch_id = Lib.GetValidIntValue(data!, "rec_branch_id", "Branch Id Not Found");
 
@@ -210,7 +215,7 @@ namespace Accounts.Repositories
                     throw new Exception("No Data Found");
 
                 var result = CommonLib.GetBranchsettings(context, Record!.rec_company_id, Record.rec_branch_id, "EXRATE DECIMAL");
-                
+
                 Record!.rec_error = CommonLib.IsYearLocked(context, Record.inv_year, Record.rec_company_id, Record.rec_locked!);
 
                 if (result.ContainsKey("EXRATE DECIMAL"))
@@ -276,7 +281,7 @@ namespace Accounts.Repositories
 
                 var caption = "CURRENCY,EXRATE DECIMAL";
 
-                var result = CommonLib.GetBranchsettings(context,Record_dto!.rec_company_id, Record_dto.rec_branch_id, caption);
+                var result = CommonLib.GetBranchsettings(context, Record_dto!.rec_company_id, Record_dto.rec_branch_id, caption);
 
                 if (result.ContainsKey("CURRENCY"))
                 {
@@ -310,7 +315,7 @@ namespace Accounts.Repositories
                 // acc_invoicem_dto? Record_dto = null;
 
                 var qtnm = await context.mark_qtnm
-                    .Include(f=>f.currency)
+                    .Include(f => f.currency)
                     .Where(f => f.qtnm_no == qtnm_no)
                     .FirstOrDefaultAsync();
 
@@ -343,7 +348,7 @@ namespace Accounts.Repositories
                     }
                 ).ToListAsync();
 
-               return Record;
+                return Record;
             }
             catch (Exception Ex)
             {
@@ -362,6 +367,8 @@ namespace Accounts.Repositories
                 _Record = await SaveDetailsAsync(_Record.inv_id, mode, _Record);
                 _Record.invoiced = await GetDetailsAsync(_Record.inv_id);
                 await CommonLib.UpdateMasterInvoiceSummary(this.context, _Record.inv_mbl_id);
+                await SaveInvSummary(_Record.inv_mbl_id, _Record.inv_hbl_id);
+                await CommonLib.UpdateHouseInvoiceSummary(this.context, _Record.inv_mbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -416,7 +423,7 @@ namespace Accounts.Repositories
                 if (Lib.IsZero(rec.invd_exrate))
                     exrate = "ExRate Cannot Be Blank!";
             }
-            
+
             var isDateValid = CommonLib.IsValidDate(context, record_dto.inv_year!, record_dto.rec_company_id, record_dto.inv_date!);
             if (!Lib.IsBlank(isDateValid))
                 str += isDateValid;
@@ -674,6 +681,67 @@ namespace Accounts.Repositories
                 throw;
             }
         }
+        public async Task SaveInvSummary( int? inv_mbl_id, int? inv_hbl_id)
+        {
+            var inv_list = context.acc_invoicem
+            .Where(c => c.inv_mbl_id == inv_mbl_id && c.inv_arap == "A/R")// c.inv_hbl_id == inv_hbl_id &&
+            .Select(c => new
+            {
+                c.inv_no,
+                inv_date = Lib.FormatDate(c.inv_date, Lib.DisplayDateFormat),
+                inv_total = c.inv_total,
+                inv_mbl_id = c.inv_mbl_id,
+                inv_hbl_id = c.inv_hbl_id,
+            })
+            .ToList();
+
+            // var finalResult = "";
+            var mbl_ar_nos = "";
+            var hbl_ar_nos = "";
+            var hblFirst = true;
+            var mblFirst = true;
+
+            foreach(var i in inv_list)
+            {
+                var item = $"{i.inv_no}/{i.inv_date.ToUpper()}/{i.inv_total}";
+
+                var hbl_ar_length = hbl_ar_nos.Length + item.Length + (hblFirst ? 0:1);// 1 for comma
+                var mbl_ar_length = mbl_ar_nos.Length + item.Length + (mblFirst ? 0:1);// 1 for comma
+
+                if(hbl_ar_length < 500 && i.inv_hbl_id == inv_hbl_id)
+                {
+                    hbl_ar_nos += (hblFirst ? "" : ",") + item;
+                    hblFirst = false;
+                }
+                if(mbl_ar_length < 500 )
+                    mbl_ar_nos += (mblFirst ? "" : ",") + item;
+
+                if(mbl_ar_length >= 500)
+                    break;
+                mblFirst = false;
+            }
+
+            var House_Record = context.cargo_housem
+                .Where(m => m.hbl_id == inv_hbl_id)
+                .FirstOrDefault();
+
+            if (House_Record != null)
+            {
+                House_Record.hbl_ar_inv_nos = hbl_ar_nos;
+                await context.SaveChangesAsync();
+            }
+
+            var Master_Record = context.cargo_masterm
+                .Where(m => m.mbl_id == inv_mbl_id)
+                .FirstOrDefault();
+
+            if (Master_Record != null)
+            {
+                Master_Record.mbl_ar_inv_nos = mbl_ar_nos;
+                await context.SaveChangesAsync();
+            }   
+            
+        }
         public async Task<acc_invoicem_dto> SaveMemoAsync(int id, acc_invoicem_dto record_dto)
         {
             try
@@ -714,6 +782,154 @@ namespace Accounts.Repositories
             CfNo = CfNo == 0 ? DefaultCfNo : CfNo + 1;
             return CfNo;
         }
+        public async Task<Dictionary<string, object>> PrintInvoiceAsync(Dictionary<string, object> data)
+        {
+            try
+            {
+                Dictionary<string, object> RetData = new Dictionary<string, object>();
+                var fileDataList = new List<filesm>();
+
+                int inv_id = 0;
+                string user_name = "";
+                string inv_type = "";
+                
+
+                if (data.ContainsKey("id"))
+                    inv_id = int.Parse(data["id"].ToString()!);
+
+                if (data.ContainsKey("user_name"))
+                    user_name = data["user_name"]?.ToString() ?? "";
+                if (data.ContainsKey("inv_type"))
+                    inv_type = data["inv_type"]?.ToString() ?? "";
+
+                if (inv_id == 0)
+                    throw new Exception("Invoice ID not provided");
+
+                var query = context.acc_invoiced
+                    .Include(x => x.account)
+                    .Where(x => x.invd_parent_id == inv_id);
+
+                var Records = await query
+                    .OrderBy(x => x.invd_id)
+                    .Select(e => new acc_invoiced_dto
+                    {
+                        invd_id = e.invd_id,
+                        invd_parent_id = e.invd_parent_id,
+                        invd_acc_id = e.invd_acc_id,
+                        invd_acc_code = e.account!.acc_code,
+                        invd_acc_name = e.invd_acc_name,
+                        invd_qty = e.invd_qty,
+                        invd_rate = e.invd_rate,
+                        invd_total = e.invd_total,
+                        invd_remarks = e.invd_remarks,
+
+                        rec_company_id = e.rec_company_id,
+                        rec_branch_id = e.rec_branch_id,
+                        rec_created_by = e.rec_created_by,
+                        rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat)
+                    })
+                    .ToListAsync();
+
+                if (Records.Count == 0)
+                    throw new Exception("Invoice details not found");
+
+                var header = await context.acc_invoicem
+                        .Include(x => x.customer)
+                        .Include(x => x.currency)
+                        .Include(x => x.house)
+                        .Include(x => x.unit)
+                        .Include(x => x.master)
+                            .ThenInclude(c => c!.pol)
+                        .Include(x => x.master)
+                            .ThenInclude(c => c!.pod)
+                        .Include(x => x.master)
+                            .ThenInclude(c => c!.handledby)
+                        .Where(x => x.inv_id == inv_id)
+                        .FirstOrDefaultAsync();
+
+                if (header == null)
+                    throw new Exception("Invoice header not found");
+
+                var searchInfo = new Dictionary<string, string>
+                {
+                    {"inv_type", inv_type},
+                    { "cust_name", header.inv_cust_name!},
+                    { "cust_address1", header.customer!.cust_address1!},
+                    { "cust_address2", header.customer!.cust_address2!},
+                    { "cust_address3", header.customer!.cust_address3!},
+
+                    { "inv_no", header.inv_no!},
+                    { "inv_date", Lib.FormatDate(header.inv_date, Lib.DisplayDateFormat) },
+                    { "inv_cust_refno", header.inv_cust_refno!},
+                    { "our_reference", header.inv_mbl_refno!},
+
+                    { "mbl_no", header.master!.mbl_no!},
+                    { "hbl_no", header.inv_houseno!},
+                    { "inv_pcs", header.inv_pcs?.ToString()!},
+                    { "inv_uom", header.unit?.param_name!},
+                    { "inv_lbs", header.inv_lbs?.ToString()!},
+                    { "inv_kgs", header.inv_kgs?.ToString()!},
+
+                    { "inv_shipper", header.inv_shipper!},
+                    { "inv_consignee", header.inv_consignee!},
+
+                    { "pol", header.master?.pol?.param_name!},
+                    { "pod", header.master?.pod?.param_name!},
+                    { "inv_remarks1", header.inv_remarks1!},
+                    { "inv_remarks2", header.inv_remarks2!},
+                    { "inv_remarks3", header.inv_remarks3!},
+                    { "inv_cur_code", header.currency!.param_code!},
+                    
+                    { "handled_by", header.master!.handledby!.param_name!},
+
+                    { "inv_paid", header.inv_paid.ToString()!},
+                    { "inv_total", header.inv_total.ToString()!},
+                    
+                };
+                var containerList = new List<cargo_container_dto>();
+                
+                if(!Lib.IsZero(header.inv_hbl_id)){
+                    containerList = await context.cargo_container
+                        .Where(c => c.cntr_hbl_id == header.inv_hbl_id)
+                        .OrderBy(c => c.cntr_no)
+                        .Select(c => new cargo_container_dto
+                        {
+                            cntr_no = c.cntr_no,
+                            cntr_type_name = c.cntrtype!.param_name,
+                            cntr_sealno = c.cntr_sealno,
+                        })
+                        .ToListAsync();
+                }
+                else{
+                    containerList = await context.cargo_container
+                        .Where(c => c.cntr_mbl_id == header.inv_mbl_id)
+                        .OrderBy(c => c.cntr_no)
+                        .Select(c => new cargo_container_dto
+                        {
+                            cntr_no = c.cntr_no,
+                            cntr_type_name = c.cntrtype!.param_name,
+                            cntr_sealno = c.cntr_sealno,
+                        })
+                        .ToListAsync();
+                }
+
+                var pdfResult = ProcessPdfFileAsync(Records, "Invoice", header.rec_company_id, user_name!, header.rec_branch_id, searchInfo, containerList);
+                fileDataList.Add(pdfResult); 
+
+                var excelResult = ProcessExcelFileAsync(Records, "Invoice", header.rec_company_id, user_name!, header.rec_branch_id, searchInfo, containerList);
+                fileDataList.Add(excelResult);
+
+
+                RetData.Add("fileData", fileDataList);
+                RetData.Add("action", "PRINT");
+
+                return RetData;
+            }
+            catch (Exception Ex)
+            {
+                throw new Exception(Ex.Message.ToString());
+            }
+        }
         public async Task<Dictionary<string, object>> DeleteAsync(int id)
         {
             try
@@ -732,12 +948,11 @@ namespace Accounts.Repositories
                 }
                 if (_Record!.rec_deleted == "Y")
                 {
-                    var _InvoiseD = context.acc_invoiced
+                    var _InvoiceD = context.acc_invoiced
                      .Where(c => c.invd_parent_id == id);
-                    if (_InvoiseD.Any())
+                    if (_InvoiceD.Any())
                     {
-                        context.acc_invoiced.RemoveRange(_InvoiseD);
-
+                        context.acc_invoiced.RemoveRange(_InvoiceD);
                     }
                     context.Remove(_Record);
                 }
@@ -745,10 +960,11 @@ namespace Accounts.Repositories
                 {
                     _Record.rec_deleted = "Y";
                 }
-                    context.SaveChanges();
-                    await CommonLib.UpdateMasterInvoiceSummary(this.context, _Record.inv_mbl_id);
-                    RetData.Add("status", true);
-                    RetData.Add("message", "");
+                context.SaveChanges();
+                await CommonLib.UpdateMasterInvoiceSummary(this.context, _Record.inv_mbl_id);
+                await CommonLib.UpdateHouseInvoiceSummary(this.context, _Record.inv_mbl_id);
+                RetData.Add("status", true);
+                RetData.Add("message", "");
                 return RetData;
             }
             catch (Exception)
@@ -772,11 +988,11 @@ namespace Accounts.Repositories
                 }
                 else
                 {
-                    var _InvoiseD = context.acc_invoiced
+                    var _InvoiceD = context.acc_invoiced
                      .Where(c => c.invd_parent_id == id);
-                    if (_InvoiseD.Any())
+                    if (_InvoiceD.Any())
                     {
-                        context.acc_invoiced.RemoveRange(_InvoiseD);
+                        context.acc_invoiced.RemoveRange(_InvoiceD);
 
                     }
                     context.Remove(_Record);
@@ -900,6 +1116,131 @@ namespace Accounts.Repositories
                 .TrackColumn("invd_remarks", "Remarks")
                 .SetRecords(old_records_dto, record_dto.invoiced!)
                 .LogChangesAsync();
+        }
+        public filesm ProcessPdfFileAsync(List<acc_invoiced_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo, List<cargo_container_dto> containerList)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
+
+            InvoicePdfFile bc = new InvoicePdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                Name = searchInfo.ContainsKey("inv_no") ? searchInfo["inv_no"] : "",
+                User_name = user_name,
+                InvType = searchInfo.ContainsKey("inv_type") ? searchInfo["inv_type"] : "",
+                
+                CustomerName = searchInfo.ContainsKey("cust_name") ? searchInfo["cust_name"] : "",
+                CustAddress1 = searchInfo.ContainsKey("cust_address1") ? searchInfo["cust_address1"] : "",
+                CustAddress2 = searchInfo.ContainsKey("cust_address2") ? searchInfo["cust_address2"] : "",
+                CustAddress3 = searchInfo.ContainsKey("cust_address3") ? searchInfo["cust_address3"] : "",
+
+                InvoiceNo = searchInfo.ContainsKey("inv_no") ? searchInfo["inv_no"] : "",
+                InvoiceDate = searchInfo.ContainsKey("inv_date") ? searchInfo["inv_date"] : "",
+                CustomerReference = searchInfo.ContainsKey("inv_cust_refno") ? searchInfo["inv_cust_refno"] : "",
+                OurReference = searchInfo.ContainsKey("our_reference") ? searchInfo["our_reference"] : "",
+                
+                InvMblNo = searchInfo.ContainsKey("mbl_no") ? searchInfo["mbl_no"] : "",
+                InvHblNo = searchInfo.ContainsKey("hbl_no") ? searchInfo["hbl_no"] : "",
+                InvPcs = searchInfo.ContainsKey("inv_pcs") ? searchInfo["inv_pcs"] : "",
+                InvUnit = searchInfo.ContainsKey("inv_uom") ? searchInfo["inv_uom"] : "",
+                InvLBS = searchInfo.ContainsKey("inv_lbs") ? searchInfo["inv_lbs"] : "",
+                InvKGS = searchInfo.ContainsKey("inv_kgs") ? searchInfo["inv_kgs"] : "",
+                InvShipper = searchInfo.ContainsKey("inv_shipper") ? searchInfo["inv_shipper"] : "",
+                InvConsignee = searchInfo.ContainsKey("inv_consignee") ? searchInfo["inv_consignee"] : "",
+                POL = searchInfo.ContainsKey("pol") ? searchInfo["pol"] : "",
+                POD = searchInfo.ContainsKey("pod") ? searchInfo["pod"] : "",
+                InvRemk1 = searchInfo.ContainsKey("inv_remarks1") ? searchInfo["inv_remarks1"] : "",
+                InvRemk2 = searchInfo.ContainsKey("inv_remarks2") ? searchInfo["inv_remarks2"] : "",
+                InvRemk3 = searchInfo.ContainsKey("inv_remarks3") ? searchInfo["inv_remarks3"] : "",
+                Handledby = searchInfo.ContainsKey("handled_by") ? searchInfo["handled_by"] : "",
+                InvTotal = searchInfo.ContainsKey("inv_total") ? searchInfo["inv_total"] : "",
+                InvPaid= searchInfo.ContainsKey("inv_paid") ? searchInfo["inv_paid"] : "",
+                InvCurCode= searchInfo.ContainsKey("inv_cur_code") ? searchInfo["inv_cur_code"] : "",
+                ContainerList = containerList
+
+            };
+            bc.Process();
+
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
+
+            var file = bc.FList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
+        public filesm ProcessExcelFileAsync(List<acc_invoiced_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo, List<cargo_container_dto> containerList)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
+
+            ProcessInvExcelFile bc = new ProcessInvExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                Name = searchInfo.ContainsKey("inv_no") ? searchInfo["inv_no"] : "",
+                User_name = user_name,
+                InvType = searchInfo.ContainsKey("inv_type") ? searchInfo["inv_type"] : "",
+                
+                CustomerName = searchInfo.ContainsKey("cust_name") ? searchInfo["cust_name"] : "",
+                CustAddress1 = searchInfo.ContainsKey("cust_address1") ? searchInfo["cust_address1"] : "",
+                CustAddress2 = searchInfo.ContainsKey("cust_address2") ? searchInfo["cust_address2"] : "",
+                CustAddress3 = searchInfo.ContainsKey("cust_address3") ? searchInfo["cust_address3"] : "",
+
+                InvoiceNo = searchInfo.ContainsKey("inv_no") ? searchInfo["inv_no"] : "",
+                InvoiceDate = searchInfo.ContainsKey("inv_date") ? searchInfo["inv_date"] : "",
+                CustomerReference = searchInfo.ContainsKey("inv_cust_refno") ? searchInfo["inv_cust_refno"] : "",
+                OurReference = searchInfo.ContainsKey("our_reference") ? searchInfo["our_reference"] : "",
+                
+                InvMblNo = searchInfo.ContainsKey("mbl_no") ? searchInfo["mbl_no"] : "",
+                InvHblNo = searchInfo.ContainsKey("hbl_no") ? searchInfo["hbl_no"] : "",
+                InvPcs = searchInfo.ContainsKey("inv_pcs") ? searchInfo["inv_pcs"] : "",
+                InvUnit = searchInfo.ContainsKey("inv_uom") ? searchInfo["inv_uom"] : "",
+                InvLBS = searchInfo.ContainsKey("inv_lbs") ? searchInfo["inv_lbs"] : "",
+                InvKGS = searchInfo.ContainsKey("inv_kgs") ? searchInfo["inv_kgs"] : "",
+                InvShipper = searchInfo.ContainsKey("inv_shipper") ? searchInfo["inv_shipper"] : "",
+                InvConsignee = searchInfo.ContainsKey("inv_consignee") ? searchInfo["inv_consignee"] : "",
+                POL = searchInfo.ContainsKey("pol") ? searchInfo["pol"] : "",
+                POD = searchInfo.ContainsKey("pod") ? searchInfo["pod"] : "",
+                InvRemk1 = searchInfo.ContainsKey("inv_remarks1") ? searchInfo["inv_remarks1"] : "",
+                InvRemk2 = searchInfo.ContainsKey("inv_remarks2") ? searchInfo["inv_remarks2"] : "",
+                InvRemk3 = searchInfo.ContainsKey("inv_remarks3") ? searchInfo["inv_remarks3"] : "",
+                Handledby = searchInfo.ContainsKey("handled_by") ? searchInfo["handled_by"] : "",
+                InvTotal = searchInfo.ContainsKey("inv_total") ? searchInfo["inv_total"] : "",
+                InvPaid= searchInfo.ContainsKey("inv_paid") ? searchInfo["inv_paid"] : "",
+                InvCurCode= searchInfo.ContainsKey("inv_cur_code") ? searchInfo["inv_cur_code"] : "",
+                ContainerList = containerList
+            };
+            bc.Process();
+
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
+
+            var file = bc.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
         }
     }
 }

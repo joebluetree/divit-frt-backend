@@ -340,7 +340,7 @@ namespace SeaImport.Repositories
             {
                 IQueryable<mast_param> query = context.mast_param;
 
-                query = query.Where(f => f.param_type == "SHIPSTAGE OI" && f.param_name == "NIL");
+                query = query.Where(f => f.param_type == "SHIPSTAGE-OI" && f.param_name == "NIL");
 
                 var Record = await query.Select(e => new cargo_sea_importm_dto
                 {
@@ -376,9 +376,10 @@ namespace SeaImport.Repositories
                 context.Database.BeginTransaction();
                 cargo_sea_importm_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await saveCntrAsync(_Record.mbl_id, mode, _Record);
-                // await 
                 _Record.master_cntr = await getCntrAsync(_Record.mbl_id);
                 _Record.master_house = await GetHouseAsync(_Record.mbl_id);
+                await CommonLib.SaveMasterCntrSummary(this.context, _Record.mbl_id, "M");
+                await CommonLib.UpdateHouseInvoiceSummary(this.context, _Record.mbl_id);
                 context.Database.CommitTransaction();
                 return _Record;
             }
@@ -617,7 +618,7 @@ namespace SeaImport.Repositories
                 Record.mbl_45 = record_dto.mbl_45;
                 Record.mbl_teu = record_dto.mbl_teu;
                 Record.mbl_container_tot = record_dto.mbl_container_tot;
-                Record.mbl_cbm_tot = GetCbmTotal(record_dto);
+                Record.mbl_cntr_cbm = GetCbmTotal(record_dto);
 
                 if (mode == "add")
                     await context.cargo_masterm.AddAsync(Record);

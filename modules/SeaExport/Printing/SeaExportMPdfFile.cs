@@ -49,6 +49,7 @@ namespace SeaExport.Printing
 
 
         private int Page_Height = 0;
+        private int MaxRec_Height = 0;
         private int Line_Height = 0;
         private int PageNumber = 0;
         private int Row_Width = 0;
@@ -60,6 +61,8 @@ namespace SeaExport.Printing
         private ColumnFormat Col_Carrier = new();
         private ColumnFormat Col_ShipType = new();
         private ColumnFormat Col_Handled = new();
+        private ColumnFormat Col_Column = new();
+        private ColumnFormat Col_Head_data = new();
 
 
         public SeaExportMPdfFile()
@@ -96,6 +99,7 @@ namespace SeaExport.Printing
         private void Writedocument()
         {
             this.Page_Height = 800;
+            this.MaxRec_Height = 780;
             this.Line_Height = 15;
             this.Row_Default = 35;
             this.Col_Default = 30;
@@ -108,6 +112,9 @@ namespace SeaExport.Printing
             this.Col_Carrier = new ColumnFormat { Left = 315, Width = 85};
             this.Col_ShipType = new ColumnFormat { Left = 400, Width = 60};
             this.Col_Handled = new ColumnFormat { Left = 460, Width = 70};
+
+            this.Col_Column = new ColumnFormat { Left = 105, Width = 10 };// ':' 
+            this.Col_Head_data = new ColumnFormat { Left = 115, Width = 100 };
 
             pdf.CreateDocument(File_Name);
             CreateReport();
@@ -131,7 +138,6 @@ namespace SeaExport.Printing
             foreach (cargo_sea_exportm_dto dr in Dt_List)
             {
                 i++;
-                printHeader = CommonLib.IsPageBreak(Row, Line_Height, Page_Height);
                 BL = CommonLib.IsLastRow(i, recordCount);
                 var format = new TextFormat
                 {
@@ -140,7 +146,7 @@ namespace SeaExport.Printing
                     Indent = true
                 };
 
-                var mbl_ref_date = Lib.FormatDate(Lib.ParseDate(dr.mbl_ref_date!), Lib.DisplayDateFormat);
+                var mbl_ref_date = Lib.FormatDate(Lib.ParseDate(dr.mbl_ref_date!), Lib.DisplayDateFormat) ?? "";
 
                 float codeHeight = pdf.MeasureWrappedTextHeight(Row, Col_Code.Left, Col_Code.Width, Line_Height, dr.mbl_refno!, format);
                 float nameHeight = pdf.MeasureWrappedTextHeight(Row, Col_date.Left, Col_date.Width, Line_Height, mbl_ref_date!, format);
@@ -151,9 +157,15 @@ namespace SeaExport.Printing
                 float handledHeight = pdf.MeasureWrappedTextHeight(Row, Col_Handled.Left, Col_Handled.Width, Line_Height, dr.mbl_handled_name!, format);
 
                 float rowHeight = new[] { codeHeight, nameHeight, mblnoHeight, agentHeight, carrierHeight, handledHeight }.Max();
+                printHeader = CommonLib.IsPageBreak(Row, Lib.StringToInteger(rowHeight.ToString()), MaxRec_Height);
+                if (printHeader)
+                {
+                    WriteFooter();
+                    Row = WriteHeader(Row_Default, Col_Default);
+                }
 
                 pdf.AddText(Row, Col_Code.Left, Col_Code.Width, rowHeight, dr.mbl_refno!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_date.Left, Col_date.Width, rowHeight, mbl_ref_date!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_date.Left, Col_date.Width, rowHeight, mbl_ref_date.ToUpper()!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
                 pdf.AddText(Row, Col_MblNo.Left, Col_MblNo.Width, rowHeight, dr.mbl_no!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
                 pdf.AddText(Row, Col_Agent.Left, Col_Agent.Width, rowHeight, dr.mbl_agent_name!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
                 pdf.AddText(Row, Col_Carrier.Left, Col_Carrier.Width, rowHeight, dr.mbl_liner_name!, new TextFormat { Border = "LT" + BL, FontSize = 9, Indent = true });
@@ -161,10 +173,8 @@ namespace SeaExport.Printing
                 pdf.AddText(Row, Col_Handled.Left, Col_Handled.Width, rowHeight, dr.mbl_handled_name!, new TextFormat { Border = "LTR" + BL, FontSize = 9, Indent = true });
                 
                 Row += rowHeight;
-
-                if (printHeader)
-                    Row = WriteHeader(Row_Default, Col_Default);
             }
+            WriteFooter();
         }
 
         private float WriteHeader(float _Row, float _Col)
@@ -177,8 +187,8 @@ namespace SeaExport.Printing
 
             var currentDate = DbLib.GetDateTime();
             Date = Lib.FormatDate(currentDate, Lib.DisplayDateTimeFormat);
-            FromDate = Lib.FormatDate(Lib.ParseDate(FromDate), Lib.DisplayDateFormat);
-            ToDate = Lib.FormatDate(Lib.ParseDate(ToDate), Lib.DisplayDateFormat);
+            var SFromDate = Lib.FormatDate(Lib.ParseDate(FromDate), Lib.DisplayDateFormat) ?? "";
+            var SToDate = Lib.FormatDate(Lib.ParseDate(ToDate), Lib.DisplayDateFormat) ?? "";
             
             string ptintInfo = $"PRINTED ON : {Date} / {User_name}     PAGE#: {PageNumber}";
 
@@ -188,16 +198,34 @@ namespace SeaExport.Printing
             pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper() + " LIST", new TextFormat { Border = "TB", Style = "B", FontSize = 10 });
             currentY += Line_Height + 3;
             int halfWidth = Row_Width / 2; // to assign From and to date in same row
-            pdf.AddText(currentY, Col, halfWidth, Line_Height, "FROM DATE : " + FromDate, new TextFormat { FontSize = 10 });
-            pdf.AddText(currentY, Col + halfWidth, halfWidth, Line_Height, "TO DATE : " + ToDate, new TextFormat { FontSize = 10 });
-            currentY += Line_Height;
-            pdf.AddText(currentY, Col, halfWidth, Line_Height, "REF # : " + RefNo, new TextFormat { FontSize = 10 });
-            pdf.AddText(currentY, Col + halfWidth, halfWidth, Line_Height, "AGENT : " + Agent, new TextFormat { FontSize = 10 });
-            currentY += Line_Height;
-            pdf.AddText(currentY, Col, halfWidth, Line_Height, "PLACE OF RECIEPT : " + POR, new TextFormat { FontSize = 10 });
-            pdf.AddText(currentY, Col + halfWidth, halfWidth, Line_Height, "PLACE OF DELIVERY : " + POD, new TextFormat { FontSize = 10 });
-            currentY += Line_Height;
-            pdf.AddText(currentY, Col, Row_Width, Line_Height, ptintInfo, new TextFormat { FontSize = 10 });
+                        float LeftY = currentY;
+            pdf.AddText(LeftY, Col, halfWidth, Line_Height, "FROM DATE", new TextFormat { Style = "B", FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { Style = "B", FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Head_data.Left , Col_Head_data.Width , Line_Height, SFromDate.ToUpper(), new TextFormat { Style = "B", FontSize = 10 });
+            LeftY += Line_Height;
+            pdf.AddText(LeftY, Col, halfWidth, Line_Height, "TO DATE", new TextFormat { Style = "B", FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { Style = "B", FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Head_data.Left , Col_Head_data.Width , Line_Height, SToDate.ToUpper(), new TextFormat { Style = "B", FontSize = 10 });
+            LeftY += Line_Height;
+            pdf.AddText(LeftY, Col, halfWidth, Line_Height, "REF #", new TextFormat { Style = "B", FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { Style = "B", FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Head_data.Left , Col_Head_data.Width , Line_Height, RefNo, new TextFormat { Style = "B", FontSize = 10 });
+            
+            float RightY = currentY;
+            var RightCol = Col + halfWidth;
+            pdf.AddText(RightY, RightCol , halfWidth, Line_Height, "AGENT", new TextFormat { Style = "B", FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { Style = "B", FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Head_data.Left , Col_Head_data.Width , Line_Height, Agent, new TextFormat { Style = "B", FontSize = 10 });
+            RightY += Line_Height;
+            pdf.AddText(RightY, RightCol , halfWidth, Line_Height, "PLACE OF RECIEPT", new TextFormat { Style = "B", FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { Style = "B", FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Head_data.Left , Col_Head_data.Width , Line_Height, POR, new TextFormat { Style = "B", FontSize = 10 });
+            RightY += Line_Height;
+            pdf.AddText(RightY, RightCol , halfWidth, Line_Height, "PLACE OF DELIVERY", new TextFormat { Style = "B", FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { Style = "B", FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Head_data.Left , Col_Head_data.Width , Line_Height, POD, new TextFormat { Style = "B", FontSize = 10 });
+
+            currentY = RightY;
             currentY += Line_Height + 5;
 
             // Table Header
@@ -213,6 +241,17 @@ namespace SeaExport.Printing
 
             return currentY;
         }
+        private void WriteFooter()
+        {
+            var currentDate = DbLib.GetDateTime();
+            Date = Lib.FormatDate(currentDate, Lib.DisplayDateTimeFormat);
 
+            string printInfo = $"PRINTED ON : {Date}  BY  {User_name} ";//PAGE#: {PageNumber}
+
+            Row = MaxRec_Height;//for footer print details(fixed)
+            pdf.AddText(Row, Col_Default, Row_Width, Line_Height, printInfo, new TextFormat { Border = "T", FontSize = 9 });
+            Row += Line_Height;
+            pdf.AddText(Row, Col_Default, Row_Width, Line_Height, $"PAGE#: {PageNumber}", new TextFormat { Border = "", FontSize = 9 });
+        }
     }
 }

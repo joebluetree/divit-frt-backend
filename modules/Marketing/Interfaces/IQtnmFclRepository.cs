@@ -16,6 +16,7 @@ namespace Marketing.Interfaces
         Task<mark_qtnm_dto> GetDefaultData(int id);
         Task<mark_qtnm_dto> SaveAsync(int id, string mode, mark_qtnm_dto record);
         Task<mark_qtnm_dto> SaveParentAsync(int id,string mode, mark_qtnm_dto record);
+        Task<Dictionary<string, object>> PrintQuotationAsync(Dictionary<string, object> data);
         Task<Dictionary<string, object>> DeleteAsync(int id);
 
     }

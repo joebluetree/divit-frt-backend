@@ -540,7 +540,9 @@ namespace SeaImport.Repositories
                 cargo_sea_importh_dto _Record = await SaveParentAsync(id, mode, record_dto);
                 _Record = await saveCntrAsync(_Record.hbl_id, mode, _Record);
                 _Record = await SaveCargoDesc(_Record.hbl_id, mode, record_dto);
-                await CommonLib.SaveMasterSummary(this.context, record_dto.hbl_mbl_id);
+                await CommonLib.SaveMasterSummary(this.context, record_dto.hbl_mbl_id, shbl_mode);
+                await CommonLib.SaveHouseCntrSummary(this.context, _Record.hbl_mbl_id, _Record.hbl_id);
+                await CommonLib.UpdateHouseInvoiceSummary(this.context, _Record.hbl_mbl_id);
 
                 _Record.house_cntr = await getCntrAsync(_Record.hbl_id);
 
@@ -854,6 +856,7 @@ namespace SeaImport.Repositories
                 Record.hbl_pickup_date = Lib.ParseDateOnly(record_dto.hbl_pickup_date!);
                 Record.hbl_empty_ret_date = Lib.ParseDateOnly(record_dto.hbl_empty_ret_date!);
                 Record.hbl_delivery_date = Lib.ParseDateOnly(record_dto.hbl_delivery_date!);
+                Record.hbl_container_tot = record_dto.house_cntr!.Count();
 
 
                 if (mode == "add")
@@ -1187,9 +1190,10 @@ namespace SeaImport.Repositories
                     await CommonLib.DeleteDevanInst(context, id, "SEA IMPORT H");
 
                     var mbl_id = _Record.hbl_mbl_id;
+                    var mbl_mode = _Record!.hbl_mode;
                     context.Remove(_Record);
                     context.SaveChanges();
-                    await CommonLib.SaveMasterSummary(this.context, mbl_id);
+                    await CommonLib.SaveMasterSummary(this.context, mbl_id, mbl_mode);
 
                     context.Database.CommitTransaction();
 
