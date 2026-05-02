@@ -127,10 +127,11 @@ namespace Report.Repositories
                     {"mbl_from_date",mbl_from_date!},
                     {"mbl_to_date",mbl_to_date!},
                     {"mbl_mode", mbl_mode!},
-                    {"mbl_agent_name", mbl_agent_name!},
                     {"mbl_shipper_name", mbl_shipper_name!},
                     {"mbl_consignee_name", mbl_consignee_name!},
+                    {"mbl_agent_name", mbl_agent_name!},
                     {"mbl_handled_name", mbl_handled_name!},
+                    {"mbl_user_role", mbl_user_role!},
                     {"rec_created_name", rec_created_name!},
                     {"mbl_format", mbl_format!},
                 };
@@ -423,18 +424,17 @@ namespace Report.Repositories
                         mbl_isf_no = e.hbl_isf_no,
                         mbl_mstatus = e.master.mblstatus!.param_name,
                         mbl_hstatus = e.telexrelease!.param_name,
-                        mbl_is_pl = e.hbl_is_pl,
-                        mbl_is_ci = e.hbl_is_ci,
-                        mbl_is_carr_an = e.hbl_is_carr_an,
+                        mbl_is_pl = e.hbl_is_pl == "Y" ? "YES" : "NO",
+                        mbl_is_ci = e.hbl_is_ci == "Y" ? "YES" : "NO",
+                        mbl_is_carr_an = e.hbl_is_carr_an == "Y" ? "YES" : "NO",
                         mbl_custom_reles_status = e.hbl_custom_reles_status,
                         mbl_frt_status_name = e.hbl_frt_status_name,
-                        mbl_paid_status = e.paidstatus!.param_name + e.hbl_paid_remarks,
+                        mbl_paid_status = $"{e.paidstatus!.param_name} {e.hbl_paid_remarks}",
                         mbl_lfd = Lib.FormatDate(e.hbl_lfd_date, Lib.outputDateFormat),
                         mbl_is_delivery = e.hbl_is_delivery,
                         mbl_packages = e.hbl_packages,
                         mbl_place_final = e.hbl_place_final,
                         hbl_plf_eta = Lib.FormatDate(e.hbl_plf_eta, Lib.outputDateFormat),
-
                         // mbl_carrier_an_recd_dt = Lib.FormatDate(e.mbl_carrier_an_recd_dt, Lib.outputDateFormat),
                         rec_created_by = e.rec_created_by,
                         rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
@@ -491,11 +491,11 @@ namespace Report.Repositories
 
                 RetData.Add("records", Records);
 
-                // if (action == "PDF" || action == "PRINT")
-                // {
-                //     var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo);
-                //     fileDataList.Add(pdfResult);
-                // }
+                if (action == "PDF" || action == "PRINT")
+                {
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(pdfResult);
+                }
                 // if (action == "EXCEL" || action == "PRINT")
                 // {
                 //     var excelResult = ProcessExcelFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo);
@@ -513,44 +513,47 @@ namespace Report.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
-        // public filesm ProcessPdfFileAsync(List<rep_shipmentlog_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo)
-        // {
-        //     var Dt_List = Records;
-        //     if (Dt_List.Count <= 0)
-        //         throw new Exception("Print List Records error");
+        public filesm ProcessPdfFileAsync(List<rep_shipmentlog_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Records error");
 
-        //     pdfFile bc = new PdfFile
-        //     {
-        //         Dt_List = Dt_List,
-        //         Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
-        //         Title = title,
-        //         Company_id = company_id,
-        //         Branch_id = branch_id,
-        //         context = context,
-        //         User_name = user_name,
-        //         FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
-        //         ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
-        //         OpGroup = searchInfo.ContainsKey("mbl_mode") ? searchInfo["mbl_mode"] : "",
-        //         ParentName = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
-        //         AgentName = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
-        //         ShipperName = searchInfo.ContainsKey("mbl_shipper_name") ? searchInfo["mbl_shipper_name"] : "",
-        //         ConsigneeName = searchInfo.ContainsKey("mbl_consignee_name") ? searchInfo["mbl_consignee_name"] : "",
-        //     };
-        //     bc.Process();
+            ShipmentLogPdfFile bc = new ShipmentLogPdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = title,
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                DateType = searchInfo.ContainsKey("mbl_date_type") ? searchInfo["mbl_date_type"] : "",
+                FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
+                OpGroup = searchInfo.ContainsKey("mbl_mode") ? searchInfo["mbl_mode"] : "",
+                ShipperName = searchInfo.ContainsKey("mbl_shipper_name") ? searchInfo["mbl_shipper_name"] : "",
+                ConsigneeName = searchInfo.ContainsKey("mbl_consignee_name") ? searchInfo["mbl_consignee_name"] : "",
+                AgentName = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
+                UserRole = searchInfo.ContainsKey("mbl_user_role") ? searchInfo["mbl_user_role"] : "",
+                handledBy = searchInfo.ContainsKey("mbl_handled_name") ? searchInfo["mbl_handled_name"] : "",
+                CreatedBy = searchInfo.ContainsKey("rec_created_name") ? searchInfo["rec_created_name"] : "",
+            };
+            bc.Process();
 
-        //     if (bc.FList == null || !bc.FList.Any())
-        //         throw new Exception("File generation failed.");
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
 
-        //     var file = bc.FList[0];
+            var file = bc.FList[0];
 
-        //     var record = new filesm
-        //     {
-        //         filepath = file.filename!,
-        //         filename = file.filedisplayname!,
-        //         filetype = file.filetype!
-        //     };
-        //     return record;
-        // }
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
         // public filesm ProcessExcelFileAsync(List<rep_shipmentlog_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo)
         // {
         //     var Dt_List = Records;
@@ -592,3 +595,11 @@ namespace Report.Repositories
         // }
     }
 }
+
+// | (*)-(*) |
+// |    |    |
+// |   ._.   |
+
+//      __________
+//      |:-)||(-:|
+//      ----------
