@@ -14,7 +14,7 @@ using NPOI.SS.Formula.Functions;
 
 namespace Report.Printing
 {
-    public class ShipmentLogPdfFile
+    public class ShipmentLogF2PdfFile
     {
         iPdfBase pdf = null!;
         public List<filesm> FList = new List<filesm>();
@@ -83,7 +83,7 @@ namespace Report.Printing
 
 
 
-        public ShipmentLogPdfFile()
+        public ShipmentLogF2PdfFile()
         {
             pdf = new TextSharpPdf();
             context = _context;

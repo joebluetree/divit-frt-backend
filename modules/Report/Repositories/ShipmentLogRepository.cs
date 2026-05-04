@@ -63,7 +63,7 @@ namespace Report.Repositories
                 var mbl_sort_order = "";
                 var mbl_eta_within = 0;
                 var mbl_pending_ams = "";
-                var mbl_format = "";
+                var mbl_list_format = "";
 
                 var company_id = 0;
                 var branch_id = 0;
@@ -105,8 +105,8 @@ namespace Report.Repositories
                     mbl_eta_within = int.Parse(data["mbl_eta_within"].ToString()!);
                 if (data.ContainsKey("mbl_pending_ams"))
                     mbl_pending_ams = data["mbl_pending_ams"].ToString();
-                if (data.ContainsKey("mbl_format"))
-                    mbl_format = data["mbl_format"].ToString();
+                if (data.ContainsKey("mbl_list_format"))
+                    mbl_list_format = data["mbl_list_format"].ToString();
 
                 company_id = Lib.GetValidIntValue(data!, "rec_company_id", "Company Id Not Found");
                 branch_id = Lib.GetValidIntValue(data!, "rec_branch_id", "Branch Id Not Found");
@@ -133,7 +133,7 @@ namespace Report.Repositories
                     {"mbl_handled_name", mbl_handled_name!},
                     {"mbl_user_role", mbl_user_role!},
                     {"rec_created_name", rec_created_name!},
-                    {"mbl_format", mbl_format!},
+                    {"mbl_list_format", mbl_list_format!},
                 };
 
                 List<rep_shipmentlog_dto> Records = new List<rep_shipmentlog_dto>();
@@ -493,7 +493,7 @@ namespace Report.Repositories
 
                 if (action == "PDF" || action == "PRINT")
                 {
-                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo);
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo, mbl_list_format!);
                     fileDataList.Add(pdfResult);
                 }
                 // if (action == "EXCEL" || action == "PRINT")
@@ -513,38 +513,91 @@ namespace Report.Repositories
                 throw new Exception(Ex.Message.ToString());
             }
         }
-        public filesm ProcessPdfFileAsync(List<rep_shipmentlog_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        public filesm ProcessPdfFileAsync(List<rep_shipmentlog_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo, string mbl_list_format)
         {
             var Dt_List = Records;
             if (Dt_List.Count <= 0)
                 throw new Exception("Print List Records error");
+            object bc = null!;
 
-            ShipmentLogPdfFile bc = new ShipmentLogPdfFile
+            if (mbl_list_format == null)
+                throw new Exception("Print Format List Records error");
+            if (mbl_list_format == "F1")
             {
-                Dt_List = Dt_List,
-                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
-                Title = title,
-                Company_id = company_id,
-                Branch_id = branch_id,
-                context = context,
-                User_name = user_name,
-                DateType = searchInfo.ContainsKey("mbl_date_type") ? searchInfo["mbl_date_type"] : "",
-                FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
-                ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
-                OpGroup = searchInfo.ContainsKey("mbl_mode") ? searchInfo["mbl_mode"] : "",
-                ShipperName = searchInfo.ContainsKey("mbl_shipper_name") ? searchInfo["mbl_shipper_name"] : "",
-                ConsigneeName = searchInfo.ContainsKey("mbl_consignee_name") ? searchInfo["mbl_consignee_name"] : "",
-                AgentName = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
-                UserRole = searchInfo.ContainsKey("mbl_user_role") ? searchInfo["mbl_user_role"] : "",
-                handledBy = searchInfo.ContainsKey("mbl_handled_name") ? searchInfo["mbl_handled_name"] : "",
-                CreatedBy = searchInfo.ContainsKey("rec_created_name") ? searchInfo["rec_created_name"] : "",
-            };
-            bc.Process();
+                bc = new ShipmentLogF1PdfFile //ShipmentLogF1PdfFile
+                {
+                    Dt_List = Dt_List,
+                    Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                    Title = title,
+                    Company_id = company_id,
+                    Branch_id = branch_id,
+                    context = context,
+                    User_name = user_name,
+                    DateType = searchInfo.ContainsKey("mbl_date_type") ? searchInfo["mbl_date_type"] : "",
+                    FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                    ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
+                    OpGroup = searchInfo.ContainsKey("mbl_mode") ? searchInfo["mbl_mode"] : "",
+                    ShipperName = searchInfo.ContainsKey("mbl_shipper_name") ? searchInfo["mbl_shipper_name"] : "",
+                    ConsigneeName = searchInfo.ContainsKey("mbl_consignee_name") ? searchInfo["mbl_consignee_name"] : "",
+                    AgentName = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
+                    UserRole = searchInfo.ContainsKey("mbl_user_role") ? searchInfo["mbl_user_role"] : "",
+                    handledBy = searchInfo.ContainsKey("mbl_handled_name") ? searchInfo["mbl_handled_name"] : "",
+                    CreatedBy = searchInfo.ContainsKey("rec_created_name") ? searchInfo["rec_created_name"] : "",
+                };
+            }
+            if (mbl_list_format == "F2")
+            {
+                bc = new ShipmentLogF2PdfFile //ShipmentLogF2PdfFile 
+                {
+                    Dt_List = Dt_List,
+                    Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                    Title = title,
+                    Company_id = company_id,
+                    Branch_id = branch_id,
+                    context = context,
+                    User_name = user_name,
+                    DateType = searchInfo.ContainsKey("mbl_date_type") ? searchInfo["mbl_date_type"] : "",
+                    FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                    ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
+                    OpGroup = searchInfo.ContainsKey("mbl_mode") ? searchInfo["mbl_mode"] : "",
+                    ShipperName = searchInfo.ContainsKey("mbl_shipper_name") ? searchInfo["mbl_shipper_name"] : "",
+                    ConsigneeName = searchInfo.ContainsKey("mbl_consignee_name") ? searchInfo["mbl_consignee_name"] : "",
+                    AgentName = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
+                    UserRole = searchInfo.ContainsKey("mbl_user_role") ? searchInfo["mbl_user_role"] : "",
+                    handledBy = searchInfo.ContainsKey("mbl_handled_name") ? searchInfo["mbl_handled_name"] : "",
+                    CreatedBy = searchInfo.ContainsKey("rec_created_name") ? searchInfo["rec_created_name"] : "",
+                };
+            }
+            if (mbl_list_format == "F3")
+            {
+                bc = new ShipmentLogF2PdfFile //ShipmentLogF2PdfFile 
+                {
+                    Dt_List = Dt_List,
+                    Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                    Title = title,
+                    Company_id = company_id,
+                    Branch_id = branch_id,
+                    context = context,
+                    User_name = user_name,
+                    DateType = searchInfo.ContainsKey("mbl_date_type") ? searchInfo["mbl_date_type"] : "",
+                    FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                    ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
+                    OpGroup = searchInfo.ContainsKey("mbl_mode") ? searchInfo["mbl_mode"] : "",
+                    ShipperName = searchInfo.ContainsKey("mbl_shipper_name") ? searchInfo["mbl_shipper_name"] : "",
+                    ConsigneeName = searchInfo.ContainsKey("mbl_consignee_name") ? searchInfo["mbl_consignee_name"] : "",
+                    AgentName = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
+                    UserRole = searchInfo.ContainsKey("mbl_user_role") ? searchInfo["mbl_user_role"] : "",
+                    handledBy = searchInfo.ContainsKey("mbl_handled_name") ? searchInfo["mbl_handled_name"] : "",
+                    CreatedBy = searchInfo.ContainsKey("rec_created_name") ? searchInfo["rec_created_name"] : "",
+                };
+            }
+            dynamic pdf = bc!;
+            pdf.Process();
 
-            if (bc.FList == null || !bc.FList.Any())
+            if (pdf.FList == null || pdf.FList.Count == 0)
                 throw new Exception("File generation failed.");
 
-            var file = bc.FList[0];
+            var file = pdf.FList[0];
 
             var record = new filesm
             {
@@ -595,11 +648,3 @@ namespace Report.Repositories
         // }
     }
 }
-
-// | (*)-(*) |
-// |    |    |
-// |   ._.   |
-
-//      __________
-//      |:-)||(-:|
-//      ----------
