@@ -35,6 +35,7 @@ namespace Common.DTO.Report
         public string? mbl_paid_status { get; set; } = "";
         public string? mbl_lfd { get; set; } = "";
         public string? hbl_plf_eta { get; set; } = "";
+        public int? mbl_eta_rem { get; set; } = 0;
         public string? mbl_is_delivery { get; set; } = "";
         public int? mbl_packages { get; set; } = 0;
         public string? mbl_place_final { get; set; } = "";

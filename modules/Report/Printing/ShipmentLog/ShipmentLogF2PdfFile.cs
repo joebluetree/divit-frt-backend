@@ -153,7 +153,7 @@ namespace Report.Printing
                 
                 var format = new TextFormat
                 {
-                    FontSize = 9,
+                    FontSize = 7,
                     Style = "J",
                     Indent = true
                 };
@@ -189,61 +189,59 @@ namespace Report.Printing
 
                 if(OpGroup == "SEA EXPORT")
                 {
-                    pdf.AddText(Row, Col_RefNo.Left, Col_RefNo.Width, rowHeight, dr.mbl_refno!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_HouseNo.Left, Col_HouseNo.Width, rowHeight, dr.mbl_houseno!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ShipStage.Left, Col_ShipStage.Width, rowHeight, dr.mbl_shipstage!.ToUpper(), new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_Carrier.Left, Col_Carrier.Width, rowHeight, dr.mbl_liner_name!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_Consignee.Left, Col_Consignee.Width, rowHeight, dr.mbl_consignee_name!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_CntrType.Left, Col_CntrType.Width, rowHeight, dr.mbl_cntr_type!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ETD.Left, Col_ETD.Width, rowHeight, mbl_etd.ToUpper(), new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_FRStatus.Left, Col_FRStatus.Width, rowHeight, dr.mbl_frt_status_name!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ETA.Left, Col_ETA.Width, rowHeight, mbl_eta.ToUpper()!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_RefNo.Left, Col_RefNo.Width, rowHeight, dr.mbl_refno!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_HouseNo.Left, Col_HouseNo.Width, rowHeight, dr.mbl_houseno!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ShipStage.Left, Col_ShipStage.Width, rowHeight, dr.mbl_shipstage!.ToUpper(), new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_Carrier.Left, Col_Carrier.Width, rowHeight, dr.mbl_liner_name!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_Consignee.Left, Col_Consignee.Width, rowHeight, dr.mbl_consignee_name!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_CntrType.Left, Col_CntrType.Width, rowHeight, dr.mbl_cntr_type!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ETD.Left, Col_ETD.Width, rowHeight, mbl_etd.ToUpper(), new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_FRStatus.Left, Col_FRStatus.Width, rowHeight, dr.mbl_frt_status_name!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ETA.Left, Col_ETA.Width, rowHeight, mbl_eta.ToUpper()!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
                 }
                 if(OpGroup == "SEA IMPORT")
                 {
-                    pdf.AddText(Row, Col_RefNo.Left, Col_RefNo.Width, rowHeight, dr.mbl_refno!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_HouseNo.Left, Col_HouseNo.Width, rowHeight, dr.mbl_houseno!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ShipStage.Left, Col_ShipStage.Width, rowHeight, dr.mbl_shipstage!.ToUpper(), new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_Carrier.Left, Col_Carrier.Width, rowHeight, dr.mbl_liner_name!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_Consignee.Left, Col_Consignee.Width, rowHeight, dr.mbl_consignee_name!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_CntrType.Left, Col_CntrType.Width, rowHeight, dr.mbl_cntr_type!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ETD.Left, Col_ETD.Width, rowHeight, mbl_etd.ToUpper(), new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_Mrls.Left, Col_Mrls.Width, rowHeight, dr.mbl_mstatus!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_CarAn.Left, Col_CarAn.Width, rowHeight, dr.mbl_is_carr_an!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_CRStatus.Left, Col_CRStatus.Width, rowHeight, dr.mbl_custom_reles_status!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_FRStatus.Left, Col_FRStatus.Width, rowHeight, dr.mbl_frt_status_name!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ClientPaid.Left, Col_ClientPaid.Width, rowHeight, dr.mbl_paid_status!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ETA.Left, Col_ETA.Width, rowHeight, mbl_eta.ToUpper()!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_RefNo.Left, Col_RefNo.Width, rowHeight, dr.mbl_refno!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_HouseNo.Left, Col_HouseNo.Width, rowHeight, dr.mbl_houseno!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ShipStage.Left, Col_ShipStage.Width, rowHeight, dr.mbl_shipstage!.ToUpper(), new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_Carrier.Left, Col_Carrier.Width, rowHeight, dr.mbl_liner_name!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_Consignee.Left, Col_Consignee.Width, rowHeight, dr.mbl_consignee_name!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_CntrType.Left, Col_CntrType.Width, rowHeight, dr.mbl_cntr_type!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ETD.Left, Col_ETD.Width, rowHeight, mbl_etd.ToUpper(), new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_Mrls.Left, Col_Mrls.Width, rowHeight, dr.mbl_mstatus!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_CarAn.Left, Col_CarAn.Width, rowHeight, dr.mbl_is_carr_an!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_CRStatus.Left, Col_CRStatus.Width, rowHeight, dr.mbl_custom_reles_status!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_FRStatus.Left, Col_FRStatus.Width, rowHeight, dr.mbl_frt_status_name!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ClientPaid.Left, Col_ClientPaid.Width, rowHeight, dr.mbl_paid_status!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ETA.Left, Col_ETA.Width, rowHeight, mbl_eta.ToUpper()!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
                 }
-                if(OpGroup == "AIR EXPORT")
+                if(OpGroup == "AIR EXPORT" || OpGroup == "OTHERS")
                 {
-                    pdf.AddText(Row, Col_RefNo.Left, Col_RefNo.Width, rowHeight, dr.mbl_refno!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_HouseNo.Left, Col_HouseNo.Width, rowHeight, dr.mbl_houseno!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ShipStage.Left, Col_ShipStage.Width, rowHeight, dr.mbl_shipstage!.ToUpper(), new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_Carrier.Left, Col_Carrier.Width, rowHeight, dr.mbl_liner_name!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_Consignee.Left, Col_Consignee.Width, rowHeight, dr.mbl_consignee_name!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ETD.Left, Col_ETD.Width, rowHeight, mbl_etd.ToUpper(), new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ETA.Left, Col_ETA.Width, rowHeight, mbl_eta.ToUpper()!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    // pdf.AddText(Row, Col_LFD.Left, Col_LFD.Width, rowHeight, mbl_lfd.ToUpper()!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    // pdf.AddText(Row, Col_DeliveryDate.Left, Col_DeliveryDate.Width, rowHeight, mbl_delivery_date.ToUpper()!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_RefNo.Left, Col_RefNo.Width, rowHeight, dr.mbl_refno!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_HouseNo.Left, Col_HouseNo.Width, rowHeight, dr.mbl_houseno!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ShipStage.Left, Col_ShipStage.Width, rowHeight, dr.mbl_shipstage!.ToUpper(), new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_Carrier.Left, Col_Carrier.Width, rowHeight, dr.mbl_liner_name!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_Consignee.Left, Col_Consignee.Width, rowHeight, dr.mbl_consignee_name!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ETD.Left, Col_ETD.Width, rowHeight, mbl_etd.ToUpper(), new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ETA.Left, Col_ETA.Width, rowHeight, mbl_eta.ToUpper()!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
                 }
                 if(OpGroup == "AIR IMPORT")
                 {
-                    pdf.AddText(Row, Col_RefNo.Left, Col_RefNo.Width, rowHeight, dr.mbl_refno!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_HouseNo.Left, Col_HouseNo.Width, rowHeight, dr.mbl_houseno!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ShipStage.Left, Col_ShipStage.Width, rowHeight, dr.mbl_shipstage!.ToUpper(), new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_Carrier.Left, Col_Carrier.Width, rowHeight, dr.mbl_liner_name!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_Consignee.Left, Col_Consignee.Width, rowHeight, dr.mbl_consignee_name!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ETD.Left, Col_ETD.Width, rowHeight, mbl_etd.ToUpper(), new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_pl.Left, Col_pl.Width, rowHeight, dr.mbl_is_pl!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ci.Left, Col_ci.Width, rowHeight, dr.mbl_is_ci!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_CarAn.Left, Col_CarAn.Width, rowHeight, dr.mbl_is_carr_an!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_CRStatus.Left, Col_CRStatus.Width, rowHeight, dr.mbl_custom_reles_status!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_FRStatus.Left, Col_FRStatus.Width, rowHeight, dr.mbl_frt_status_name!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ClientPaid.Left, Col_ClientPaid.Width, rowHeight, dr.mbl_paid_status!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    pdf.AddText(Row, Col_ETA.Left, Col_ETA.Width, rowHeight, mbl_eta.ToUpper()!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    // pdf.AddText(Row, Col_LFD.Left, Col_LFD.Width, rowHeight, mbl_lfd.ToUpper()!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                    // pdf.AddText(Row, Col_DeliveryDate.Left, Col_DeliveryDate.Width, rowHeight, mbl_delivery_date.ToUpper()!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_RefNo.Left, Col_RefNo.Width, rowHeight, dr.mbl_refno!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_HouseNo.Left, Col_HouseNo.Width, rowHeight, dr.mbl_houseno!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ShipStage.Left, Col_ShipStage.Width, rowHeight, dr.mbl_shipstage!.ToUpper(), new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_Carrier.Left, Col_Carrier.Width, rowHeight, dr.mbl_liner_name!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_Consignee.Left, Col_Consignee.Width, rowHeight, dr.mbl_consignee_name!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ETD.Left, Col_ETD.Width, rowHeight, mbl_etd.ToUpper(), new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_pl.Left, Col_pl.Width, rowHeight, dr.mbl_is_pl!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ci.Left, Col_ci.Width, rowHeight, dr.mbl_is_ci!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_CarAn.Left, Col_CarAn.Width, rowHeight, dr.mbl_is_carr_an!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_CRStatus.Left, Col_CRStatus.Width, rowHeight, dr.mbl_custom_reles_status!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_FRStatus.Left, Col_FRStatus.Width, rowHeight, dr.mbl_frt_status_name!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ClientPaid.Left, Col_ClientPaid.Width, rowHeight, dr.mbl_paid_status!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                    pdf.AddText(Row, Col_ETA.Left, Col_ETA.Width, rowHeight, mbl_eta.ToUpper()!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                    // pdf.AddText(Row, Col_LFD.Left, Col_LFD.Width, rowHeight, mbl_lfd.ToUpper()!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                    // pdf.AddText(Row, Col_DeliveryDate.Left, Col_DeliveryDate.Width, rowHeight, mbl_delivery_date.ToUpper()!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
                 }
                 
                 Row += rowHeight;
@@ -346,7 +344,6 @@ namespace Report.Printing
                 pdf.AddText(currentY, Col_FRStatus.Left, Col_FRStatus.Width, Line_Height, "FR-STATUS", new TextFormat { Border = "TB", Style = "B", FontSize = hedFontSize, Indent = true });
                 // pdf.AddText(currentY, Col_ClientPaid.Left, Col_ClientPaid.Width, Line_Height, "PAID", new TextFormat { Border = "TB", Style = "B", FontSize = hedFontSize, Indent = true });
                 pdf.AddText(currentY, Col_ETA.Left, Col_ETA.Width, Line_Height, "ETA", new TextFormat { Border = "TB", Style = "B", FontSize = hedFontSize, Indent = true });
-                // pdf.AddText(currentY, Col_Delivery.Left, Col_Delivery.Width, Line_Height, "DELIVERY", new TextFormat { Border = "TB", Style = "B", FontSize = hedFontSize, Indent = true }); //y/n
             }
             if(OpGroup == "SEA IMPORT")
             {   
@@ -379,7 +376,7 @@ namespace Report.Printing
                 pdf.AddText(currentY, Col_ETA.Left, Col_ETA.Width, Line_Height, "ETA", new TextFormat { Border = "TB", Style = "B", FontSize = hedFontSize, Indent = true });
                 // pdf.AddText(currentY, Col_Delivery.Left, Col_Delivery.Width, Line_Height, "DELIVERY", new TextFormat { Border = "TB", Style = "B", FontSize = hedFontSize, Indent = true }); //y/n
             }
-            if(OpGroup == "AIR EXPORT")
+            if(OpGroup == "AIR EXPORT" || OpGroup == "OTHERS")
             {   
                 this.Col_RefNo = new ColumnFormat { Left = 30, Width = 60 };
                 this.Col_HouseNo = new ColumnFormat { Left = 90, Width = 90 };

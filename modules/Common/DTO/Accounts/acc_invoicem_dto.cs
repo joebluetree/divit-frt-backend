@@ -55,6 +55,7 @@ namespace Common.DTO.Accounts
         public string? inv_loss_approved { get; set; }
         public string? inv_profit_req { get; set; }
         public string? inv_bo_status { get; set; }
+        public string? inv_bo_attended_code { get; set; }
         public decimal? inv_inc_total { get; set; }
         public decimal? inv_exp_total { get; set; }
         public decimal? inv_revenue { get; set; }

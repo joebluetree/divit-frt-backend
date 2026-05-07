@@ -594,6 +594,7 @@ namespace SeaImport.Repositories
                 Record.mbl_vessel_name = record_dto.mbl_vessel_name;
                 Record.mbl_voyage = record_dto.mbl_voyage;
                 Record.mbl_status_id = record_dto.mbl_status_id;
+                Record.mbl_is_sea_waybill = record_dto.mbl_is_sea_waybill;
                 Record.mbl_ombl_sent_on = Lib.ParseDateOnly(record_dto.mbl_of_sent_on!);
                 Record.mbl_ombl_sent_ampm = record_dto.mbl_ombl_sent_ampm;
                 Record.mbl_of_sent_on = Lib.ParseDateOnly(record_dto.mbl_of_sent_on!);
@@ -642,10 +643,9 @@ namespace SeaImport.Repositories
 
                 return record_dto;
             }
-            catch (Exception)
+            catch (Exception Ex)
             {
-                // throw new Exception(Ex.Message.ToString());
-                throw;
+                throw new Exception(Ex.Message.ToString());
             }
 
         }

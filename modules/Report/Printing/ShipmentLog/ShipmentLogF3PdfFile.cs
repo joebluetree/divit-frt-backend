@@ -148,7 +148,7 @@ namespace Report.Printing
                 
                 var format = new TextFormat
                 {
-                    FontSize = 9,
+                    FontSize = 8,
                     Style = "J",
                     Indent = true
                 };
@@ -178,17 +178,17 @@ namespace Report.Printing
                 var mbl_delivery_date = Lib.FormatDate(Lib.ParseDate(dr.hbl_plf_eta!), Lib.DisplayDateFormat) ?? "";
                 int detFontSize = 8;
 
-                pdf.AddText(Row, Col_RefNo.Left, Col_RefNo.Width, rowHeight, dr.mbl_refno!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                pdf.AddText(Row, Col_HouseNo.Left, Col_HouseNo.Width, rowHeight, dr.mbl_houseno!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                pdf.AddText(Row, Col_Shipper.Left, Col_Shipper.Width, rowHeight, dr.mbl_shipper_name!.ToUpper(), new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                pdf.AddText(Row, Col_Consignee.Left, Col_Consignee.Width, rowHeight, dr.mbl_consignee_name!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                pdf.AddText(Row, Col_CntrType.Left, Col_CntrType.Width, rowHeight, dr.mbl_cntr_type!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                pdf.AddText(Row, Col_pkgs.Left, Col_pkgs.Width, rowHeight, dr.mbl_packages!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                pdf.AddText(Row, Col_FinalDest.Left, Col_FinalDest.Width, rowHeight, dr.mbl_place_final!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                pdf.AddText(Row, Col_ETA.Left, Col_ETA.Width, rowHeight, mbl_etd.ToUpper()!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                pdf.AddText(Row, Col_ClientPaid.Left, Col_ClientPaid.Width, rowHeight, dr.mbl_paid_status!, new TextFormat { Border = BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
-                pdf.AddText(Row, Col_ETA.Left, Col_ETA.Width, rowHeight, mbl_eta.ToUpper()!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
-                pdf.AddText(Row, Col_LFD.Left, Col_LFD.Width, rowHeight, mbl_lfd.ToUpper()!, new TextFormat { Border = BL, Style = "", FontSize = detFontSize, Indent = true });
+                pdf.AddText(Row, Col_RefNo.Left, Col_RefNo.Width, rowHeight, dr.mbl_refno!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                pdf.AddText(Row, Col_HouseNo.Left, Col_HouseNo.Width, rowHeight, dr.mbl_houseno!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                pdf.AddText(Row, Col_Shipper.Left, Col_Shipper.Width, rowHeight, dr.mbl_shipper_name!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                pdf.AddText(Row, Col_Consignee.Left, Col_Consignee.Width, rowHeight, dr.mbl_consignee_name!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                pdf.AddText(Row, Col_CntrType.Left, Col_CntrType.Width, rowHeight, dr.mbl_cntr_type!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                pdf.AddText(Row, Col_pkgs.Left, Col_pkgs.Width, rowHeight, dr.mbl_packages!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                pdf.AddText(Row, Col_FinalDest.Left, Col_FinalDest.Width, rowHeight, dr.mbl_place_final!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                pdf.AddText(Row, Col_ETD.Left, Col_ETD.Width, rowHeight, mbl_etd.ToUpper()!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                pdf.AddText(Row, Col_ClientPaid.Left, Col_ClientPaid.Width, rowHeight, dr.mbl_paid_status!, new TextFormat { Border = "b" + BL, Style = "" + ST, FontSize = detFontSize, Indent = true });
+                pdf.AddText(Row, Col_ETA.Left, Col_ETA.Width, rowHeight, mbl_eta.ToUpper()!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
+                pdf.AddText(Row, Col_LFD.Left, Col_LFD.Width, rowHeight, mbl_lfd.ToUpper()!, new TextFormat { Border = "b" + BL, Style = "", FontSize = detFontSize, Indent = true });
 
                 Row += rowHeight;
             }
@@ -264,24 +264,24 @@ namespace Report.Printing
             int hedFontSize = 9;
 
 
-            this.Col_RefNo = new ColumnFormat { Left = 30, Width = 70 };
-            this.Col_HouseNo = new ColumnFormat { Left = 100, Width = 90 };
-            this.Col_Shipper = new ColumnFormat { Left = 190, Width = 120 };
+            this.Col_RefNo = new ColumnFormat { Left = 30, Width = 60 };
+            this.Col_HouseNo = new ColumnFormat { Left = 90, Width = 90 };
+            this.Col_Shipper = new ColumnFormat { Left = 180, Width = 110 };
             if(OpGroup == "SEA EXPORT" || OpGroup == "SEA IMPORT")
             {
-                this.Col_Consignee = new ColumnFormat { Left = 310, Width = 110 };
-                this.Col_CntrType = new ColumnFormat { Left = 420, Width = 60 };   
+                this.Col_Consignee = new ColumnFormat { Left = 290, Width = 110 };
+                this.Col_CntrType = new ColumnFormat { Left = 400, Width = 55 };   
             }
-            if(OpGroup == "AIR EXPORT" || OpGroup == "AIR IMPORT")
+            if(OpGroup == "AIR EXPORT" || OpGroup == "AIR IMPORT" || OpGroup == "OTHERS" )
             {
-                this.Col_Consignee = new ColumnFormat { Left = 310, Width = 170 };
+                this.Col_Consignee = new ColumnFormat { Left = 290, Width = 165 };
             }
-            this.Col_pkgs = new ColumnFormat { Left = 480, Width = 50 };
-            this.Col_FinalDest = new ColumnFormat { Left = 530, Width = 100 };
-            this.Col_ETD = new ColumnFormat { Left = 630, Width = 50 };
-            this.Col_ClientPaid = new ColumnFormat { Left = 680, Width = 60 };
-            this.Col_ETA = new ColumnFormat { Left = 740, Width = 50 };
-            this.Col_LFD = new ColumnFormat { Left = 790, Width = 50 };
+            this.Col_pkgs = new ColumnFormat { Left = 455, Width = 40 };
+            this.Col_FinalDest = new ColumnFormat { Left = 495, Width = 95 };
+            this.Col_ETD = new ColumnFormat { Left = 590, Width = 60 };
+            this.Col_ClientPaid = new ColumnFormat { Left = 650, Width = 60 };
+            this.Col_ETA = new ColumnFormat { Left = 710, Width = 60 };
+            this.Col_LFD = new ColumnFormat { Left = 770, Width = 60 };
 
             pdf.AddText(currentY, Col_RefNo.Left, Col_RefNo.Width, Line_Height, "REFNO", new TextFormat { Border = "TB", Style = "B", FontSize = hedFontSize, Indent = true });
             pdf.AddText(currentY, Col_HouseNo.Left, Col_HouseNo.Width, Line_Height, "HOUSE#", new TextFormat { Border = "TB", Style = "B", FontSize = hedFontSize, Indent = true });

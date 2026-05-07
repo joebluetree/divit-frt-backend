@@ -77,7 +77,7 @@ namespace Database.Models.Cargo
         public string? mbl_it_tot { get; set; }
         public int? mbl_incoterm_id { get; set; } 
         public string? mbl_bo_attended_code { get; set; }
-        public DateOnly? mbl_bo_attended_date { get; set; }
+        public DateTime? mbl_bo_attended_date { get; set; }
         public string? mbl_house_nos { get; set; }
         public DateOnly? mbl_carrier_an_recd_dt { get; set; }
         public DateOnly? mbl_an_sent_dt { get; set; }

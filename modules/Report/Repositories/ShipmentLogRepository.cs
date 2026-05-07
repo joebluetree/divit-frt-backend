@@ -108,6 +108,13 @@ namespace Report.Repositories
                 if (data.ContainsKey("mbl_list_format"))
                     mbl_list_format = data["mbl_list_format"].ToString();
 
+                if(action == "Pending A/N")
+                {
+                    mbl_stages = "STAGE2";
+                    mbl_is_master = "N";
+                    mbl_is_house = "Y";
+                }
+
                 company_id = Lib.GetValidIntValue(data!, "rec_company_id", "Company Id Not Found");
                 branch_id = Lib.GetValidIntValue(data!, "rec_branch_id", "Branch Id Not Found");
 
@@ -138,7 +145,7 @@ namespace Report.Repositories
 
                 List<rep_shipmentlog_dto> Records = new List<rep_shipmentlog_dto>();
 
-                if (mbl_is_master == "Y" && mbl_mode != "OTHERS")
+                if (mbl_is_master == "Y")
                 {
                     IQueryable<cargo_masterm> query = context.cargo_masterm
                         .Include(h => h.shipper)
@@ -284,7 +291,7 @@ namespace Report.Repositories
                     Records.AddRange(MRecords);
                 }
 
-                if (mbl_is_house == "Y")
+                if (mbl_is_house == "Y" && mbl_mode != "OTHERS")
                 {
                     IQueryable<cargo_housem> query = context.cargo_housem
                         .Include(h => h.shipper)
@@ -434,8 +441,9 @@ namespace Report.Repositories
                         mbl_is_delivery = e.hbl_is_delivery,
                         mbl_packages = e.hbl_packages,
                         mbl_place_final = e.hbl_place_final,
-                        hbl_plf_eta = Lib.FormatDate(e.hbl_plf_eta, Lib.outputDateFormat),
-                        // mbl_carrier_an_recd_dt = Lib.FormatDate(e.mbl_carrier_an_recd_dt, Lib.outputDateFormat),
+                        hbl_plf_eta = Lib.FormatDate(e.hbl_plf_eta, Lib.outputDateFormat),// delivery date
+                        mbl_eta_rem = e.master.mbl_pod_eta.HasValue ? (e.master.mbl_pod_eta.Value.DayNumber - DateOnly.FromDateTime(DbLib.GetDateTime()).DayNumber) : 0,
+                        // mbl_carrier_an_recd_dt = Lib.FormatDate(e.hbl_carrier_an_recd_dt, Lib.outputDateFormat),
                         rec_created_by = e.rec_created_by,
                         rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
                         rec_edited_by = e.rec_edited_by,
@@ -496,11 +504,11 @@ namespace Report.Repositories
                     var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo, mbl_list_format!);
                     fileDataList.Add(pdfResult);
                 }
-                // if (action == "EXCEL" || action == "PRINT")
-                // {
-                //     var excelResult = ProcessExcelFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo);
-                //     fileDataList.Add(excelResult);
-                // }
+                if (action == "EXCEL" || action == "PRINT")
+                {
+                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo, mbl_list_format!);
+                    fileDataList.Add(excelResult);
+                }
 
                 RetData.Add("fileData", fileDataList);
                 RetData.Add("action", action);
@@ -521,7 +529,7 @@ namespace Report.Repositories
             object bc = null!;
 
             if (mbl_list_format == null)
-                throw new Exception("Print Format List Records error");
+                throw new Exception("Print List Format error");
             if (mbl_list_format == "F1")
             {
                 bc = new ShipmentLogF1PdfFile //ShipmentLogF1PdfFile
@@ -570,7 +578,7 @@ namespace Report.Repositories
             }
             if (mbl_list_format == "F3")
             {
-                bc = new ShipmentLogF2PdfFile //ShipmentLogF2PdfFile 
+                bc = new ShipmentLogF3PdfFile //ShipmentLogF3PdfFile 
                 {
                     Dt_List = Dt_List,
                     Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
@@ -591,6 +599,8 @@ namespace Report.Repositories
                     CreatedBy = searchInfo.ContainsKey("rec_created_name") ? searchInfo["rec_created_name"] : "",
                 };
             }
+            if (bc == null)
+                throw new Exception("File generation error");
             dynamic pdf = bc!;
             pdf.Process();
 
@@ -607,35 +617,146 @@ namespace Report.Repositories
             };
             return record;
         }
-        // public filesm ProcessExcelFileAsync(List<rep_shipmentlog_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        public filesm ProcessExcelFileAsync(List<rep_shipmentlog_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo, string mbl_list_format)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
+
+            object bc = null!;
+
+            if (mbl_list_format == null)
+                throw new Exception("Print List Format error");
+            if (mbl_list_format == "F1")
+            {
+                bc = new ShipmentLogF1ExcelFile
+                {
+                    Dt_List = Dt_List,
+                    report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                    Title = title,
+                    Company_id = company_id,
+                    Branch_id = branch_id,
+                    context = context,
+                    User_name = user_name,
+                    DateType = searchInfo.ContainsKey("mbl_date_type") ? searchInfo["mbl_date_type"] : "",
+                    FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                    ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
+                    OpGroup = searchInfo.ContainsKey("mbl_mode") ? searchInfo["mbl_mode"] : "",
+                    ShipperName = searchInfo.ContainsKey("mbl_shipper_name") ? searchInfo["mbl_shipper_name"] : "",
+                    ConsigneeName = searchInfo.ContainsKey("mbl_consignee_name") ? searchInfo["mbl_consignee_name"] : "",
+                    AgentName = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
+                    UserRole = searchInfo.ContainsKey("mbl_user_role") ? searchInfo["mbl_user_role"] : "",
+                    handledBy = searchInfo.ContainsKey("mbl_handled_name") ? searchInfo["mbl_handled_name"] : "",
+                    CreatedBy = searchInfo.ContainsKey("rec_created_name") ? searchInfo["rec_created_name"] : "",
+                };
+            }
+            if (mbl_list_format == "F2")
+            {
+                bc = new ShipmentLogF2ExcelFile
+                {
+                    Dt_List = Dt_List,
+                    report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                    Title = title,
+                    Company_id = company_id,
+                    Branch_id = branch_id,
+                    context = context,
+                    User_name = user_name,
+                    DateType = searchInfo.ContainsKey("mbl_date_type") ? searchInfo["mbl_date_type"] : "",
+                    FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                    ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
+                    OpGroup = searchInfo.ContainsKey("mbl_mode") ? searchInfo["mbl_mode"] : "",
+                    ShipperName = searchInfo.ContainsKey("mbl_shipper_name") ? searchInfo["mbl_shipper_name"] : "",
+                    ConsigneeName = searchInfo.ContainsKey("mbl_consignee_name") ? searchInfo["mbl_consignee_name"] : "",
+                    AgentName = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
+                    UserRole = searchInfo.ContainsKey("mbl_user_role") ? searchInfo["mbl_user_role"] : "",
+                    handledBy = searchInfo.ContainsKey("mbl_handled_name") ? searchInfo["mbl_handled_name"] : "",
+                    CreatedBy = searchInfo.ContainsKey("rec_created_name") ? searchInfo["rec_created_name"] : "",
+                };
+            }
+            if (mbl_list_format == "F3")
+            {
+                bc = new ShipmentLogF3ExcelFile
+                {
+                    Dt_List = Dt_List,
+                    report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                    Title = title,
+                    Company_id = company_id,
+                    Branch_id = branch_id,
+                    context = context,
+                    User_name = user_name,
+                    DateType = searchInfo.ContainsKey("mbl_date_type") ? searchInfo["mbl_date_type"] : "",
+                    FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                    ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
+                    OpGroup = searchInfo.ContainsKey("mbl_mode") ? searchInfo["mbl_mode"] : "",
+                    ShipperName = searchInfo.ContainsKey("mbl_shipper_name") ? searchInfo["mbl_shipper_name"] : "",
+                    ConsigneeName = searchInfo.ContainsKey("mbl_consignee_name") ? searchInfo["mbl_consignee_name"] : "",
+                    AgentName = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
+                    UserRole = searchInfo.ContainsKey("mbl_user_role") ? searchInfo["mbl_user_role"] : "",
+                    handledBy = searchInfo.ContainsKey("mbl_handled_name") ? searchInfo["mbl_handled_name"] : "",
+                    CreatedBy = searchInfo.ContainsKey("rec_created_name") ? searchInfo["rec_created_name"] : "",
+                };
+            }
+            if (bc == null)
+                throw new Exception("File generation error");
+            dynamic excell = bc!;
+            excell.Process();
+
+            if (excell.fList == null || excell.fList.Count == 0)
+                throw new Exception("Excel generation failed.");
+
+            var file = excell.fList[0];
+
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+
+            return record;
+        }
+        // public filesm ProcessPendingANFileAsync(List<rep_shipmentlog_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo, string mbl_list_format)
         // {
         //     var Dt_List = Records;
         //     if (Dt_List.Count <= 0)
         //         throw new Exception("Excel List Records error");
 
-        //     ITShipmentExcelFile bc = new ITShipmentExcelFile
-        //     {
-        //         Dt_List = Dt_List,
-        //         report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
-        //         Title = title,
-        //         Company_id = company_id,
-        //         Branch_id = branch_id,
-        //         context = context,
-        //         User_name = user_name,
-        //         DateType = searchInfo.ContainsKey("mbl_date_type") ? searchInfo["mbl_date_type"] : "",
-        //         FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
-        //         // ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
-        //         // OpGroup = searchInfo.ContainsKey("mbl_mode") ? searchInfo["mbl_mode"] : "",
-        //         // ParentName = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
-        //         // ShipperName = searchInfo.ContainsKey("mbl_shipper_name") ? searchInfo["mbl_shipper_name"] : "",
-        //         // ConsigneeName = searchInfo.ContainsKey("mbl_consignee_name") ? searchInfo["mbl_consignee_name"] : "",
-        //     };
-        //     bc.Process();
+        //     object bc = null!;
 
-        //     if (bc.fList == null || !bc.fList.Any())
+        //     if (mbl_list_format == null)
+        //         throw new Exception("Print List Format error");
+        //     if (mbl_list_format == "F1")
+        //     {
+        //         bc = new ShipmentLogF1ExcelFile
+        //         {
+        //             Dt_List = Dt_List,
+        //             report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+        //             Title = title,
+        //             Company_id = company_id,
+        //             Branch_id = branch_id,
+        //             context = context,
+        //             User_name = user_name,
+        //             DateType = searchInfo.ContainsKey("mbl_date_type") ? searchInfo["mbl_date_type"] : "",
+        //             FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+        //             ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
+        //             OpGroup = searchInfo.ContainsKey("mbl_mode") ? searchInfo["mbl_mode"] : "",
+        //             ShipperName = searchInfo.ContainsKey("mbl_shipper_name") ? searchInfo["mbl_shipper_name"] : "",
+        //             ConsigneeName = searchInfo.ContainsKey("mbl_consignee_name") ? searchInfo["mbl_consignee_name"] : "",
+        //             AgentName = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
+        //             UserRole = searchInfo.ContainsKey("mbl_user_role") ? searchInfo["mbl_user_role"] : "",
+        //             handledBy = searchInfo.ContainsKey("mbl_handled_name") ? searchInfo["mbl_handled_name"] : "",
+        //             CreatedBy = searchInfo.ContainsKey("rec_created_name") ? searchInfo["rec_created_name"] : "",
+        //         };
+        //     }
+        //     if (bc == null)
+        //         throw new Exception("File generation error");
+        //     dynamic excell = bc!;
+        //     excell.Process();
+
+        //     if (excell.fList == null || excell.fList.Count == 0)
         //         throw new Exception("Excel generation failed.");
 
-        //     var file = bc.fList[0];
+        //     var file = excell.fList[0];
 
         //     var record = new filesm
         //     {

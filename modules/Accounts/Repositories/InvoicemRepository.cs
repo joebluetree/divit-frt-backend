@@ -124,6 +124,7 @@ namespace Accounts.Repositories
                     inv_loss_approved = f.mbl_loss_approved,
                     inv_profit_req = f.mbl_profit_req,
                     inv_bo_status = f.mbl_bo_status,
+                    inv_bo_attended_code = f.mbl_bo_attended_code,
                     inv_remarks = f.mbl_inv_remarks,
                     inv_mbl_stage = f.shipstage!.param_name ?? "",
                     inv_mbl_refno = f.mbl_refno,
@@ -756,10 +757,13 @@ namespace Accounts.Repositories
                     masterRecord.mbl_loss_approved = record_dto.inv_loss_approved;
                     masterRecord.mbl_profit_req = record_dto.inv_profit_req;
                     masterRecord.mbl_bo_status = record_dto.inv_bo_status;
+                    masterRecord.mbl_bo_attended_code = record_dto.rec_created_by;
+                    masterRecord.mbl_bo_attended_date = DbLib.GetDateTime();
                     masterRecord.mbl_inv_remarks = record_dto.inv_remarks;
                 }
 
                 await context.SaveChangesAsync();
+                record_dto.inv_bo_attended_code = masterRecord!.mbl_bo_attended_code;
 
                 return record_dto;
             }
