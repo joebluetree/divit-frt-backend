@@ -54,5 +54,6 @@ namespace Common.DTO.Report
         public string? mbl_shipstage { get; set; } = "";
         public string? mbl_carrier_an_recd_dt { get; set; } = "";
         public string? mbl_an_sent_dt { get; set; } = "";
+        public string? rec_handledby_wise { get; set; } = "";
     }
 }

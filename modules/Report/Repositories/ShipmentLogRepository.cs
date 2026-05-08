@@ -64,6 +64,7 @@ namespace Report.Repositories
                 var mbl_eta_within = 0;
                 var mbl_pending_ams = "";
                 var mbl_list_format = "";
+                var rec_handledby_wise = "";
 
                 var company_id = 0;
                 var branch_id = 0;
@@ -80,7 +81,7 @@ namespace Report.Repositories
                 if (data.ContainsKey("mbl_mode"))
                     mbl_mode = data["mbl_mode"].ToString();
                 if (data.ContainsKey("mbl_agent_name"))
-                    mbl_agent_name = data["mbl_agent_name"].ToString()!;
+                    mbl_agent_name = data["mbl_agent_name"].ToString();
                 if (data.ContainsKey("mbl_shipper_name"))
                     mbl_shipper_name = data["mbl_shipper_name"].ToString();
                 if (data.ContainsKey("mbl_consignee_name"))
@@ -107,12 +108,16 @@ namespace Report.Repositories
                     mbl_pending_ams = data["mbl_pending_ams"].ToString();
                 if (data.ContainsKey("mbl_list_format"))
                     mbl_list_format = data["mbl_list_format"].ToString();
+                if (data.ContainsKey("rec_handledby_wise"))
+                    rec_handledby_wise = data["rec_handledby_wise"].ToString();
 
-                if(action == "Pending A/N")
+                if (action == "Pending A/N")
                 {
                     mbl_stages = "STAGE2";
                     mbl_is_master = "N";
                     mbl_is_house = "Y";
+                    rec_created_name = "";
+                    // rec_handledby_wise = "Y";
                 }
 
                 company_id = Lib.GetValidIntValue(data!, "rec_company_id", "Company Id Not Found");
@@ -123,7 +128,7 @@ namespace Report.Repositories
                 _page.rows = int.Parse(data["rows"].ToString()!);
                 _page.pageSize = int.Parse(data["pageSize"].ToString()!);
 
-                if (action == "PRINT" || action == "EXCEL" || action == "PDF")
+                if (action == "PRINT" || action == "EXCEL" || action == "PDF" || action == "Pending A/N")
                 {
                     isPrint = true;
                 }
@@ -141,6 +146,7 @@ namespace Report.Repositories
                     {"mbl_user_role", mbl_user_role!},
                     {"rec_created_name", rec_created_name!},
                     {"mbl_list_format", mbl_list_format!},
+                    {"rec_handledby_wise", rec_handledby_wise!},
                 };
 
                 List<rep_shipmentlog_dto> Records = new List<rep_shipmentlog_dto>();
@@ -230,16 +236,16 @@ namespace Report.Repositories
                     }
                     if (!Lib.IsBlank(mbl_handled_name))
                     {
-                        if(mbl_user_role == "Handled By")
+                        if (mbl_user_role == "Handled By")
                             query = query.Where(w => w.handledby!.param_name == mbl_handled_name);
-                        if(mbl_user_role == "Sales. Rep")
+                        if (mbl_user_role == "Sales. Rep")
                             query = query.Where(w => w.salesman!.param_name == mbl_handled_name);
                     }
                     if (!Lib.IsBlank(rec_created_name))
                     {
                         query = query.Where(w => w.rec_created_by == rec_created_name);
                     }
-                    if (!Lib.IsBlank(mbl_incoterm) && mbl_incoterm != "ALL" )
+                    if (!Lib.IsBlank(mbl_incoterm) && mbl_incoterm != "ALL")
                     {
                         query = query.Where(w => w.incoterm!.param_name == mbl_incoterm);
                     }
@@ -380,16 +386,16 @@ namespace Report.Repositories
                     }
                     if (!Lib.IsBlank(mbl_handled_name))
                     {
-                        if(mbl_user_role == "Handled By")
+                        if (mbl_user_role == "Handled By")
                             query = query.Where(w => w.handledby!.param_name == mbl_handled_name);
-                        if(mbl_user_role == "Sales. Rep")
+                        if (mbl_user_role == "Sales. Rep")
                             query = query.Where(w => w.salesman!.param_name == mbl_handled_name);
                     }
                     if (!Lib.IsBlank(rec_created_name))
                     {
                         query = query.Where(w => w.rec_created_by == rec_created_name);
                     }
-                    if (!Lib.IsBlank(mbl_incoterm) && mbl_incoterm != "ALL" )
+                    if (!Lib.IsBlank(mbl_incoterm) && mbl_incoterm != "ALL")
                     {
                         query = query.Where(w => w.incoterm!.param_name == mbl_incoterm);
                     }
@@ -400,7 +406,7 @@ namespace Report.Repositories
                     }
                     if (mbl_pending_ams == "Y")
                     {
-                        query = query.Where(w => w.hbl_ams_fileno!.Length < 8 || w.hbl_ams_fileno == null );
+                        query = query.Where(w => w.hbl_ams_fileno!.Length < 8 || w.hbl_ams_fileno == null);
                     }
 
                     query = query.OrderBy(o => o.master!.mbl_refno);
@@ -418,7 +424,10 @@ namespace Report.Repositories
                         mbl_agent_name = e.master.agent!.cust_name,
                         mbl_shipper_name = e.shipper!.cust_name,
                         mbl_consignee_name = e.consignee!.cust_name,
+                        mbl_handled_name = e.handledby!.param_name,
+                        mbl_liner_name = e.master.liner!.param_name,
                         mbl_incoterm = e.incoterm!.param_name,
+                        mbl_cntr_type = e.master.mbl_cntr_type,
                         mbl_pol_name = e.master.pol!.param_name,
                         mbl_pod_name = e.master.pod!.param_name,
                         mbl_pol_etd = Lib.FormatDate(e.master.mbl_pol_etd, Lib.outputDateFormat),
@@ -509,6 +518,13 @@ namespace Report.Repositories
                     var excelResult = ProcessExcelFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo, mbl_list_format!);
                     fileDataList.Add(excelResult);
                 }
+                if (action == "Pending A/N")
+                {
+                    var excelResult = ProcessPendingANFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo, mbl_list_format!);
+                    fileDataList.Add(excelResult);
+                    action = "PRINT";
+                }
+
 
                 RetData.Add("fileData", fileDataList);
                 RetData.Add("action", action);
@@ -715,57 +731,47 @@ namespace Report.Repositories
 
             return record;
         }
-        // public filesm ProcessPendingANFileAsync(List<rep_shipmentlog_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo, string mbl_list_format)
-        // {
-        //     var Dt_List = Records;
-        //     if (Dt_List.Count <= 0)
-        //         throw new Exception("Excel List Records error");
+        public filesm ProcessPendingANFileAsync(List<rep_shipmentlog_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo, string mbl_list_format)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
 
-        //     object bc = null!;
+            ShipmentLogANPendingExcelFile bc = new ShipmentLogANPendingExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = "A/N Pending Report",
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                DateType = searchInfo.ContainsKey("mbl_date_type") ? searchInfo["mbl_date_type"] : "",
+                FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
+                ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
+                OpGroup = searchInfo.ContainsKey("mbl_mode") ? searchInfo["mbl_mode"] : "",
+                ShipperName = searchInfo.ContainsKey("mbl_shipper_name") ? searchInfo["mbl_shipper_name"] : "",
+                ConsigneeName = searchInfo.ContainsKey("mbl_consignee_name") ? searchInfo["mbl_consignee_name"] : "",
+                AgentName = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
+                UserRole = searchInfo.ContainsKey("mbl_user_role") ? searchInfo["mbl_user_role"] : "",
+                handledBy = searchInfo.ContainsKey("mbl_handled_name") ? searchInfo["mbl_handled_name"] : "",
+                CreatedBy = searchInfo.ContainsKey("rec_created_name") ? searchInfo["rec_created_name"] : "",
+                IsHandledbyWise = searchInfo.ContainsKey("rec_handledby_wise") ? searchInfo["rec_handledby_wise"] : "",
+            };
+            bc.Process();
 
-        //     if (mbl_list_format == null)
-        //         throw new Exception("Print List Format error");
-        //     if (mbl_list_format == "F1")
-        //     {
-        //         bc = new ShipmentLogF1ExcelFile
-        //         {
-        //             Dt_List = Dt_List,
-        //             report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
-        //             Title = title,
-        //             Company_id = company_id,
-        //             Branch_id = branch_id,
-        //             context = context,
-        //             User_name = user_name,
-        //             DateType = searchInfo.ContainsKey("mbl_date_type") ? searchInfo["mbl_date_type"] : "",
-        //             FromDate = searchInfo.ContainsKey("mbl_from_date") ? searchInfo["mbl_from_date"] : "",
-        //             ToDate = searchInfo.ContainsKey("mbl_to_date") ? searchInfo["mbl_to_date"] : "",
-        //             OpGroup = searchInfo.ContainsKey("mbl_mode") ? searchInfo["mbl_mode"] : "",
-        //             ShipperName = searchInfo.ContainsKey("mbl_shipper_name") ? searchInfo["mbl_shipper_name"] : "",
-        //             ConsigneeName = searchInfo.ContainsKey("mbl_consignee_name") ? searchInfo["mbl_consignee_name"] : "",
-        //             AgentName = searchInfo.ContainsKey("mbl_agent_name") ? searchInfo["mbl_agent_name"] : "",
-        //             UserRole = searchInfo.ContainsKey("mbl_user_role") ? searchInfo["mbl_user_role"] : "",
-        //             handledBy = searchInfo.ContainsKey("mbl_handled_name") ? searchInfo["mbl_handled_name"] : "",
-        //             CreatedBy = searchInfo.ContainsKey("rec_created_name") ? searchInfo["rec_created_name"] : "",
-        //         };
-        //     }
-        //     if (bc == null)
-        //         throw new Exception("File generation error");
-        //     dynamic excell = bc!;
-        //     excell.Process();
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
 
-        //     if (excell.fList == null || excell.fList.Count == 0)
-        //         throw new Exception("Excel generation failed.");
+            var file = bc.fList[0];
 
-        //     var file = excell.fList[0];
-
-        //     var record = new filesm
-        //     {
-        //         filepath = file.filename!,
-        //         filename = file.filedisplayname!,
-        //         filetype = file.filetype!
-        //     };
-
-        //     return record;
-        // }
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
+            return record;
+        }
     }
 }
