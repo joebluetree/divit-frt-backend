@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS mast_param (
 	param_value3 varchar(100) NULL,
 	param_value4 varchar(100) NULL,
 	param_value5 varchar(100) NULL,
+	param_email varchar(150) NULL,
 	param_order int4 NOT NULL,
 	rec_version int4 DEFAULT 1 NOT NULL,
 	rec_locked bpchar(1) DEFAULT 'N'::bpchar NOT NULL,

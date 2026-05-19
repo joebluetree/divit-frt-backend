@@ -13,10 +13,16 @@ using System.Numerics;
 using Report.Interfaces;
 using Common.DTO.Report;
 using Report.Printing;
+using System.ComponentModel.DataAnnotations;
+using Common.DTO.Email;
+using Email.Interfaces;
+using Database.Models.Email;
 
 //Name : Sourav V
 //Created Date : 19/03/2026
 //Remark : this file defines functions getList of operations for Shipment Log report
+//version 2 : 09/05/2026 - added pending A/N Pending mail excel
+//version 3 : 12/05/2026 - added Mail pending A/N and completed upto saving email jobs
 
 
 namespace Report.Repositories
@@ -25,10 +31,12 @@ namespace Report.Repositories
     {
         private readonly AppDbContext context;
         private readonly IAuditLog auditLog;
-        public ShipmentLogRepository(AppDbContext _context, IAuditLog _auditLog)
+        private readonly IEmailRepository emailRepository;
+        public ShipmentLogRepository(AppDbContext _context, IAuditLog _auditLog, IEmailRepository _emailRepository)
         {
             this.context = _context;
             this.auditLog = _auditLog;
+            emailRepository = _emailRepository;
         }
 
         public async Task<Dictionary<string, object>> GetListAsync(Dictionary<string, object> data)
@@ -271,6 +279,7 @@ namespace Report.Repositories
                         mbl_shipper_name = e.shipper!.cust_name,
                         mbl_consignee_name = e.consignee!.cust_name,
                         mbl_handled_name = e.handledby!.param_name,
+                        mbl_handled_email = e.handledby!.param_email!.ToLower(),
                         mbl_liner_name = e.liner!.param_name,
                         mbl_liner_bookingno = e.mbl_liner_bookingno,
                         mbl_cntr_type = e.mbl_cntr_type,
@@ -418,6 +427,7 @@ namespace Report.Repositories
                         mbl_refno = e.master!.mbl_refno,
                         mbl_ref_date = Lib.FormatDate(e.master.mbl_ref_date, Lib.outputDateFormat),
                         mbl_mode = e.master.mbl_mode,
+                        mbl_no = e.master.mbl_no,
                         mbl_houseno = e.hbl_houseno,
                         mbl_shipstage = e.shipstage!.param_name,
 
@@ -425,6 +435,7 @@ namespace Report.Repositories
                         mbl_shipper_name = e.shipper!.cust_name,
                         mbl_consignee_name = e.consignee!.cust_name,
                         mbl_handled_name = e.handledby!.param_name,
+                        mbl_handled_email = e.handledby!.param_email!.ToLower(),
                         mbl_liner_name = e.master.liner!.param_name,
                         mbl_incoterm = e.incoterm!.param_name,
                         mbl_cntr_type = e.master.mbl_cntr_type,
@@ -437,6 +448,7 @@ namespace Report.Repositories
                         mbl_ams_fileno = e.hbl_ams_fileno,
                         mbl_it_tot = e.hbl_is_itshipment,
                         mbl_bo_status = e.master.mbl_bo_status,
+                        mbl_bo_attended_code = e.master.mbl_bo_attended_code,
                         mbl_isf_no = e.hbl_isf_no,
                         mbl_mstatus = e.master.mblstatus!.param_name,
                         mbl_hstatus = e.telexrelease!.param_name,
@@ -521,10 +533,93 @@ namespace Report.Repositories
                 if (action == "Pending A/N")
                 {
                     var excelResult = ProcessPendingANFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo, mbl_list_format!);
-                    fileDataList.Add(excelResult);
-                    action = "PRINT";
+                    fileDataList.AddRange(excelResult);
+                    action = "EXCEL";
                 }
+                // if (action == "MAIL PENDING")
+                // {
+                //     var excelResult = ProcessPendingANFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo, mbl_list_format!);
+                //     fileDataList.AddRange(excelResult);
 
+                //     var emailSettings = await context.email_list
+                //         .Where(w =>w.rec_company_id == company_id && w.rec_branch_id == branch_id )
+                //         .FirstOrDefaultAsync();
+
+                //     if (emailSettings == null)
+                //         throw new Exception("Default Email Configuration Not Found");
+
+                //     int ctr = await context.email_jobs
+                //         .Where(w => w.rec_company_id == company_id && w.rec_branch_id == branch_id)
+                //         .MaxAsync(x => (int?)x.email_ctr) ?? 0;
+
+                //     foreach (var file in excelResult)
+                //     {
+                //         email_jobs_dto emailRecord = new email_jobs_dto();
+
+                //         emailRecord.rec_company_id = company_id;
+                //         emailRecord.rec_branch_id = branch_id;
+                //         emailRecord.rec_created_by = user_name;
+
+                //         emailRecord.email_from_id = emailSettings.email_from_id;
+                //         emailRecord.email_to_id = file.file_value1;
+                //         emailRecord.email_subject = emailSettings.email_subject;
+                //         emailRecord.email_message = emailSettings.email_message;
+                //         emailRecord.email_file_folder = file.filepath;
+                //         emailRecord.email_ctr = ctr++;
+                //         emailRecord.email_scheduled_on = Lib.FormatDate( DbLib.GetDateTime(), Lib.outputDateFormat );
+                //         emailRecord.email_send_date = "";
+                //         emailRecord.email_status = "";
+                //         emailRecord.email_error_msg = "";
+                //         emailRecord.email_remarks = "";
+
+                //         await emailRepository.SaveAsync(0, "add",emailRecord );
+                //     }
+                //     // action = "PRINT";
+                // }
+                if (action == "MAIL PENDING")
+                {
+                    var excelResult = ProcessPendingANFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo, mbl_list_format!);
+                    fileDataList.AddRange(excelResult);
+
+                    var emailSettings = await context.email_list
+                        .Where(w => w.rec_company_id == company_id && w.rec_branch_id == branch_id)
+                        .FirstOrDefaultAsync();
+
+                    if (emailSettings == null)
+                        throw new Exception( "Default Email Configuration Not Found" );
+
+                    int ctr = await context.email_jobs
+                        .Where(w => w.rec_company_id == company_id && w.rec_branch_id == branch_id )
+                        .MaxAsync(x => (int?)x.email_ctr) ?? 0;
+
+                    List<email_jobs> emailList = new();
+
+                    foreach (var file in excelResult)
+                    {
+                        email_jobs emailRecord = new email_jobs();
+
+                        emailRecord.rec_company_id = company_id;
+                        emailRecord.rec_branch_id = branch_id;
+                        emailRecord.rec_created_by = user_name;
+                        emailRecord.rec_created_date = DbLib.GetDateTime();
+
+                        emailRecord.email_from_id = emailSettings.email_from_id;
+                        emailRecord.email_to_id = file.file_value1;
+                        emailRecord.email_subject = emailSettings.email_subject;
+                        emailRecord.email_message = emailSettings.email_message;
+                        emailRecord.email_file_folder = file.filepath!.Replace(@"D:\files\", ""); //file.filepath
+                        emailRecord.email_ctr = ++ctr;
+                        emailRecord.email_scheduled_on = DbLib.GetDateTime();
+                        emailRecord.email_status = "PENDING";
+                        emailRecord.email_error_msg = "";
+                        emailRecord.email_remarks = "";
+                        emailList.Add(emailRecord);
+                    }
+
+                    await context.email_jobs.AddRangeAsync(emailList);
+
+                    await context.SaveChangesAsync();
+                }
 
                 RetData.Add("fileData", fileDataList);
                 RetData.Add("action", action);
@@ -731,7 +826,7 @@ namespace Report.Repositories
 
             return record;
         }
-        public filesm ProcessPendingANFileAsync(List<rep_shipmentlog_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo, string mbl_list_format)
+        public List<filesm> ProcessPendingANFileAsync(List<rep_shipmentlog_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo, string mbl_list_format)
         {
             var Dt_List = Records;
             if (Dt_List.Count <= 0)
@@ -763,15 +858,22 @@ namespace Report.Repositories
             if (bc.fList == null || !bc.fList.Any())
                 throw new Exception("Excel generation failed.");
 
-            var file = bc.fList[0];
+            // var file = bc.fList[0];
 
-            var record = new filesm
+            List<filesm> fileList = new List<filesm>();
+
+            foreach (var file in bc.fList)
             {
-                filepath = file.filename!,
-                filename = file.filedisplayname!,
-                filetype = file.filetype!
-            };
-            return record;
+                fileList.Add(new filesm
+                {
+                    filepath = file.filename!,
+                    filename = file.filedisplayname!,
+                    filetype = file.filetype!,
+                    file_value1 = file.file_value1
+                });
+            }
+
+            return fileList;
         }
     }
 }

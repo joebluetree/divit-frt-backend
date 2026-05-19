@@ -285,7 +285,7 @@ namespace Database.Lib
         }
 
 
-        public static filesm AddFiles(string File_Name1, string File_Type1, string Display_Name1)
+        public static filesm AddFiles(string File_Name1, string File_Type1, string Display_Name1, string File_value1 = "")
         {
             filesm fRec = new filesm();
             fRec.filetype = File_Type1;
@@ -294,6 +294,7 @@ namespace Database.Lib
             fRec.filecategory = "";
             fRec.fileprocessid = "";
             fRec.filesize = Lib.GetFileSize(File_Name1);
+            fRec.file_value1 = File_value1;
             return fRec;
         }
 

@@ -17,6 +17,7 @@ namespace Database.Models.Masters
         public string? param_value3 { get; set; }
         public string? param_value4 { get; set; }
         public string? param_value5 { get; set; }
+        public string? param_email { get; set; }
         public int param_order { get; set; }
 
         [ConcurrencyCheck]

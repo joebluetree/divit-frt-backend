@@ -6,6 +6,7 @@ using Database.Models.TnT;
 using Database.Models.Marketing;
 using Database.Models.Cargo;
 using Database.Models.CommonShipment;
+using Database.Models.Email;
 
 namespace Database
 {
@@ -74,6 +75,11 @@ namespace Database
         public DbSet<tnt_tracking_data> tnt_tracking_data { get; set; } = null!;
         public DbSet<tnt_trackm> tnt_trackm { get; set; } = null!;
         public DbSet<tnt_trackd> tnt_trackd { get; set; } = null!;
+
+        //Email
+        public DbSet<email_jobs> email_jobs { get; set; } = null!;
+        public DbSet<email_list> email_list { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }

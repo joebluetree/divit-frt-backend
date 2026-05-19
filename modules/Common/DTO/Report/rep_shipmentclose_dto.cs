@@ -4,12 +4,12 @@ using Database.Models.BaseTables;
 using System.ComponentModel.DataAnnotations;
 
 //Name : Sourav V
-//Created Date : 18/03/2026
+//Created Date : 19/05/2026
 //Remark : this file defines data objects(variables) which transfer data from frontend to backend and vice-versa
 
 namespace Common.DTO.Report
 {
-    public class rep_shipmentlog_dto : basetable_dto
+    public class rep_shipmentclose_dto : basetable_dto
     {
         public int mbl_id { get; set; } = 0;
         public int? mbl_hbl_id { get; set; } = 0;

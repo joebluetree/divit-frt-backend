@@ -134,6 +134,9 @@ namespace Common.Repositories
             files.Add("TnT\\tnt_trackd.txt");
             files.Add("TnT\\tnt_tracking_data.txt");
 
+            files.Add("Email\\email_jobs.txt");
+            files.Add("Email\\email_list.txt");
+
             files.Add("CommonShipment\\cargo_memo.txt");
             files.Add("CommonShipment\\cargo_followup.txt");
             files.Add("CommonShipment\\cargo_slip.txt");

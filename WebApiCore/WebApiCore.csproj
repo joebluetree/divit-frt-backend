@@ -35,6 +35,7 @@
     <ProjectReference Include="..\modules\AirImport\AirImport.csproj" />
     <ProjectReference Include="..\modules\CommonShipment\CommonShipment.csproj" />
     <ProjectReference Include="..\modules\Common\Common.csproj" />
+    <ProjectReference Include="..\modules\Email\Email.csproj" />
     <ProjectReference Include="..\modules\Marketing\Marketing.csproj" />
     <ProjectReference Include="..\modules\Masters\Masters.csproj" />
     <ProjectReference Include="..\modules\OtherOp\OtherOp.csproj" />

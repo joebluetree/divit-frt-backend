@@ -43,6 +43,8 @@ using OtherOp.Repositories;
 using Cargo.Interfaces;
 using Report.Interfaces;
 using Report.Repositories;
+using Email.Interfaces;
+using Email.Repositories;
 
 
 
@@ -156,6 +158,9 @@ builder.Services.AddScoped<IShipmentLogRepository, ShipmentLogRepository>();
 
 //Tnt
 builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();
+
+//Email
+builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

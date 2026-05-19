@@ -92,6 +92,7 @@ namespace Masters.Repositories
                     param_value3 = e.param_value3 ?? "",
                     param_value4 = e.param_value4 ?? "",
                     param_value5 = e.param_value5 ?? "",
+                    param_email = e.param_email ?? "",
 
                     param_order = e.param_order,
                     rec_created_by = e.rec_created_by,
@@ -146,6 +147,7 @@ namespace Masters.Repositories
                     param_value3 = e.param_value3 ?? "",
                     param_value4 = e.param_value4 ?? "",
                     param_value5 = e.param_value5 ?? "",
+                    param_email = e.param_email ?? "",
                     rec_version = e.rec_version,
                     rec_created_by = e.rec_created_by,
                     rec_created_date = Lib.FormatDate(e.rec_created_date, Lib.outputDateTimeFormat),
@@ -252,6 +254,7 @@ namespace Masters.Repositories
                 Record.param_value3 = record_dto.param_value3;
                 Record.param_value4 = record_dto.param_value4;
                 Record.param_value5 = record_dto.param_value5;
+                Record.param_email = record_dto.param_email;
 
                 Record.param_order = record_dto.param_order;
 
@@ -294,6 +297,7 @@ namespace Masters.Repositories
                 param_value3 = old_record.param_value3,
                 param_value4 = old_record.param_value4,
                 param_value5 = old_record.param_value5,
+                param_email = old_record.param_email,
 
             };
 
@@ -309,6 +313,7 @@ namespace Masters.Repositories
                 .TrackColumn("param_value3", "value 3")
                 .TrackColumn("param_value4", "value 4")
                 .TrackColumn("param_value5", "value 5")
+                .TrackColumn("param_email", "email")
                 .SetRecord(old_record_dto, record_dto)
                 .LogChangesAsync();
         }

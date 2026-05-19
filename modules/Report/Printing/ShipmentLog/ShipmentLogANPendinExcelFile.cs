@@ -13,6 +13,7 @@ using Database.Lib;
 using Database.Models.Cargo;
 using Masters.Interfaces;
 using NPOI.SS.Formula.Functions;
+using NPOI.SS.Util;
 
 namespace Report.Printing
 {
@@ -46,9 +47,8 @@ namespace Report.Printing
         private string File_Type = "";
         private string folderid = "";
         private string Date = "";
-        private int col_count = 0; // Column Total count
+        private int col_count = 0;
         private int PageNumber = 0;
-        // private int MaxCount = 38;
 
         public ShipmentLogANPendingExcelFile()
         {
@@ -59,32 +59,14 @@ namespace Report.Printing
         {
             try
             {
-                fList = new List<filesm>();
-                folderid = Guid.NewGuid().ToString().ToUpper();
-
-                File_Display_Name = Title.ToString()!;
-                File_Display_Name += ".xlsx";
-                File_Display_Name = Lib.ProperFileName(File_Display_Name);
-                File_Name = Lib.GetFileName(report_folder, folderid, File_Display_Name, false);
-                File_Type = "EXCEL";
-
                 CreateExcelData();
-
-                fList.Add(Lib.AddFiles(File_Name, File_Type, File_Display_Name));
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.ToString());
             }
         }
-        // private bool IsPageBreak(int count)
-        // {
-        //     bool rec = false;
-        //     if (count == MaxCount)
-        //         rec = true;
-        //     return rec;
-        // }
-        private CellFormat GetFormat(int ColumnWidth = 0, int FontSize = 9,string Style = "",string Border = "",string valign = "T")
+        private CellFormat GetFormat(int ColumnWidth = 0, int FontSize = 9, string Style = "", string Border = "", string valign = "T")
         {
             return new CellFormat
             {
@@ -93,11 +75,14 @@ namespace Report.Printing
                 Style = Style,
                 FontSize = FontSize,
                 VAlign = valign,
-                ColumnWidth = ColumnWidth ==0 ? null:ColumnWidth,
+                ColumnWidth = ColumnWidth == 0 ? null : ColumnWidth,
             };
         }
         private void CreateExcelData()
         {
+            fList = new List<filesm>();
+            File_Type = "EXCEL";
+
             if (IsHandledbyWise == "Y")
             {
                 var groupedData = Dt_List
@@ -105,15 +90,37 @@ namespace Report.Printing
 
                 foreach (var group in groupedData)
                 {
-                    CreateSheetData(group.Key!, group.ToList());
+                    folderid = Guid.NewGuid().ToString().ToUpper();
+                    File_Display_Name = Title.ToString()!;
+                    File_Display_Name += ".xlsx";
+                    File_Display_Name = Lib.ProperFileName(File_Display_Name);
+                    File_Name = Lib.GetFileName(report_folder, folderid, File_Display_Name, false);
+
+                    // string handledBy = string.Concat( group.Key!.Split(Path.GetInvalidFileNameChars()) );
+
+                    excel = new TextExcel();
+
+                    excel.CreateSheet("Sheet1");
+                    CreateSheetData("Sheet1", group.ToList());
+                    excel.Save(File_Name);
+
+                    fList.Add(Lib.AddFiles(File_Name, File_Type, File_Display_Name, File_value1:group.FirstOrDefault()!.mbl_handled_email!));
                 }
             }
             else
             {
-                CreateSheetData("Sheet1", Dt_List);
-            }
+                folderid = Guid.NewGuid().ToString().ToUpper();
+                File_Display_Name = Title.ToString()!;
+                File_Display_Name += ".xlsx";
+                File_Display_Name = Lib.ProperFileName(File_Display_Name);
+                File_Name = Lib.GetFileName(report_folder, folderid, File_Display_Name, false);
 
-            excel.Save(File_Name);
+                excel.CreateSheet("Sheet1");
+                CreateSheetData("Sheet1", Dt_List);
+                excel.Save(File_Name);
+
+                fList.Add(Lib.AddFiles(File_Name, File_Type, File_Display_Name));
+            }
         }
         private void CreateSheetData(string sheetName, List<rep_shipmentlog_dto> data)
         {
@@ -141,8 +148,9 @@ namespace Report.Printing
                 excel.CellValue(rowIndex, colIndex + 8, dr.mbl_shipper_name!, GetFormat());
                 excel.CellValue(rowIndex, colIndex + 9, dr.mbl_consignee_name!, GetFormat());
                 excel.CellValue(rowIndex, colIndex + 10, mbl_eta!.ToUpper(), GetFormat());
-                excel.CellValue(rowIndex, colIndex + 11, dr.mbl_bo_status!, GetFormat());
-                excel.CellValue(rowIndex++, colIndex + 12, dr.mbl_bo_attended_code!, GetFormat());
+                excel.CellValue(rowIndex, colIndex + 11, dr.mbl_eta_rem!, GetFormat());
+                excel.CellValue(rowIndex, colIndex + 12, dr.mbl_bo_status!, GetFormat());
+                excel.CellValue(rowIndex++, colIndex + 13, dr.mbl_bo_attended_code!, GetFormat());
             }
 
             // excel.SetColumnBreak(colIndex + 17);
@@ -152,7 +160,6 @@ namespace Report.Printing
         {
             if (rowIndex == 0)
             {
-                excel.CreateSheet(sheetName);
                 excel.PrintGridlines(true);// for grid lines On/Off
             }
 
@@ -170,50 +177,51 @@ namespace Report.Printing
             rowIndex += 1;
 
             var Lrow = rowIndex;
-            
-            excel.CellValue(Lrow, colIndex + 0, "DATE TYPE", GetFormat( Style:"B", FontSize:10 ) );
-            excel.CellValue(Lrow, colIndex + 1, DateType, GetFormat( Style:"B", FontSize:10 ) );
+
+            excel.CellValue(Lrow, colIndex + 0, "DATE TYPE", GetFormat(Style: "B", FontSize: 10));
+            excel.CellValue(Lrow, colIndex + 1, DateType, GetFormat(Style: "B", FontSize: 10));
             Lrow += 1;
-            excel.CellValue(Lrow, colIndex, "FROM DATE", GetFormat( Style:"B", FontSize:10 ) );
-            excel.CellValue(Lrow, colIndex + 1, SFromDate.ToUpper(), GetFormat( Style:"B", FontSize:10 ) );
+            excel.CellValue(Lrow, colIndex, "FROM DATE", GetFormat(Style: "B", FontSize: 10));
+            excel.CellValue(Lrow, colIndex + 1, SFromDate.ToUpper(), GetFormat(Style: "B", FontSize: 10));
             Lrow += 1;
-            excel.CellValue(Lrow, colIndex, "TO DATE", GetFormat( Style:"B", FontSize:10 ) );
-            excel.CellValue(Lrow, colIndex + 1, SToDate.ToUpper(), GetFormat( Style:"B", FontSize:10 ) );
+            excel.CellValue(Lrow, colIndex, "TO DATE", GetFormat(Style: "B", FontSize: 10));
+            excel.CellValue(Lrow, colIndex + 1, SToDate.ToUpper(), GetFormat(Style: "B", FontSize: 10));
             Lrow += 1;
-            excel.CellValue(Lrow, colIndex, "SHIPPER", GetFormat( Style:"B", FontSize:10 ) );
-            excel.CellValue(Lrow, colIndex + 1, ShipperName, GetFormat( Style:"B", FontSize:10 ) );
+            excel.CellValue(Lrow, colIndex, "SHIPPER", GetFormat(Style: "B", FontSize: 10));
+            excel.CellValue(Lrow, colIndex + 1, ShipperName, GetFormat(Style: "B", FontSize: 10));
             Lrow += 1;
-            excel.CellValue(Lrow, colIndex, "CONSIGNEE", GetFormat( Style:"B", FontSize:10 ) );
-            excel.CellValue(Lrow, colIndex + 1, ConsigneeName, GetFormat( Style:"B", FontSize:10 ) );
+            excel.CellValue(Lrow, colIndex, "CONSIGNEE", GetFormat(Style: "B", FontSize: 10));
+            excel.CellValue(Lrow, colIndex + 1, ConsigneeName, GetFormat(Style: "B", FontSize: 10));
 
             var Rrow = rowIndex;
 
-            excel.CellValue(Rrow, colIndex + 2, "AGENT", GetFormat( Style:"B", FontSize:10 ) );
-            excel.CellValue(Rrow, colIndex + 3, AgentName, GetFormat( Style:"B", FontSize:10 ) );
+            excel.CellValue(Rrow, colIndex + 2, "AGENT", GetFormat(Style: "B", FontSize: 10));
+            excel.CellValue(Rrow, colIndex + 3, AgentName, GetFormat(Style: "B", FontSize: 10));
             Rrow += 1;
-            excel.CellValue(Rrow, colIndex + 2, UserRole.ToUpper(), GetFormat( Style:"B", FontSize:10 ) );
-            excel.CellValue(Rrow, colIndex + 3, handledBy, GetFormat( Style:"B", FontSize:10 ) );
+            excel.CellValue(Rrow, colIndex + 2, UserRole.ToUpper(), GetFormat(Style: "B", FontSize: 10));
+            excel.CellValue(Rrow, colIndex + 3, handledBy, GetFormat(Style: "B", FontSize: 10));
             Rrow += 1;
-            excel.CellValue(Rrow, colIndex + 2, "CREATED BY", GetFormat( Style:"B", FontSize:10 ) );
-            excel.CellValue(Rrow, colIndex + 3, CreatedBy,  GetFormat( Style:"B", FontSize:10 ) );
+            excel.CellValue(Rrow, colIndex + 2, "CREATED BY", GetFormat(Style: "B", FontSize: 10));
+            excel.CellValue(Rrow, colIndex + 3, CreatedBy, GetFormat(Style: "B", FontSize: 10));
 
-            rowIndex = new[] { Rrow, Lrow}.Max();
+            rowIndex = new[] { Rrow, Lrow }.Max();
 
             rowIndex += 1;
 
-            excel.CellValue(rowIndex, colIndex + 0, "HANDLED.BY", GetFormat( Border:"TB", Style:"B", FontSize:10, ColumnWidth:18));
-            excel.CellValue(rowIndex, colIndex + 1, "SHIPMENT STAGE", GetFormat( Border:"TB", Style:"B", FontSize:10, ColumnWidth:30));
-            excel.CellValue(rowIndex, colIndex + 2, "REF#", GetFormat( Border:"TB", Style:"B", FontSize:10, ColumnWidth:15));
-            excel.CellValue(rowIndex, colIndex + 3, "REF-DATE", GetFormat( Border:"TB", Style:"B", FontSize:10, ColumnWidth:15));
-            excel.CellValue(rowIndex, colIndex + 4, "MASTER #", GetFormat( Border:"TB", Style:"B", FontSize:10, ColumnWidth:20));
-            excel.CellValue(rowIndex, colIndex + 5, "HOUSE #", GetFormat( Border:"TB", Style:"B", FontSize:10, ColumnWidth:20));
-            excel.CellValue(rowIndex, colIndex + 6, "CARRIER", GetFormat( Border:"TB", Style:"B", FontSize:10, ColumnWidth:30));
-            excel.CellValue(rowIndex, colIndex + 7, "AGENT", GetFormat( Border:"TB", Style:"B", FontSize:10, ColumnWidth:30));
-            excel.CellValue(rowIndex, colIndex + 8, "SHIPPER", GetFormat( Border:"TB", Style:"B", FontSize:10, ColumnWidth:35));
-            excel.CellValue(rowIndex, colIndex + 9, "CONSIGNEE", GetFormat( Border:"TB", Style:"B", FontSize:10, ColumnWidth:35));
-            excel.CellValue(rowIndex, colIndex + 10, "ETA", GetFormat( Border:"TB", Style:"B", FontSize:10, ColumnWidth:15));
-            excel.CellValue(rowIndex, colIndex + 11, "STATUS", GetFormat( Border:"TB", Style:"B", FontSize:10, ColumnWidth:15));
-            excel.CellValue(rowIndex, colIndex + 12, "STATUS BY", GetFormat( Border:"TB", Style:"B", FontSize:10, ColumnWidth:15));
+            excel.CellValue(rowIndex, colIndex + 0, "HANDLED.BY", GetFormat(Border: "TB", Style: "B", FontSize: 10, ColumnWidth: 18));
+            excel.CellValue(rowIndex, colIndex + 1, "SHIPMENT STAGE", GetFormat(Border: "TB", Style: "B", FontSize: 10, ColumnWidth: 30));
+            excel.CellValue(rowIndex, colIndex + 2, "REF#", GetFormat(Border: "TB", Style: "B", FontSize: 10, ColumnWidth: 15));
+            excel.CellValue(rowIndex, colIndex + 3, "REF-DATE", GetFormat(Border: "TB", Style: "B", FontSize: 10, ColumnWidth: 15));
+            excel.CellValue(rowIndex, colIndex + 4, "MASTER #", GetFormat(Border: "TB", Style: "B", FontSize: 10, ColumnWidth: 20));
+            excel.CellValue(rowIndex, colIndex + 5, "HOUSE #", GetFormat(Border: "TB", Style: "B", FontSize: 10, ColumnWidth: 20));
+            excel.CellValue(rowIndex, colIndex + 6, "CARRIER", GetFormat(Border: "TB", Style: "B", FontSize: 10, ColumnWidth: 30));
+            excel.CellValue(rowIndex, colIndex + 7, "AGENT", GetFormat(Border: "TB", Style: "B", FontSize: 10, ColumnWidth: 30));
+            excel.CellValue(rowIndex, colIndex + 8, "SHIPPER", GetFormat(Border: "TB", Style: "B", FontSize: 10, ColumnWidth: 35));
+            excel.CellValue(rowIndex, colIndex + 9, "CONSIGNEE", GetFormat(Border: "TB", Style: "B", FontSize: 10, ColumnWidth: 35));
+            excel.CellValue(rowIndex, colIndex + 10, "ETA", GetFormat(Border: "TB", Style: "B", FontSize: 10, ColumnWidth: 15));
+            excel.CellValue(rowIndex, colIndex + 11, "DAYS TO ETA", GetFormat(Border: "TB", Style: "B", FontSize: 10, ColumnWidth: 18));
+            excel.CellValue(rowIndex, colIndex + 12, "STATUS", GetFormat(Border: "TB", Style: "B", FontSize: 10, ColumnWidth: 15));
+            excel.CellValue(rowIndex, colIndex + 13, "STATUS BY", GetFormat(Border: "TB", Style: "B", FontSize: 10, ColumnWidth: 15));
 
             rowIndex += 1;
             return rowIndex;

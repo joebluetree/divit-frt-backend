@@ -15,5 +15,6 @@ namespace Database.Models.Cargo
         public string? fileprocessid { get; set; }
         public string? filepath { get; set; }
         public int filesize { get; set; }
+        public string? file_value1 { get; set; }
     }
 }
