@@ -155,6 +155,9 @@ builder.Services.AddScoped<IMasterProfitRepository, MasterProfitRepository>();
 builder.Services.AddScoped<IHouseProfitRepository, HouseProfitRepository>();
 builder.Services.AddScoped<IInvoiceIssueRepository, InvoiceIssueRepository>();
 builder.Services.AddScoped<IShipmentLogRepository, ShipmentLogRepository>();
+builder.Services.AddScoped<IShipmentCloseRepository, ShipmentCloseRepository>();
+builder.Services.AddScoped<IPaymentDueRepository, PaymentDueRepository>();
+builder.Services.AddScoped<IFollowUpRepRepository, FollowUpRepRepository>();
 
 //Tnt
 builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();

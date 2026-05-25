@@ -18,6 +18,7 @@ namespace Masters.Interfaces
         void SetColumnBreak(int column);
         void SetRowHeight(int rowIndex, float height);
         void SetRowBreak(int row);
+        CellFormat GetCellFormat(int ColumnWidth = 0, int FontSize = 9,string Style = "",string Border = "",string valign = "T", string Halign = "T");
         void Save(string filePath);
     }
     public class CellFormat
@@ -264,6 +265,18 @@ namespace Masters.Interfaces
             // If height not explicitly set, Excel uses default
             return row.HeightInPoints > 0 ? row.HeightInPoints : sheet.DefaultRowHeightInPoints;
         }
-
+        public CellFormat GetCellFormat(int ColumnWidth = 0, int FontSize = 9,string Style = "",string Border = "",string valign = "T", string HAlign = "")
+        {
+            return new CellFormat
+            {
+                WrapText = true,
+                Border = Border,
+                Style = Style,
+                FontSize = FontSize,
+                VAlign = valign,
+                HAlign = HAlign,
+                ColumnWidth = ColumnWidth ==0 ? null:ColumnWidth,
+            };
+        }
     }
 }
