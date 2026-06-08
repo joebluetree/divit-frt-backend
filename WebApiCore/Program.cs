@@ -158,6 +158,8 @@ builder.Services.AddScoped<IShipmentLogRepository, ShipmentLogRepository>();
 builder.Services.AddScoped<IShipmentCloseRepository, ShipmentCloseRepository>();
 builder.Services.AddScoped<IPaymentDueRepository, PaymentDueRepository>();
 builder.Services.AddScoped<IFollowUpRepRepository, FollowUpRepRepository>();
+builder.Services.AddScoped<IPendingARRepository, PendingARRepository>();
+builder.Services.AddScoped<IDataEntryStatRepository, DataEntryStatRepository>();
 
 //Tnt
 builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();

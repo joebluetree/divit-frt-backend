@@ -23,6 +23,7 @@ using Npgsql.Replication;
 //Created Date : 29/01/2025
 //Remark : this file defines common functions which is used in multiple repositories
 //version 2 : 07/01/2026 added mbl_mode in save summary function 
+//version 3 : 04/06/2026 added mbl_house_nos list into master summary
 
 namespace Common.Lib
 {
@@ -116,6 +117,20 @@ namespace Common.Lib
                 .Where(h => h.hbl_mbl_id == mbl_id && h.hbl_mode == mbl_mode)
                 .ToList();
 
+            var houseNosList = "";
+            var first = true;
+            foreach(var h in houseList)
+            {
+                var houseNos= h.hbl_houseno;
+                var total_length = houseNosList.Length + houseNos!.Length + (first ? 0 : 1);// 1 for comma
+
+                if (total_length < 500)
+                    houseNosList += (first ? "" : ", ") + houseNos;
+
+                if (total_length >= 500)
+                    break;
+                first = false;
+            }
             int houseCount = houseList.Count;
             int ShipperCount = houseList
                 .Where(h => h.hbl_mbl_id == mbl_id && h.hbl_mode == mbl_mode)
@@ -168,6 +183,7 @@ namespace Common.Lib
                 master_Record.mbl_consignee_id = consignee_id;
                 master_Record.mbl_shipper_id = shipper_id;
                 master_Record.mbl_it_tot = itShipmentCount;
+                master_Record.mbl_house_nos = houseNosList;
                 await context.SaveChangesAsync();
             }
         }

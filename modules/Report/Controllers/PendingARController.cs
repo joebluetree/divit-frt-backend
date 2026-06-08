@@ -9,11 +9,11 @@ using Common.DTO.Report;
 namespace Report.Controllers
 {
     [Authorize]
-    [Route("api/Report/followuprep")]
-    public class FollowUpRepController : Controller
+    [Route("api/Report/pendingar")]
+    public class PendingARController : Controller
     {
-        private readonly IFollowUpRepRepository mRepository;
-        public FollowUpRepController(IFollowUpRepRepository Repository)
+        private readonly IPendingARRepository mRepository;
+        public PendingARController(IPendingARRepository Repository)
         {
             this.mRepository = Repository;
         }
@@ -33,17 +33,17 @@ namespace Report.Controllers
             }
         }
         [HttpGet]
-        [Route("DeleteAsync")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        [Route("HideRecordAsync")]
+        public async Task<IActionResult> HideRecordAsync(int id)
         {
             try
             {
-                var RetData = await mRepository.DeleteAsync(id);
+                var RetData = await mRepository.HideRecordAsync(id);
                 return Ok(RetData);
             }
             catch (Exception Ex)
             {
-                return BadRequest(Lib.getErrorMessage(Ex));
+                return BadRequest(Ex.Message.ToString());
             }
         }
     }

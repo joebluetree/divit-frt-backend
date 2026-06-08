@@ -46,9 +46,13 @@ namespace Report.Repositories
                 bool isPrint = false;
                 var title = data["title"].ToString();
                 var user_name = data["global_user_name"].ToString();
+                var cf_mode = "";
 
                 var company_id = 0;
                 var branch_id = 0;
+
+                if (data.ContainsKey("cf_mode"))
+                    cf_mode = data["cf_mode"].ToString();
 
                 company_id = Lib.GetValidIntValue(data!, "rec_company_id", "Company Id Not Found");
                 branch_id = Lib.GetValidIntValue(data!, "rec_branch_id", "Branch Id Not Found");
@@ -63,6 +67,10 @@ namespace Report.Repositories
                 }
 
                 var fileDataList = new List<filesm>();
+                var searchInfo = new Dictionary<string, string>
+                {
+                    {"cf_mode", cf_mode!},
+                };
 
                 IQueryable<cargo_followup> query = context.cargo_followup
                     .Include(i => i.master)
@@ -72,6 +80,11 @@ namespace Report.Repositories
                 query = query.Where(w => w.rec_company_id == company_id);
                 query = query.Where(w => w.rec_branch_id == branch_id);
                 query = query.Where(w => w.assigned!.user_name == user_name);
+
+                if (!Lib.IsBlank(cf_mode) && cf_mode != "ALL")
+                {
+                    query = query.Where(w => w.master!.mbl_mode == cf_mode);
+                }
 
                 query = query.OrderBy(o => o.cf_followup_date);
 
@@ -111,16 +124,16 @@ namespace Report.Repositories
                 }
                 RetData.Add("records", Records);
 
-                // if (action == "PDF" || action == "PRINT")
-                // {
-                //     var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, user_name!, branch_id);
-                //     fileDataList.Add(pdfResult);
-                // }
-                // if (action == "EXCEL" || action == "PRINT")
-                // {
-                //     var excelResult = ProcessExcelFileAsync(Records, title!, company_id, user_name!, branch_id);
-                //     fileDataList.Add(excelResult);
-                // }
+                if (action == "PDF" || action == "PRINT")
+                {
+                    var pdfResult = ProcessPdfFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(pdfResult);
+                }
+                if (action == "EXCEL" || action == "PRINT")
+                {
+                    var excelResult = ProcessExcelFileAsync(Records, title!, company_id, user_name!, branch_id, searchInfo);
+                    fileDataList.Add(excelResult);
+                }
 
                 RetData.Add("fileData", fileDataList);
                 RetData.Add("action", action);
@@ -168,68 +181,70 @@ namespace Report.Repositories
                 throw;
             }
         }
-        // public filesm ProcessPdfFileAsync(List<rep_followup_dto> Records, string title, int company_id, string user_name, int branch_id)
-        // {
-        //     var Dt_List = Records;
-        //     if (Dt_List.Count <= 0)
-        //         throw new Exception("Print List Not Found");
+        public filesm ProcessPdfFileAsync(List<rep_followup_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Print List Not Found");
 
-        //     PaymentDuePdfFile bc = new PaymentDuePdfFile
-        //     {
-        //         Dt_List = Dt_List,
-        //         Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
-        //         Title = title,
-        //         Company_id = company_id,
-        //         Branch_id = branch_id,
-        //         context = context,
-        //         User_name = user_name,
-        //     };
-        //     bc.Process();
-        //     if (bc.FList == null || !bc.FList.Any())
-        //         throw new Exception("File generation failed.");
+            FollowUpPdfFile bc = new FollowUpPdfFile
+            {
+                Dt_List = Dt_List,
+                Report_Folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = "Follow Up List",
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                OpGroup = searchInfo.ContainsKey("cf_mode") ? searchInfo["cf_mode"] : "",
+            };
+            bc.Process();
+            if (bc.FList == null || !bc.FList.Any())
+                throw new Exception("File generation failed.");
 
-        //     var file = bc.FList[0];
+            var file = bc.FList[0];
 
-        //     var record = new filesm
-        //     {
-        //         filepath = file.filename!,
-        //         filename = file.filedisplayname!,
-        //         filetype = file.filetype!
-        //     };
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
 
-        //     return record;
-        // }
-        // public filesm ProcessExcelFileAsync(List<rep_followup_dto> Records, string title, int company_id, string user_name, int branch_id)
-        // {
-        //     var Dt_List = Records;
-        //     if (Dt_List.Count <= 0)
-        //         throw new Exception("Excel List Records error");
+            return record;
+        }
+        public filesm ProcessExcelFileAsync(List<rep_followup_dto> Records, string title, int company_id, string user_name, int branch_id, Dictionary<string, string> searchInfo)
+        {
+            var Dt_List = Records;
+            if (Dt_List.Count <= 0)
+                throw new Exception("Excel List Records error");
 
-        //     PaymentDueExcelFile bc = new PaymentDueExcelFile
-        //     {
-        //         Dt_List = Dt_List,
-        //         report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
-        //         Title = title,
-        //         Company_id = company_id,
-        //         Branch_id = branch_id,
-        //         context = context,
-        //         User_name = user_name,
-        //     };
-        //     bc.Process();
+            FollowUpExcelFile bc = new FollowUpExcelFile
+            {
+                Dt_List = Dt_List,
+                report_folder = Path.Combine(Lib.rootFolder, Lib.TempFolder, CommonLib.GetSubFolderFromDate()),
+                Title = "Follow Up List",
+                Company_id = company_id,
+                Branch_id = branch_id,
+                context = context,
+                User_name = user_name,
+                OpGroup = searchInfo.ContainsKey("cf_mode") ? searchInfo["cf_mode"] : "",
+            };
+            bc.Process();
 
-        //     if (bc.fList == null || !bc.fList.Any())
-        //         throw new Exception("Excel generation failed.");
+            if (bc.fList == null || !bc.fList.Any())
+                throw new Exception("Excel generation failed.");
 
-        //     var file = bc.fList[0];
+            var file = bc.fList[0];
 
-        //     var record = new filesm
-        //     {
-        //         filepath = file.filename!,
-        //         filename = file.filedisplayname!,
-        //         filetype = file.filetype!
-        //     };
+            var record = new filesm
+            {
+                filepath = file.filename!,
+                filename = file.filedisplayname!,
+                filetype = file.filetype!
+            };
 
-        //     return record;
-        // }
+            return record;
+        }
     }
 }

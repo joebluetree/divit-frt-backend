@@ -17,6 +17,10 @@ using Marketing.Printing;
 using NPOI.HSSF.Record;
 using Common.DTO.OtherOp;
 
+//Name : Sourav V
+//Remark : this file defines invoice repository
+//version 2 : 04/06/2026 modified bo_created_code and date for ADMIN to null
+
 namespace Accounts.Repositories
 {
     public class InvoicemRepository : IInvoicemRepository
@@ -757,8 +761,8 @@ namespace Accounts.Repositories
                     masterRecord.mbl_loss_approved = record_dto.inv_loss_approved;
                     masterRecord.mbl_profit_req = record_dto.inv_profit_req;
                     masterRecord.mbl_bo_status = record_dto.inv_bo_status;
-                    masterRecord.mbl_bo_attended_code = record_dto.rec_created_by;
-                    masterRecord.mbl_bo_attended_date = DbLib.GetDateTime();
+                    masterRecord.mbl_bo_attended_code = record_dto.rec_created_by == "ADMIN" ? null : record_dto.rec_created_by;
+                    masterRecord.mbl_bo_attended_date = record_dto.rec_created_by == "ADMIN" ? null : DbLib.GetDateTime();
                     masterRecord.mbl_inv_remarks = record_dto.inv_remarks;
                 }
 

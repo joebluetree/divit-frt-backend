@@ -9,11 +9,11 @@ using Common.DTO.Report;
 namespace Report.Controllers
 {
     [Authorize]
-    [Route("api/Report/followuprep")]
-    public class FollowUpRepController : Controller
+    [Route("api/Report/DataEntryStat")]
+    public class DataEntryStatController : Controller
     {
-        private readonly IFollowUpRepRepository mRepository;
-        public FollowUpRepController(IFollowUpRepRepository Repository)
+        private readonly IDataEntryStatRepository mRepository;
+        public DataEntryStatController(IDataEntryStatRepository Repository)
         {
             this.mRepository = Repository;
         }
@@ -26,20 +26,6 @@ namespace Report.Controllers
             {
                 var records = await this.mRepository.GetListAsync(data);
                 return Ok(records);
-            }
-            catch (Exception Ex)
-            {
-                return BadRequest(Lib.getErrorMessage(Ex));
-            }
-        }
-        [HttpGet]
-        [Route("DeleteAsync")]
-        public async Task<IActionResult> DeleteAsync(int id)
-        {
-            try
-            {
-                var RetData = await mRepository.DeleteAsync(id);
-                return Ok(RetData);
             }
             catch (Exception Ex)
             {
