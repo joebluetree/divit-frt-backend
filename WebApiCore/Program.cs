@@ -141,6 +141,7 @@ builder.Services.AddScoped<IMessengerSlipRepository, MessengerSlipRepository>();
 builder.Services.AddScoped<IDevanInstRepository, DevanInstRepository>();
 builder.Services.AddScoped<ICustomHoldRepository, CustomHoldRepository>();
 builder.Services.AddScoped<IProfitReportRepository, ProfitReportRepository>();
+builder.Services.AddScoped<IApprovedRepository, ApprovedRepository>();
 
 // Report
 builder.Services.AddScoped<IOpHandleRepository, OpHandleRepository>();
@@ -160,6 +161,7 @@ builder.Services.AddScoped<IPaymentDueRepository, PaymentDueRepository>();
 builder.Services.AddScoped<IFollowUpRepRepository, FollowUpRepRepository>();
 builder.Services.AddScoped<IPendingARRepository, PendingARRepository>();
 builder.Services.AddScoped<IDataEntryStatRepository, DataEntryStatRepository>();
+builder.Services.AddScoped<IApprovalRequestRepository, ApprovalRequestRepository>();
 
 //Tnt
 builder.Services.AddScoped<ITrackingRepository, TrackingRepository>();

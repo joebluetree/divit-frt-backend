@@ -360,6 +360,10 @@ namespace Common.Lib
             {
                 await UpdateCheckCopyCount(context, parent_id, parent_type);
             }
+            if (parent_type == "APPROVAL REQ")
+            {
+                await UpdateApprovalReqCount(context, parent_id, parent_type);
+            }
         }
 
         public static async Task UpdateOperationsDocCount(AppDbContext _context, int? parent_id, string? parent_type)
@@ -508,6 +512,23 @@ namespace Common.Lib
             {
                 invoice_Record.rec_check_count = FilesCount;
                 invoice_Record.rec_check_attached = "Y";
+                await context.SaveChangesAsync();
+            }
+        }
+        public static async Task UpdateApprovalReqCount(AppDbContext _context, int? parent_id, string? parent_type)
+        {
+            context = _context;
+            int FilesCount = 0;
+            FilesCount = context.mast_fileupload
+                .Count(f => f.files_parent_id == parent_id && f.files_parent_type == parent_type && f.files_status == "N");
+
+            var approvalReq_Record = context.cargo_approvedm
+                .Where(m => m.ca_id == parent_id)
+                .FirstOrDefault();
+
+            if (approvalReq_Record != null)
+            {
+                approvalReq_Record.rec_files_attached = "Y";
                 await context.SaveChangesAsync();
             }
         }
@@ -894,6 +915,13 @@ namespace Common.Lib
             .Any(f => f.cf_mbl_id == id && f.rec_company_id == rec_company_id);
 
             return FollowupExists;
+        }
+        public static bool ApprovalExists(AppDbContext context, int? id, int rec_company_id)
+        {
+            var ApprovalExists = context.cargo_approvedd
+            .Any(f => f.cad_parent_id == id && f.rec_company_id == rec_company_id);
+
+            return ApprovalExists;
         }
         public static async Task<FileDownloadResult_Dto> GetFileAsync(string filePath)
         {

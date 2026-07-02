@@ -143,6 +143,8 @@ namespace Common.Repositories
             files.Add("CommonShipment\\cargo_delivery_order.txt");
             files.Add("CommonShipment\\cargo_devan_inst.txt");
             files.Add("CommonShipment\\cargo_custom_hold.txt");
+            files.Add("CommonShipment\\cargo_approvedm.txt");
+            files.Add("CommonShipment\\cargo_approvedd.txt");
             
         }
     }

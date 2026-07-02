@@ -257,13 +257,13 @@ namespace Database.Lib.Repositories
             if (search_string != "" && search_string != null)
                 query = query.Where(w => w.cust_name.Contains(search_string.ToUpper()) || w.cust_code.Contains(search_string.ToUpper()));
 
-            
-            if(  data.ContainsKey("cust_is_parent"))
+
+            if (data.ContainsKey("cust_is_parent"))
             {
                 var cust_is_parent = data["cust_is_parent"].ToString();
                 query = query.Where(w => w.cust_is_parent == cust_is_parent);
             }
-            
+
             query = query
                 .OrderBy(c => c.cust_name);
 
@@ -283,41 +283,80 @@ namespace Database.Lib.Repositories
 
             // to get list of master and house based on the mbl_id(parent)
             int mbl_id = data.ContainsKey("parent_id") ? Lib.StringToInteger(data["parent_id"]?.ToString()!) : 0;
+            string table_type = data["table_type"].ToString()!;
 
             var s = search_string?.ToUpper() ?? "";
 
-            var masterList = await context.cargo_masterm
-                            .Where(rec => rec.rec_company_id == comp_id && rec.mbl_id == mbl_id)
-                            .Select(rec => new
-                            {
-                                master_id = rec.mbl_id,
-                                master_refno = rec.mbl_refno ?? "",
-                            })
-                            .ToListAsync();
+            var records = new List<object>();
 
-            var houseList = await context.cargo_housem
-                            .Where(rec => rec.rec_company_id == comp_id && rec.hbl_mbl_id == mbl_id)
-                            .Select(rec => new
-                            {
-                                house_id = rec.hbl_id,
-                                master_refno = rec.master!.mbl_refno ?? "",
-                                master_no = rec.hbl_houseno ?? "",
-                                house_shipper = rec.hbl_shipper_name ?? "",
-                                house_consignee = rec.hbl_consignee_name ?? "",
-                                house_pcs = rec.hbl_packages ?? 0,
-                                house_uom_id = rec.hbl_uom_id ?? 0,
-                                house_uom_code = rec.packageunit!.param_code ?? "",
-                                house_lbs = rec.hbl_lbs ?? 0,
-                                house_kgs = rec.hbl_weight ?? 0,
-                                house_cbm = rec.hbl_cbm ?? 0,
-                                house_cft = rec.hbl_cft ?? 0,
-                            })
-                            .ToListAsync();
+            if (table_type == "MASTER")
+            {
+                var masterList = await context.cargo_masterm
+                                .Where(rec => rec.rec_company_id == comp_id && rec.mbl_id == mbl_id)
+                                .Select(rec => new
+                                {
+                                    master_id = rec.mbl_id,
+                                    master_refno = rec.mbl_refno ?? "",
+                                })
+                                .ToListAsync();
+
+                records.AddRange(masterList);
+            }
+            if (table_type == "MASTER" || table_type == "HOUSE")
+            {
+                var houseList = await context.cargo_housem
+                                .Where(rec => rec.rec_company_id == comp_id && rec.hbl_mbl_id == mbl_id)
+                                .Select(rec => new
+                                {
+                                    house_id = rec.hbl_id,
+                                    master_refno = rec.master!.mbl_refno ?? "",
+                                    house_no = rec.hbl_houseno ?? "",
+                                    house_shipper = rec.hbl_shipper_name ?? "",
+                                    house_consignee_id = rec.hbl_consignee_id ?? 0,
+                                    house_consignee = rec.hbl_consignee_name ?? "",
+                                    house_pcs = rec.hbl_packages ?? 0,
+                                    house_uom_id = rec.hbl_uom_id ?? 0,
+                                    house_uom_code = rec.packageunit!.param_code ?? "",
+                                    house_lbs = rec.hbl_lbs ?? 0,
+                                    house_kgs = rec.hbl_weight ?? 0,
+                                    house_cbm = rec.hbl_cbm ?? 0,
+                                    house_cft = rec.hbl_cft ?? 0,
+                                })
+                                .ToListAsync();
+                records.AddRange(houseList);
+            }
+
+            RetData["records"] = records.ToList();
+
+            return RetData;
+        }
+    }
+    public class Lov_invoice : ILov
+    {
+        public async Task<Dictionary<string, object>> getRecordsAsync(AppDbContext context, Dictionary<string, object> data, int comp_id = 0, string search_string = "")
+        {
+            Dictionary<string, object> RetData = new Dictionary<string, object>();
+
+            // to get list of invoice AR/AP on the inv_mbl_id(parent)
+            int mbl_id = data.ContainsKey("parent_id") ? Lib.StringToInteger(data["parent_id"]?.ToString()!) : 0;
+
+            var s = search_string?.ToUpper() ?? "";
 
             var records = new List<object>();
-            records.AddRange(masterList);
-            records.AddRange(houseList);
- 
+
+            var InvList = await context.acc_invoicem
+                            .Where(rec => rec.rec_company_id == comp_id && rec.inv_mbl_id == mbl_id && rec.rec_deleted == "N")
+                            .Select(rec => new
+                            {
+                                inv_id = rec.inv_id,
+                                inv_no = rec.inv_no ?? "",
+                                inv_paid = rec.inv_paid ?? 0,
+                                inv_total = rec.inv_total ?? 0,
+                                inv_cust_name = rec.inv_cust_name ?? "",
+                            })
+                            .ToListAsync();
+
+            records.AddRange(InvList);
             RetData["records"] = records.ToList();
 
             return RetData;
@@ -381,7 +420,7 @@ namespace Database.Lib.Repositories
 
 
             if (search_string != "" && search_string != null)
-                query = query.Where(w => w.year_code == Lib.StringToInteger(search_string) );// w.year_name.Contains(search_string.ToUpper()) ||
+                query = query.Where(w => w.year_code == Lib.StringToInteger(search_string));// w.year_name.Contains(search_string.ToUpper()) ||
 
             query = query
                 .OrderBy(c => c.year_code);

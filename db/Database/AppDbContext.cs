@@ -62,6 +62,8 @@ namespace Database
         public DbSet<cargo_delivery_order> cargo_delivery_order { get; set; } = null!;
         public DbSet<cargo_slip> cargo_slip { get; set; } = null!;
         public DbSet<cargo_custom_hold> cargo_custom_hold { get; set; } = null!;
+        public DbSet<cargo_approvedm> cargo_approvedm { get; set; } = null!;
+        public DbSet<cargo_approvedd> cargo_approvedd { get; set; } = null!;
 
         //Accounts
         public DbSet<acc_groupm> acc_groupm { get; set; } = null!;
