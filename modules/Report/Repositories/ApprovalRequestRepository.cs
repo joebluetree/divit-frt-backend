@@ -32,7 +32,7 @@ namespace Report.Repositories
             this.auditLog = _auditLog;
         }
 
-          public async Task<Dictionary<string, object>> GetListAsync(Dictionary<string, object> data)
+        public async Task<Dictionary<string, object>> GetListAsync(Dictionary<string, object> data)
         {
             try
             {
@@ -56,6 +56,7 @@ namespace Report.Repositories
                 var ca_is_hide = "";
                 var ca_ref_no = "";
                 var ca_user = "";
+                var ca_req_type = "";
 
                 var company_id = 0;
                 var branch_id = 0;
@@ -79,6 +80,8 @@ namespace Report.Repositories
                     ca_ref_no = data["ca_ref_no"].ToString();
                 if (data.ContainsKey("ca_user"))
                     ca_user = data["ca_user"].ToString();
+                if (data.ContainsKey("ca_req_type"))
+                    ca_req_type = data["ca_req_type"].ToString();
                 if (data.ContainsKey("ca_parent_id"))
                     ca_parent_id = int.Parse(data["ca_parent_id"].ToString()!);
 
@@ -103,6 +106,7 @@ namespace Report.Repositories
                     {"ca_doc_type", ca_doc_type!},
                     {"ca_ref_no", ca_ref_no!},
                     {"ca_user", ca_user!},
+                    {"ca_req_type", ca_req_type!},
                     // {"ca_shipper_name", ca_shipper_name!},
                 };
 
@@ -141,7 +145,7 @@ namespace Report.Repositories
                     on m.ca_id equals d.cad_parent_id into ApproveGroup
 
                 from d in ApproveGroup.DefaultIfEmpty()
-                where Lib.IsBlank(ca_user) || m.user!.user_name == ca_user || d.approvedby!.user_name == ca_user 
+                where Lib.IsBlank(ca_user) || (ca_req_type =="APPROVAL REQ REPORT" && m.user!.user_name == ca_user) || (ca_req_type =="APPROVAL REPORT" && d.approvedby!.user_name == ca_user )
                 orderby m.ca_req_no
                 select new rep_approvedd_dto
                 {
@@ -285,6 +289,7 @@ namespace Report.Repositories
                 Type = searchInfo.ContainsKey("ca_type") ? searchInfo["ca_type"] : "",
                 Reference = searchInfo.ContainsKey("ca_ref_no") ? searchInfo["ca_ref_no"] : "",
                 RequestBy = searchInfo.ContainsKey("ca_user") ? searchInfo["ca_user"] : "",
+                ReportType = searchInfo.ContainsKey("ca_req_type") ? searchInfo["ca_req_type"] : "",
             };
             bc.Process();
 
@@ -322,6 +327,7 @@ namespace Report.Repositories
                 Type = searchInfo.ContainsKey("ca_type") ? searchInfo["ca_type"] : "",
                 Reference = searchInfo.ContainsKey("ca_ref_no") ? searchInfo["ca_ref_no"] : "",
                 RequestBy = searchInfo.ContainsKey("ca_user") ? searchInfo["ca_user"] : "",
+                ReportType = searchInfo.ContainsKey("ca_req_type") ? searchInfo["ca_req_type"] : "",
             };
             bc.Process();
 

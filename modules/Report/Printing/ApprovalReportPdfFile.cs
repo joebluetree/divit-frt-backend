@@ -28,6 +28,7 @@ namespace Report.Printing
         public string FromDate { get; set; } = "";
         public string ToDate { get; set; } = "";
         public string RequestBy { get; set; } = "";
+        public string ReportType { get; set; } = "";
         public string Type { get; set; } = "";
         public string OpGroup { get; set; } = "";
         public string Reference { get; set; } = "";
@@ -109,20 +110,18 @@ namespace Report.Printing
             this.Col_Default = 30;
             this.Row_Width = 800;
 
-            this.Col_ReqNo = new ColumnFormat { Left = 30, Width = 60 };
-            this.Col_Type = new ColumnFormat { Left = 90, Width = 60 };
-            this.Col_RefNo = new ColumnFormat { Left = 150, Width = 50 };
-            this.Col_HblNo = new ColumnFormat { Left = 200, Width = 50 };
-            this.Col_Consignee = new ColumnFormat { Left = 250, Width = 80 };
-            this.Col_InvNo = new ColumnFormat { Left = 330, Width = 80 };
-            this.Col_Inv_Cust = new ColumnFormat { Left = 410, Width = 80 };
-            this.Col_Inv_Amt = new ColumnFormat { Left = 490, Width = 60 };
-            // this.Col_Approve = new ColumnFormat { Left = 520, Width = 70 };
-            this.Col_ApproveBy = new ColumnFormat { Left = 550, Width = 50 };
-            this.Col_Approve_Date = new ColumnFormat { Left = 600, Width = 60 };
-            this.Col_Status = new ColumnFormat { Left = 660, Width = 70 };
-            this.Col_Remarks = new ColumnFormat { Left = 730, Width = 60 };
-            // this.Col_CurCode = new ColumnFormat { Left = 790, Width = 40 };
+            this.Col_ReqNo = new ColumnFormat { Left = 30, Width = 40 };
+            this.Col_Type = new ColumnFormat { Left = 70, Width = 70 };
+            this.Col_RefNo = new ColumnFormat { Left = 140, Width = 60 };
+            this.Col_HblNo = new ColumnFormat { Left = 200, Width = 65 };
+            this.Col_Consignee = new ColumnFormat { Left = 265, Width = 90 };
+            this.Col_InvNo = new ColumnFormat { Left = 355, Width = 50 };
+            this.Col_Inv_Cust = new ColumnFormat { Left = 405, Width = 90 };
+            this.Col_Inv_Amt = new ColumnFormat { Left = 495, Width = 55 };
+            this.Col_ApproveBy = new ColumnFormat { Left = 550, Width = 55 };
+            this.Col_Approve_Date = new ColumnFormat { Left = 605, Width = 65 };
+            this.Col_Status = new ColumnFormat { Left = 670, Width = 75 };
+            this.Col_Remarks = new ColumnFormat { Left = 745, Width = 85 };
 
             this.Col_Column = new ColumnFormat { Left = 80, Width = 10 };// ':'
             this.Col_Head_data = new ColumnFormat { Left = 90, Width = 100 };
@@ -158,12 +157,15 @@ namespace Report.Printing
                 var cad_approved_date = Lib.FormatDate(Lib.ParseDate(dr.cad_approved_date!), Lib.DisplayDateFormat) ?? "";
                 var ca_date = Lib.FormatDate(Lib.ParseDate(dr.ca_date!), Lib.DisplayDateFormat) ?? "";
 
+                float HouseHeight = pdf.MeasureWrappedTextHeight(Row, Col_HblNo.Left, Col_HblNo.Width, Line_Height, dr.ca_hbl_no!, format);
+                float TypeHeight = pdf.MeasureWrappedTextHeight(Row, Col_Type.Left, Col_Type.Width, Line_Height, dr.ca_type!, format);
                 float ConsigneeHeight = pdf.MeasureWrappedTextHeight(Row, Col_Consignee.Left, Col_Consignee.Width, Line_Height, dr.ca_consignee_name!, format);
-                float InvCustHeight = pdf.MeasureWrappedTextHeight(Row, Col_InvNo.Left, Col_InvNo.Width, Line_Height, dr.ca_inv_cust!, format);
-                float PodHeight = pdf.MeasureWrappedTextHeight(Row, Col_Approve.Left, Col_Approve.Width, Line_Height, dr.ca_remarks!, format);
-                float CarrierHeight = pdf.MeasureWrappedTextHeight(Row, Col_Status.Left, Col_Status.Width, Line_Height, dr.cad_status!, format);
+                float InvCustHeight = pdf.MeasureWrappedTextHeight(Row, Col_Inv_Cust.Left, Col_Inv_Cust.Width, Line_Height, dr.ca_inv_cust!, format);
+                float RemkHeight = pdf.MeasureWrappedTextHeight(Row, Col_Remarks.Left, Col_Remarks.Width, Line_Height, dr.ca_remarks!, format);
+                float StatusHeight = pdf.MeasureWrappedTextHeight(Row, Col_Status.Left, Col_Status.Width, Line_Height, dr.cad_status!, format);
+                
 
-                float rowHeight = new[] { ConsigneeHeight, InvCustHeight, PodHeight, CarrierHeight, Line_Height }.Max();
+                float rowHeight = new[] { ConsigneeHeight, InvCustHeight, RemkHeight, StatusHeight, HouseHeight, TypeHeight, Line_Height }.Max();
 
                 printHeader = CommonLib.IsPageBreak(Row, Lib.StringToInteger(rowHeight.ToString()), MaxRec_Height);
                 if (printHeader)
@@ -179,12 +181,10 @@ namespace Report.Printing
                 pdf.AddText(Row, Col_InvNo.Left, Col_InvNo.Width, rowHeight, dr.ca_inv_no!, new TextFormat { Border = "B", FontSize = 9, Indent = true });
                 pdf.AddText(Row, Col_Inv_Cust.Left, Col_Inv_Cust.Width, rowHeight, dr.ca_inv_cust!, new TextFormat { Border = "B", FontSize = 9, Indent = true });
                 pdf.AddText(Row, Col_Inv_Amt.Left, Col_Inv_Amt.Width, rowHeight, dr.ca_inv_amt!, new TextFormat { Border = "B", FontSize = 9, Indent = true, Style="R" });
-                // pdf.AddText(Row, Col_Approve.Left, Col_Approve.Width, rowHeight, dr.ca_Approve_name!, new TextFormat { Border = "B", FontSize = 9, Indent = true });
                 pdf.AddText(Row, Col_ApproveBy.Left, Col_ApproveBy.Width, rowHeight, dr.cad_approvedby_name!, new TextFormat { Border = "B", FontSize = 9, Indent = true });
                 pdf.AddText(Row, Col_Approve_Date.Left, Col_Approve_Date.Width, rowHeight, cad_approved_date.ToUpper(), new TextFormat { Border = "B", FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_Status.Left, Col_Status.Width, rowHeight, dr.cad_status!, new TextFormat { Border = "B", FontSize = 9, Indent = true });
-                pdf.AddText(Row, Col_Remarks.Left, Col_Remarks.Width, rowHeight, dr.ca_remarks!, new TextFormat { Style = "R", Border = "B", FontSize = 9, Indent = true });
-                // pdf.AddText(Row, Col_CurCode.Left, Col_CurCode.Width, rowHeight, dr.ca_cur_code!, new TextFormat { Border = "B", FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_Status.Left, Col_Status.Width, rowHeight, dr.cad_is_approved!, new TextFormat { Border = "B", FontSize = 9, Indent = true });
+                pdf.AddText(Row, Col_Remarks.Left, Col_Remarks.Width, rowHeight, dr.ca_remarks!, new TextFormat { Border = "B", FontSize = 9, Indent = true });
                 
                 Row += rowHeight;
             }
@@ -206,6 +206,7 @@ namespace Report.Printing
             string ptintInfo = $"PRINTED ON : {Date} / {User_name}     PAGE#: {PageNumber}";
 
             float currentY = CommonLib.WriteBranchAddressPdf(Row, Col, Company_id, Branch_id, context!, pdf);
+            var UserRole = ReportType == "APPROVAL REQ REPORT"? "REQUEST.BY" : "APPROVED.BY";
 
             currentY += Line_Height;
             pdf.AddText(currentY, Col, Row_Width, Line_Height, Title.ToUpper(), new TextFormat { Border = "TB", Style = "B", FontSize = 10 });//+ " LIST"
@@ -213,53 +214,51 @@ namespace Report.Printing
             int halfWidth = Row_Width / 2;
 
             float LeftY = currentY;
-            pdf.AddText(LeftY, Col, halfWidth, Line_Height, "FROM DATE", new TextFormat { FontSize = 10 });
-            pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
-            pdf.AddText(LeftY, Col + Col_Head_data.Left, Col_Head_data.Width, Line_Height, SFromDate.ToUpper(), new TextFormat { FontSize = 10 });
+            pdf.AddText(LeftY, Col, halfWidth, Line_Height, "FROM DATE", new TextFormat { Style ="B", FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { Style ="B", FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Head_data.Left, Col_Head_data.Width, Line_Height, SFromDate.ToUpper(), new TextFormat { Style ="B", FontSize = 10 });
             LeftY += Line_Height;
-            pdf.AddText(LeftY, Col, halfWidth, Line_Height, "TO DATE", new TextFormat { FontSize = 10 });
-            pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
-            pdf.AddText(LeftY, Col + Col_Head_data.Left, Col_Head_data.Width, Line_Height, SToDate.ToUpper(), new TextFormat { FontSize = 10 });
+            pdf.AddText(LeftY, Col, halfWidth, Line_Height, "TO DATE", new TextFormat { Style ="B", FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { Style ="B", FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Head_data.Left, Col_Head_data.Width, Line_Height, SToDate.ToUpper(), new TextFormat { Style ="B", FontSize = 10 });
             LeftY += Line_Height;
-            pdf.AddText(LeftY, Col, halfWidth, Line_Height, "GROUP", new TextFormat { FontSize = 10 });
-            pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
-            pdf.AddText(LeftY, Col + Col_Head_data.Left, Col_Head_data.Width, Line_Height, OpGroup, new TextFormat { FontSize = 10 });
+            pdf.AddText(LeftY, Col, halfWidth, Line_Height, "GROUP", new TextFormat { Style ="B", FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { Style ="B", FontSize = 10 });
+            pdf.AddText(LeftY, Col + Col_Head_data.Left, Col_Head_data.Width, Line_Height, OpGroup, new TextFormat { Style ="B", FontSize = 10 });
             // LeftY += Line_Height;
-            // pdf.AddText(LeftY, Col, halfWidth, Line_Height, "TYPE", new TextFormat { FontSize = 10 });
-            // pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
-            // pdf.AddText(LeftY, Col + Col_Head_data.Left, Col_Head_data.Width, Line_Height, Type, new TextFormat { FontSize = 10 });
+            // pdf.AddText(LeftY, Col, halfWidth, Line_Height, "TYPE", new TextFormat { Style ="B", FontSize = 10 });
+            // pdf.AddText(LeftY, Col + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { Style ="B", FontSize = 10 });
+            // pdf.AddText(LeftY, Col + Col_Head_data.Left, Col_Head_data.Width, Line_Height, Type, new TextFormat { Style ="B", FontSize = 10 });
 
             float RightY = currentY;
             var RightCol = Col + halfWidth;
 
-            pdf.AddText(RightY, RightCol, Row_Width, Line_Height, "TYPE", new TextFormat { FontSize = 10 });
-            pdf.AddText(RightY, RightCol + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
-            pdf.AddText(RightY, RightCol + Col_Head_data.Left, Col_Head_data.Width, Line_Height, Type, new TextFormat { FontSize = 10 });
+            pdf.AddText(RightY, RightCol, Row_Width, Line_Height, "TYPE", new TextFormat { Style ="B", FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { Style ="B", FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Head_data.Left, Col_Head_data.Width, Line_Height, Type, new TextFormat { Style ="B", FontSize = 10 });
             RightY += Line_Height;
-            pdf.AddText(RightY, RightCol, Row_Width, Line_Height, "REFERENCE", new TextFormat { FontSize = 10 });
-            pdf.AddText(RightY, RightCol + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
-            pdf.AddText(RightY, RightCol + Col_Head_data.Left, Col_Head_data.Width, Line_Height, Reference, new TextFormat { FontSize = 10 });
+            pdf.AddText(RightY, RightCol, Row_Width, Line_Height, "REFERENCE", new TextFormat { Style ="B", FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { Style ="B", FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Head_data.Left, Col_Head_data.Width, Line_Height, Reference, new TextFormat { Style ="B", FontSize = 10 });
             RightY += Line_Height;
-            pdf.AddText(RightY, RightCol, Row_Width, Line_Height, "REQUEST.BY", new TextFormat { FontSize = 10 });
-            pdf.AddText(RightY, RightCol + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { FontSize = 10 });
-            pdf.AddText(RightY, RightCol + Col_Head_data.Left, Col_Head_data.Width, Line_Height, RequestBy, new TextFormat { FontSize = 10 });
+            pdf.AddText(RightY, RightCol, Row_Width, Line_Height, UserRole, new TextFormat { Style ="B", FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Column.Left, Col_Column.Width, Line_Height, ":", new TextFormat { Style ="B", FontSize = 10 });
+            pdf.AddText(RightY, RightCol + Col_Head_data.Left, Col_Head_data.Width, Line_Height, RequestBy, new TextFormat { Style ="B", FontSize = 10 });
 
             currentY = RightY >= LeftY ? RightY : LeftY;
             currentY += Line_Height + 5;
-            pdf.AddText(currentY, Col_ReqNo.Left, Col_ReqNo.Width, Line_Height, "REQUEST#", new TextFormat { Style ="B", Border = "TB", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_ReqNo.Left, Col_ReqNo.Width, Line_Height, "REQ#", new TextFormat { Style ="B", Border = "TB", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Type.Left, Col_Type.Width, Line_Height, "TYPE", new TextFormat { Style ="B", Border = "TB", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_RefNo.Left, Col_RefNo.Width, Line_Height, "REF.NO", new TextFormat { Style ="B", Border = "TB", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_HblNo.Left, Col_HblNo.Width, Line_Height, "HOUSE#", new TextFormat { Style ="B", Border = "TB", FontSize = 10, Indent = true });
-            pdf.AddText(currentY, Col_Consignee.Left, Col_Consignee.Width, Line_Height, "Consignee", new TextFormat { Style ="B", Border = "TB", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_Consignee.Left, Col_Consignee.Width, Line_Height, "CONSIGNEE", new TextFormat { Style ="B", Border = "TB", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_InvNo.Left, Col_InvNo.Width, Line_Height, "INV.NO", new TextFormat { Style ="B", Border = "TB", FontSize = 10, Indent = true });
-            pdf.AddText(currentY, Col_Inv_Cust.Left, Col_Inv_Cust.Width, Line_Height, "CUSTOMER", new TextFormat { Border = "TB", FontSize = 10, Indent = true });
-            pdf.AddText(currentY, Col_Inv_Amt.Left, Col_Inv_Amt.Width, Line_Height, "AMOUNT", new TextFormat {Style ="B", Border = "TB", FontSize = 10, Indent = true });
-            // pdf.AddText(currentY, Col_Approve.Left, Col_Approve.Width, Line_Height, "APPR", new TextFormat { Style ="B", Border = "TB", FontSize = 10, Indent = true });
-            pdf.AddText(currentY, Col_ApproveBy.Left, Col_ApproveBy.Width, Line_Height, "APPROVED.BY", new TextFormat { Border = "TB", FontSize = 10, Indent = true });
-            pdf.AddText(currentY, Col_Approve_Date.Left, Col_Approve_Date.Width, Line_Height, "APPROVED DATE", new TextFormat { Style ="B", Border = "TB", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_Inv_Cust.Left, Col_Inv_Cust.Width, Line_Height, "CUSTOMER", new TextFormat { Style ="B",Border = "TB", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_Inv_Amt.Left, Col_Inv_Amt.Width, Line_Height, "AMOUNT", new TextFormat {Style ="RB", Border = "TB", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_ApproveBy.Left, Col_ApproveBy.Width, Line_Height, "APRVD.BY", new TextFormat { Style ="B",Border = "TB", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_Approve_Date.Left, Col_Approve_Date.Width, Line_Height, "APRVD.DATE", new TextFormat { Style ="B", Border = "TB", FontSize = 10, Indent = true });
             pdf.AddText(currentY, Col_Status.Left, Col_Status.Width, Line_Height, "STATUS", new TextFormat { Style ="B", Border = "TB", FontSize = 10, Indent = true });
-            pdf.AddText(currentY, Col_Remarks.Left, Col_Remarks.Width, Line_Height, "REMARKS", new TextFormat { Style ="RB", Border = "TB", FontSize = 10, Indent = true });
-            // pdf.AddText(currentY, Col_CurCode.Left, Col_CurCode.Width, Line_Height, "CURRENCY", new TextFormat { Style ="B", Border = "TB", FontSize = 10, Indent = true });
+            pdf.AddText(currentY, Col_Remarks.Left, Col_Remarks.Width, Line_Height, "REMARKS", new TextFormat { Style ="B", Border = "TB", FontSize = 10, Indent = true });
 
             currentY += Line_Height;
 

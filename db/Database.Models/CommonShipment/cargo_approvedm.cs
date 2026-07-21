@@ -35,6 +35,9 @@ namespace Database.Models.CommonShipment
         public string? ca_is_ar_issued { get; set; }
         public string? ca_is_hide2 { get; set; }
         public string? rec_files_attached { get; set; }
+        // public string? rec_deleted { get; set; }
+        // public string? rec_deleted_by { get; set; }
+        // public DateTime rec_deleted_date { get; set; }
 
         public int? rec_record_id { get; set; }
         public int? rec_location_id { get; set; }

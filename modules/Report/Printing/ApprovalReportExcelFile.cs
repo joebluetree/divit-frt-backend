@@ -30,6 +30,7 @@ namespace Report.Printing
         public string FromDate { get; set; } = "";
         public string ToDate { get; set; } = "";
         public string RequestBy { get; set; } = "";
+        public string ReportType { get; set; } = "";
         public string Type { get; set; } = "";
         public string OpGroup { get; set; } = "";
         public string Reference { get; set; } = "";
@@ -90,15 +91,17 @@ namespace Report.Printing
                 var ca_etd = Lib.FormatDate(Lib.ParseDate(dr.ca_payment_recvd_date!), Lib.DisplayDateFormat) ?? "";
 
                 excel.CellValue(rowIndex, colIndex + 0, dr.ca_req_no!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T" });
-                excel.CellValue(rowIndex, colIndex + 1, dr.ca_type!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T" });
+                excel.CellValue(rowIndex, colIndex + 1, dr.ca_type!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T", WrapText = true });
                 excel.CellValue(rowIndex, colIndex + 2, dr.ca_ref_no!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T" });
                 excel.CellValue(rowIndex, colIndex + 3, dr.ca_hbl_no!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T", WrapText = true });
-                excel.CellValue(rowIndex, colIndex + 4, dr.ca_inv_no!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, WrapText = true, VAlign="T" });
-                excel.CellValue(rowIndex, colIndex + 5, dr.ca_inv_amt!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T", HAlign="R" });
-                excel.CellValue(rowIndex, colIndex + 6, dr.cad_approvedby_name!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T", WrapText = true });
-                excel.CellValue(rowIndex, colIndex + 7, cad_approved_date.ToUpper(), new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T" });
-                excel.CellValue(rowIndex, colIndex + 8, dr.cad_status!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T" });
-                excel.CellValue(rowIndex, colIndex + 9, dr.ca_remarks!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T", WrapText = true });
+                excel.CellValue(rowIndex, colIndex + 4, dr.ca_consignee_name!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, WrapText = true, VAlign="T" });
+                excel.CellValue(rowIndex, colIndex + 5, dr.ca_inv_no!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, WrapText = true, VAlign="T" });
+                excel.CellValue(rowIndex, colIndex + 6, dr.ca_inv_cust!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, WrapText = true, VAlign="T" });
+                excel.CellValue(rowIndex, colIndex + 7, dr.ca_inv_amt!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T", HAlign="R" });
+                excel.CellValue(rowIndex, colIndex + 8, dr.cad_approvedby_name!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T", WrapText = true });
+                excel.CellValue(rowIndex, colIndex + 9, cad_approved_date.ToUpper(), new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T" });
+                excel.CellValue(rowIndex, colIndex + 10, dr.cad_is_approved!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T" });
+                excel.CellValue(rowIndex, colIndex + 11, dr.ca_remarks!, new CellFormat { Border = "" + BL, Style = "", FontSize = 9, VAlign="T", WrapText = true });
 
                 rowIndex ++;
                 
@@ -127,7 +130,8 @@ namespace Report.Printing
             rowIndex += 1;
 
             col_count = 11;
-            
+            var UserRole = ReportType == "APPROVAL REQ REPORT"? "REQUEST.BY" : "APPROVED.BY";
+
             excel.CellValue(rowIndex, colIndex, Title.ToUpper()!, new CellFormat { Border = "TB", Style = "B", ColumnWidth = 15, FontSize = 10, MergeCols = col_count });
             rowIndex += 1;
 
@@ -148,22 +152,22 @@ namespace Report.Printing
             rowIndex += 1;
             excel.CellValue(rowIndex, colIndex, "GROUP", new CellFormat { Style = "B", FontSize = 10 });
             excel.CellValue(rowIndex, colIndex + 1, OpGroup, new CellFormat { Style = "B", FontSize = 10 });
-            excel.CellValue(rowIndex, colIndex + 3, "REQUESTED.BY", new CellFormat { Style = "B", FontSize = 10 });
+            excel.CellValue(rowIndex, colIndex + 3, UserRole, new CellFormat { Style = "B", FontSize = 10 });
             excel.CellValue(rowIndex, colIndex + 4, RequestBy, new CellFormat { Style = "B", FontSize = 10 });
             rowIndex += 1;
 
-            excel.CellValue(rowIndex, colIndex + 0, "REF #", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 15 });
-            excel.CellValue(rowIndex, colIndex + 1, "REF DATE", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 15 });
-            excel.CellValue(rowIndex, colIndex + 2, "INVOICE #", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 15 });
-            excel.CellValue(rowIndex, colIndex + 3, "INVOICE DATE", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 15 });
-            excel.CellValue(rowIndex, colIndex + 4, "CUSTOMER", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 30 });
-            excel.CellValue(rowIndex, colIndex + 5, "POL", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 30 });
-            excel.CellValue(rowIndex, colIndex + 6, "ETD", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 15 });
-            excel.CellValue(rowIndex, colIndex + 7, "POD", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 30 });
-            excel.CellValue(rowIndex, colIndex + 8, "ETA", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 15 });
-            excel.CellValue(rowIndex, colIndex + 9, "CARRIER", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 30 });
-            excel.CellValue(rowIndex, colIndex + 10, "AMOUNT", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 15, HAlign = "R" });
-            excel.CellValue(rowIndex, colIndex + 11, "CURRENCY", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 10 });
+            excel.CellValue(rowIndex, colIndex + 0, "REQ #", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 12 });
+            excel.CellValue(rowIndex, colIndex + 1, "TYPE", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 30 });
+            excel.CellValue(rowIndex, colIndex + 2, "REF.NO", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 20 });
+            excel.CellValue(rowIndex, colIndex + 3, "HOUSE.NO", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 20 });
+            excel.CellValue(rowIndex, colIndex + 4, "CONSIGNEE", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 30 });
+            excel.CellValue(rowIndex, colIndex + 5, "INV.NO", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 20 });
+            excel.CellValue(rowIndex, colIndex + 6, "CUSTOMER", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 30 });
+            excel.CellValue(rowIndex, colIndex + 7, "AMOUNT", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 15, HAlign="R" });
+            excel.CellValue(rowIndex, colIndex + 8, "APPROVED.BY", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 20 });
+            excel.CellValue(rowIndex, colIndex + 9, "APPROVED DATE", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 20 });
+            excel.CellValue(rowIndex, colIndex + 10, "STATUS", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 25,});
+            excel.CellValue(rowIndex, colIndex + 11, "REMARKS", new CellFormat { Border = "TB", Style = "B", FontSize = 10, ColumnWidth = 30 });
 
             rowIndex += 1;
             return rowIndex;

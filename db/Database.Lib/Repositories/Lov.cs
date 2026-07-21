@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using NPOI.SS.Formula.Functions;
 using SixLabors.ImageSharp.ColorSpaces.Companding;
 namespace Database.Lib.Repositories
 {
@@ -339,20 +340,28 @@ namespace Database.Lib.Repositories
 
             // to get list of invoice AR/AP on the inv_mbl_id(parent)
             int mbl_id = data.ContainsKey("parent_id") ? Lib.StringToInteger(data["parent_id"]?.ToString()!) : 0;
+            var inv_type = data.ContainsKey("inv_type") ? data["inv_type"]?.ToString()! : "";
 
             var s = search_string?.ToUpper() ?? "";
 
             var records = new List<object>();
 
             var InvList = await context.acc_invoicem
-                            .Where(rec => rec.rec_company_id == comp_id && rec.inv_mbl_id == mbl_id && rec.rec_deleted == "N")
+                            .Include(i => i.master)
+                            .Where(rec => rec.rec_company_id == comp_id && rec.inv_mbl_id == mbl_id && rec.rec_deleted == "N" && (Database.Lib.Lib.IsBlank(inv_type) || rec.inv_arap == inv_type))
                             .Select(rec => new
                             {
                                 inv_id = rec.inv_id,
                                 inv_no = rec.inv_no ?? "",
+                                inv_date = Lib.FormatDate(rec.inv_date, Lib.outputDateFormat) ?? "",
                                 inv_paid = rec.inv_paid ?? 0,
+                                inv_balance = rec.inv_total - rec.inv_paid ?? 0,
                                 inv_total = rec.inv_total ?? 0,
+                                inv_cust_id = rec.inv_cust_id ?? 0,
                                 inv_cust_name = rec.inv_cust_name ?? "",
+                                inv_ar_total = rec.inv_arap == "A/R" ? rec.inv_total: 0,
+                                inv_ap_total = rec.inv_arap == "A/P" ? rec.inv_total: 0,
+                                inv_pod_eta = Lib.FormatDate(rec.master!.mbl_pod_eta, Lib.outputDateFormat) ?? "",
                             })
                             .ToListAsync();
 
